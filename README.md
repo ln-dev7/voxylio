@@ -49,6 +49,8 @@ pnpm dev
 The site is bilingual (`/en`, `/fr`) via [next-intl](https://next-intl.dev),
 styled with Tailwind CSS and [shadcn/ui](https://ui.shadcn.com).
 
+See [ROADMAP.md](ROADMAP.md) for what's next.
+
 ## License
 
 [MIT](LICENSE) © Leonel Ngoya
