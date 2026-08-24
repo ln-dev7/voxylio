@@ -1,8 +1,9 @@
 import { createHash, randomBytes } from "node:crypto";
-import { headers } from "next/headers";
 import { and, eq, isNull } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { db, schema } from "@/db";
+
+export const dynamic = "force-dynamic";
 
 /**
  * Mints the long-lived opaque token the extension authenticates with.
@@ -11,8 +12,8 @@ import { db, schema } from "@/db";
  * One active token per user: minting revokes the previous ones.
  */
 export async function POST() {
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) {
+  const { data: session } = await auth.getSession();
+  if (!session?.user) {
     return Response.json({ error: "unauthorized" }, { status: 401 });
   }
 

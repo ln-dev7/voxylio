@@ -1,8 +1,9 @@
 import { createHash } from "node:crypto";
-import { headers } from "next/headers";
 import { eq } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { db, schema } from "@/db";
+
+export const dynamic = "force-dynamic";
 
 // Read-only endpoint, callable two ways:
 //  - by the extension, with `Authorization: Bearer vxt_…` (CORS open —
@@ -46,8 +47,8 @@ export async function GET(req: Request) {
       .where(eq(schema.extensionToken.id, row.id))
       .catch(() => {});
   } else {
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session) {
+    const { data: session } = await auth.getSession();
+    if (!session?.user) {
       return Response.json(
         { error: "unauthorized" },
         { status: 401, headers: CORS },

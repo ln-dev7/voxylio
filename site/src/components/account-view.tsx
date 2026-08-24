@@ -89,7 +89,7 @@ export function AccountView() {
     const buy = new URLSearchParams(window.location.search).get("buy");
     if (buy === "pro" || buy === "pro-yearly") {
       setBuying(true);
-      authClient.checkout({ slug: buy });
+      window.location.href = `/api/checkout?plan=${buy}`;
     }
   }, [session, ent, buying]);
 
@@ -186,7 +186,9 @@ export function AccountView() {
                 <Button
                   variant="outline"
                   className="rounded-full bg-white/[0.03]"
-                  onClick={() => authClient.customer.portal()}
+                  onClick={() => {
+                    window.location.href = "/api/portal";
+                  }}
                 >
                   {t("manage")}
                 </Button>
@@ -194,13 +196,17 @@ export function AccountView() {
                 <div className="flex flex-col items-end gap-1.5">
                   <Button
                     className="rounded-full"
-                    onClick={() => authClient.checkout({ slug: "pro" })}
+                    onClick={() => {
+                      window.location.href = "/api/checkout?plan=pro";
+                    }}
                   >
                     {t("upgrade")}
                   </Button>
                   <button
                     type="button"
-                    onClick={() => authClient.checkout({ slug: "pro-yearly" })}
+                    onClick={() => {
+                      window.location.href = "/api/checkout?plan=pro-yearly";
+                    }}
                     className="cursor-pointer text-xs text-muted-foreground transition-colors hover:text-primary"
                   >
                     {t("upgradeYearly")}
