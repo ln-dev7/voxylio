@@ -13,11 +13,17 @@
     "closeMenu": "Close menu"
   },
   "Hero": {
-    "title": "Watch any course in <accent>your language</accent>",
-    "subtitle": "Video Dub is a Chrome extension that dubs subtitled videos in real time. It rebuilds full sentences from the captions, translates them locally, and speaks over the video — perfectly in sync.",
+    "title": "Watch your courses in <accent>your language</accent>",
+    "subtitle": "Video Dub is a Chrome extension that dubs subtitled videos in real time. It rebuilds full sentences from the captions, translates them locally, and speaks over the video — in sync with playback.",
     "ctaInstall": "Install the extension",
     "ctaGithub": "View on GitHub",
-    "note": "Works on any player that exposes a subtitle track — including custom course platforms."
+    "note": "Works on videos whose player exposes a subtitle track — most course platforms do.",
+    "ticks": {
+      "free": "Free",
+      "local": "100% local",
+      "noAccount": "No account",
+      "noQuota": "No quota"
+    }
   },
   "Features": {
     "title": "Built like a real dubbing studio",

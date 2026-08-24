@@ -13,11 +13,17 @@
     "closeMenu": "Fermer le menu"
   },
   "Hero": {
-    "title": "Suivez n’importe quel cours <accent>dans votre langue</accent>",
-    "subtitle": "Video Dub est une extension Chrome qui double les vidéos sous-titrées en temps réel. Elle reconstitue des phrases complètes à partir des sous-titres, les traduit localement et parle par-dessus la vidéo — parfaitement synchronisée.",
+    "title": "Suivez vos cours <accent>dans votre langue</accent>",
+    "subtitle": "Video Dub est une extension Chrome qui double les vidéos sous-titrées en temps réel. Elle reconstitue des phrases complètes à partir des sous-titres, les traduit localement et parle par-dessus la vidéo — synchronisée avec la lecture.",
     "ctaInstall": "Installer l’extension",
     "ctaGithub": "Voir sur GitHub",
-    "note": "Fonctionne avec tout lecteur qui expose une piste de sous-titres — y compris les plateformes de cours."
+    "note": "Fonctionne sur les vidéos dont le lecteur expose une piste de sous-titres — le cas de la plupart des plateformes de cours.",
+    "ticks": {
+      "free": "Gratuit",
+      "local": "100 % local",
+      "noAccount": "Sans compte",
+      "noQuota": "Sans quota"
+    }
   },
   "Features": {
     "title": "Conçu comme un vrai studio de doublage",

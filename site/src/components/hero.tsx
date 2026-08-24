@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { Download } from "lucide-react";
+import { Check, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GitHubIcon } from "@/components/github-icon";
 import { Aurora } from "@/components/aurora";
@@ -50,7 +50,19 @@ export function Hero() {
             </Button>
           </div>
 
-          <p className="mt-5 text-xs text-muted-foreground/70">{t("note")}</p>
+          {/* The promises that matter: free, local, no account, no quota */}
+          <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            {(["free", "local", "noAccount", "noQuota"] as const).map((k) => (
+              <li
+                key={k}
+                className="flex items-center gap-1.5 text-[13px] font-medium text-muted-foreground"
+              >
+                <Check className="size-3.5 text-primary" aria-hidden="true" />
+                {t(`ticks.${k}`)}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 text-xs text-muted-foreground/70">{t("note")}</p>
         </div>
 
         {/* Video-style live demo */}
