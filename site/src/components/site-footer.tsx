@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/logo";
 import { GitHubIcon } from "@/components/github-icon";
 import { GITHUB_URL } from "@/lib/constants";
@@ -92,6 +93,14 @@ export function SiteFooter() {
                   </a>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/privacy"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t("links.privacy")}
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>
