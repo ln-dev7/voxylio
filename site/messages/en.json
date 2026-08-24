@@ -10,7 +10,8 @@
     "faq": "FAQ",
     "github": "GitHub",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "account": "Account"
   },
   "Hero": {
     "title": "Watch any video in <accent>your language</accent>",
@@ -207,5 +208,26 @@
     "p5Title": "Your data, your control",
     "p5": "The \"Reset\" button in the popup restores default settings and deletes everything the extension has stored. Removing the extension removes all of its data.",
     "contact": "Questions? Open an issue on GitHub or reach out to the author."
+  },
+  "Account": {
+    "title": "Your account",
+    "signedOutTitle": "Sign in to Voxylio",
+    "signedOutSubtitle": "One Google account, nothing else. It only powers the Pro plan — everything local stays account-free.",
+    "signInGoogle": "Continue with Google",
+    "plan": "Plan",
+    "planFree": "Free",
+    "planPro": "Pro",
+    "statusCanceled": "Active until {date}",
+    "upgrade": "Upgrade to Pro",
+    "manage": "Manage subscription",
+    "signOut": "Sign out",
+    "extensionTitle": "Extension",
+    "extensionHint": "Link this browser's extension to unlock Pro features in it.",
+    "extensionConnect": "Link the extension",
+    "extensionLinking": "Linking…",
+    "extensionLinked": "Extension linked",
+    "extensionMissing": "Voxylio isn't installed in this browser.",
+    "extensionError": "Couldn't reach the extension. Open this page in Chrome with Voxylio installed.",
+    "checkoutSuccess": "Payment received — your Pro plan activates in a few seconds."
   }
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Download, Menu, X } from "lucide-react";
+import { Download, Menu, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GitHubIcon } from "@/components/github-icon";
 import { Logo } from "@/components/logo";
@@ -48,6 +48,16 @@ export function SiteHeader() {
 
         <div className="ml-auto flex items-center gap-2 sm:gap-2.5">
           <LocaleSwitcher />
+          <Button
+            asChild
+            variant="ghost"
+            size="icon"
+            className="hidden rounded-full text-muted-foreground hover:text-foreground sm:inline-flex"
+          >
+            <Link href="/account" aria-label={t("account")}>
+              <User className="size-[18px]" />
+            </Link>
+          </Button>
           <Button
             asChild
             variant="ghost"
@@ -105,6 +115,13 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
+            <Link
+              href="/account"
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-3 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-white/[0.05] hover:text-foreground"
+            >
+              {t("account")}
+            </Link>
             <div className="mt-2 flex items-center gap-3 border-t border-white/[0.06] px-3 pb-2 pt-4">
               <Button asChild size="sm" className="flex-1 rounded-full">
                 <Link

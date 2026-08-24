@@ -10,7 +10,8 @@
     "faq": "FAQ",
     "github": "GitHub",
     "openMenu": "Ouvrir le menu",
-    "closeMenu": "Fermer le menu"
+    "closeMenu": "Fermer le menu",
+    "account": "Compte"
   },
   "Hero": {
     "title": "Suivez n’importe quelle vidéo <accent>dans votre langue</accent>",
@@ -207,5 +208,26 @@
     "p5Title": "Vos données, votre contrôle",
     "p5": "Le bouton « Réinitialiser » du popup rétablit les réglages par défaut et supprime tout ce que l’extension a stocké. Désinstaller l’extension supprime toutes ses données.",
     "contact": "Une question ? Ouvrez une issue sur GitHub ou contactez l’auteur."
+  },
+  "Account": {
+    "title": "Votre compte",
+    "signedOutTitle": "Connexion à Voxylio",
+    "signedOutSubtitle": "Un compte Google, rien d'autre. Il ne sert qu'au plan Pro — tout ce qui est local reste sans compte.",
+    "signInGoogle": "Continuer avec Google",
+    "plan": "Abonnement",
+    "planFree": "Gratuit",
+    "planPro": "Pro",
+    "statusCanceled": "Actif jusqu'au {date}",
+    "upgrade": "Passer Pro",
+    "manage": "Gérer mon abonnement",
+    "signOut": "Se déconnecter",
+    "extensionTitle": "Extension",
+    "extensionHint": "Associez l'extension de ce navigateur pour y débloquer les fonctions Pro.",
+    "extensionConnect": "Associer l'extension",
+    "extensionLinking": "Association…",
+    "extensionLinked": "Extension associée",
+    "extensionMissing": "Voxylio n'est pas installée dans ce navigateur.",
+    "extensionError": "Impossible de contacter l'extension. Ouvrez cette page dans Chrome avec Voxylio installée.",
+    "checkoutSuccess": "Paiement reçu — votre plan Pro s'active dans quelques secondes."
   }
 }
