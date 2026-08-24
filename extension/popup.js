@@ -1,7 +1,40 @@
 // GENERATED FILE — do not edit. Source: apps/chrome/src (pnpm build).
 (() => {
-  // src/popup.js
-  var DEFAULTS = {
+  // ../../packages/core/src/glossary.js
+  var PROTECTED_TERMS = [
+    "playground",
+    "prompt",
+    "framework",
+    "codebase",
+    "commit",
+    "pull request",
+    "code review",
+    "backend",
+    "frontend",
+    "workflow",
+    "pipeline",
+    "token",
+    "embedding",
+    "debug",
+    "build",
+    "deploy",
+    "refactoring",
+    "refactor",
+    "feature flag",
+    "context window",
+    "agent"
+  ];
+  var TERM_RE = new RegExp(
+    "\\b(" + PROTECTED_TERMS.map((t2) => t2.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join(
+      "|"
+    ) + ")\\b",
+    "gi"
+  );
+
+  // ../../packages/core/src/settings.js
+  var SETTINGS_VERSION = 2;
+  var DEFAULTS = Object.freeze({
+    v: SETTINGS_VERSION,
     enabled: false,
     rate: 1.1,
     duck: 12,
@@ -12,8 +45,15 @@
     overlay: true,
     cloudFallback: true,
     autoPause: false,
-    keepTerms: true
-  };
+    keepTerms: true,
+    // Preferred paid provider when a key is configured ("auto" = none:
+    // builtin then best-effort fallback).
+    provider: "auto",
+    // Hostnames where Voxylio must stay completely inactive.
+    disabledSites: []
+  });
+
+  // src/popup.js
   var PREVIEW_SAMPLES = {
     fr: "Bonjour ! Voici la voix de votre doublage.",
     es: "\xA1Hola! Esta es la voz de tu doblaje.",
@@ -23,6 +63,23 @@
     en: "Hi! This is your dubbing voice."
   };
   var $ = (id) => document.getElementById(id);
+  var t = (key, subs) => {
+    try {
+      return chrome.i18n.getMessage(key, subs) || "";
+    } catch (e) {
+      return "";
+    }
+  };
+  function applyI18n() {
+    for (const el of document.querySelectorAll("[data-i18n]")) {
+      const msg = t(el.dataset.i18n);
+      if (msg) el.textContent = msg;
+    }
+    for (const el of document.querySelectorAll("[data-i18n-title]")) {
+      const msg = t(el.dataset.i18nTitle);
+      if (msg) el.title = msg;
+    }
+  }
   function save(patch) {
     chrome.storage.sync.set(patch);
   }
@@ -60,56 +117,69 @@
   var settings = null;
   var voicesFilled = false;
   var lastResp = null;
-  function translationLine(resp) {
-    if (resp.translationMode === "local") return "Traduction : locale (Chrome)";
-    if (resp.translationMode === "cloud") return "Traduction : en ligne";
-    return resp.builtinTranslator ? "Traduction : locale (Chrome)" : "Traduction : en attente\u2026";
+  function line(text, cls) {
+    const span = document.createElement("span");
+    if (cls) span.className = cls;
+    span.textContent = text;
+    return span;
   }
-  function statusHTML(resp) {
-    const parts = [];
+  function translationLine(resp) {
+    if (resp.translationMode === "local")
+      return t("translationLocal") || "Traduction : locale (Chrome)";
+    if (resp.translationMode === "cloud")
+      return t("translationCloud") || "Traduction : en ligne";
+    return resp.builtinTranslator ? t("translationLocal") || "Traduction : locale (Chrome)" : t("translationWaiting") || "Traduction : en attente\u2026";
+  }
+  function statusFragment(resp) {
+    const frag = document.createDocumentFragment();
+    const add = (node) => {
+      if (frag.childNodes.length) frag.appendChild(document.createElement("br"));
+      frag.appendChild(node);
+    };
     if (!resp || !resp.videos) {
-      parts.push('<span class="warn">Aucune vid\xE9o d\xE9tect\xE9e sur cette page.</span>');
-      return parts.join("<br>");
+      add(line(t("statusNoVideo") || "Aucune vid\xE9o d\xE9tect\xE9e sur cette page.", "warn"));
+      return frag;
     }
-    parts.push(
-      `<span class="ok">\u2713 ${resp.videos} vid\xE9o${resp.videos > 1 ? "s" : ""} d\xE9tect\xE9e${resp.videos > 1 ? "s" : ""}</span>`
+    add(
+      line(
+        "\u2713 " + (t("statusVideosDetected", [String(resp.videos)]) || `${resp.videos} vid\xE9o(s) d\xE9tect\xE9e(s)`),
+        "ok"
+      )
     );
     switch (resp.state) {
       case "ready": {
         const n = resp.groups || resp.cues;
-        parts.push(
-          `<span class="ok">\u2713 ${n} r\xE9plique${n > 1 ? "s" : ""} pr\xEAte${n > 1 ? "s" : ""}</span>` + (resp.speaking ? ' <span class="ok">\xB7 \u{1F50A} voix en cours</span>' : "")
+        const ready = line(
+          "\u2713 " + (t("statusLinesReady", [String(n)]) || `${n} r\xE9plique(s) pr\xEAte(s)`),
+          "ok"
         );
-        parts.push(translationLine(resp));
+        add(ready);
+        if (resp.speaking) {
+          ready.after(line(" \xB7 \u{1F50A} " + (t("statusSpeaking") || "voix en cours"), "ok"));
+        }
+        add(line(translationLine(resp)));
         break;
       }
       case "subs-loading":
-        parts.push(
-          '<span class="warn">Piste de sous-titres d\xE9tect\xE9e \u2014 lance la lecture quelques secondes pour charger les r\xE9pliques.</span>'
-        );
+        add(line(t("statusSubsLoading") || "Piste de sous-titres d\xE9tect\xE9e \u2014 lance la lecture quelques secondes pour charger les r\xE9pliques.", "warn"));
         break;
       case "no-subs":
-        parts.push(
-          '<span class="warn">Ce lecteur n\u2019expose pas ses sous-titres \u2014 le doublage n\u2019est pas possible sur cette vid\xE9o.</span>'
-        );
+        add(line(t("statusNoSubs") || "Ce lecteur n\u2019expose pas ses sous-titres \u2014 le doublage n\u2019est pas possible sur cette vid\xE9o.", "warn"));
         break;
       case "no-voice":
-        parts.push(
-          '<span class="warn">Aucune voix install\xE9e pour cette langue. Sur Mac : R\xE9glages Syst\xE8me \u2192 Accessibilit\xE9 \u2192 Contenu \xE9nonc\xE9.</span>'
-        );
+        add(line(t("statusNoVoice") || "Aucune voix install\xE9e pour cette langue. Sur Mac : R\xE9glages Syst\xE8me \u2192 Accessibilit\xE9 \u2192 Contenu \xE9nonc\xE9.", "warn"));
         break;
       case "local-unavailable":
-        parts.push(
-          '<span class="warn">Traduction locale indisponible (mode strict actif). Chrome t\xE9l\xE9charge peut-\xEAtre son mod\xE8le \u2014 r\xE9essaie dans un instant.</span>'
-        );
+        add(line(t("statusLocalUnavailable") || "Traduction locale indisponible (mode strict actif). Chrome t\xE9l\xE9charge peut-\xEAtre son mod\xE8le \u2014 r\xE9essaie dans un instant.", "warn"));
         break;
       case "translate-error":
-        parts.push(
-          '<span class="warn">Traduction temporairement indisponible \u2014 nouvelle tentative automatique.</span>'
-        );
+        add(line(t("statusTranslateError") || "Traduction temporairement indisponible \u2014 nouvelle tentative automatique.", "warn"));
+        break;
+      case "site-disabled":
+        add(line(t("statusSiteDisabled") || "Voxylio est d\xE9sactiv\xE9 sur ce site (voir Options).", "warn"));
         break;
     }
-    return parts.join("<br>");
+    return frag;
   }
   function fillVoices(resp) {
     if (voicesFilled) return;
@@ -127,13 +197,19 @@
   }
   async function refreshStatus() {
     if (tabId == null) return;
+    const status = $("status");
     try {
       const resp = await chrome.tabs.sendMessage(tabId, { type: "getStatus" });
       lastResp = resp;
-      $("status").innerHTML = statusHTML(resp);
+      status.replaceChildren(statusFragment(resp));
       fillVoices(resp);
     } catch (e) {
-      $("status").innerHTML = '<span class="warn">Impossible de communiquer avec la page.</span><br>Recharge la page (F5) puis rouvre ce panneau.';
+      status.replaceChildren(
+        line(
+          t("statusNoComm") || "Impossible de communiquer avec la page. Recharge la page (F5) puis rouvre ce panneau.",
+          "warn"
+        )
+      );
     }
   }
   async function refreshAccount() {
@@ -143,29 +219,30 @@
     try {
       const ent = await chrome.runtime.sendMessage({ type: "entitlements" });
       if (!ent || !ent.linked) {
-        plan.textContent = "Non connect\xE9";
+        plan.textContent = t("accountNotLinked") || "Non connect\xE9";
         plan.classList.remove("pro");
-        btn.textContent = "Se connecter";
+        btn.textContent = t("signIn") || "Se connecter";
         btn.classList.remove("ghost");
-        note.textContent = "Le doublage local reste gratuit, illimit\xE9 et sans compte.";
+        note.textContent = t("accountNoteNotLinked") || "Le doublage local reste gratuit, illimit\xE9 et sans compte.";
       } else if (ent.plan === "pro") {
-        plan.textContent = "Pro";
+        plan.textContent = t("accountPro") || "Pro";
         plan.classList.add("pro");
-        btn.textContent = "G\xE9rer";
+        btn.textContent = t("manage") || "G\xE9rer";
         btn.classList.add("ghost");
-        note.textContent = ent.status === "canceled" ? "Abonnement actif jusqu'\xE0 la fin de la p\xE9riode." : "Merci de soutenir Voxylio.";
+        note.textContent = ent.status === "canceled" ? t("accountNoteProCanceled") || "Abonnement actif jusqu'\xE0 la fin de la p\xE9riode." : t("accountNotePro") || "Merci de soutenir Voxylio.";
       } else {
-        plan.textContent = "Gratuit";
+        plan.textContent = t("accountFree") || "Gratuit";
         plan.classList.remove("pro");
-        btn.textContent = "Passer Pro";
+        btn.textContent = t("goPro") || "Passer Pro";
         btn.classList.remove("ghost");
-        note.textContent = "D\xE9bloquez la traduction contextuelle et les fonctions Pro \xE0 venir.";
+        note.textContent = t("accountNoteFree") || "D\xE9bloquez la traduction contextuelle et les fonctions Pro \xE0 venir.";
       }
     } catch (e) {
-      plan.textContent = "Gratuit";
+      plan.textContent = t("accountFree") || "Gratuit";
     }
   }
   async function init() {
+    applyI18n();
     settings = await chrome.storage.sync.get(DEFAULTS);
     render(settings);
     $("enabled").addEventListener("change", (e) => save({ enabled: e.target.checked }));
@@ -205,13 +282,16 @@
       };
       try {
         await navigator.clipboard.writeText(JSON.stringify(diag, null, 2));
-        $("diag").textContent = "Copi\xE9 \u2713";
-        setTimeout(() => $("diag").textContent = "Diagnostic", 1600);
+        $("diag").textContent = t("copied") || "Copi\xE9 \u2713";
+        setTimeout(() => {
+          $("diag").textContent = t("diag") || "Diagnostic";
+        }, 1600);
       } catch (e) {
       }
     });
+    $("optionsBtn").addEventListener("click", () => chrome.runtime.openOptionsPage());
     $("reset").addEventListener("click", async () => {
-      await chrome.storage.sync.set(DEFAULTS);
+      await chrome.storage.sync.set({ ...DEFAULTS });
       await chrome.storage.local.remove("overlayPos");
       window.location.reload();
     });

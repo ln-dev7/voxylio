@@ -326,9 +326,9 @@
   <div class="status" id="status" aria-live="polite">Recherche d’une vidéo…</div>
 
   <div class="field">
-    <label class="field-label" for="sourceLang">Langue de la vidéo</label>
+    <label class="field-label" for="sourceLang" data-i18n="srcLabel">Langue de la vidéo</label>
     <select id="sourceLang">
-      <option value="auto">Détection automatique</option>
+      <option value="auto" data-i18n="detectAuto">Détection automatique</option>
       <option value="en">English</option>
       <option value="fr">Français</option>
       <option value="es">Español</option>
@@ -339,7 +339,7 @@
   </div>
 
   <div class="field">
-    <label class="field-label" for="lang">Langue du doublage</label>
+    <label class="field-label" for="lang" data-i18n="targetLabel">Langue du doublage</label>
     <select id="lang">
       <option value="fr">Français</option>
       <option value="es">Español</option>
@@ -350,15 +350,15 @@
   </div>
 
   <div class="field">
-    <label class="field-label" for="voice">Voix</label>
+    <label class="field-label" for="voice" data-i18n="voiceLabel">Voix</label>
     <div class="voice-row">
-      <select id="voice"><option value="">Automatique</option></select>
+      <select id="voice"><option value="" data-i18n="voiceAuto">Automatique</option></select>
       <button id="preview" class="icon-btn" title="Écouter un aperçu de la voix" aria-label="Écouter un aperçu de la voix">▶</button>
     </div>
   </div>
 
   <div class="field">
-    <label class="field-label" for="rate">Vitesse de la voix</label>
+    <label class="field-label" for="rate" data-i18n="rateLabel">Vitesse de la voix</label>
     <div class="slider-row">
       <input type="range" id="rate" min="0.8" max="1.6" step="0.05" />
       <span class="value" id="rateVal"></span>
@@ -366,7 +366,7 @@
   </div>
 
   <div class="field">
-    <label class="field-label" for="duck">Audio original</label>
+    <label class="field-label" for="duck" data-i18n="duckLabel">Audio original</label>
     <div class="slider-row">
       <input type="range" id="duck" min="0" max="60" step="1" />
       <span class="value" id="duckVal"></span>
@@ -374,7 +374,7 @@
   </div>
 
   <div class="field overlay-row">
-    <label class="field-label" for="autoPause" style="margin: 0" title="Met la vidéo en pause quelques secondes quand la voix prend trop de retard, au lieu de sauter des phrases">Pause auto si la voix est en retard</label>
+    <label class="field-label" for="autoPause" style="margin: 0" title="Met la vidéo en pause quelques secondes quand la voix prend trop de retard, au lieu de sauter des phrases" data-i18n="autoPauseLabel">Pause auto si la voix est en retard</label>
     <label class="switch switch-sm" aria-label="Mettre la vidéo en pause quand le doublage est en retard">
       <input type="checkbox" id="autoPause" />
       <span class="slider-toggle" aria-hidden="true"></span>
@@ -382,7 +382,7 @@
   </div>
 
   <div class="field overlay-row" style="margin-top: 10px">
-    <label class="field-label" for="localOnly" style="margin: 0" title="N’utilise que la traduction locale de Chrome : aucun texte ne quitte votre appareil. Si elle est indisponible, le doublage attend au lieu de passer en ligne.">Mode strictement local</label>
+    <label class="field-label" for="localOnly" style="margin: 0" title="N’utilise que la traduction locale de Chrome : aucun texte ne quitte votre appareil. Si elle est indisponible, le doublage attend au lieu de passer en ligne." data-i18n="localOnlyLabel">Mode strictement local</label>
     <label class="switch switch-sm" aria-label="Utiliser uniquement la traduction locale">
       <input type="checkbox" id="localOnly" />
       <span class="slider-toggle" aria-hidden="true"></span>
@@ -390,7 +390,7 @@
   </div>
 
   <div class="field overlay-row" style="margin-top: 10px">
-    <label class="field-label" for="subtitles" style="margin: 0">Sous-titres traduits à l’écran</label>
+    <label class="field-label" for="subtitles" style="margin: 0" data-i18n="subtitlesLabel">Sous-titres traduits à l’écran</label>
     <label class="switch switch-sm" aria-label="Afficher les sous-titres traduits sur la vidéo">
       <input type="checkbox" id="subtitles" />
       <span class="slider-toggle" aria-hidden="true"></span>
@@ -398,7 +398,7 @@
   </div>
 
   <div class="field overlay-row" style="margin-top: 10px">
-    <label class="field-label" for="overlay" style="margin: 0">Menu flottant sur la page</label>
+    <label class="field-label" for="overlay" style="margin: 0" data-i18n="overlayLabel">Menu flottant sur la page</label>
     <label class="switch switch-sm" aria-label="Afficher le menu flottant sur la page">
       <input type="checkbox" id="overlay" />
       <span class="slider-toggle" aria-hidden="true"></span>
@@ -406,15 +406,16 @@
   </div>
 
   <div class="actions">
-    <button id="retry" class="action-btn" title="Relance la détection de la vidéo, des sous-titres et de la traduction">Réessayer</button>
-    <button id="diag" class="action-btn" title="Copie un diagnostic technique à joindre à un signalement">Diagnostic</button>
-    <button id="reset" class="action-btn" title="Rétablit tous les réglages par défaut">Réinitialiser</button>
+    <button id="retry" class="action-btn" data-i18n="retry" title="Relance la détection de la vidéo, des sous-titres et de la traduction">Réessayer</button>
+    <button id="diag" class="action-btn" data-i18n="diag" title="Copie un diagnostic technique à joindre à un signalement">Diagnostic</button>
+    <button id="reset" class="action-btn" data-i18n="reset" title="Rétablit tous les réglages par défaut">Réinitialiser</button>
+    <button id="optionsBtn" class="action-btn" data-i18n="options" title="Fournisseurs de traduction, clés API, sites désactivés">Options</button>
   </div>
 
   <div class="account-card">
     <div class="account-top">
       <div>
-        <span class="field-label" style="margin: 0">Compte</span>
+        <span class="field-label" style="margin: 0" data-i18n="accountLabel">Compte</span>
         <span class="account-plan" id="accountPlan">…</span>
       </div>
       <button id="accountBtn" class="account-cta" title="Gérer votre compte Voxylio sur le site">Se connecter</button>
@@ -422,7 +423,7 @@
     <p class="account-note" id="accountNote">Le doublage local reste gratuit, illimité et sans compte.</p>
   </div>
 
-  <p class="hint">
+  <p class="hint" data-i18n="hint">
     Lance la vidéo, puis active l’interrupteur : la voix suit les
     sous-titres dans la langue choisie. À 0&nbsp;%, seul le doublage
     est audible.

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Voxylio — doublage multilingue",
-  "version": "1.6.0",
-  "description": "Double en temps réel les vidéos sous-titrées : traduction locale, voix synchronisée avec la lecture. FR, ES, IT, DE, PT.",
+  "name": "__MSG_appName__",
+  "version": "1.7.0",
+  "description": "__MSG_appDesc__",
   "permissions": [
     "storage"
   ],
@@ -41,5 +41,10 @@
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
+  },
+  "default_locale": "fr",
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
   }
 }

@@ -251,6 +251,224 @@
     en: "en-US"
   };
 
+  // ../../packages/core/src/settings.js
+  var SETTINGS_VERSION = 2;
+  var DEFAULTS = Object.freeze({
+    v: SETTINGS_VERSION,
+    enabled: false,
+    rate: 1.1,
+    duck: 12,
+    voiceName: "",
+    sourceLang: "auto",
+    targetLang: "fr",
+    subtitles: false,
+    overlay: true,
+    cloudFallback: true,
+    autoPause: false,
+    keepTerms: true,
+    // Preferred paid provider when a key is configured ("auto" = none:
+    // builtin then best-effort fallback).
+    provider: "auto",
+    // Hostnames where Voxylio must stay completely inactive.
+    disabledSites: []
+  });
+
+  // ../../packages/core/src/translation.js
+  var READY_TIMEOUT_MS = 2500;
+  var ATTEMPT_TIMEOUT_MS = 8e3;
+  var COOLDOWN_MS = 6e4;
+  var FAILURES_BEFORE_COOLDOWN = 2;
+  function withTimeout(promise, ms, fallbackValue) {
+    if (!(ms > 0) || ms === Infinity) return promise;
+    let timer;
+    const timeout = new Promise((resolve) => {
+      timer = setTimeout(() => resolve(fallbackValue), ms);
+    });
+    return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+  }
+  var TIMEOUT = /* @__PURE__ */ Symbol("timeout");
+  function createTranslatorChain(providers, opts = {}) {
+    const {
+      readyTimeoutMs = READY_TIMEOUT_MS,
+      attemptTimeoutMs = ATTEMPT_TIMEOUT_MS,
+      cooldownMs = COOLDOWN_MS,
+      failuresBeforeCooldown = FAILURES_BEFORE_COOLDOWN,
+      now = () => Date.now()
+    } = opts;
+    const pairState = /* @__PURE__ */ new Map();
+    let lastKind = "none";
+    let lastProviderId = "";
+    let lastError = "";
+    const stateKey = (id, source, target) => `${id}:${source}->${target}`;
+    function inCooldown(id, source, target) {
+      const s = pairState.get(stateKey(id, source, target));
+      return !!s && s.coolUntil > now();
+    }
+    function recordFailure(id, source, target) {
+      const key = stateKey(id, source, target);
+      const s = pairState.get(key) ?? { failures: 0, coolUntil: 0 };
+      s.failures += 1;
+      if (s.failures >= failuresBeforeCooldown) {
+        s.coolUntil = now() + cooldownMs;
+        s.failures = 0;
+      }
+      pairState.set(key, s);
+    }
+    function recordSuccess(id, source, target) {
+      pairState.delete(stateKey(id, source, target));
+    }
+    async function translate(text, source, target) {
+      const errors = [];
+      for (const p of providers) {
+        if (inCooldown(p.id, source, target)) {
+          errors.push(`${p.id}: cooling down`);
+          continue;
+        }
+        let translator = null;
+        try {
+          translator = await withTimeout(p.ready(source, target), readyTimeoutMs, null);
+        } catch (e) {
+          recordFailure(p.id, source, target);
+          errors.push(`${p.id}: ${e && e.message}`);
+          continue;
+        }
+        if (!translator) {
+          errors.push(`${p.id}: not ready`);
+          continue;
+        }
+        try {
+          const out = await withTimeout(translator.translate(text), attemptTimeoutMs, TIMEOUT);
+          if (out === TIMEOUT) throw new Error("attempt timed out");
+          if (typeof out !== "string" || !out) throw new Error("empty translation");
+          recordSuccess(p.id, source, target);
+          lastKind = p.kind;
+          lastProviderId = p.id;
+          lastError = "";
+          return { text: out, providerId: p.id, kind: p.kind };
+        } catch (e) {
+          recordFailure(p.id, source, target);
+          errors.push(`${p.id}: ${e && e.message || "failed"}`);
+        }
+      }
+      lastKind = "none";
+      lastProviderId = "";
+      lastError = errors.join(" | ") || "no provider";
+      throw new Error(lastError);
+    }
+    return {
+      translate,
+      lastKind: () => lastKind,
+      lastProviderId: () => lastProviderId,
+      lastError: () => lastError,
+      /** Test/diagnostic hook. */
+      _pairState: pairState
+    };
+  }
+
+  // ../../packages/webext/src/providers/builtin.js
+  function createBuiltinProvider({ onBroken } = {}) {
+    const instances = /* @__PURE__ */ new Map();
+    return {
+      id: "builtin",
+      kind: "local",
+      ready(source, target) {
+        if (!source || source === "auto") return Promise.resolve(null);
+        const key = source + "->" + target;
+        if (!instances.has(key)) {
+          instances.set(
+            key,
+            (async () => {
+              try {
+                if (typeof Translator === "undefined")
+                  throw new Error("no Translator API");
+                const avail = await Translator.availability({
+                  sourceLanguage: source,
+                  targetLanguage: target
+                });
+                if (avail === "unavailable") throw new Error("pair unavailable");
+                const t = await Translator.create({
+                  sourceLanguage: source,
+                  targetLanguage: target
+                });
+                return { translate: (text) => t.translate(text) };
+              } catch (e) {
+                if (onBroken) onBroken(e);
+                return null;
+              }
+            })()
+          );
+        }
+        return instances.get(key);
+      }
+    };
+  }
+
+  // ../../packages/webext/src/providers/gtx.js
+  function createGtxProvider() {
+    const translatorFor = (source, target) => ({
+      translate: async (text) => {
+        const resp = await runtime.sendMessage({
+          type: "translate",
+          provider: "gtx",
+          text,
+          source: source || "auto",
+          target
+        });
+        if (resp && resp.ok) return resp.text;
+        throw new Error(resp && resp.error || "gtx failed");
+      }
+    });
+    return {
+      id: "gtx",
+      kind: "cloud",
+      ready: (source, target) => Promise.resolve(translatorFor(source, target))
+    };
+  }
+
+  // ../../packages/webext/src/providers/deepl.js
+  function createDeeplProvider(hasKey) {
+    const translatorFor = (source, target) => ({
+      translate: async (text) => {
+        const resp = await runtime.sendMessage({
+          type: "translate",
+          provider: "deepl",
+          text,
+          source: source || "auto",
+          target
+        });
+        if (resp && resp.ok) return resp.text;
+        throw new Error(resp && resp.error || "deepl failed");
+      }
+    });
+    return {
+      id: "deepl",
+      kind: "cloud",
+      ready: (source, target) => Promise.resolve(hasKey && hasKey() ? translatorFor(source, target) : null)
+    };
+  }
+
+  // ../../packages/webext/src/providers/googlev2.js
+  function createGoogleV2Provider(hasKey) {
+    const translatorFor = (source, target) => ({
+      translate: async (text) => {
+        const resp = await runtime.sendMessage({
+          type: "translate",
+          provider: "googlev2",
+          text,
+          source: source || "auto",
+          target
+        });
+        if (resp && resp.ok) return resp.text;
+        throw new Error(resp && resp.error || "googlev2 failed");
+      }
+    });
+    return {
+      id: "googlev2",
+      kind: "cloud",
+      ready: (source, target) => Promise.resolve(hasKey && hasKey() ? translatorFor(source, target) : null)
+    };
+  }
+
   // ../../packages/webext/src/index.js
   var api = typeof browser !== "undefined" && browser?.runtime ? browser : typeof chrome !== "undefined" ? chrome : void 0;
   if (!api) {
@@ -289,29 +507,12 @@
   (() => {
     if (window.__voxylioInjected) return;
     window.__voxylioInjected = true;
-    const DEFAULTS = {
-      enabled: false,
-      rate: 1.1,
-      // base voice speed
-      duck: 12,
-      // original audio volume (%) while dubbing
-      voiceName: "",
-      // "" = auto (best available voice for the language)
-      sourceLang: "auto",
-      // "auto" = detect from the subtitle track
-      targetLang: "fr",
-      subtitles: false,
-      // on-screen translated captions
-      overlay: true,
-      // floating on-page controller
-      cloudFallback: true,
-      // allow the online translation fallback
-      autoPause: false,
-      // pause the video when dubbing falls too far behind
-      keepTerms: true
-      // keep common technical terms untranslated
-    };
-    const settings = { ...DEFAULTS };
+    const DEFAULTS2 = { ...DEFAULTS };
+    const settings = { ...DEFAULTS2 };
+    function siteDisabled() {
+      const host = (location.hostname || "").replace(/^www\./, "").toLowerCase();
+      return Array.isArray(settings.disabledSites) && settings.disabledSites.includes(host);
+    }
     const controllers = /* @__PURE__ */ new Map();
     let primaryVideo = null;
     function isEligibleVideo(v) {
@@ -345,11 +546,18 @@
       primaryVideo = pickPrimary();
       refreshAll();
     }
-    storage.sync.get(DEFAULTS, (s) => {
+    storage.sync.get(DEFAULTS2, (s) => {
       Object.assign(settings, s);
       refreshAll();
     });
     storage.onChanged.addListener((changes, area) => {
+      if (area === "local") {
+        if (changes.deeplKey) providerKeys.deepl = changes.deeplKey.newValue || "";
+        if (changes.googleKey)
+          providerKeys.googlev2 = changes.googleKey.newValue || "";
+        if (changes.deeplKey || changes.googleKey) rebuildChain();
+        return;
+      }
       if (area !== "sync") return;
       for (const [k, v] of Object.entries(changes)) {
         if (k in settings) settings[k] = v.newValue;
@@ -357,6 +565,7 @@
       if (changes.targetLang || changes.sourceLang) {
         for (const c of controllers.values()) c.flushSpeech();
       }
+      if (changes.provider || changes.cloudFallback) rebuildChain();
       refreshAll();
     });
     function refreshAll() {
@@ -364,74 +573,48 @@
       if (typeof syncOverlay === "function") syncOverlay();
     }
     const cache = new BoundedMap(3e3);
-    const translators = /* @__PURE__ */ new Map();
     let builtinBroken = false;
     let pendingCount = 0;
     let translationMode = "none";
     let lastTranslateError = "";
-    function getBuiltinTranslator(source, target) {
-      const key = source + "->" + target;
-      if (!translators.has(key)) {
-        translators.set(
-          key,
-          (async () => {
-            try {
-              if (typeof Translator === "undefined")
-                throw new Error("no Translator API");
-              const avail = await Translator.availability({
-                sourceLanguage: source,
-                targetLanguage: target
-              });
-              if (avail === "unavailable") throw new Error("pair unavailable");
-              return await Translator.create({
-                sourceLanguage: source,
-                targetLanguage: target
-              });
-            } catch (e) {
-              builtinBroken = true;
-              return null;
-            }
-          })()
-        );
+    const builtinProvider = createBuiltinProvider({
+      onBroken: () => {
+        builtinBroken = true;
       }
-      return translators.get(key);
+    });
+    const providerKeys = { deepl: "", googlev2: "" };
+    let chain = createTranslatorChain([builtinProvider]);
+    function rebuildChain() {
+      const list = [builtinProvider];
+      if (settings.cloudFallback) {
+        if (settings.provider === "deepl" && providerKeys.deepl)
+          list.push(createDeeplProvider(() => providerKeys.deepl));
+        if (settings.provider === "googlev2" && providerKeys.googlev2)
+          list.push(createGoogleV2Provider(() => providerKeys.googlev2));
+        list.push(createGtxProvider());
+      }
+      chain = createTranslatorChain(list);
     }
-    async function builtinReadyOrNull(source, target, ms) {
-      const timeout = new Promise((r) => setTimeout(() => r("__timeout__"), ms));
-      const res = await Promise.race([
-        getBuiltinTranslator(source, target),
-        timeout
-      ]);
-      return res === "__timeout__" ? null : res;
+    rebuildChain();
+    try {
+      storage.local.get({ deeplKey: "", googleKey: "" }, (k) => {
+        providerKeys.deepl = k && k.deeplKey || "";
+        providerKeys.googlev2 = k && k.googleKey || "";
+        rebuildChain();
+      });
+    } catch (e) {
     }
     async function translateOnce(text, source, target) {
-      const t = source && source !== "auto" ? await builtinReadyOrNull(source, target, 2500) : null;
-      if (t) {
-        try {
-          const out = await t.translate(text);
-          translationMode = "local";
-          return out;
-        } catch (e) {
-        }
-      }
-      if (!settings.cloudFallback) {
+      try {
+        const res = await chain.translate(text, source, target);
+        translationMode = res.kind === "local" ? "local" : "cloud";
+        lastTranslateError = "";
+        return res.text;
+      } catch (e) {
         translationMode = "none";
-        lastTranslateError = "local-only";
-        throw new Error("local translator unavailable (strict local mode)");
+        lastTranslateError = settings.cloudFallback ? e && e.message || "translate failed" : "local-only";
+        throw e;
       }
-      const resp = await runtime.sendMessage({
-        type: "translate",
-        text,
-        source: source || "auto",
-        target
-      });
-      if (resp && resp.ok) {
-        translationMode = "cloud";
-        return resp.text;
-      }
-      translationMode = "none";
-      lastTranslateError = resp && resp.error || "translate failed";
-      throw new Error(lastTranslateError);
     }
     function translate(text, source) {
       const target = settings.targetLang;
@@ -940,7 +1123,7 @@
         ctl.spokenIds.clear();
       }
       ctl.onSettingsChanged = () => {
-        if (settings.enabled && video === primaryVideo) {
+        if (settings.enabled && !siteDisabled() && video === primaryVideo) {
           start();
           applyDucking();
         } else {
@@ -1366,7 +1549,8 @@
           (t) => t.kind === "subtitles" || t.kind === "captions"
         );
         let state = "no-video";
-        if (controllers.size > 0) {
+        if (siteDisabled()) state = "site-disabled";
+        else if (controllers.size > 0) {
           if (nCues > 0) {
             if (targetVoices.length === 0) state = "no-voice";
             else if (translationMode === "none" && lastTranslateError)
@@ -1388,6 +1572,8 @@
           groups: nGroups,
           tracks,
           builtinTranslator: !builtinBroken,
+          provider: chain.lastProviderId(),
+          siteDisabled: siteDisabled(),
           voices: targetVoices.map((v) => ({ name: v.name, lang: v.lang }))
         };
       };
