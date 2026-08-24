@@ -139,20 +139,27 @@
   async function refreshAccount() {
     const plan = $("accountPlan");
     const btn = $("accountBtn");
+    const note = $("accountNote");
     try {
       const ent = await chrome.runtime.sendMessage({ type: "entitlements" });
       if (!ent || !ent.linked) {
         plan.textContent = "Non connect\xE9";
         plan.classList.remove("pro");
         btn.textContent = "Se connecter";
+        btn.classList.remove("ghost");
+        note.textContent = "Le doublage local reste gratuit, illimit\xE9 et sans compte.";
       } else if (ent.plan === "pro") {
-        plan.textContent = ent.status === "canceled" ? "Pro \xB7 fin de p\xE9riode" : "Pro";
+        plan.textContent = "Pro";
         plan.classList.add("pro");
         btn.textContent = "G\xE9rer";
+        btn.classList.add("ghost");
+        note.textContent = ent.status === "canceled" ? "Abonnement actif jusqu'\xE0 la fin de la p\xE9riode." : "Merci de soutenir Voxylio.";
       } else {
         plan.textContent = "Gratuit";
         plan.classList.remove("pro");
         btn.textContent = "Passer Pro";
+        btn.classList.remove("ghost");
+        note.textContent = "D\xE9bloquez la traduction contextuelle et les fonctions Pro \xE0 venir.";
       }
     } catch (e) {
       plan.textContent = "Gratuit";

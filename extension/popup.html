@@ -249,24 +249,53 @@
     .action-btn:focus-visible { outline: 2px solid #1ed760; outline-offset: 2px; }
 
     /* ---- account ---- */
-    .account-row {
+    .account-card {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-top: 16px;
+      box-shadow: rgba(0, 0, 0, 0.3) 0px 8px 8px;
+    }
+    .account-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      margin-top: 16px;
-      padding-top: 12px;
-      border-top: 1px solid #2a2a2a;
     }
     .account-plan {
       display: block;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
       color: var(--text);
-      margin-top: 3px;
+      margin-top: 2px;
     }
     .account-plan.pro { color: var(--accent); }
-    .account-btn { flex: 0 0 auto; padding: 7px 16px; }
+    .account-cta {
+      flex: 0 0 auto;
+      border: none;
+      border-radius: 9999px;
+      background: var(--accent);
+      color: #121212;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+    .account-cta:hover { filter: brightness(1.08); }
+    .account-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .account-cta.ghost {
+      background: var(--surface-2);
+      color: var(--text-muted);
+      box-shadow: rgb(18, 18, 18) 0px 1px 0px, rgb(77, 77, 77) 0px 0px 0px 1px inset;
+    }
+    .account-cta.ghost:hover { background: #242424; color: #ffffff; }
+    .account-note {
+      font-size: 11px;
+      color: var(--text-faint);
+      line-height: 1.5;
+      margin: 8px 0 0;
+    }
 
     /* ---- footer ---- */
     .hint {
@@ -382,12 +411,15 @@
     <button id="reset" class="action-btn" title="Rétablit tous les réglages par défaut">Réinitialiser</button>
   </div>
 
-  <div class="account-row">
-    <div>
-      <span class="field-label" style="margin: 0">Compte</span>
-      <span class="account-plan" id="accountPlan">…</span>
+  <div class="account-card">
+    <div class="account-top">
+      <div>
+        <span class="field-label" style="margin: 0">Compte</span>
+        <span class="account-plan" id="accountPlan">…</span>
+      </div>
+      <button id="accountBtn" class="account-cta" title="Gérer votre compte Voxylio sur le site">Se connecter</button>
     </div>
-    <button id="accountBtn" class="action-btn account-btn" title="Gérer votre compte Voxylio sur le site">Se connecter</button>
+    <p class="account-note" id="accountNote">Le doublage local reste gratuit, illimité et sans compte.</p>
   </div>
 
   <p class="hint">
