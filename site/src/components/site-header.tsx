@@ -18,10 +18,8 @@ export function SiteHeader() {
   // only from the home page (e.g. /fr/privacy -> /fr#features).
   const nav = [
     { hash: "features", label: t("features") },
-    { hash: "how-it-works", label: t("howItWorks") },
     { hash: "pricing", label: t("pricing") },
-    { hash: "install", label: t("install") },
-    { hash: "faq", label: t("faq") },
+    { hash: "how-it-works", label: t("howItWorks") },
   ];
 
   return (
