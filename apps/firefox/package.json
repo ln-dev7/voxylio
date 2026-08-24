@@ -1,0 +1,16 @@
+{
+  "name": "@voxylio/firefox",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Firefox build of the Voxylio extension (MV3 event page, gecko settings injected).",
+  "scripts": {
+    "build": "node build.mjs",
+    "lint": "pnpm dlx addons-linter dist"
+  },
+  "dependencies": {
+    "@voxylio/build-tools": "workspace:*",
+    "@voxylio/core": "workspace:*",
+    "@voxylio/webext": "workspace:*"
+  }
+}
