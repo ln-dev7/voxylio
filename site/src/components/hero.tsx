@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { Download, Sparkles } from "lucide-react";
+import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GitHubIcon } from "@/components/github-icon";
 import { Aurora } from "@/components/aurora";
@@ -14,14 +14,7 @@ export function Hero() {
       <Aurora />
       <div className="relative mx-auto w-full max-w-6xl px-4 pb-24 pt-20 sm:px-6 sm:pt-28">
         <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-          <span className="inline-flex animate-in fade-in slide-in-from-bottom-2 items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.08] px-4 py-1.5 duration-700">
-            <Sparkles className="size-3.5 text-primary" aria-hidden="true" />
-            <span className="shiny-text text-xs font-semibold tracking-wide">
-              {t("badge")}
-            </span>
-          </span>
-
-          <h1 className="mt-7 animate-in fade-in slide-in-from-bottom-3 text-balance font-display text-[2.75rem] font-semibold leading-[1.04] tracking-[-0.03em] duration-700 sm:text-7xl">
+          <h1 className="animate-in fade-in slide-in-from-bottom-3 text-balance font-display text-[2.75rem] font-semibold leading-[1.04] tracking-[-0.03em] duration-700 sm:text-7xl">
             {t.rich("title", {
               accent: (chunks) => (
                 <span className="gradient-text">{chunks}</span>

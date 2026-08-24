@@ -8,10 +8,11 @@
     "howItWorks": "How it works",
     "install": "Install",
     "faq": "FAQ",
-    "github": "GitHub"
+    "github": "GitHub",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "Hero": {
-    "badge": "Free & open source",
     "title": "Watch any course in <accent>your language</accent>",
     "subtitle": "Video Dub is a Chrome extension that dubs subtitled videos in real time. It rebuilds full sentences from the captions, translates them locally, and speaks over the video — perfectly in sync.",
     "ctaInstall": "Install the extension",
@@ -63,7 +64,8 @@
         "title": "Speaks over the video",
         "description": "A synthesized voice speaks each sentence at the right moment while the original audio is automatically lowered."
       }
-    }
+    },
+    "tryIt": "Try it — every control on this popup actually works"
   },
   "Languages": {
     "title": "From English to",
@@ -137,5 +139,50 @@
   },
   "LocaleSwitcher": {
     "label": "Language"
+  },
+  "Popup": {
+    "toggle": "Enable dubbing",
+    "statusVideo": "1 video detected",
+    "statusLines": "42 lines ready",
+    "statusOff": "Dubbing paused",
+    "statusTranslation": "Translation: Chrome (local)",
+    "langLabel": "Dubbing language",
+    "voiceLabel": "Voice",
+    "rateLabel": "Voice speed",
+    "duckLabel": "Original audio",
+    "hint": "Play the video, then flip the switch: the voice follows the subtitles in the chosen language. At 0%, only the dub is audible."
+  },
+  "Compare": {
+    "title": "Why subtitle-based dubbing wins",
+    "subtitle": "Other tools capture your tab's audio, run speech recognition in the cloud, and bill by the hour. Video Dub reads the official subtitles instead.",
+    "them": "Audio-capture tools",
+    "note": "Comparison with audio-capture dubbing extensions, based on their public pricing and documentation.",
+    "rows": {
+      "price": {
+        "label": "Price",
+        "us": "Free, unlimited hours",
+        "them": "$19–129/month, hour quotas"
+      },
+      "accuracy": {
+        "label": "Accuracy",
+        "us": "Official subtitle text, word-perfect",
+        "them": "Approximate speech recognition"
+      },
+      "privacy": {
+        "label": "Privacy",
+        "us": "Local translation — nothing leaves your browser",
+        "them": "Your audio is streamed to their servers"
+      },
+      "sync": {
+        "label": "Synchronization",
+        "us": "Locked to the video clock, seek-proof",
+        "them": "Fixed delay behind the audio"
+      },
+      "coverage": {
+        "label": "Coverage",
+        "us": "Any video with a subtitle track",
+        "them": "Any audio, even without subtitles"
+      }
+    }
   }
 }

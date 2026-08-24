@@ -8,10 +8,11 @@
     "howItWorks": "Fonctionnement",
     "install": "Installation",
     "faq": "FAQ",
-    "github": "GitHub"
+    "github": "GitHub",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
   },
   "Hero": {
-    "badge": "Gratuit et open source",
     "title": "Suivez n’importe quel cours <accent>dans votre langue</accent>",
     "subtitle": "Video Dub est une extension Chrome qui double les vidéos sous-titrées en temps réel. Elle reconstitue des phrases complètes à partir des sous-titres, les traduit localement et parle par-dessus la vidéo — parfaitement synchronisée.",
     "ctaInstall": "Installer l’extension",
@@ -63,7 +64,8 @@
         "title": "Parle par-dessus la vidéo",
         "description": "Une voix de synthèse prononce chaque phrase au bon moment pendant que l’audio original est automatiquement baissé."
       }
-    }
+    },
+    "tryIt": "Essaie — chaque contrôle de ce popup fonctionne vraiment"
   },
   "Languages": {
     "title": "De l’anglais vers",
@@ -137,5 +139,50 @@
   },
   "LocaleSwitcher": {
     "label": "Langue"
+  },
+  "Popup": {
+    "toggle": "Activer le doublage",
+    "statusVideo": "1 vidéo détectée",
+    "statusLines": "42 répliques prêtes",
+    "statusOff": "Doublage en pause",
+    "statusTranslation": "Traduction : Chrome (locale)",
+    "langLabel": "Langue du doublage",
+    "voiceLabel": "Voix",
+    "rateLabel": "Vitesse de la voix",
+    "duckLabel": "Audio original",
+    "hint": "Lance la vidéo, puis active l’interrupteur : la voix suit les sous-titres dans la langue choisie. À 0 %, seul le doublage est audible."
+  },
+  "Compare": {
+    "title": "Pourquoi le doublage par sous-titres gagne",
+    "subtitle": "Les autres outils capturent l’audio de l’onglet, font de la reconnaissance vocale dans le cloud et facturent à l’heure. Video Dub lit les sous-titres officiels.",
+    "them": "Outils de capture audio",
+    "note": "Comparaison avec les extensions de doublage par capture audio, d’après leurs tarifs et documentations publics.",
+    "rows": {
+      "price": {
+        "label": "Prix",
+        "us": "Gratuit, heures illimitées",
+        "them": "19–129 $/mois, quotas d’heures"
+      },
+      "accuracy": {
+        "label": "Précision",
+        "us": "Texte officiel des sous-titres, au mot près",
+        "them": "Reconnaissance vocale approximative"
+      },
+      "privacy": {
+        "label": "Vie privée",
+        "us": "Traduction locale — rien ne quitte votre navigateur",
+        "them": "Votre audio est envoyé sur leurs serveurs"
+      },
+      "sync": {
+        "label": "Synchronisation",
+        "us": "Calée sur l’horloge vidéo, insensible aux sauts",
+        "them": "Retard fixe sur l’audio"
+      },
+      "coverage": {
+        "label": "Couverture",
+        "us": "Toute vidéo avec piste de sous-titres",
+        "them": "Tout audio, même sans sous-titres"
+      }
+    }
   }
 }
