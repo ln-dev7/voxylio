@@ -1,0 +1,11 @@
+{
+  "name": "@voxylio/webext",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "WebExtension platform adapter: the single indirection point between the engine and browser extension APIs (chrome.* today, browser.* for Firefox later).",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  }
+}
