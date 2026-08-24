@@ -1,63 +1,68 @@
-import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Download } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Download, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GitHubIcon } from "@/components/github-icon";
+import { Aurora } from "@/components/aurora";
+import { DubDemo } from "@/components/dub-demo";
 import { GITHUB_URL } from "@/lib/constants";
-import overlayPreview from "../../public/overlay-preview.png";
 
 export function Hero() {
   const t = useTranslations("Hero");
 
   return (
     <section className="relative overflow-hidden">
-      {/* Faint green glow behind the headline, single accent per design system */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-[-180px] h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-primary/10 blur-[140px]"
-      />
-      <div className="mx-auto w-full max-w-6xl px-4 pb-20 pt-20 sm:px-6 sm:pt-28">
+      <Aurora />
+      <div className="relative mx-auto w-full max-w-6xl px-4 pb-24 pt-20 sm:px-6 sm:pt-28">
         <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-          <Badge
-            variant="outline"
-            className="rounded-full border-primary/30 bg-primary/10 px-3 py-1 text-primary"
-          >
-            {t("badge")}
-          </Badge>
-          <h1 className="mt-6 text-balance text-4xl font-semibold leading-[1.08] tracking-tight sm:text-6xl">
-            {t("title")}
+          <span className="inline-flex animate-in fade-in slide-in-from-bottom-2 items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.08] px-4 py-1.5 duration-700">
+            <Sparkles className="size-3.5 text-primary" aria-hidden="true" />
+            <span className="shiny-text text-xs font-semibold tracking-wide">
+              {t("badge")}
+            </span>
+          </span>
+
+          <h1 className="mt-7 animate-in fade-in slide-in-from-bottom-3 text-balance font-display text-[2.75rem] font-semibold leading-[1.04] tracking-[-0.03em] duration-700 sm:text-7xl">
+            {t.rich("title", {
+              accent: (chunks) => (
+                <span className="gradient-text">{chunks}</span>
+              ),
+            })}
           </h1>
-          <p className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
+
+          <p className="mt-6 max-w-2xl animate-in fade-in slide-in-from-bottom-3 text-pretty text-base leading-relaxed text-muted-foreground duration-1000 sm:text-lg">
             {t("subtitle")}
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button asChild size="lg" className="rounded-full">
+
+          <div className="mt-9 flex animate-in fade-in slide-in-from-bottom-2 flex-wrap items-center justify-center gap-3 duration-1000">
+            <Button
+              asChild
+              size="lg"
+              className="h-12 rounded-full px-7 text-[15px] shadow-[0_0_40px_rgba(30,215,96,0.25)] transition-shadow hover:shadow-[0_0_60px_rgba(30,215,96,0.4)]"
+            >
               <a href="#install">
                 <Download data-slot="icon" />
                 {t("ctaInstall")}
               </a>
             </Button>
-            <Button asChild size="lg" variant="outline" className="rounded-full">
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="h-12 rounded-full bg-white/[0.03] px-7 text-[15px] backdrop-blur-sm"
+            >
               <a href={GITHUB_URL} target="_blank" rel="noreferrer">
                 <GitHubIcon className="size-4" />
                 {t("ctaGithub")}
               </a>
             </Button>
           </div>
-          <p className="mt-5 text-xs text-muted-foreground/80">{t("note")}</p>
+
+          <p className="mt-5 text-xs text-muted-foreground/70">{t("note")}</p>
         </div>
 
-        {/* Product screenshot framed as a dark panel, marketing-as-screenshot style */}
-        <div className="mt-16">
-          <div className="mx-auto max-w-4xl overflow-hidden rounded-xl border border-border bg-card shadow-[0_24px_80px_rgba(0,0,0,0.55)]">
-            <Image
-              src={overlayPreview}
-              alt="Video Dub floating controller over a video player"
-              priority
-              className="w-full"
-            />
-          </div>
+        {/* Video-style live demo */}
+        <div className="mt-16 animate-in fade-in slide-in-from-bottom-6 duration-1000 sm:mt-20">
+          <DubDemo />
         </div>
       </div>
     </section>

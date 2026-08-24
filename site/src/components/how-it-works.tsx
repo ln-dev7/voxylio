@@ -10,11 +10,11 @@ export function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="scroll-mt-14 border-t border-border/60"
+      className="scroll-mt-16 border-t border-white/[0.06]"
     >
       <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-24 sm:px-6 lg:grid-cols-[1fr_320px]">
         <div>
-          <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h2 className="text-balance font-display text-3xl font-semibold tracking-tight sm:text-[2.6rem] sm:leading-[1.15]">
             {t("title")}
           </h2>
           <ol className="mt-10 space-y-8">

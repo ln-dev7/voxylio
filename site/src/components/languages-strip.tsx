@@ -3,24 +3,41 @@ import { ArrowRight } from "lucide-react";
 
 const LANGS = ["fr", "es", "it", "de", "pt"] as const;
 
+/** Infinite marquee of language pairs (ReactBits "Logo Loop" pattern). */
 export function LanguagesStrip() {
   const t = useTranslations("Languages");
 
-  return (
-    <section className="border-t border-border/60">
-      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-center gap-x-4 gap-y-3 px-4 py-14 sm:px-6">
-        <span className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-          {t("title")}
-          <ArrowRight className="size-4" aria-hidden="true" />
+  const Row = () => (
+    <>
+      {LANGS.map((l) => (
+        <span
+          key={l}
+          className="mx-3 inline-flex shrink-0 items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-5 py-2.5 text-sm"
+        >
+          <span className="text-muted-foreground">English</span>
+          <ArrowRight className="size-3.5 text-primary" aria-hidden="true" />
+          <span className="font-semibold">{t(`list.${l}`)}</span>
         </span>
-        {LANGS.map((l) => (
-          <span
-            key={l}
-            className="rounded-full border border-border bg-secondary px-4 py-1.5 text-sm font-semibold"
-          >
-            {t(`list.${l}`)}
-          </span>
-        ))}
+      ))}
+    </>
+  );
+
+  return (
+    <section className="border-t border-white/[0.06] py-14">
+      <p className="mb-8 text-center text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+        {t("title")}
+      </p>
+      <div className="marquee relative overflow-hidden">
+        {/* Edge fades */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 bg-gradient-to-r from-background to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 bg-gradient-to-l from-background to-transparent" />
+        <div className="marquee-track flex w-max">
+          {/* Track duplicated for a seamless loop */}
+          <Row />
+          <Row />
+          <Row />
+          <Row />
+        </div>
       </div>
     </section>
   );

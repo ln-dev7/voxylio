@@ -1,58 +1,108 @@
 import { useTranslations } from "next-intl";
 import {
-  MessageSquareText,
   Cpu,
   Timer,
   AudioLines,
   SlidersHorizontal,
   Languages,
+  ArrowRight,
 } from "lucide-react";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { SpotlightCard } from "@/components/spotlight-card";
 
-const ITEMS = [
-  { key: "sentences", icon: MessageSquareText },
+const SMALL_ITEMS = [
   { key: "local", icon: Cpu },
   { key: "sync", icon: Timer },
   { key: "voices", icon: AudioLines },
   { key: "overlay", icon: SlidersHorizontal },
-  { key: "languages", icon: Languages },
 ] as const;
+
+const LANG_CHIPS = ["FR", "ES", "IT", "DE", "PT"];
 
 export function Features() {
   const t = useTranslations("Features");
 
   return (
-    <section id="features" className="scroll-mt-14 border-t border-border/60">
+    <section id="features" className="scroll-mt-16 border-t border-white/[0.06]">
       <div className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6">
-        <div className="max-w-2xl">
-          <h2 className="text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-balance font-display text-3xl font-semibold tracking-tight sm:text-[2.6rem] sm:leading-[1.15]">
             {t("title")}
           </h2>
           <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
             {t("subtitle")}
           </p>
         </div>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {ITEMS.map(({ key, icon: Icon }) => (
-            <Card key={key} className="border-border bg-card">
-              <CardHeader>
-                <span className="mb-2 grid size-9 place-items-center rounded-lg border border-primary/25 bg-primary/10">
-                  <Icon className="size-4.5 text-primary" aria-hidden="true" />
-                </span>
-                <CardTitle className="text-base">
-                  {t(`items.${key}.title`)}
-                </CardTitle>
-                <CardDescription className="leading-relaxed">
-                  {t(`items.${key}.description`)}
-                </CardDescription>
-              </CardHeader>
-            </Card>
+
+        {/* Bento grid: the flagship feature spans two columns with a visual */}
+        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <SpotlightCard className="sm:col-span-2">
+            <h3 className="font-display text-lg font-semibold">
+              {t("items.sentences.title")}
+            </h3>
+            <p className="mt-2 max-w-lg text-sm leading-relaxed text-muted-foreground">
+              {t("items.sentences.description")}
+            </p>
+            {/* Fragments merging into one sentence */}
+            <div className="mt-6 flex flex-wrap items-center gap-2.5 text-[13px]">
+              <span className="rounded-md border border-border bg-secondary px-2.5 py-1 text-muted-foreground line-through decoration-white/25">
+                We&rsquo;re gonna be doing this
+              </span>
+              <span className="rounded-md border border-border bg-secondary px-2.5 py-1 text-muted-foreground line-through decoration-white/25">
+                by using a playground.
+              </span>
+              <ArrowRight
+                className="size-4 text-primary"
+                aria-hidden="true"
+              />
+              <span className="rounded-md border border-primary/30 bg-primary/10 px-2.5 py-1 font-medium text-primary">
+                Nous allons faire cela en utilisant un playground.
+              </span>
+            </div>
+          </SpotlightCard>
+
+          {SMALL_ITEMS.map(({ key, icon: Icon }) => (
+            <SpotlightCard key={key}>
+              <span className="mb-4 grid size-9 place-items-center rounded-lg border border-primary/25 bg-primary/10">
+                <Icon className="size-4.5 text-primary" aria-hidden="true" />
+              </span>
+              <h3 className="font-display text-base font-semibold">
+                {t(`items.${key}.title`)}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {t(`items.${key}.description`)}
+              </p>
+            </SpotlightCard>
           ))}
+
+          {/* Wide closing card: languages */}
+          <SpotlightCard className="sm:col-span-2 lg:col-span-3">
+            <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
+              <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-primary/25 bg-primary/10">
+                <Languages
+                  className="size-4.5 text-primary"
+                  aria-hidden="true"
+                />
+              </span>
+              <div className="flex-1">
+                <h3 className="font-display text-base font-semibold">
+                  {t("items.languages.title")}
+                </h3>
+                <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                  {t("items.languages.description")}
+                </p>
+              </div>
+              <div className="flex shrink-0 items-center gap-2">
+                {LANG_CHIPS.map((l) => (
+                  <span
+                    key={l}
+                    className="grid size-9 place-items-center rounded-full border border-white/[0.08] bg-white/[0.03] text-[11px] font-bold"
+                  >
+                    {l}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </SpotlightCard>
         </div>
       </div>
     </section>
