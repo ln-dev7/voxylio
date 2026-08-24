@@ -19,10 +19,53 @@
     targetLang: "fr",
     subtitles: false, // on-screen translated captions
     overlay: true, // floating on-page controller
+    cloudFallback: true, // allow the online translation fallback
+    autoPause: false, // pause the video when dubbing falls too far behind
+    keepTerms: true, // keep common technical terms untranslated
   };
   const settings = { ...DEFAULTS };
 
   const controllers = new Map(); // HTMLVideoElement -> controller
+
+  // Only ONE video is dubbed at a time: the "primary" — playing, visible
+  // and largest. Thumbnails, previews and hidden players never qualify.
+  let primaryVideo = null;
+
+  function isEligibleVideo(v) {
+    if (!v.isConnected) return false;
+    const r = v.getBoundingClientRect();
+    if (r.width < 200 || r.height < 110) return false; // thumbnails, pips
+    return true;
+  }
+
+  function scoreVideo(v) {
+    const r = v.getBoundingClientRect();
+    let s = r.width * r.height;
+    const playing = !v.paused && !v.ended && v.readyState > 1;
+    if (playing) s += 1e7; // the video actually playing wins
+    if (v.muted && v.loop) s -= 5e6; // ad/preview pattern
+    return s;
+  }
+
+  function pickPrimary() {
+    let best = null;
+    let bestScore = -Infinity;
+    for (const v of controllers.keys()) {
+      if (!isEligibleVideo(v)) continue;
+      const s = scoreVideo(v);
+      if (s > bestScore) {
+        bestScore = s;
+        best = v;
+      }
+    }
+    return best;
+  }
+
+  // Re-arbitrate as soon as any video starts playing
+  function onAnyPlay() {
+    primaryVideo = pickPrimary();
+    refreshAll();
+  }
 
   chrome.storage.sync.get(DEFAULTS, (s) => {
     Object.assign(settings, s);
@@ -50,11 +93,61 @@
   // ------------------------------------------------------------ translation
 
   const cache = new Map(); // "source->target::text" -> Promise<string>
+  const CACHE_MAX = 3000; // bounded: evict the oldest half when exceeded
   // One translator per (source, target) pair, isolated from each other:
   // switching languages can never file a translation under the wrong key.
   const translators = new Map(); // "source->target" -> Promise<Translator|null>
   let builtinBroken = false; // surfaced in the popup status
   let pendingCount = 0;
+  // What actually translated the last lines: "local" | "cloud" | "none".
+  let translationMode = "none";
+  let lastTranslateError = "";
+
+  function cachePut(key, promise) {
+    if (cache.size >= CACHE_MAX) {
+      let n = 0;
+      for (const k of cache.keys()) {
+        cache.delete(k);
+        if (++n >= CACHE_MAX / 2) break;
+      }
+    }
+    cache.set(key, promise);
+  }
+
+  // Technical terms that professionals keep in English: protect them with
+  // placeholders through translation, then restore them verbatim.
+  const PROTECTED_TERMS = [
+    "playground", "prompt", "framework", "codebase", "commit", "pull request",
+    "code review", "backend", "frontend", "workflow", "pipeline", "token",
+    "embedding", "debug", "build", "deploy", "refactoring", "refactor",
+    "feature flag", "context window", "agent",
+  ];
+  const TERM_RE = new RegExp(
+    "\\b(" +
+      PROTECTED_TERMS.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|") +
+      ")\\b",
+    "gi"
+  );
+
+  function protectTerms(text) {
+    const found = [];
+    const protectedText = text.replace(TERM_RE, (m) => {
+      found.push(m);
+      return `⟦${found.length - 1}⟧`;
+    });
+    return { protectedText, found };
+  }
+
+  function restoreTerms(text, found) {
+    const seen = (text.match(/⟦\s*\d+\s*⟧/g) || []).length;
+    const restored = text.replace(
+      /⟦\s*(\d+)\s*⟧/g,
+      (_, i) => found[Number(i)] ?? ""
+    );
+    // ok only if every placeholder survived translation intact
+    const ok = seen === found.length && !/⟦|⟧/.test(restored);
+    return { restored, ok };
+  }
 
   function getBuiltinTranslator(source, target) {
     const key = source + "->" + target;
@@ -96,6 +189,43 @@
     return res === "__timeout__" ? null : res;
   }
 
+  // One translation attempt (optionally with protected technical terms).
+  async function translateOnce(text, source, target) {
+    // The built-in API needs an explicit source; skip it when unknown.
+    const t =
+      source && source !== "auto"
+        ? await builtinReadyOrNull(source, target, 2500)
+        : null;
+    if (t) {
+      try {
+        const out = await t.translate(text);
+        translationMode = "local";
+        return out;
+      } catch (e) {
+        /* try the fallback */
+      }
+    }
+    if (!settings.cloudFallback) {
+      translationMode = "none";
+      lastTranslateError = "local-only";
+      throw new Error("local translator unavailable (strict local mode)");
+    }
+    // Online fallback supports source auto-detection (sl=auto).
+    const resp = await chrome.runtime.sendMessage({
+      type: "translate",
+      text,
+      source: source || "auto",
+      target,
+    });
+    if (resp && resp.ok) {
+      translationMode = "cloud";
+      return resp.text;
+    }
+    translationMode = "none";
+    lastTranslateError = (resp && resp.error) || "translate failed";
+    throw new Error(lastTranslateError);
+  }
+
   function translate(text, source) {
     // The language pair is frozen when the request is made: the whole
     // pipeline (translator, fallback, cache key) uses these values, even if
@@ -106,34 +236,24 @@
     const p = (async () => {
       pendingCount++;
       try {
-        // The built-in API needs an explicit source; skip it when unknown.
-        const t =
-          source && source !== "auto"
-            ? await builtinReadyOrNull(source, target, 2500)
-            : null;
-        if (t) {
-          try {
-            return await t.translate(text);
-          } catch (e) {
-            /* try the fallback */
+        // Protect technical terms; if the placeholders do not survive the
+        // engine, silently retry once without protection.
+        if (settings.keepTerms) {
+          const { protectedText, found } = protectTerms(text);
+          if (found.length > 0) {
+            const raw = await translateOnce(protectedText, source, target);
+            const { restored, ok } = restoreTerms(raw, found);
+            if (ok) return restored;
           }
         }
-        // Online fallback supports source auto-detection (sl=auto).
-        const resp = await chrome.runtime.sendMessage({
-          type: "translate",
-          text,
-          source: source || "auto",
-          target,
-        });
-        if (resp && resp.ok) return resp.text;
-        throw new Error((resp && resp.error) || "translate failed");
+        return await translateOnce(text, source, target);
       } finally {
         pendingCount--;
       }
     })();
     // A failed translation must not stay in the cache
     p.catch(() => cache.delete(key));
-    cache.set(key, p);
+    cachePut(key, p);
     return p;
   }
 
@@ -219,11 +339,18 @@
   // ----------------------------------------------------------- VTT parser
 
   // Dubbing-style cleanup: strip sound annotations ([Music], (applause), ♪)
-  // and dialogue dashes.
+  // and dialogue dashes — but PRESERVE informative parentheses, which are
+  // part of the actual speech ("the API (introduced in v2) lets you…").
+  const SOUND_CUE_RE =
+    /music|musique|applau|laugh|rire|sigh|soupir|cough|toux|inaudible|silence|bruit|noise|chuckle|cheer/i;
+  function isSoundCue(inner) {
+    // All-caps stage directions or known sound descriptions
+    return SOUND_CUE_RE.test(inner) || /^[^a-zà-ÿ]*$/.test(inner);
+  }
   function cleanCaption(s) {
     return s
       .replace(/\[[^\]]*\]/g, " ")
-      .replace(/\([^)]*\)/g, " ")
+      .replace(/\(([^)]*)\)/g, (m, inner) => (isSoundCue(inner) ? " " : m))
       .replace(/♪+/g, " ")
       .replace(/^[-–—]\s*/, "")
       .replace(/\s+/g, " ")
@@ -283,7 +410,9 @@
       staticLoaded: false,
       lastSpokenKey: null,
       currentUtterance: null,
-      queued: null, // next pending line {key, text, dur}
+      queue: [], // pending lines [{text, dur, start, end}] — bounded FIFO
+      autoPaused: false, // we paused the video to let the voice catch up
+      settingVolume: false, // our own volume writes (vs the user's)
       savedVolume: null,
       active: false, // dubbing actually running on this video
       pollTimer: null,
@@ -301,6 +430,23 @@
       if (!text) return;
       const key = cueKey(start, text);
       if (ctl.cueKeys.has(key)) return;
+      // Roll-up captions (YouTube-style): the same sentence is re-sent,
+      // each time a little longer. Merge into one cue instead of stacking
+      // duplicates.
+      const last = ctl.cues[ctl.cues.length - 1];
+      if (
+        last &&
+        start <= last.end + 0.6 &&
+        (text.startsWith(last.text) || last.text.startsWith(text))
+      ) {
+        if (text.length > last.text.length) {
+          last.text = text;
+          ctl.lastCueCount = -1; // groups must be rebuilt
+        }
+        last.end = Math.max(last.end, end);
+        ctl.cueKeys.add(key);
+        return;
+      }
       ctl.cueKeys.add(key);
       ctl.cues.push({ start, end, text, key });
       ctl.cues.sort((a, b) => a.start - b.start);
@@ -331,6 +477,9 @@
         }
         if (!cur) {
           cur = { start: c.start, end: c.end, text: txt };
+        } else if (cur.text.endsWith(txt)) {
+          // Duplicated fragment (progressive captions): extend, don't repeat
+          cur.end = Math.max(cur.end, c.end);
         } else {
           cur.end = Math.max(cur.end, c.end);
           cur.text += " " + txt;
@@ -377,7 +526,15 @@
       };
       harvest();
       if (ctl.trackListened !== track) {
+        // Detach the listener from a previously watched track
+        if (ctl.trackListened && ctl.trackHarvestHandler) {
+          ctl.trackListened.removeEventListener(
+            "cuechange",
+            ctl.trackHarvestHandler
+          );
+        }
         ctl.trackListened = track;
+        ctl.trackHarvestHandler = harvest;
         // HLS streams append cues as playback progresses.
         track.addEventListener("cuechange", harvest);
       }
@@ -385,6 +542,9 @@
 
     async function harvestTrackElements() {
       if (ctl.staticLoaded) return;
+      // A failed fetch (network hiccup, cross-origin refusal) is retried
+      // after a short delay instead of giving up for good.
+      if (ctl.trackRetryAt && Date.now() < ctl.trackRetryAt) return;
       const els = Array.from(video.querySelectorAll("track")).filter(
         (t) =>
           !t.kind || t.kind === "subtitles" || t.kind === "captions"
@@ -400,11 +560,16 @@
       ctl.staticLoaded = true;
       try {
         const res = await fetch(el.src, { credentials: "include" });
-        if (!res.ok) return;
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        // The parser accepts both WebVTT and SRT (comma decimals,
+        // numeric counters) — whatever the file actually contains.
         const cues = parseVTT(await res.text());
         for (const c of cues) addCue(c.start, c.end, c.text);
+        ctl.trackRetryAt = 0;
       } catch (e) {
-        /* ignored */
+        // Retry in 6 s
+        ctl.staticLoaded = false;
+        ctl.trackRetryAt = Date.now() + 6000;
       }
     }
 
@@ -494,7 +659,9 @@
           rate = Math.min(settings.rate * ratio, settings.rate * 1.25, 1.45);
         }
       }
-      u.rate = rate;
+      // Follow the player's speed (×1.25 / ×1.5 / ×2 viewing)
+      const playback = video.playbackRate || 1;
+      u.rate = Math.min(rate * playback, 3);
 
       u.onend = () => {
         if (ctl.currentUtterance === u) ctl.currentUtterance = null;
@@ -510,15 +677,45 @@
     }
 
     function drainQueue() {
-      if (ctl.currentUtterance || !ctl.queued) return;
-      // Never speak while the video is stopped
-      if (video.paused || video.seeking) {
-        ctl.queued = null;
+      // Resume a video we auto-paused once the voice has caught up
+      if (ctl.autoPaused && !ctl.currentUtterance && ctl.queue.length === 0) {
+        ctl.autoPaused = false;
+        video.play().catch(() => {});
+      }
+      if (ctl.currentUtterance || ctl.queue.length === 0) return;
+      // Never speak while the video is stopped (except our own catch-up pause)
+      if ((video.paused && !ctl.autoPaused) || video.seeking) {
+        ctl.queue.length = 0;
         return;
       }
-      const q = ctl.queued;
-      ctl.queued = null;
+      // Drop lines whose moment is already well past (stale)
+      const t = video.currentTime;
+      while (
+        ctl.queue.length > 0 &&
+        ctl.queue[0].end + 4 < t &&
+        !ctl.autoPaused
+      ) {
+        ctl.queue.shift();
+      }
+      const q = ctl.queue.shift();
+      if (!q) return;
       speak(q.text, q.dur);
+    }
+
+    // Bounded enqueue: never lose a line silently. When the voice falls
+    // behind, either auto-pause the video (opt-in) or drop the OLDEST
+    // waiting line — never the newest, which is the most relevant.
+    function enqueue(item) {
+      ctl.queue.push(item);
+      if (ctl.queue.length > 2) {
+        if (settings.autoPause && !video.paused && !ctl.autoPaused) {
+          ctl.autoPaused = true;
+          video.pause();
+        } else if (!ctl.autoPaused) {
+          ctl.queue.shift();
+        }
+      }
+      drainQueue();
     }
 
     async function onCueEnter(cue) {
@@ -538,13 +735,14 @@
       if (settings.targetLang !== target) return;
       if (settings.subtitles) showCaption(cue.text, text);
       // A translation may arrive after the video was paused: never speak
-      // while the video is stopped.
-      if (!ctl.active || video.paused || video.seeking) return;
+      // while the video is stopped (except our own catch-up pause).
+      if (!ctl.active || (video.paused && !ctl.autoPaused) || video.seeking)
+        return;
+      // A line translated too late must not play once its moment is gone
+      if (video.currentTime > cue.end + 4) return;
       const dur = cue.end - cue.start;
       if (ctl.currentUtterance) {
-        // Let the current sentence finish; the next one replaces any line
-        // already waiting (we skip rather than accumulate).
-        ctl.queued = { text, dur };
+        enqueue({ text, dur, start: cue.start, end: cue.end });
       } else {
         speak(text, dur);
       }
@@ -611,7 +809,7 @@
       }
       ctl.lastTime = t;
 
-      if (video.paused || video.seeking) return;
+      if ((video.paused && !ctl.autoPaused) || video.seeking) return;
 
       // Safety net: Chrome sometimes "loses" an utterance's onend event
       // (known garbage-collection bug), which would stall the queue.
@@ -647,24 +845,41 @@
     }
 
     function hardStopSpeech() {
-      ctl.queued = null;
+      const hadSpeech = ctl.currentUtterance || ctl.queue.length > 0;
+      ctl.queue.length = 0;
       ctl.currentUtterance = null;
-      try {
-        speechSynthesis.cancel();
-      } catch (e) {}
+      ctl.autoPaused = false;
+      // Only cancel the engine when WE were speaking — never interrupt a
+      // page's own use of speech synthesis.
+      if (hadSpeech) {
+        try {
+          speechSynthesis.cancel();
+        } catch (e) {}
+      }
     }
 
     // --- original audio (ducking) -----------------------------------------
 
+    function setVolume(v) {
+      ctl.settingVolume = true;
+      video.volume = Math.max(0, Math.min(1, v));
+      // volumechange fires asynchronously; release the flag right after
+      setTimeout(() => (ctl.settingVolume = false), 0);
+    }
     function applyDucking() {
       if (ctl.savedVolume == null) ctl.savedVolume = video.volume;
-      video.volume = Math.max(0, Math.min(1, settings.duck / 100));
+      setVolume(settings.duck / 100);
     }
     function restoreVolume() {
       if (ctl.savedVolume != null) {
-        video.volume = ctl.savedVolume;
+        setVolume(ctl.savedVolume);
         ctl.savedVolume = null;
       }
+    }
+    // The user moved the volume themselves while dubbing: respect it —
+    // never restore a stale value on stop.
+    function onVolumeChange() {
+      if (!ctl.settingVolume) ctl.savedVolume = null;
     }
 
     // --- start / stop ------------------------------------------------------
@@ -676,9 +891,17 @@
       harvestTextTracks();
       harvestTrackElements();
       ctl.pollTimer = setInterval(tick, 150);
-      video.addEventListener("pause", hardStopSpeech);
+      video.addEventListener("pause", onPauseEvent);
       video.addEventListener("seeking", hardStopSpeech);
       video.addEventListener("ended", hardStopSpeech);
+      video.addEventListener("ratechange", hardStopSpeech);
+      video.addEventListener("volumechange", onVolumeChange);
+    }
+
+    // A pause WE triggered to let the voice catch up must not kill the
+    // speech it is waiting for.
+    function onPauseEvent() {
+      if (!ctl.autoPaused) hardStopSpeech();
     }
 
     function stop() {
@@ -686,9 +909,11 @@
       ctl.active = false;
       clearInterval(ctl.pollTimer);
       ctl.pollTimer = null;
-      video.removeEventListener("pause", hardStopSpeech);
+      video.removeEventListener("pause", onPauseEvent);
       video.removeEventListener("seeking", hardStopSpeech);
       video.removeEventListener("ended", hardStopSpeech);
+      video.removeEventListener("ratechange", hardStopSpeech);
+      video.removeEventListener("volumechange", onVolumeChange);
       hardStopSpeech();
       restoreVolume();
       hideCaption();
@@ -696,7 +921,8 @@
     }
 
     ctl.onSettingsChanged = () => {
-      if (settings.enabled) {
+      // Dub only the primary video — one voice, one duck, per page.
+      if (settings.enabled && video === primaryVideo) {
         start();
         applyDucking();
       } else {
@@ -712,8 +938,17 @@
       rebuildGroups();
     };
 
+    video.addEventListener("play", onAnyPlay);
+
     ctl.destroy = () => {
       stop();
+      video.removeEventListener("play", onAnyPlay);
+      if (ctl.trackListened && ctl.trackHarvestHandler) {
+        ctl.trackListened.removeEventListener(
+          "cuechange",
+          ctl.trackHarvestHandler
+        );
+      }
       if (ctl.captionEl) {
         ctl.captionEl.remove();
         ctl.captionEl = null;
@@ -794,6 +1029,11 @@
         .power svg { display: block; }
         .power.on { background: #1ed760; color: #121212; }
         .power.on:hover { background: #3be477; }
+        @keyframes speak-pulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(30,215,96,0.55); }
+          50% { box-shadow: 0 0 0 6px rgba(30,215,96,0); }
+        }
+        .power.speaking { animation: speak-pulse 1.2s ease-out infinite; }
         .power.on svg path { stroke: #121212; }
         select {
           background-color: #1f1f1f;
@@ -953,11 +1193,34 @@
     });
 
     document.documentElement.appendChild(overlayHost);
+
+    // Speaking indicator: pulse the power button while the voice talks
+    overlayRefs.speakTimer = setInterval(() => {
+      if (overlayRefs) {
+        overlayRefs.power.classList.toggle("speaking", anySpeaking());
+      }
+    }, 400);
+
+    // Keep the controller on-screen after a window resize
+    overlayRefs.onResize = () => {
+      if (!overlayHost || overlayHost.style.left === "auto") return;
+      const r = overlayHost.getBoundingClientRect();
+      const x = Math.max(0, Math.min(window.innerWidth - r.width - 8, r.left));
+      const y = Math.max(0, Math.min(window.innerHeight - r.height - 8, r.top));
+      overlayHost.style.left = x + "px";
+      overlayHost.style.top = y + "px";
+    };
+    window.addEventListener("resize", overlayRefs.onResize);
+
     renderOverlay();
   }
 
   function destroyOverlay() {
     if (!overlayHost) return;
+    if (overlayRefs) {
+      clearInterval(overlayRefs.speakTimer);
+      window.removeEventListener("resize", overlayRefs.onResize);
+    }
     overlayHost.remove();
     overlayHost = null;
     overlayRefs = null;
@@ -995,14 +1258,88 @@
         c.harvest();
       }
     }
-    syncOverlay();
+    primaryVideo = pickPrimary();
+    refreshAll();
   }
+
+  // Cheap maintenance without the DOM walk: harvest known videos and
+  // re-arbitrate the primary.
+  function lightScan() {
+    for (const [v, c] of controllers) {
+      if (!v.isConnected) {
+        c.destroy();
+        controllers.delete(v);
+      } else {
+        c.harvest();
+      }
+    }
+    primaryVideo = pickPrimary();
+    refreshAll();
+  }
+
+  // Mutation-driven scanning: the full DOM walk only runs when nodes were
+  // added to the page — plus a slow fallback for players that appear
+  // inside existing shadow roots (invisible to the observer).
+  let scanDirty = true;
+  let lastFullScan = 0;
+  try {
+    new MutationObserver((muts) => {
+      for (const m of muts) {
+        if (m.addedNodes && m.addedNodes.length) {
+          scanDirty = true;
+          break;
+        }
+      }
+    }).observe(document.documentElement, { childList: true, subtree: true });
+  } catch (e) {
+    /* observer unavailable: the slow fallback still covers us */
+  }
+
+  function scheduledScan() {
+    if (document.hidden) return; // background tab: no scanning work
+    const now = Date.now();
+    if (scanDirty || now - lastFullScan > 15000) {
+      scanDirty = false;
+      lastFullScan = now;
+      scan();
+    } else {
+      lightScan();
+    }
+  }
+
   scan();
-  setInterval(scan, 3000);
+  setInterval(scheduledScan, 3000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      scanDirty = true;
+      scheduledScan();
+    }
+  });
 
   // ----------------------------------------------------- popup messages
 
+  function anySpeaking() {
+    for (const c of controllers.values()) {
+      if (c.currentUtterance) return true;
+    }
+    return false;
+  }
+
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+    if (msg && msg.type === "retry") {
+      // User-triggered recovery: re-detect everything from scratch
+      for (const c of controllers.values()) {
+        c.staticLoaded = false;
+        c.trackRetryAt = 0;
+        c.lastCueCount = -1;
+      }
+      builtinBroken = false;
+      lastTranslateError = "";
+      scanDirty = true;
+      scan();
+      sendResponse({ ok: true });
+      return;
+    }
     if (!msg || msg.type !== "getStatus") return;
     scan();
     const nVideos = controllers.size;
@@ -1029,17 +1366,39 @@
           });
         }
       }
+      const targetVoices = voices.filter((v) =>
+        (v.lang || "").toLowerCase().startsWith(settings.targetLang)
+      );
+      const hasSubTracks = tracks.some(
+        (t) => t.kind === "subtitles" || t.kind === "captions"
+      );
+      // Single explicit state for the popup
+      let state = "no-video";
+      if (controllers.size > 0) {
+        if (nCues > 0) {
+          if (targetVoices.length === 0) state = "no-voice";
+          else if (translationMode === "none" && lastTranslateError)
+            state = settings.cloudFallback
+              ? "translate-error"
+              : "local-unavailable";
+          else state = "ready";
+        } else {
+          state = hasSubTracks ? "subs-loading" : "no-subs";
+        }
+      }
       return {
+        version: chrome.runtime?.getManifest?.().version || "",
+        page: location.hostname,
+        state,
+        speaking: anySpeaking(),
+        translationMode,
+        lastTranslateError,
         videos: controllers.size,
         cues: nCues,
         groups: nGroups,
         tracks,
         builtinTranslator: !builtinBroken,
-        voices: voices
-          .filter((v) =>
-            (v.lang || "").toLowerCase().startsWith(settings.targetLang)
-          )
-          .map((v) => ({ name: v.name, lang: v.lang })),
+        voices: targetVoices.map((v) => ({ name: v.name, lang: v.lang })),
       };
     };
     if (nVideos === 0) {
