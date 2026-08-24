@@ -1,0 +1,130 @@
+{
+  "Meta": {
+    "title": "Video Dub — Doublage vidéo en temps réel dans votre navigateur",
+    "description": "Une extension Chrome qui double en temps réel toute vidéo sous-titrée — en français, espagnol, italien, allemand ou portugais. Traduction locale, voix synchronisée, zéro configuration."
+  },
+  "Header": {
+    "features": "Fonctionnalités",
+    "howItWorks": "Fonctionnement",
+    "install": "Installation",
+    "faq": "FAQ",
+    "github": "GitHub"
+  },
+  "Hero": {
+    "badge": "Gratuit et open source",
+    "title": "Suivez n’importe quel cours dans votre langue",
+    "subtitle": "Video Dub est une extension Chrome qui double les vidéos sous-titrées en temps réel. Elle reconstitue des phrases complètes à partir des sous-titres, les traduit localement et parle par-dessus la vidéo — parfaitement synchronisée.",
+    "ctaInstall": "Installer l’extension",
+    "ctaGithub": "Voir sur GitHub",
+    "note": "Fonctionne avec tout lecteur qui expose une piste de sous-titres — y compris les plateformes de cours."
+  },
+  "Features": {
+    "title": "Conçu comme un vrai studio de doublage",
+    "subtitle": "Pas un lecteur de sous-titres robotique : Video Dub reconstitue les phrases, garde une voix cohérente et adapte son rythme au débit de l’orateur.",
+    "items": {
+      "sentences": {
+        "title": "Doublage par phrases complètes",
+        "description": "Les fragments de sous-titres sont fusionnés en phrases entières avant traduction : la voix est fluide et la traduction garde tout son contexte."
+      },
+      "local": {
+        "title": "Traduction locale",
+        "description": "Utilise d’abord l’API de traduction intégrée de Chrome — gratuite, privée, sur l’appareil — avec un fallback en ligne si indisponible."
+      },
+      "sync": {
+        "title": "Toujours synchronisé",
+        "description": "La voix suit l’horloge de la vidéo : pause, avance ou retour, elle réagit instantanément. Un rattrapage doux garde les longues phrases intelligibles."
+      },
+      "voices": {
+        "title": "Une voix cohérente",
+        "description": "Une seule voix est choisie par session pour la cohérence. Sélectionnez n’importe quelle voix système, y compris les voix premium de macOS."
+      },
+      "overlay": {
+        "title": "Contrôles flottants",
+        "description": "Un contrôleur déplaçable posé sur la page permet d’activer le doublage, changer de langue, ajuster la vitesse et baisser l’audio original sans quitter la vidéo."
+      },
+      "languages": {
+        "title": "Cinq langues",
+        "description": "Doublez les vidéos anglaises en français, espagnol, italien, allemand ou portugais. Le changement de langue en pleine lecture est instantané, sans mélange."
+      }
+    }
+  },
+  "HowItWorks": {
+    "title": "Comment ça marche",
+    "steps": {
+      "detect": {
+        "title": "Détecte la vidéo",
+        "description": "L’extension trouve le lecteur sur la page — même dans les shadow DOM comme Mux — et lit sa piste de sous-titres anglais."
+      },
+      "translate": {
+        "title": "Traduit en avance",
+        "description": "Les phrases à venir sont traduites avant leur lecture avec le modèle local de Chrome, avec un cache par langue."
+      },
+      "speak": {
+        "title": "Parle par-dessus la vidéo",
+        "description": "Une voix de synthèse prononce chaque phrase au bon moment pendant que l’audio original est automatiquement baissé."
+      }
+    }
+  },
+  "Languages": {
+    "title": "De l’anglais vers",
+    "list": {
+      "fr": "Français",
+      "es": "Espagnol",
+      "it": "Italien",
+      "de": "Allemand",
+      "pt": "Portugais"
+    }
+  },
+  "Install": {
+    "title": "Installée en deux minutes",
+    "subtitle": "Video Dub n’est pas encore sur le Chrome Web Store — installez-la en mode développeur.",
+    "steps": {
+      "clone": {
+        "title": "Récupérez le code",
+        "description": "Clonez le dépôt ou téléchargez-le en ZIP, puis gardez le dossier extension à un emplacement permanent."
+      },
+      "load": {
+        "title": "Chargez-la dans Chrome",
+        "description": "Ouvrez chrome://extensions, activez le mode développeur, cliquez sur « Charger l’extension non empaquetée » et sélectionnez le dossier extension."
+      },
+      "play": {
+        "title": "Lancez une vidéo",
+        "description": "Ouvrez une vidéo sous-titrée, laissez-la jouer quelques secondes, puis activez l’interrupteur dans le popup ou la barre flottante."
+      }
+    },
+    "cta": "Récupérer Video Dub sur GitHub"
+  },
+  "Faq": {
+    "title": "Questions fréquentes",
+    "items": {
+      "sites": {
+        "question": "Sur quels sites ça fonctionne ?",
+        "answer": "Tout site dont le lecteur expose une piste de sous-titres — plateformes de cours, vidéos de documentation, la plupart des lecteurs HTML5. Si le lecteur affiche ses sous-titres sans piste texte, le doublage n’est pas encore possible."
+      },
+      "cost": {
+        "question": "C’est vraiment gratuit ?",
+        "answer": "Oui. La traduction tourne sur l’appareil avec l’API intégrée de Chrome (138+) et la voix utilise les voix de votre système. Pas de compte, pas de clé API, pas de quota."
+      },
+      "voice": {
+        "question": "Comment améliorer la qualité de la voix ?",
+        "answer": "Installez de meilleures voix système. Sur macOS : Réglages Système → Accessibilité → Contenu énoncé → téléchargez une voix premium pour votre langue, puis choisissez-la dans le popup."
+      },
+      "privacy": {
+        "question": "Et la vie privée ?",
+        "answer": "Les sous-titres sont traduits localement dès que le modèle intégré de Chrome est disponible. Sinon seulement, les phrases passent par un fallback de traduction en ligne. Rien d’autre ne quitte votre navigateur."
+      },
+      "youtube": {
+        "question": "Quelle différence avec le doublage automatique de YouTube ?",
+        "answer": "Le doublage de YouTube n’existe que sur YouTube. Video Dub apporte la même expérience — traduction par phrases, voix unique, audio original baissé — à n’importe quel site sous-titré."
+      }
+    }
+  },
+  "Footer": {
+    "tagline": "Doublage vidéo en temps réel dans votre navigateur.",
+    "madeBy": "Créé par",
+    "license": "Licence MIT"
+  },
+  "LocaleSwitcher": {
+    "label": "Langue"
+  }
+}

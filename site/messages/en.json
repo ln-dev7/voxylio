@@ -1,0 +1,130 @@
+{
+  "Meta": {
+    "title": "Video Dub — Real-time video dubbing in your browser",
+    "description": "A Chrome extension that dubs any subtitled video in real time — French, Spanish, Italian, German or Portuguese. Local translation, synced speech, zero setup."
+  },
+  "Header": {
+    "features": "Features",
+    "howItWorks": "How it works",
+    "install": "Install",
+    "faq": "FAQ",
+    "github": "GitHub"
+  },
+  "Hero": {
+    "badge": "Free & open source",
+    "title": "Watch any course in your language",
+    "subtitle": "Video Dub is a Chrome extension that dubs subtitled videos in real time. It rebuilds full sentences from the captions, translates them locally, and speaks over the video — perfectly in sync.",
+    "ctaInstall": "Install the extension",
+    "ctaGithub": "View on GitHub",
+    "note": "Works on any player that exposes a subtitle track — including custom course platforms."
+  },
+  "Features": {
+    "title": "Built like a real dubbing studio",
+    "subtitle": "Not a robotic caption reader. Video Dub reconstructs sentences, keeps one consistent voice, and adapts its pace to the speaker.",
+    "items": {
+      "sentences": {
+        "title": "Full-sentence dubbing",
+        "description": "Caption fragments are merged into complete sentences before translation, so the voice flows naturally and translations keep their context."
+      },
+      "local": {
+        "title": "Local translation",
+        "description": "Uses Chrome's built-in on-device translation API first — free, private and offline-friendly — with an online fallback when unavailable."
+      },
+      "sync": {
+        "title": "Always in sync",
+        "description": "Speech follows the video clock: pause, seek or replay and the voice follows instantly. Gentle rate adaptation keeps long sentences intelligible."
+      },
+      "voices": {
+        "title": "One consistent voice",
+        "description": "A single voice is picked per session for coherence. Choose any installed system voice, including premium natural voices on macOS."
+      },
+      "overlay": {
+        "title": "Floating controls",
+        "description": "A draggable on-page controller lets you toggle dubbing, switch language, adjust speed and duck the original audio without leaving the video."
+      },
+      "languages": {
+        "title": "Five languages",
+        "description": "Dub English videos into French, Spanish, Italian, German or Portuguese. Switching languages mid-video is instant and never mixes voices."
+      }
+    }
+  },
+  "HowItWorks": {
+    "title": "How it works",
+    "steps": {
+      "detect": {
+        "title": "Detects the video",
+        "description": "The extension finds the video player on the page — even inside shadow DOM players like Mux — and reads its English subtitle track."
+      },
+      "translate": {
+        "title": "Translates ahead",
+        "description": "Upcoming sentences are translated ahead of playback with Chrome's local translation model, cached per language."
+      },
+      "speak": {
+        "title": "Speaks over the video",
+        "description": "A synthesized voice speaks each sentence at the right moment while the original audio is automatically lowered."
+      }
+    }
+  },
+  "Languages": {
+    "title": "From English to",
+    "list": {
+      "fr": "French",
+      "es": "Spanish",
+      "it": "Italian",
+      "de": "German",
+      "pt": "Portuguese"
+    }
+  },
+  "Install": {
+    "title": "Install in two minutes",
+    "subtitle": "Video Dub is not on the Chrome Web Store yet — install it as an unpacked extension.",
+    "steps": {
+      "clone": {
+        "title": "Get the code",
+        "description": "Clone the repository or download it as a ZIP, then keep the extension folder somewhere permanent."
+      },
+      "load": {
+        "title": "Load it in Chrome",
+        "description": "Open chrome://extensions, enable Developer mode, click “Load unpacked” and select the extension folder."
+      },
+      "play": {
+        "title": "Play a video",
+        "description": "Open any subtitled video, let it play for a few seconds, then flip the switch in the popup or the floating bar."
+      }
+    },
+    "cta": "Get Video Dub on GitHub"
+  },
+  "Faq": {
+    "title": "Frequently asked questions",
+    "items": {
+      "sites": {
+        "question": "Which sites does it work on?",
+        "answer": "Any site whose player exposes a subtitle or caption track — course platforms, documentation videos, most custom HTML5 players. If the player draws captions without a text track, dubbing is not possible yet."
+      },
+      "cost": {
+        "question": "Is it really free?",
+        "answer": "Yes. Translation runs on-device with Chrome's built-in API (Chrome 138+) and speech uses your system's voices. No account, no API key, no quota."
+      },
+      "voice": {
+        "question": "Can I improve the voice quality?",
+        "answer": "Yes — install higher-quality system voices. On macOS: System Settings → Accessibility → Spoken Content → download a premium voice for your language, then pick it in the popup."
+      },
+      "privacy": {
+        "question": "What about privacy?",
+        "answer": "Subtitles are translated locally whenever Chrome's on-device model is available. Only when it isn't, sentences are sent to an online translation fallback. Nothing else ever leaves your browser."
+      },
+      "youtube": {
+        "question": "How is this different from YouTube auto-dubbing?",
+        "answer": "YouTube's dubbing only exists on YouTube. Video Dub brings the same experience — full-sentence translation, one voice, ducked original audio — to any site with subtitles."
+      }
+    }
+  },
+  "Footer": {
+    "tagline": "Real-time video dubbing in your browser.",
+    "madeBy": "Built by",
+    "license": "MIT License"
+  },
+  "LocaleSwitcher": {
+    "label": "Language"
+  }
+}
