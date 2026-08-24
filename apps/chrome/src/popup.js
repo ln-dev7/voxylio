@@ -1,16 +1,8 @@
-const DEFAULTS = {
-  enabled: false,
-  rate: 1.1,
-  duck: 12,
-  voiceName: "",
-  sourceLang: "auto",
-  targetLang: "fr",
-  subtitles: false,
-  overlay: true,
-  cloudFallback: true,
-  autoPause: false,
-  keepTerms: true,
-};
+// Popup: settings surface + live status of the active tab's dubbing.
+// The settings schema is shared with the options page and the content
+// script (packages/core/src/settings.js). All status rendering is DOM
+// building — no innerHTML with dynamic content.
+import { DEFAULTS } from "@voxylio/core";
 
 const PREVIEW_SAMPLES = {
   fr: "Bonjour ! Voici la voix de votre doublage.",
@@ -22,6 +14,26 @@ const PREVIEW_SAMPLES = {
 };
 
 const $ = (id) => document.getElementById(id);
+
+// i18n: message from _locales, French markup text as fallback.
+const t = (key, subs) => {
+  try {
+    return chrome.i18n.getMessage(key, subs) || "";
+  } catch (e) {
+    return "";
+  }
+};
+
+function applyI18n() {
+  for (const el of document.querySelectorAll("[data-i18n]")) {
+    const msg = t(el.dataset.i18n);
+    if (msg) el.textContent = msg;
+  }
+  for (const el of document.querySelectorAll("[data-i18n-title]")) {
+    const msg = t(el.dataset.i18nTitle);
+    if (msg) el.title = msg;
+  }
+}
 
 function save(patch) {
   chrome.storage.sync.set(patch);
@@ -68,61 +80,80 @@ let settings = null;
 let voicesFilled = false;
 let lastResp = null;
 
-function translationLine(resp) {
-  if (resp.translationMode === "local") return "Traduction : locale (Chrome)";
-  if (resp.translationMode === "cloud") return "Traduction : en ligne";
-  return resp.builtinTranslator
-    ? "Traduction : locale (Chrome)"
-    : "Traduction : en attente…";
+// --- status rendering (DOM building, never innerHTML) ---
+
+function line(text, cls) {
+  const span = document.createElement("span");
+  if (cls) span.className = cls;
+  span.textContent = text;
+  return span;
 }
 
-function statusHTML(resp) {
-  const parts = [];
+function translationLine(resp) {
+  if (resp.translationMode === "local")
+    return t("translationLocal") || "Traduction : locale (Chrome)";
+  if (resp.translationMode === "cloud")
+    return t("translationCloud") || "Traduction : en ligne";
+  return resp.builtinTranslator
+    ? t("translationLocal") || "Traduction : locale (Chrome)"
+    : t("translationWaiting") || "Traduction : en attente…";
+}
+
+function statusFragment(resp) {
+  const frag = document.createDocumentFragment();
+  const add = (node) => {
+    if (frag.childNodes.length) frag.appendChild(document.createElement("br"));
+    frag.appendChild(node);
+  };
+
   if (!resp || !resp.videos) {
-    parts.push('<span class="warn">Aucune vidéo détectée sur cette page.</span>');
-    return parts.join("<br>");
+    add(line(t("statusNoVideo") || "Aucune vidéo détectée sur cette page.", "warn"));
+    return frag;
   }
-  parts.push(
-    `<span class="ok">✓ ${resp.videos} vidéo${resp.videos > 1 ? "s" : ""} détectée${resp.videos > 1 ? "s" : ""}</span>`
+  add(
+    line(
+      "✓ " +
+        (t("statusVideosDetected", [String(resp.videos)]) ||
+          `${resp.videos} vidéo(s) détectée(s)`),
+      "ok",
+    ),
   );
 
   switch (resp.state) {
     case "ready": {
       const n = resp.groups || resp.cues;
-      parts.push(
-        `<span class="ok">✓ ${n} réplique${n > 1 ? "s" : ""} prête${n > 1 ? "s" : ""}</span>` +
-          (resp.speaking ? ' <span class="ok">· 🔊 voix en cours</span>' : "")
+      const ready = line(
+        "✓ " + (t("statusLinesReady", [String(n)]) || `${n} réplique(s) prête(s)`),
+        "ok",
       );
-      parts.push(translationLine(resp));
+      add(ready);
+      if (resp.speaking) {
+        // Same visual line as the ready counter.
+        ready.after(line(" · 🔊 " + (t("statusSpeaking") || "voix en cours"), "ok"));
+      }
+      add(line(translationLine(resp)));
       break;
     }
     case "subs-loading":
-      parts.push(
-        '<span class="warn">Piste de sous-titres détectée — lance la lecture quelques secondes pour charger les répliques.</span>'
-      );
+      add(line(t("statusSubsLoading") || "Piste de sous-titres détectée — lance la lecture quelques secondes pour charger les répliques.", "warn"));
       break;
     case "no-subs":
-      parts.push(
-        "<span class=\"warn\">Ce lecteur n’expose pas ses sous-titres — le doublage n’est pas possible sur cette vidéo.</span>"
-      );
+      add(line(t("statusNoSubs") || "Ce lecteur n’expose pas ses sous-titres — le doublage n’est pas possible sur cette vidéo.", "warn"));
       break;
     case "no-voice":
-      parts.push(
-        "<span class=\"warn\">Aucune voix installée pour cette langue. Sur Mac : Réglages Système → Accessibilité → Contenu énoncé.</span>"
-      );
+      add(line(t("statusNoVoice") || "Aucune voix installée pour cette langue. Sur Mac : Réglages Système → Accessibilité → Contenu énoncé.", "warn"));
       break;
     case "local-unavailable":
-      parts.push(
-        "<span class=\"warn\">Traduction locale indisponible (mode strict actif). Chrome télécharge peut-être son modèle — réessaie dans un instant.</span>"
-      );
+      add(line(t("statusLocalUnavailable") || "Traduction locale indisponible (mode strict actif). Chrome télécharge peut-être son modèle — réessaie dans un instant.", "warn"));
       break;
     case "translate-error":
-      parts.push(
-        '<span class="warn">Traduction temporairement indisponible — nouvelle tentative automatique.</span>'
-      );
+      add(line(t("statusTranslateError") || "Traduction temporairement indisponible — nouvelle tentative automatique.", "warn"));
+      break;
+    case "site-disabled":
+      add(line(t("statusSiteDisabled") || "Voxylio est désactivé sur ce site (voir Options).", "warn"));
       break;
   }
-  return parts.join("<br>");
+  return frag;
 }
 
 function fillVoices(resp) {
@@ -142,14 +173,20 @@ function fillVoices(resp) {
 
 async function refreshStatus() {
   if (tabId == null) return;
+  const status = $("status");
   try {
     const resp = await chrome.tabs.sendMessage(tabId, { type: "getStatus" });
     lastResp = resp;
-    $("status").innerHTML = statusHTML(resp);
+    status.replaceChildren(statusFragment(resp));
     fillVoices(resp);
   } catch (e) {
-    $("status").innerHTML =
-      '<span class="warn">Impossible de communiquer avec la page.</span><br>Recharge la page (F5) puis rouvre ce panneau.';
+    status.replaceChildren(
+      line(
+        t("statusNoComm") ||
+          "Impossible de communiquer avec la page. Recharge la page (F5) puis rouvre ce panneau.",
+        "warn",
+      ),
+    );
   }
 }
 
@@ -160,33 +197,39 @@ async function refreshAccount() {
   try {
     const ent = await chrome.runtime.sendMessage({ type: "entitlements" });
     if (!ent || !ent.linked) {
-      plan.textContent = "Non connecté";
+      plan.textContent = t("accountNotLinked") || "Non connecté";
       plan.classList.remove("pro");
-      btn.textContent = "Se connecter";
+      btn.textContent = t("signIn") || "Se connecter";
       btn.classList.remove("ghost");
-      note.textContent = "Le doublage local reste gratuit, illimité et sans compte.";
+      note.textContent =
+        t("accountNoteNotLinked") ||
+        "Le doublage local reste gratuit, illimité et sans compte.";
     } else if (ent.plan === "pro") {
-      plan.textContent = "Pro";
+      plan.textContent = t("accountPro") || "Pro";
       plan.classList.add("pro");
-      btn.textContent = "Gérer";
+      btn.textContent = t("manage") || "Gérer";
       btn.classList.add("ghost");
       note.textContent =
         ent.status === "canceled"
-          ? "Abonnement actif jusqu'à la fin de la période."
-          : "Merci de soutenir Voxylio.";
+          ? t("accountNoteProCanceled") ||
+            "Abonnement actif jusqu'à la fin de la période."
+          : t("accountNotePro") || "Merci de soutenir Voxylio.";
     } else {
-      plan.textContent = "Gratuit";
+      plan.textContent = t("accountFree") || "Gratuit";
       plan.classList.remove("pro");
-      btn.textContent = "Passer Pro";
+      btn.textContent = t("goPro") || "Passer Pro";
       btn.classList.remove("ghost");
-      note.textContent = "Débloquez la traduction contextuelle et les fonctions Pro à venir.";
+      note.textContent =
+        t("accountNoteFree") ||
+        "Débloquez la traduction contextuelle et les fonctions Pro à venir.";
     }
   } catch (e) {
-    plan.textContent = "Gratuit";
+    plan.textContent = t("accountFree") || "Gratuit";
   }
 }
 
 async function init() {
+  applyI18n();
   settings = await chrome.storage.sync.get(DEFAULTS);
   render(settings);
 
@@ -216,7 +259,7 @@ async function init() {
     s.speak(u);
   });
 
-  // Recovery + diagnostics + factory reset
+  // Recovery + diagnostics + options + factory reset
   $("retry").addEventListener("click", async () => {
     if (tabId != null) {
       try {
@@ -233,12 +276,15 @@ async function init() {
     };
     try {
       await navigator.clipboard.writeText(JSON.stringify(diag, null, 2));
-      $("diag").textContent = "Copié ✓";
-      setTimeout(() => ($("diag").textContent = "Diagnostic"), 1600);
+      $("diag").textContent = t("copied") || "Copié ✓";
+      setTimeout(() => {
+        $("diag").textContent = t("diag") || "Diagnostic";
+      }, 1600);
     } catch (e) {}
   });
+  $("optionsBtn").addEventListener("click", () => chrome.runtime.openOptionsPage());
   $("reset").addEventListener("click", async () => {
-    await chrome.storage.sync.set(DEFAULTS);
+    await chrome.storage.sync.set({ ...DEFAULTS });
     await chrome.storage.local.remove("overlayPos");
     window.location.reload();
   });
