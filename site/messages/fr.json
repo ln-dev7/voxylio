@@ -1,6 +1,6 @@
 {
   "Meta": {
-    "title": "Video Dub — Doublage vidéo en temps réel dans votre navigateur",
+    "title": "Voxylio — Doublage vidéo en temps réel dans votre navigateur",
     "description": "Une extension Chrome qui double en temps réel toute vidéo sous-titrée — en français, espagnol, italien, allemand ou portugais. Traduction locale, voix synchronisée, zéro configuration."
   },
   "Header": {
@@ -14,7 +14,7 @@
   },
   "Hero": {
     "title": "Suivez vos cours <accent>dans votre langue</accent>",
-    "subtitle": "Video Dub est une extension Chrome qui double les vidéos sous-titrées en temps réel. Elle reconstitue des phrases complètes à partir des sous-titres, les traduit localement et parle par-dessus la vidéo — synchronisée avec la lecture.",
+    "subtitle": "Voxylio est une extension Chrome qui double les vidéos sous-titrées en temps réel. Elle reconstitue des phrases complètes à partir des sous-titres, les traduit localement et parle par-dessus la vidéo — synchronisée avec la lecture.",
     "ctaInstall": "Installer l’extension",
     "ctaGithub": "Voir sur GitHub",
     "note": "Fonctionne sur les vidéos dont le lecteur expose une piste de sous-titres — le cas de la plupart des plateformes de cours.",
@@ -27,7 +27,7 @@
   },
   "Features": {
     "title": "Conçu comme un vrai studio de doublage",
-    "subtitle": "Pas un lecteur de sous-titres robotique : Video Dub reconstitue les phrases, garde une voix cohérente et adapte son rythme au débit de l’orateur.",
+    "subtitle": "Pas un lecteur de sous-titres robotique : Voxylio reconstitue les phrases, garde une voix cohérente et adapte son rythme au débit de l’orateur.",
     "items": {
       "sentences": {
         "title": "Doublage par phrases complètes",
@@ -85,7 +85,7 @@
   },
   "Install": {
     "title": "Installée en deux minutes",
-    "subtitle": "Video Dub n’est pas encore sur le Chrome Web Store — installez-la en mode développeur.",
+    "subtitle": "Voxylio n’est pas encore sur le Chrome Web Store — installez-la en mode développeur.",
     "steps": {
       "clone": {
         "title": "Récupérez le code",
@@ -100,7 +100,7 @@
         "description": "Ouvrez une vidéo sous-titrée, laissez-la jouer quelques secondes, puis activez l’interrupteur dans le popup ou la barre flottante."
       }
     },
-    "cta": "Récupérer Video Dub sur GitHub",
+    "cta": "Récupérer Voxylio sur GitHub",
     "storeSoon": "Bientôt sur le Chrome Web Store"
   },
   "Faq": {
@@ -124,7 +124,7 @@
       },
       "youtube": {
         "question": "Quelle différence avec le doublage automatique de YouTube ?",
-        "answer": "Le doublage de YouTube n’existe que sur YouTube. Video Dub apporte la même expérience — traduction par phrases, voix unique, audio original baissé — à n’importe quel site sous-titré."
+        "answer": "Le doublage de YouTube n’existe que sur YouTube. Voxylio apporte la même expérience — traduction par phrases, voix unique, audio original baissé — à n’importe quel site sous-titré."
       }
     }
   },
@@ -160,7 +160,7 @@
   },
   "Compare": {
     "title": "Pourquoi le doublage par sous-titres gagne",
-    "subtitle": "Les autres outils capturent l’audio de l’onglet, font de la reconnaissance vocale dans le cloud et facturent à l’heure. Video Dub lit les sous-titres officiels.",
+    "subtitle": "Les autres outils capturent l’audio de l’onglet, font de la reconnaissance vocale dans le cloud et facturent à l’heure. Voxylio lit les sous-titres officiels.",
     "them": "Outils de capture audio",
     "note": "Comparaison avec les extensions de doublage par capture audio, d’après leurs tarifs et documentations publics.",
     "rows": {

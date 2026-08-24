@@ -53,7 +53,7 @@ export function Compare() {
           <div className="grid grid-cols-[1.2fr_1fr_1fr] border-b border-border bg-white/[0.02] text-xs font-semibold uppercase tracking-[0.12em] sm:grid-cols-[1.6fr_1fr_1fr] sm:text-[13px] sm:normal-case sm:tracking-normal">
             <div className="px-4 py-3.5 text-muted-foreground sm:px-6" />
             <div className="border-l border-border bg-primary/[0.06] px-3 py-3.5 text-primary sm:px-6">
-              Video Dub
+              Voxylio
             </div>
             <div className="border-l border-border px-3 py-3.5 text-muted-foreground sm:px-6">
               {t("them")}

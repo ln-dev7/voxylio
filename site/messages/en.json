@@ -1,6 +1,6 @@
 {
   "Meta": {
-    "title": "Video Dub — Real-time video dubbing in your browser",
+    "title": "Voxylio — Real-time video dubbing in your browser",
     "description": "A Chrome extension that dubs any subtitled video in real time — French, Spanish, Italian, German or Portuguese. Local translation, synced speech, zero setup."
   },
   "Header": {
@@ -14,7 +14,7 @@
   },
   "Hero": {
     "title": "Watch your courses in <accent>your language</accent>",
-    "subtitle": "Video Dub is a Chrome extension that dubs subtitled videos in real time. It rebuilds full sentences from the captions, translates them locally, and speaks over the video — in sync with playback.",
+    "subtitle": "Voxylio is a Chrome extension that dubs subtitled videos in real time. It rebuilds full sentences from the captions, translates them locally, and speaks over the video — in sync with playback.",
     "ctaInstall": "Install the extension",
     "ctaGithub": "View on GitHub",
     "note": "Works on videos whose player exposes a subtitle track — most course platforms do.",
@@ -27,7 +27,7 @@
   },
   "Features": {
     "title": "Built like a real dubbing studio",
-    "subtitle": "Not a robotic caption reader. Video Dub reconstructs sentences, keeps one consistent voice, and adapts its pace to the speaker.",
+    "subtitle": "Not a robotic caption reader. Voxylio reconstructs sentences, keeps one consistent voice, and adapts its pace to the speaker.",
     "items": {
       "sentences": {
         "title": "Full-sentence dubbing",
@@ -85,7 +85,7 @@
   },
   "Install": {
     "title": "Install in two minutes",
-    "subtitle": "Video Dub is not on the Chrome Web Store yet — install it as an unpacked extension.",
+    "subtitle": "Voxylio is not on the Chrome Web Store yet — install it as an unpacked extension.",
     "steps": {
       "clone": {
         "title": "Get the code",
@@ -100,7 +100,7 @@
         "description": "Open any subtitled video, let it play for a few seconds, then flip the switch in the popup or the floating bar."
       }
     },
-    "cta": "Get Video Dub on GitHub",
+    "cta": "Get Voxylio on GitHub",
     "storeSoon": "Coming soon to the Chrome Web Store"
   },
   "Faq": {
@@ -124,7 +124,7 @@
       },
       "youtube": {
         "question": "How is this different from YouTube auto-dubbing?",
-        "answer": "YouTube's dubbing only exists on YouTube. Video Dub brings the same experience — full-sentence translation, one voice, ducked original audio — to any site with subtitles."
+        "answer": "YouTube's dubbing only exists on YouTube. Voxylio brings the same experience — full-sentence translation, one voice, ducked original audio — to any site with subtitles."
       }
     }
   },
@@ -160,7 +160,7 @@
   },
   "Compare": {
     "title": "Why subtitle-based dubbing wins",
-    "subtitle": "Other tools capture your tab's audio, run speech recognition in the cloud, and bill by the hour. Video Dub reads the official subtitles instead.",
+    "subtitle": "Other tools capture your tab's audio, run speech recognition in the cloud, and bill by the hour. Voxylio reads the official subtitles instead.",
     "them": "Audio-capture tools",
     "note": "Comparison with audio-capture dubbing extensions, based on their public pricing and documentation.",
     "rows": {

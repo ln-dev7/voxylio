@@ -189,7 +189,7 @@ export function ExtensionPopup() {
           </svg>
         </span>
         <span className="flex-1 text-base font-bold tracking-tight">
-          Video Dub
+          Voxylio
         </span>
         <Toggle checked={enabled} onChange={setEnabled} label={t("toggle")} />
       </div>

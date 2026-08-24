@@ -26,7 +26,7 @@ export function SiteHeader() {
         <a href="#" className="flex items-center gap-2.5">
           <Logo />
           <span className="font-display text-[15px] font-semibold tracking-tight">
-            Video Dub
+            Voxylio
           </span>
         </a>
 

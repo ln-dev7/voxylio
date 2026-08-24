@@ -37,7 +37,7 @@ export function SiteFooter() {
             <div className="flex items-center gap-2.5">
               <Logo />
               <span className="font-display text-[15px] font-semibold tracking-tight">
-                Video Dub
+                Voxylio
               </span>
             </div>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
@@ -99,7 +99,7 @@ export function SiteFooter() {
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-6 sm:flex-row">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Video Dub · {t("madeBy")}{" "}
+            © {new Date().getFullYear()} Voxylio · {t("madeBy")}{" "}
             <a
               href="https://github.com/ln-dev7"
               target="_blank"

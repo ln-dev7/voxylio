@@ -1,4 +1,4 @@
-// Video Dub — content script
+// Voxylio — content script
 // Finds page videos (including inside shadow DOMs, e.g. the Mux player),
 // reads their English subtitle track, translates it into the chosen language
 // (Chrome's built-in API, otherwise a fallback via the service worker), and
@@ -1097,7 +1097,7 @@
         }
         .close:hover { background: #1f1f1f; color: #ffffff; }
       </style>
-      <div class="bar" role="toolbar" aria-label="Video Dub">
+      <div class="bar" role="toolbar" aria-label="Voxylio">
         <span class="handle" title="Déplacer">⠿</span>
         <button class="power" aria-label="Activer ou couper le doublage" title="Doublage">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
