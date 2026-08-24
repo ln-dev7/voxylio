@@ -211,6 +211,43 @@
     .switch-sm .slider-toggle::before { width: 16px; height: 16px; }
     .switch-sm input:checked + .slider-toggle::before { transform: translateX(16px); }
 
+    .voice-row { display: flex; gap: 8px; align-items: center; }
+    .voice-row select { flex: 1; min-width: 0; }
+    .icon-btn {
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 50%;
+      background: #1f1f1f;
+      color: #1ed760;
+      font-size: 11px;
+      cursor: pointer;
+      box-shadow: rgb(18, 18, 18) 0px 1px 0px, rgb(77, 77, 77) 0px 0px 0px 1px inset;
+    }
+    .icon-btn:hover { background: #242424; }
+    .icon-btn:focus-visible { outline: 2px solid #1ed760; outline-offset: 2px; }
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .action-btn {
+      flex: 1;
+      border: none;
+      border-radius: 9999px;
+      background: #1f1f1f;
+      color: #b3b3b3;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 7px 0;
+      cursor: pointer;
+      box-shadow: rgb(18, 18, 18) 0px 1px 0px, rgb(77, 77, 77) 0px 0px 0px 1px inset;
+    }
+    .action-btn:hover { background: #242424; color: #ffffff; }
+    .action-btn:focus-visible { outline: 2px solid #1ed760; outline-offset: 2px; }
+
     /* ---- footer ---- */
     .hint {
       font-size: 11px;
@@ -265,7 +302,10 @@
 
   <div class="field">
     <label class="field-label" for="voice">Voix</label>
-    <select id="voice"><option value="">Automatique</option></select>
+    <div class="voice-row">
+      <select id="voice"><option value="">Automatique</option></select>
+      <button id="preview" class="icon-btn" title="Écouter un aperçu de la voix" aria-label="Écouter un aperçu de la voix">▶</button>
+    </div>
   </div>
 
   <div class="field">
@@ -285,6 +325,22 @@
   </div>
 
   <div class="field overlay-row">
+    <label class="field-label" for="autoPause" style="margin: 0" title="Met la vidéo en pause quelques secondes quand la voix prend trop de retard, au lieu de sauter des phrases">Pause auto si la voix est en retard</label>
+    <label class="switch switch-sm" aria-label="Mettre la vidéo en pause quand le doublage est en retard">
+      <input type="checkbox" id="autoPause" />
+      <span class="slider-toggle" aria-hidden="true"></span>
+    </label>
+  </div>
+
+  <div class="field overlay-row" style="margin-top: 10px">
+    <label class="field-label" for="localOnly" style="margin: 0" title="N’utilise que la traduction locale de Chrome : aucun texte ne quitte votre appareil. Si elle est indisponible, le doublage attend au lieu de passer en ligne.">Mode strictement local</label>
+    <label class="switch switch-sm" aria-label="Utiliser uniquement la traduction locale">
+      <input type="checkbox" id="localOnly" />
+      <span class="slider-toggle" aria-hidden="true"></span>
+    </label>
+  </div>
+
+  <div class="field overlay-row" style="margin-top: 10px">
     <label class="field-label" for="subtitles" style="margin: 0">Sous-titres traduits à l’écran</label>
     <label class="switch switch-sm" aria-label="Afficher les sous-titres traduits sur la vidéo">
       <input type="checkbox" id="subtitles" />
@@ -298,6 +354,12 @@
       <input type="checkbox" id="overlay" />
       <span class="slider-toggle" aria-hidden="true"></span>
     </label>
+  </div>
+
+  <div class="actions">
+    <button id="retry" class="action-btn" title="Relance la détection de la vidéo, des sous-titres et de la traduction">Réessayer</button>
+    <button id="diag" class="action-btn" title="Copie un diagnostic technique à joindre à un signalement">Diagnostic</button>
+    <button id="reset" class="action-btn" title="Rétablit tous les réglages par défaut">Réinitialiser</button>
   </div>
 
   <p class="hint">

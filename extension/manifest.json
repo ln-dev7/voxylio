@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Video Dub — doublage multilingue",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Double en temps réel les vidéos qui ont des sous-titres (aihero.dev et autres), en français, espagnol, italien, allemand… Traduction locale + voix de synthèse, synchronisées avec la lecture.",
   "permissions": ["storage"],
   "host_permissions": ["<all_urls>"],

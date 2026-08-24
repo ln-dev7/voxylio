@@ -7,6 +7,18 @@ const DEFAULTS = {
   targetLang: "fr",
   subtitles: false,
   overlay: true,
+  cloudFallback: true,
+  autoPause: false,
+  keepTerms: true,
+};
+
+const PREVIEW_SAMPLES = {
+  fr: "Bonjour ! Voici la voix de votre doublage.",
+  es: "¡Hola! Esta es la voz de tu doblaje.",
+  it: "Ciao! Questa è la voce del tuo doppiaggio.",
+  de: "Hallo! Das ist die Stimme deiner Synchronisation.",
+  pt: "Olá! Esta é a voz da sua dublagem.",
+  en: "Hi! This is your dubbing voice.",
 };
 
 const $ = (id) => document.getElementById(id);
@@ -40,6 +52,8 @@ function render(settings) {
   $("sourceLang").value = settings.sourceLang;
   $("lang").value = settings.targetLang;
   $("subtitles").checked = settings.subtitles;
+  $("autoPause").checked = settings.autoPause;
+  $("localOnly").checked = !settings.cloudFallback;
   $("rate").value = settings.rate;
   $("rateVal").textContent = "×" + Number(settings.rate).toFixed(2);
   $("duck").value = settings.duck;
@@ -52,6 +66,15 @@ function render(settings) {
 let tabId = null;
 let settings = null;
 let voicesFilled = false;
+let lastResp = null;
+
+function translationLine(resp) {
+  if (resp.translationMode === "local") return "Traduction : locale (Chrome)";
+  if (resp.translationMode === "cloud") return "Traduction : en ligne";
+  return resp.builtinTranslator
+    ? "Traduction : locale (Chrome)"
+    : "Traduction : en attente…";
+}
 
 function statusHTML(resp) {
   const parts = [];
@@ -63,26 +86,42 @@ function statusHTML(resp) {
     `<span class="ok">✓ ${resp.videos} vidéo${resp.videos > 1 ? "s" : ""} détectée${resp.videos > 1 ? "s" : ""}</span>`
   );
 
-  const subTracks = (resp.tracks || []).filter(
-    (t) => t.kind === "subtitles" || t.kind === "captions"
-  );
-  if (resp.cues > 0) {
-    const n = resp.groups || resp.cues;
-    parts.push(`<span class="ok">✓ ${n} réplique${n > 1 ? "s" : ""} prête${n > 1 ? "s" : ""}</span>`);
-  } else if (subTracks.length > 0) {
-    parts.push(
-      '<span class="warn">Piste de sous-titres détectée — lance la lecture quelques secondes pour charger les répliques.</span>'
-    );
-  } else {
-    parts.push(
-      "<span class=\"warn\">Aucune piste de sous-titres exposée par le lecteur pour l’instant.</span>"
-    );
+  switch (resp.state) {
+    case "ready": {
+      const n = resp.groups || resp.cues;
+      parts.push(
+        `<span class="ok">✓ ${n} réplique${n > 1 ? "s" : ""} prête${n > 1 ? "s" : ""}</span>` +
+          (resp.speaking ? ' <span class="ok">· 🔊 voix en cours</span>' : "")
+      );
+      parts.push(translationLine(resp));
+      break;
+    }
+    case "subs-loading":
+      parts.push(
+        '<span class="warn">Piste de sous-titres détectée — lance la lecture quelques secondes pour charger les répliques.</span>'
+      );
+      break;
+    case "no-subs":
+      parts.push(
+        "<span class=\"warn\">Ce lecteur n’expose pas ses sous-titres — le doublage n’est pas possible sur cette vidéo.</span>"
+      );
+      break;
+    case "no-voice":
+      parts.push(
+        "<span class=\"warn\">Aucune voix installée pour cette langue. Sur Mac : Réglages Système → Accessibilité → Contenu énoncé.</span>"
+      );
+      break;
+    case "local-unavailable":
+      parts.push(
+        "<span class=\"warn\">Traduction locale indisponible (mode strict actif). Chrome télécharge peut-être son modèle — réessaie dans un instant.</span>"
+      );
+      break;
+    case "translate-error":
+      parts.push(
+        '<span class="warn">Traduction temporairement indisponible — nouvelle tentative automatique.</span>'
+      );
+      break;
   }
-  parts.push(
-    resp.builtinTranslator
-      ? "Traduction : Chrome (locale)"
-      : "Traduction : en ligne (fallback)"
-  );
   return parts.join("<br>");
 }
 
@@ -105,6 +144,7 @@ async function refreshStatus() {
   if (tabId == null) return;
   try {
     const resp = await chrome.tabs.sendMessage(tabId, { type: "getStatus" });
+    lastResp = resp;
     $("status").innerHTML = statusHTML(resp);
     fillVoices(resp);
   } catch (e) {
@@ -121,6 +161,54 @@ async function init() {
   $("overlay").addEventListener("change", (e) => save({ overlay: e.target.checked }));
   $("subtitles").addEventListener("change", (e) => save({ subtitles: e.target.checked }));
   $("sourceLang").addEventListener("change", (e) => save({ sourceLang: e.target.value }));
+  $("autoPause").addEventListener("change", (e) => save({ autoPause: e.target.checked }));
+  $("localOnly").addEventListener("change", (e) => save({ cloudFallback: !e.target.checked }));
+
+  // Voice preview — spoken from the popup itself (its click counts as
+  // the user activation speech synthesis requires)
+  $("preview").addEventListener("click", () => {
+    const s = window.speechSynthesis;
+    if (!s) return;
+    s.cancel();
+    const target = $("lang").value || "fr";
+    const u = new SpeechSynthesisUtterance(PREVIEW_SAMPLES[target] || PREVIEW_SAMPLES.en);
+    const wanted = $("voice").value;
+    const voices = s.getVoices() || [];
+    const v = wanted
+      ? voices.find((x) => x.name === wanted)
+      : voices.find((x) => (x.lang || "").toLowerCase().startsWith(target));
+    if (v) u.voice = v;
+    u.lang = v ? v.lang : target;
+    u.rate = Number($("rate").value) || 1;
+    s.speak(u);
+  });
+
+  // Recovery + diagnostics + factory reset
+  $("retry").addEventListener("click", async () => {
+    if (tabId != null) {
+      try {
+        await chrome.tabs.sendMessage(tabId, { type: "retry" });
+      } catch (e) {}
+    }
+    refreshStatus();
+  });
+  $("diag").addEventListener("click", async () => {
+    const diag = {
+      when: new Date().toISOString(),
+      settings: await chrome.storage.sync.get(DEFAULTS),
+      status: lastResp,
+    };
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(diag, null, 2));
+      $("diag").textContent = "Copié ✓";
+      setTimeout(() => ($("diag").textContent = "Diagnostic"), 1600);
+    } catch (e) {}
+  });
+  $("reset").addEventListener("click", async () => {
+    await chrome.storage.sync.set(DEFAULTS);
+    await chrome.storage.local.remove("overlayPos");
+    window.location.reload();
+  });
   $("rate").addEventListener("input", (e) => {
     $("rateVal").textContent = "×" + Number(e.target.value).toFixed(2);
     updateFill(e.target);
