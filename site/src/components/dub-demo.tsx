@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Play,
+  Pause,
   Volume2,
   Captions,
   Settings,
@@ -37,22 +38,35 @@ const WAVE_DELAYS = [0, 0.15, 0.3, 0.1, 0.25];
 export function DubDemo() {
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
+  const [playing, setPlaying] = useState(true);
+  const fadeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    if (!playing) return;
     const timer = setInterval(() => {
       setVisible(false);
-      setTimeout(() => {
+      fadeTimeout.current = setTimeout(() => {
         setIndex((i) => (i + 1) % LINES.length);
         setVisible(true);
       }, 350);
     }, 3800);
-    return () => clearInterval(timer);
-  }, []);
+    return () => {
+      clearInterval(timer);
+      // Also clear the in-flight fade timeout on unmount / pause
+      if (fadeTimeout.current) clearTimeout(fadeTimeout.current);
+    };
+  }, [playing]);
 
   const line = LINES[index];
 
   return (
-    <div className="group relative mx-auto max-w-5xl">
+    <div
+      className={`group relative mx-auto max-w-5xl ${
+        playing
+          ? ""
+          : "[&_.player-progress]:[animation-play-state:paused] [&_.wave-bar]:[animation-play-state:paused] [&_.play-ring]:[animation-play-state:paused] [&_.animate-ping]:[animation-play-state:paused]"
+      }`}
+    >
       {/* Gradient border frame */}
       <div className="rounded-2xl bg-gradient-to-b from-white/12 via-white/5 to-transparent p-px">
         <div className="dot-grid relative aspect-video overflow-hidden rounded-2xl bg-[#0a0c0d] shadow-[0_40px_120px_rgba(0,0,0,0.6)]">
@@ -73,11 +87,13 @@ export function DubDemo() {
             </span>
           </div>
 
-          {/* Play button */}
+          {/* Play / pause: really drives the demo animation */}
           <button
             type="button"
-            aria-label="Play demo"
-            className="absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center"
+            aria-label={playing ? "Pause the demo" : "Play the demo"}
+            aria-pressed={playing}
+            onClick={() => setPlaying((p) => !p)}
+            className="absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
           >
             <span
               aria-hidden="true"
@@ -88,7 +104,11 @@ export function DubDemo() {
               className="play-ring absolute size-20 rounded-full border border-primary/30 [animation-delay:0.7s] sm:size-24"
             />
             <span className="grid size-16 place-items-center rounded-full bg-primary text-black shadow-[0_0_60px_rgba(30,215,96,0.45)] transition-transform duration-200 group-hover:scale-105 sm:size-20">
-              <Play className="ml-1 size-7 fill-current sm:size-8" />
+              {playing ? (
+                <Pause className="size-7 fill-current sm:size-8" />
+              ) : (
+                <Play className="ml-1 size-7 fill-current sm:size-8" />
+              )}
             </span>
           </button>
 

@@ -7,19 +7,10 @@ const LANGS = ["fr", "es", "it", "de", "pt"] as const;
 export function LanguagesStrip() {
   const t = useTranslations("Languages");
 
-  const Row = () => (
-    <>
-      {LANGS.map((l) => (
-        <span
-          key={l}
-          className="mx-3 inline-flex shrink-0 items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-5 py-2.5 text-sm"
-        >
-          <span className="text-muted-foreground">English</span>
-          <ArrowRight className="size-3.5 text-primary" aria-hidden="true" />
-          <span className="font-semibold">{t(`list.${l}`)}</span>
-        </span>
-      ))}
-    </>
+  // Four copies of the pill row make the marquee loop seamless.
+  // (Plain data + map — no component created during render.)
+  const pills = [0, 1, 2, 3].flatMap((copy) =>
+    LANGS.map((l) => ({ id: `${copy}-${l}`, label: t(`list.${l}`) }))
   );
 
   return (
@@ -32,11 +23,19 @@ export function LanguagesStrip() {
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 bg-gradient-to-r from-background to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 bg-gradient-to-l from-background to-transparent" />
         <div className="marquee-track flex w-max">
-          {/* Track duplicated for a seamless loop */}
-          <Row />
-          <Row />
-          <Row />
-          <Row />
+          {pills.map((p) => (
+            <span
+              key={p.id}
+              className="mx-3 inline-flex shrink-0 items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-5 py-2.5 text-sm"
+            >
+              <span className="text-muted-foreground">English</span>
+              <ArrowRight
+                className="size-3.5 text-primary"
+                aria-hidden="true"
+              />
+              <span className="font-semibold">{p.label}</span>
+            </span>
+          ))}
         </div>
       </div>
     </section>
