@@ -26,3 +26,34 @@ export function manifestVersion() {
     return "";
   }
 }
+
+/**
+ * False once the extension has been reloaded/updated while this content
+ * script keeps running ("Extension context invalidated"). Long-lived
+ * scripts must check this in their timers and tear themselves down.
+ */
+export function isAlive() {
+  try {
+    return !!runtime?.id;
+  } catch {
+    return false;
+  }
+}
+
+/** storage.sync.set that never throws in an orphaned context. */
+export function safeSyncSet(patch) {
+  try {
+    storage.sync.set(patch);
+  } catch {
+    /* orphaned context: the new script owns the settings now */
+  }
+}
+
+/** storage.local.set that never throws in an orphaned context. */
+export function safeLocalSet(patch) {
+  try {
+    storage.local.set(patch);
+  } catch {
+    /* ignored */
+  }
+}

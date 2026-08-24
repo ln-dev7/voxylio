@@ -265,11 +265,30 @@
       return "";
     }
   }
+  function isAlive() {
+    try {
+      return !!runtime?.id;
+    } catch {
+      return false;
+    }
+  }
+  function safeSyncSet(patch) {
+    try {
+      storage.sync.set(patch);
+    } catch {
+    }
+  }
+  function safeLocalSet(patch) {
+    try {
+      storage.local.set(patch);
+    } catch {
+    }
+  }
 
   // src/content.js
   (() => {
-    if (window.__videoDubInjected) return;
-    window.__videoDubInjected = true;
+    if (window.__voxylioInjected) return;
+    window.__voxylioInjected = true;
     const DEFAULTS = {
       enabled: false,
       rate: 1.1,
@@ -809,6 +828,10 @@
         ctl.captionEl.style.bottom = window.innerHeight - r.bottom + Math.max(20, r.height * 0.07) + "px";
       }
       function tick() {
+        if (!isAlive()) {
+          teardownAll();
+          return;
+        }
         if (!ctl.active) return;
         const t = video.currentTime;
         if (t < ctl.lastTime - 0.75) {
@@ -1109,14 +1132,14 @@
         overlayRefs.lang.appendChild(opt);
       }
       q(".power").addEventListener("click", () => {
-        storage.sync.set({ enabled: !settings.enabled });
+        safeSyncSet({ enabled: !settings.enabled });
       });
       overlayRefs.lang.addEventListener("change", (e) => {
-        storage.sync.set({ targetLang: e.target.value, voiceName: "" });
+        safeSyncSet({ targetLang: e.target.value, voiceName: "" });
       });
       const bumpRate = (d) => {
         const r = Math.min(1.6, Math.max(0.8, Math.round((settings.rate + d) * 100) / 100));
-        storage.sync.set({ rate: r });
+        safeSyncSet({ rate: r });
       };
       q(".minus").addEventListener("click", () => bumpRate(-0.05));
       q(".plus").addEventListener("click", () => bumpRate(0.05));
@@ -1127,10 +1150,10 @@
         renderOverlay();
         refreshAll();
         clearTimeout(duckTimer);
-        duckTimer = setTimeout(() => storage.sync.set({ duck: v }), 250);
+        duckTimer = setTimeout(() => safeSyncSet({ duck: v }), 250);
       });
       q(".close").addEventListener("click", () => {
-        storage.sync.set({ overlay: false });
+        safeSyncSet({ overlay: false });
       });
       const handle = q(".handle");
       let drag = null;
@@ -1153,7 +1176,7 @@
         if (!drag) return;
         drag = null;
         const r = overlayHost.getBoundingClientRect();
-        storage.local.set({ overlayPos: { x: r.left, y: r.top } });
+        safeLocalSet({ overlayPos: { x: r.left, y: r.top } });
       });
       storage.local.get({ overlayPos: null }, ({ overlayPos }) => {
         if (overlayPos && overlayHost) {
@@ -1167,6 +1190,10 @@
       });
       document.documentElement.appendChild(overlayHost);
       overlayRefs.speakTimer = setInterval(() => {
+        if (!isAlive()) {
+          teardownAll();
+          return;
+        }
         if (overlayRefs) {
           overlayRefs.power.classList.toggle("speaking", anySpeaking());
         }
@@ -1259,14 +1286,35 @@
         lightScan();
       }
     }
-    scan();
-    setInterval(scheduledScan, 3e3);
-    document.addEventListener("visibilitychange", () => {
+    function teardownAll() {
+      try {
+        for (const [v, c] of controllers) {
+          c.destroy();
+          controllers.delete(v);
+        }
+      } catch (e) {
+      }
+      destroyOverlay();
+      clearInterval(scanTimer);
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.__voxylioInjected = false;
+    }
+    function guardedScheduledScan() {
+      if (!isAlive()) {
+        teardownAll();
+        return;
+      }
+      scheduledScan();
+    }
+    function onVisibility() {
       if (!document.hidden) {
         scanDirty = true;
-        scheduledScan();
+        guardedScheduledScan();
       }
-    });
+    }
+    scan();
+    const scanTimer = setInterval(guardedScheduledScan, 3e3);
+    document.addEventListener("visibilitychange", onVisibility);
     function anySpeaking() {
       for (const c of controllers.values()) {
         if (c.currentUtterance) return true;

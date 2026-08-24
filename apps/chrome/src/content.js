@@ -16,12 +16,19 @@ import {
   pickVoice as pickBestVoice,
   LOCALES,
 } from "@voxylio/core";
-import { storage, runtime, manifestVersion } from "@voxylio/webext";
+import {
+  storage,
+  runtime,
+  manifestVersion,
+  isAlive,
+  safeSyncSet,
+  safeLocalSet,
+} from "@voxylio/webext";
 
 
 (() => {
-  if (window.__videoDubInjected) return;
-  window.__videoDubInjected = true;
+  if (window.__voxylioInjected) return;
+  window.__voxylioInjected = true;
 
   // ---------------------------------------------------------------- settings
 
@@ -697,6 +704,10 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
     // --- sync loop ---------------------------------------------------------
 
     function tick() {
+      if (!isAlive()) {
+        teardownAll();
+        return;
+      }
       if (!ctl.active) return;
       const t = video.currentTime;
 
@@ -1057,14 +1068,14 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
 
     // --- actions ---
     q(".power").addEventListener("click", () => {
-      storage.sync.set({ enabled: !settings.enabled });
+      safeSyncSet({ enabled: !settings.enabled });
     });
     overlayRefs.lang.addEventListener("change", (e) => {
-      storage.sync.set({ targetLang: e.target.value, voiceName: "" });
+      safeSyncSet({ targetLang: e.target.value, voiceName: "" });
     });
     const bumpRate = (d) => {
       const r = Math.min(1.6, Math.max(0.8, Math.round((settings.rate + d) * 100) / 100));
-      storage.sync.set({ rate: r });
+      safeSyncSet({ rate: r });
     };
     q(".minus").addEventListener("click", () => bumpRate(-0.05));
     q(".plus").addEventListener("click", () => bumpRate(0.05));
@@ -1075,10 +1086,10 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
       renderOverlay();
       refreshAll();
       clearTimeout(duckTimer);
-      duckTimer = setTimeout(() => storage.sync.set({ duck: v }), 250);
+      duckTimer = setTimeout(() => safeSyncSet({ duck: v }), 250);
     });
     q(".close").addEventListener("click", () => {
-      storage.sync.set({ overlay: false });
+      safeSyncSet({ overlay: false });
     });
 
     // --- dragging ---
@@ -1103,7 +1114,7 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
       if (!drag) return;
       drag = null;
       const r = overlayHost.getBoundingClientRect();
-      storage.local.set({ overlayPos: { x: r.left, y: r.top } });
+      safeLocalSet({ overlayPos: { x: r.left, y: r.top } });
     });
 
     // Restore saved position
@@ -1122,6 +1133,10 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
 
     // Speaking indicator: pulse the power button while the voice talks
     overlayRefs.speakTimer = setInterval(() => {
+      if (!isAlive()) {
+        teardownAll();
+        return;
+      }
       if (overlayRefs) {
         overlayRefs.power.classList.toggle("speaking", anySpeaking());
       }
@@ -1233,14 +1248,42 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
     }
   }
 
-  scan();
-  setInterval(scheduledScan, 3000);
-  document.addEventListener("visibilitychange", () => {
+  // When the extension is reloaded/updated, this script becomes an orphan:
+  // chrome.* calls start throwing "Extension context invalidated". Detect
+  // it and dismantle everything — restore the volume, remove the overlay
+  // and captions, stop the voice and every timer — then release the
+  // injection flag so a freshly injected script can take over.
+  function teardownAll() {
+    try {
+      for (const [v, c] of controllers) {
+        c.destroy();
+        controllers.delete(v);
+      }
+    } catch (e) {}
+    destroyOverlay();
+    clearInterval(scanTimer);
+    document.removeEventListener("visibilitychange", onVisibility);
+    window.__voxylioInjected = false;
+  }
+
+  function guardedScheduledScan() {
+    if (!isAlive()) {
+      teardownAll();
+      return;
+    }
+    scheduledScan();
+  }
+
+  function onVisibility() {
     if (!document.hidden) {
       scanDirty = true;
-      scheduledScan();
+      guardedScheduledScan();
     }
-  });
+  }
+
+  scan();
+  const scanTimer = setInterval(guardedScheduledScan, 3000);
+  document.addEventListener("visibilitychange", onVisibility);
 
   // ----------------------------------------------------- popup messages
 
