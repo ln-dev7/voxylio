@@ -11,7 +11,8 @@
     "github": "GitHub",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
-    "account": "Compte"
+    "account": "Compte",
+    "pricing": "Tarifs"
   },
   "Hero": {
     "title": "Suivez n’importe quelle vidéo <accent>dans votre langue</accent>",
@@ -218,7 +219,7 @@
     "planFree": "Gratuit",
     "planPro": "Pro",
     "statusCanceled": "Actif jusqu'au {date}",
-    "upgrade": "Passer Pro",
+    "upgrade": "Passer Pro — 7,99 €/mois",
     "manage": "Gérer mon abonnement",
     "signOut": "Se déconnecter",
     "extensionTitle": "Extension",
@@ -228,6 +229,42 @@
     "extensionLinked": "Extension associée",
     "extensionMissing": "Voxylio n'est pas installée dans ce navigateur.",
     "extensionError": "Impossible de contacter l'extension. Ouvrez cette page dans Chrome avec Voxylio installée.",
-    "checkoutSuccess": "Paiement reçu — votre plan Pro s'active dans quelques secondes."
+    "checkoutSuccess": "Paiement reçu — votre plan Pro s'active dans quelques secondes.",
+    "upgradeYearly": "ou 59,99 €/an (−37 %)"
+  },
+  "Pricing": {
+    "title": "Un prix simple et honnête",
+    "subtitle": "Tout ce qui tourne sur votre appareil est gratuit, pour toujours, sans compte. Le plan Pro finance les fonctions qui demandent un serveur.",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "forever": "pour toujours",
+    "perMonth": "/mois",
+    "yearlyNote": "facturé 59,99 € par an",
+    "note": "Paiement sécurisé via Polar. TVA gérée automatiquement. Annulable à tout moment, effectif en fin de période.",
+    "free": {
+      "name": "Gratuit",
+      "tagline": "Pour tout le monde, sans compte",
+      "cta": "Installer l'extension",
+      "features": {
+        "f1": "Doublage en temps réel illimité, 100 % sur votre appareil",
+        "f2": "5 langues de doublage, langue source auto-détectée",
+        "f3": "Sous-titres traduits affichés sur la vidéo",
+        "f4": "Rien ne quitte votre appareil — aucun compte requis",
+        "f5": "Open source (MIT)"
+      }
+    },
+    "pro": {
+      "name": "Pro",
+      "tagline": "Les fonctions qui demandent un serveur",
+      "cta": "Passer Pro",
+      "badge": "Soutenez le projet",
+      "features": {
+        "f1": "Traduction contextuelle cloud, plus fidèle (bientôt)",
+        "f2": "Nouvelles fonctions Pro dès leur sortie",
+        "f3": "Accès anticipé aux nouvelles langues et plateformes",
+        "f4": "Support prioritaire",
+        "f5": "Un même compte sur tous vos navigateurs"
+      }
+    }
   }
 }

@@ -5,6 +5,7 @@ import { Features } from "@/components/features";
 import { HowItWorks } from "@/components/how-it-works";
 import { LanguagesStrip } from "@/components/languages-strip";
 import { Compare } from "@/components/compare";
+import { Pricing } from "@/components/pricing";
 import { Install } from "@/components/install";
 import { Faq } from "@/components/faq";
 import { SiteFooter } from "@/components/site-footer";
@@ -26,6 +27,7 @@ export default async function HomePage({
         <HowItWorks />
         <LanguagesStrip />
         <Compare />
+        <Pricing />
         <Install />
         <Faq />
       </main>

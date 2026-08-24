@@ -19,6 +19,7 @@ export function SiteHeader() {
   const nav = [
     { hash: "features", label: t("features") },
     { hash: "how-it-works", label: t("howItWorks") },
+    { hash: "pricing", label: t("pricing") },
     { hash: "install", label: t("install") },
     { hash: "faq", label: t("faq") },
   ];

@@ -81,6 +81,18 @@ export function AccountView() {
     }
   }, [session?.user.id, loadEntitlements]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Arriving from the pricing section (?buy=pro|pro-yearly): start the
+  // checkout as soon as we're signed in and know the user isn't Pro yet.
+  const [buying, setBuying] = useState(false);
+  useEffect(() => {
+    if (!session || buying || !ent || ent.plan === "pro") return;
+    const buy = new URLSearchParams(window.location.search).get("buy");
+    if (buy === "pro" || buy === "pro-yearly") {
+      setBuying(true);
+      authClient.checkout({ slug: buy });
+    }
+  }, [session, ent, buying]);
+
   const linkExtension = useCallback(async () => {
     setExt("linking");
     try {
@@ -179,12 +191,21 @@ export function AccountView() {
                   {t("manage")}
                 </Button>
               ) : (
-                <Button
-                  className="rounded-full"
-                  onClick={() => authClient.checkout({ slug: "pro" })}
-                >
-                  {t("upgrade")}
-                </Button>
+                <div className="flex flex-col items-end gap-1.5">
+                  <Button
+                    className="rounded-full"
+                    onClick={() => authClient.checkout({ slug: "pro" })}
+                  >
+                    {t("upgrade")}
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={() => authClient.checkout({ slug: "pro-yearly" })}
+                    className="cursor-pointer text-xs text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    {t("upgradeYearly")}
+                  </button>
+                </div>
               )}
             </div>
           </div>

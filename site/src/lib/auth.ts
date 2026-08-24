@@ -36,6 +36,10 @@ export const auth = betterAuth({
               productId: process.env.POLAR_PRODUCT_PRO_ID ?? "",
               slug: "pro",
             },
+            {
+              productId: process.env.POLAR_PRODUCT_PRO_YEARLY_ID ?? "",
+              slug: "pro-yearly",
+            },
           ],
           successUrl: "/account?checkout=success",
           authenticatedUsersOnly: true,

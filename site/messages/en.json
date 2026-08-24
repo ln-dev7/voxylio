@@ -11,7 +11,8 @@
     "github": "GitHub",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "account": "Account"
+    "account": "Account",
+    "pricing": "Pricing"
   },
   "Hero": {
     "title": "Watch any video in <accent>your language</accent>",
@@ -218,7 +219,7 @@
     "planFree": "Free",
     "planPro": "Pro",
     "statusCanceled": "Active until {date}",
-    "upgrade": "Upgrade to Pro",
+    "upgrade": "Go Pro — €7.99/mo",
     "manage": "Manage subscription",
     "signOut": "Sign out",
     "extensionTitle": "Extension",
@@ -228,6 +229,42 @@
     "extensionLinked": "Extension linked",
     "extensionMissing": "Voxylio isn't installed in this browser.",
     "extensionError": "Couldn't reach the extension. Open this page in Chrome with Voxylio installed.",
-    "checkoutSuccess": "Payment received — your Pro plan activates in a few seconds."
+    "checkoutSuccess": "Payment received — your Pro plan activates in a few seconds.",
+    "upgradeYearly": "or €59.99/yr (−37%)"
+  },
+  "Pricing": {
+    "title": "Simple, honest pricing",
+    "subtitle": "Everything that runs on your device is free, forever, without an account. Pro funds the features that need a server.",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "forever": "forever",
+    "perMonth": "/month",
+    "yearlyNote": "billed €59.99 per year",
+    "note": "Secure payment via Polar. VAT handled automatically. Cancel anytime, effective at the end of the period.",
+    "free": {
+      "name": "Free",
+      "tagline": "For everyone, no account",
+      "cta": "Install the extension",
+      "features": {
+        "f1": "Unlimited real-time dubbing, 100% on your device",
+        "f2": "5 dubbing languages, source auto-detected",
+        "f3": "Translated subtitles right on the video",
+        "f4": "Nothing leaves your device — no account required",
+        "f5": "Open source (MIT)"
+      }
+    },
+    "pro": {
+      "name": "Pro",
+      "tagline": "The features that need a server",
+      "cta": "Go Pro",
+      "badge": "Support the project",
+      "features": {
+        "f1": "Context-aware cloud translation, more faithful (soon)",
+        "f2": "New Pro features as they ship",
+        "f3": "Early access to new languages and platforms",
+        "f4": "Priority support",
+        "f5": "One account across all your browsers"
+      }
+    }
   }
 }
