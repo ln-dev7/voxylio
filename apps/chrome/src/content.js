@@ -6,6 +6,7 @@ import {
   BoundedMap,
   buildGroups,
   mergeRollup,
+  endsSentence,
   cleanCaption,
   parseVTT,
   stripTags,
@@ -296,7 +297,14 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
       captionEl: null, // on-screen translated captions container
       trackListened: null,
       staticLoaded: false,
-      lastSpokenKey: null,
+      // Anti-repetition registries (progressive captions can regrow a
+      // group; identity is the stable group id, never the mutable text):
+      scheduledIds: new Set(), // groups queued for translation/speech
+      spokenIds: new Set(), // groups already spoken (or deliberately skipped)
+      inFlight: new Map(), // group id -> { version, promise } translation reuse
+      generation: 0, // bumped on seek/language/track change: voids stale work
+      groupMeta: new Map(), // group id -> { version, changedAt } stability clock
+      cleanupAt: 0,
       currentUtterance: null,
       queue: [], // pending lines [{text, dur, start, end}] — bounded FIFO
       autoPaused: false, // we paused the video to let the voice catch up
@@ -341,6 +349,26 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
       if (ctl.cues.length === ctl.lastCueCount) return;
       ctl.lastCueCount = ctl.cues.length;
       ctl.groups = buildGroups(ctl.cues);
+      const now = Date.now();
+      for (const g of ctl.groups) {
+        const meta = ctl.groupMeta.get(g.id);
+        if (!meta || meta.version !== g.version) {
+          ctl.groupMeta.set(g.id, { version: g.version, changedAt: now });
+        }
+      }
+    }
+
+    // A group may be spoken only once it is FINAL: every group but the
+    // trailing one is final by construction; the trailing one becomes
+    // final when its text has stopped changing (shorter wait when it
+    // already ends like a sentence). Speaking drafts is what caused the
+    // "Bienvenue / Bienvenue dans le cours / …" repetitions.
+    function isFinalGroup(g) {
+      if (g.final) return true;
+      const meta = ctl.groupMeta.get(g.id);
+      if (!meta) return false;
+      const stableFor = Date.now() - meta.changedAt;
+      return stableFor >= (endsSentence(g.text) ? 350 : 650);
     }
 
     function harvestTextTracks() {
@@ -465,7 +493,7 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
       const t = video.currentTime;
       // Translate sentences in the [t, t+90s] window, max ~8 in flight
       const upcoming = ctl.groups.filter(
-        (g) => g.end >= t && g.start <= t + 90
+        (g) => g.end >= t && g.start <= t + 90 && isFinalGroup(g)
       );
       const source = effectiveSource();
       if (source !== "auto" && source === settings.targetLang) return;
@@ -482,7 +510,13 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
 
     // --- speech synthesis --------------------------------------------------
 
-    function speak(text, cueDur) {
+    function speak(text, cueDur, id) {
+      if (id) {
+        // The group is now truly being voiced: lock it forever.
+        ctl.spokenIds.add(id);
+        ctl.scheduledIds.delete(id);
+        ctl.inFlight.delete(id);
+      }
       const u = new SpeechSynthesisUtterance(text);
       const v = pickVoice();
       if (v) u.voice = v;
@@ -532,7 +566,7 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
       }
       const q = ctl.queue.shift();
       if (!q) return;
-      speak(q.text, q.dur);
+      speak(q.text, q.dur, q.id);
     }
 
     // Bounded enqueue: never lose a line silently. When the voice falls
@@ -551,33 +585,64 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
       drainQueue();
     }
 
-    async function onCueEnter(cue) {
-      ctl.lastSpokenKey = cue.key;
+    async function onGroupEnter(group) {
+      ctl.scheduledIds.add(group.id);
+      const gen = ctl.generation; // work is void if this changes
       const target = settings.targetLang; // language at trigger time
       const source = effectiveSource();
       // Video already in the target language: nothing to dub.
       if (source !== "auto" && source === target) return;
+
+      // Reuse an identical in-flight translation; never translate two
+      // versions of the same group concurrently.
+      let entry = ctl.inFlight.get(group.id);
+      if (!entry || entry.version !== group.version) {
+        entry = {
+          version: group.version,
+          promise: translate(group.text, source),
+        };
+        ctl.inFlight.set(group.id, entry);
+      }
       let text;
       try {
-        text = await translate(cue.text, source);
+        text = await entry.promise;
       } catch (e) {
-        return; // no translation => do not interrupt the video
+        // Translation failed: release so a later tick can retry.
+        ctl.scheduledIds.delete(group.id);
+        ctl.inFlight.delete(group.id);
+        return;
       }
-      // The user switched languages during translation: this line belongs
-      // to the previous language, so it is never spoken.
+      // Anything relevant changed while we were translating? Then this
+      // result is history — it must never reach the voice queue.
+      if (gen !== ctl.generation) return;
       if (settings.targetLang !== target) return;
-      if (settings.subtitles) showCaption(cue.text, text);
+      const live = ctl.groups.find((g) => g.id === group.id);
+      if (!live || live.version !== group.version) {
+        // The group grew after being finalized (rare regroup): drop this
+        // stale text and let the next tick reschedule the new version.
+        ctl.scheduledIds.delete(group.id);
+        ctl.inFlight.delete(group.id);
+        return;
+      }
+      if (settings.subtitles) showCaption(group.text, text);
       // A translation may arrive after the video was paused: never speak
       // while the video is stopped (except our own catch-up pause).
-      if (!ctl.active || (video.paused && !ctl.autoPaused) || video.seeking)
+      if (!ctl.active || (video.paused && !ctl.autoPaused) || video.seeking) {
+        ctl.scheduledIds.delete(group.id);
         return;
+      }
       // A line translated too late must not play once its moment is gone
-      if (video.currentTime > cue.end + 4) return;
-      const dur = cue.end - cue.start;
+      if (video.currentTime > group.end + 4) {
+        ctl.spokenIds.add(group.id); // deliberately skipped, never revisited
+        ctl.scheduledIds.delete(group.id);
+        ctl.inFlight.delete(group.id);
+        return;
+      }
+      const dur = group.end - group.start;
       if (ctl.currentUtterance) {
-        enqueue({ text, dur, start: cue.start, end: cue.end });
+        enqueue({ text, dur, start: group.start, end: group.end, id: group.id });
       } else {
-        speak(text, dur);
+        speak(text, dur, group.id);
       }
     }
 
@@ -637,8 +702,7 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
 
       // Seek/backward jump: restart cleanly
       if (t < ctl.lastTime - 0.75) {
-        hardStopSpeech();
-        ctl.lastSpokenKey = null;
+        fullFlush();
       }
       ctl.lastTime = t;
 
@@ -668,16 +732,38 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
         }
         if (g.start > t) break;
       }
-      if (current && current.key !== ctl.lastSpokenKey) {
-        onCueEnter(current);
+      if (
+        current &&
+        isFinalGroup(current) &&
+        !ctl.spokenIds.has(current.id) &&
+        !ctl.scheduledIds.has(current.id)
+      ) {
+        onGroupEnter(current);
       } else if (!current || !settings.subtitles) {
         hideCaption();
+      }
+      // Registries are bounded: forget groups far behind the playhead.
+      if (Date.now() > ctl.cleanupAt) {
+        ctl.cleanupAt = Date.now() + 5000;
+        for (const g of ctl.groups) {
+          if (g.end < t - 120) {
+            ctl.spokenIds.delete(g.id);
+            ctl.scheduledIds.delete(g.id);
+            ctl.inFlight.delete(g.id);
+            ctl.groupMeta.delete(g.id);
+          }
+        }
       }
       positionCaption();
       pretranslate();
     }
 
+    // Transient flush: cuts voice + queue and voids in-flight work, but
+    // KEEPS spokenIds (a pause must not cause re-speaking on resume).
     function hardStopSpeech() {
+      ctl.generation += 1;
+      ctl.scheduledIds.clear();
+      ctl.inFlight.clear();
       const hadSpeech = ctl.currentUtterance || ctl.queue.length > 0;
       ctl.queue.length = 0;
       ctl.currentUtterance = null;
@@ -725,7 +811,7 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
       harvestTrackElements();
       ctl.pollTimer = setInterval(tick, 150);
       video.addEventListener("pause", onPauseEvent);
-      video.addEventListener("seeking", hardStopSpeech);
+      video.addEventListener("seeking", fullFlush);
       video.addEventListener("ended", hardStopSpeech);
       video.addEventListener("ratechange", hardStopSpeech);
       video.addEventListener("volumechange", onVolumeChange);
@@ -743,14 +829,20 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
       clearInterval(ctl.pollTimer);
       ctl.pollTimer = null;
       video.removeEventListener("pause", onPauseEvent);
-      video.removeEventListener("seeking", hardStopSpeech);
+      video.removeEventListener("seeking", fullFlush);
       video.removeEventListener("ended", hardStopSpeech);
       video.removeEventListener("ratechange", hardStopSpeech);
       video.removeEventListener("volumechange", onVolumeChange);
       hardStopSpeech();
       restoreVolume();
       hideCaption();
-      ctl.lastSpokenKey = null;
+    }
+
+    // Full flush: also forgets what was spoken — after a seek or a
+    // language change the user expects the current passage to be re-dubbed.
+    function fullFlush() {
+      hardStopSpeech();
+      ctl.spokenIds.clear();
     }
 
     ctl.onSettingsChanged = () => {
@@ -788,6 +880,7 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
       }
     };
     ctl.flushSpeech = hardStopSpeech; // immediate cut (language change)
+    ctl.fullFlush = fullFlush; // seek-grade reset (also forgets spoken groups)
     ctl.harvest();
     ctl.onSettingsChanged();
     return ctl;
@@ -1165,6 +1258,7 @@ import { storage, runtime, manifestVersion } from "@voxylio/webext";
         c.staticLoaded = false;
         c.trackRetryAt = 0;
         c.lastCueCount = -1;
+        c.fullFlush();
       }
       builtinBroken = false;
       lastTranslateError = "";

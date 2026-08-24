@@ -1,4 +1,4 @@
-// GENERATED FILE — do not edit. Source: apps/chrome/src (pnpm build:chrome).
+// GENERATED FILE — do not edit. Source: apps/chrome/src (pnpm build).
 (() => {
   // ../../packages/core/src/subtitles.js
   function stripTags(s) {
@@ -43,15 +43,63 @@
   // ../../packages/core/src/grouping.js
   var GROUP_MAX_LEN = 280;
   var GROUP_MAX_GAP = 1.4;
+  function textHash(s) {
+    let h = 2166136261;
+    for (let i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = h * 16777619 >>> 0;
+    }
+    return h.toString(36);
+  }
+  function normalizeWords(s) {
+    return s.toLowerCase().replace(/[.,!?…;:'"«»()\[\]]/g, " ").split(/\s+/).filter(Boolean);
+  }
+  function wordOverlap(a, b, minWords = 2) {
+    const aw = normalizeWords(a);
+    const bw = normalizeWords(b);
+    const max = Math.min(aw.length, bw.length);
+    for (let n = max; n >= minWords; n--) {
+      let match = true;
+      for (let i = 0; i < n; i++) {
+        if (aw[aw.length - n + i] !== bw[i]) {
+          match = false;
+          break;
+        }
+      }
+      if (match) return n;
+    }
+    return 0;
+  }
   function mergeRollup(last, start, end, text) {
     if (!last) return null;
     if (start > last.end + 0.6) return null;
-    if (!(text.startsWith(last.text) || last.text.startsWith(text))) return null;
-    return {
-      text: text.length > last.text.length ? text : last.text,
-      end: Math.max(last.end, end),
-      grew: text.length > last.text.length
-    };
+    if (text.startsWith(last.text) || last.text.startsWith(text)) {
+      return {
+        text: text.length > last.text.length ? text : last.text,
+        end: Math.max(last.end, end),
+        grew: text.length > last.text.length
+      };
+    }
+    const overlap = wordOverlap(last.text, text, 2);
+    if (overlap > 0) {
+      const bw = normalizeWords(text);
+      if (overlap >= bw.length) {
+        return { text: last.text, end: Math.max(last.end, end), grew: false };
+      }
+      const re = /\S+/g;
+      const starts = [];
+      let m;
+      while ((m = re.exec(last.text)) !== null) starts.push(m.index);
+      const cutIdx = starts[starts.length - overlap] ?? 0;
+      const head = last.text.slice(0, cutIdx).trimEnd();
+      const merged = head ? head + " " + text : text;
+      return {
+        text: merged,
+        end: Math.max(last.end, end),
+        grew: merged.length > last.text.length
+      };
+    }
+    return null;
   }
   function buildGroups(cues, opts = {}) {
     const MAX_LEN = opts.maxLen ?? GROUP_MAX_LEN;
@@ -75,8 +123,12 @@
       }
     }
     if (cur) groups.push(cur);
-    for (const g of groups) {
-      g.key = Math.round(g.start * 100) + "|" + g.text.slice(0, 48);
+    for (let i = 0; i < groups.length; i++) {
+      const g = groups[i];
+      g.id = "g" + Math.round(g.start * 100);
+      g.version = textHash(g.text);
+      g.final = i < groups.length - 1;
+      g.key = g.id + ":" + g.version;
     }
     return groups;
   }
@@ -443,7 +495,19 @@
         // on-screen translated captions container
         trackListened: null,
         staticLoaded: false,
-        lastSpokenKey: null,
+        // Anti-repetition registries (progressive captions can regrow a
+        // group; identity is the stable group id, never the mutable text):
+        scheduledIds: /* @__PURE__ */ new Set(),
+        // groups queued for translation/speech
+        spokenIds: /* @__PURE__ */ new Set(),
+        // groups already spoken (or deliberately skipped)
+        inFlight: /* @__PURE__ */ new Map(),
+        // group id -> { version, promise } translation reuse
+        generation: 0,
+        // bumped on seek/language/track change: voids stale work
+        groupMeta: /* @__PURE__ */ new Map(),
+        // group id -> { version, changedAt } stability clock
+        cleanupAt: 0,
         currentUtterance: null,
         queue: [],
         // pending lines [{text, dur, start, end}] — bounded FIFO
@@ -484,6 +548,20 @@
         if (ctl.cues.length === ctl.lastCueCount) return;
         ctl.lastCueCount = ctl.cues.length;
         ctl.groups = buildGroups(ctl.cues);
+        const now = Date.now();
+        for (const g of ctl.groups) {
+          const meta = ctl.groupMeta.get(g.id);
+          if (!meta || meta.version !== g.version) {
+            ctl.groupMeta.set(g.id, { version: g.version, changedAt: now });
+          }
+        }
+      }
+      function isFinalGroup(g) {
+        if (g.final) return true;
+        const meta = ctl.groupMeta.get(g.id);
+        if (!meta) return false;
+        const stableFor = Date.now() - meta.changedAt;
+        return stableFor >= (endsSentence(g.text) ? 350 : 650);
       }
       function harvestTextTracks() {
         const tracks = Array.from(video.textTracks || []).filter(
@@ -576,7 +654,7 @@
         if (!ctl.active) return;
         const t = video.currentTime;
         const upcoming = ctl.groups.filter(
-          (g) => g.end >= t && g.start <= t + 90
+          (g) => g.end >= t && g.start <= t + 90 && isFinalGroup(g)
         );
         const source = effectiveSource();
         if (source !== "auto" && source === settings.targetLang) return;
@@ -591,7 +669,12 @@
           }
         }
       }
-      function speak(text, cueDur) {
+      function speak(text, cueDur, id) {
+        if (id) {
+          ctl.spokenIds.add(id);
+          ctl.scheduledIds.delete(id);
+          ctl.inFlight.delete(id);
+        }
         const u = new SpeechSynthesisUtterance(text);
         const v = pickVoice2();
         if (v) u.voice = v;
@@ -631,7 +714,7 @@
         }
         const q = ctl.queue.shift();
         if (!q) return;
-        speak(q.text, q.dur);
+        speak(q.text, q.dur, q.id);
       }
       function enqueue(item) {
         ctl.queue.push(item);
@@ -645,27 +728,52 @@
         }
         drainQueue();
       }
-      async function onCueEnter(cue) {
-        ctl.lastSpokenKey = cue.key;
+      async function onGroupEnter(group) {
+        ctl.scheduledIds.add(group.id);
+        const gen = ctl.generation;
         const target = settings.targetLang;
         const source = effectiveSource();
         if (source !== "auto" && source === target) return;
+        let entry = ctl.inFlight.get(group.id);
+        if (!entry || entry.version !== group.version) {
+          entry = {
+            version: group.version,
+            promise: translate(group.text, source)
+          };
+          ctl.inFlight.set(group.id, entry);
+        }
         let text;
         try {
-          text = await translate(cue.text, source);
+          text = await entry.promise;
         } catch (e) {
+          ctl.scheduledIds.delete(group.id);
+          ctl.inFlight.delete(group.id);
           return;
         }
+        if (gen !== ctl.generation) return;
         if (settings.targetLang !== target) return;
-        if (settings.subtitles) showCaption(cue.text, text);
-        if (!ctl.active || video.paused && !ctl.autoPaused || video.seeking)
+        const live = ctl.groups.find((g) => g.id === group.id);
+        if (!live || live.version !== group.version) {
+          ctl.scheduledIds.delete(group.id);
+          ctl.inFlight.delete(group.id);
           return;
-        if (video.currentTime > cue.end + 4) return;
-        const dur = cue.end - cue.start;
+        }
+        if (settings.subtitles) showCaption(group.text, text);
+        if (!ctl.active || video.paused && !ctl.autoPaused || video.seeking) {
+          ctl.scheduledIds.delete(group.id);
+          return;
+        }
+        if (video.currentTime > group.end + 4) {
+          ctl.spokenIds.add(group.id);
+          ctl.scheduledIds.delete(group.id);
+          ctl.inFlight.delete(group.id);
+          return;
+        }
+        const dur = group.end - group.start;
         if (ctl.currentUtterance) {
-          enqueue({ text, dur, start: cue.start, end: cue.end });
+          enqueue({ text, dur, start: group.start, end: group.end, id: group.id });
         } else {
-          speak(text, dur);
+          speak(text, dur, group.id);
         }
       }
       function ensureCaptionEl() {
@@ -704,8 +812,7 @@
         if (!ctl.active) return;
         const t = video.currentTime;
         if (t < ctl.lastTime - 0.75) {
-          hardStopSpeech();
-          ctl.lastSpokenKey = null;
+          fullFlush();
         }
         ctl.lastTime = t;
         if (video.paused && !ctl.autoPaused || video.seeking) return;
@@ -723,15 +830,29 @@
           }
           if (g.start > t) break;
         }
-        if (current && current.key !== ctl.lastSpokenKey) {
-          onCueEnter(current);
+        if (current && isFinalGroup(current) && !ctl.spokenIds.has(current.id) && !ctl.scheduledIds.has(current.id)) {
+          onGroupEnter(current);
         } else if (!current || !settings.subtitles) {
           hideCaption();
+        }
+        if (Date.now() > ctl.cleanupAt) {
+          ctl.cleanupAt = Date.now() + 5e3;
+          for (const g of ctl.groups) {
+            if (g.end < t - 120) {
+              ctl.spokenIds.delete(g.id);
+              ctl.scheduledIds.delete(g.id);
+              ctl.inFlight.delete(g.id);
+              ctl.groupMeta.delete(g.id);
+            }
+          }
         }
         positionCaption();
         pretranslate();
       }
       function hardStopSpeech() {
+        ctl.generation += 1;
+        ctl.scheduledIds.clear();
+        ctl.inFlight.clear();
         const hadSpeech = ctl.currentUtterance || ctl.queue.length > 0;
         ctl.queue.length = 0;
         ctl.currentUtterance = null;
@@ -769,7 +890,7 @@
         harvestTrackElements();
         ctl.pollTimer = setInterval(tick, 150);
         video.addEventListener("pause", onPauseEvent);
-        video.addEventListener("seeking", hardStopSpeech);
+        video.addEventListener("seeking", fullFlush);
         video.addEventListener("ended", hardStopSpeech);
         video.addEventListener("ratechange", hardStopSpeech);
         video.addEventListener("volumechange", onVolumeChange);
@@ -783,14 +904,17 @@
         clearInterval(ctl.pollTimer);
         ctl.pollTimer = null;
         video.removeEventListener("pause", onPauseEvent);
-        video.removeEventListener("seeking", hardStopSpeech);
+        video.removeEventListener("seeking", fullFlush);
         video.removeEventListener("ended", hardStopSpeech);
         video.removeEventListener("ratechange", hardStopSpeech);
         video.removeEventListener("volumechange", onVolumeChange);
         hardStopSpeech();
         restoreVolume();
         hideCaption();
-        ctl.lastSpokenKey = null;
+      }
+      function fullFlush() {
+        hardStopSpeech();
+        ctl.spokenIds.clear();
       }
       ctl.onSettingsChanged = () => {
         if (settings.enabled && video === primaryVideo) {
@@ -821,6 +945,7 @@
         }
       };
       ctl.flushSpeech = hardStopSpeech;
+      ctl.fullFlush = fullFlush;
       ctl.harvest();
       ctl.onSettingsChanged();
       return ctl;
@@ -1154,6 +1279,7 @@
           c.staticLoaded = false;
           c.trackRetryAt = 0;
           c.lastCueCount = -1;
+          c.fullFlush();
         }
         builtinBroken = false;
         lastTranslateError = "";
