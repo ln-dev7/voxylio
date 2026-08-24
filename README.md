@@ -22,10 +22,23 @@ No account, no API key, no quota.
 
 ## Repository layout
 
-| Folder       | Description                                        |
-| ------------ | -------------------------------------------------- |
-| `extension/` | The Chrome extension (Manifest V3, vanilla JS)     |
-| `site/`      | Presentation website (Next.js, next-intl, shadcn/ui) |
+pnpm workspace — the dubbing engine is shared, platforms are adapters.
+
+| Folder              | Description                                            |
+| ------------------- | ------------------------------------------------------ |
+| `packages/core/`    | Platform-agnostic engine: parsing, sentence grouping, glossary, cache, pacing, voices — with unit tests |
+| `packages/webext/`  | WebExtension adapter (`chrome.*` / `browser.*`)        |
+| `apps/chrome/`      | Chrome build: sources + static assets + esbuild bundler |
+| `extension/`        | **Generated** Chrome build output — the load-unpacked / store-zip folder. Do not edit its `.js` files by hand |
+| `site/`             | Presentation website (Next.js, next-intl, shadcn/ui)   |
+| `tests/integration/`| Playwright harnesses run against the built bundle      |
+
+```bash
+pnpm install
+pnpm build:chrome   # bundle the engine into /extension
+pnpm test:unit      # core unit tests (node:test)
+pnpm test           # unit + content-script integration tests
+```
 
 ## Install the extension
 
