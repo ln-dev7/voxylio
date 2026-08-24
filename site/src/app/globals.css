@@ -99,12 +99,13 @@
   }
 }
 
+/* Slides left → right */
 @keyframes marquee-scroll {
   from {
-    transform: translateX(0);
+    transform: translateX(-50%);
   }
   to {
-    transform: translateX(-50%);
+    transform: translateX(0);
   }
 }
 
@@ -126,15 +127,6 @@
   100% {
     transform: scale(1.9);
     opacity: 0;
-  }
-}
-
-@keyframes player-progress {
-  0% {
-    width: 22%;
-  }
-  100% {
-    width: 74%;
   }
 }
 
@@ -185,10 +177,6 @@
   animation: ring-pulse 2.2s ease-out infinite;
 }
 
-.player-progress {
-  animation: player-progress 24s linear infinite alternate;
-}
-
 /* Dotted grid backdrop for media panels */
 .dot-grid {
   background-image: radial-gradient(
@@ -203,8 +191,7 @@
   .shiny-text,
   .marquee-track,
   .wave-bar,
-  .play-ring,
-  .player-progress {
+  .play-ring {
     animation: none;
   }
 }

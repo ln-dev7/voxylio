@@ -35,12 +35,33 @@ const LINES = [
 
 const WAVE_DELAYS = [0, 0.15, 0.3, 0.1, 0.25];
 
+// Fake lesson length: 3:38, like a short course video
+const DURATION = 218;
+
+function fmt(s: number) {
+  const m = Math.floor(s / 60);
+  const sec = String(Math.floor(s % 60)).padStart(2, "0");
+  return `${m}:${sec}`;
+}
+
 export function DubDemo() {
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
   const [playing, setPlaying] = useState(true);
+  const [time, setTime] = useState(26);
   const fadeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Real clock: the timeline only moves forward while playing, and only
+  // restarts when it reaches the end (or when the user drags the slider).
+  useEffect(() => {
+    if (!playing) return;
+    const tick = setInterval(() => {
+      setTime((t) => (t + 0.25 >= DURATION ? 0 : t + 0.25));
+    }, 250);
+    return () => clearInterval(tick);
+  }, [playing]);
+
+  // Caption rotation, paused together with the player
   useEffect(() => {
     if (!playing) return;
     const timer = setInterval(() => {
@@ -58,13 +79,14 @@ export function DubDemo() {
   }, [playing]);
 
   const line = LINES[index];
+  const progress = (time / DURATION) * 100;
 
   return (
     <div
       className={`group relative mx-auto max-w-5xl ${
         playing
           ? ""
-          : "[&_.player-progress]:[animation-play-state:paused] [&_.wave-bar]:[animation-play-state:paused] [&_.play-ring]:[animation-play-state:paused] [&_.animate-ping]:[animation-play-state:paused]"
+          : "[&_.wave-bar]:[animation-play-state:paused] [&_.play-ring]:[animation-play-state:paused] [&_.animate-ping]:[animation-play-state:paused]"
       }`}
     >
       {/* Gradient border frame */}
@@ -148,22 +170,66 @@ export function DubDemo() {
 
           {/* Player chrome */}
           <div className="absolute inset-x-0 bottom-0 border-t border-white/[0.06] bg-gradient-to-t from-black/70 to-transparent px-4 pb-3.5 pt-6 sm:px-5">
-            <div className="h-1 w-full overflow-hidden rounded-full bg-white/15">
-              <div className="player-progress relative h-full rounded-full bg-primary">
-                <span className="absolute -right-1 top-1/2 size-2.5 -translate-y-1/2 rounded-full bg-white shadow" />
-              </div>
-            </div>
+            {/* Seekable timeline: a real slider driven by the clock */}
+            <input
+              type="range"
+              min={0}
+              max={DURATION}
+              step={0.1}
+              value={time}
+              onChange={(e) => setTime(Number(e.target.value))}
+              aria-label="Timeline"
+              className="demo-seek block w-full"
+              style={{
+                background: `linear-gradient(to right, #1ed760 0%, #1ed760 ${progress}%, rgba(255,255,255,0.15) ${progress}%, rgba(255,255,255,0.15) 100%)`,
+              }}
+            />
             <div className="mt-2.5 flex items-center gap-4 text-white/70">
-              <Play className="size-4 fill-current" />
+              <button
+                type="button"
+                aria-label={playing ? "Pause" : "Play"}
+                onClick={() => setPlaying((p) => !p)}
+                className="cursor-pointer transition-colors hover:text-white"
+              >
+                {playing ? (
+                  <Pause className="size-4 fill-current" />
+                ) : (
+                  <Play className="size-4 fill-current" />
+                )}
+              </button>
               <Volume2 className="size-4" />
               <span className="text-[11px] font-medium tabular-nums">
-                12:04 / 38:15
+                {fmt(time)} / {fmt(DURATION)}
               </span>
               <span className="flex-1" />
               <Captions className="size-4.5 text-primary" />
               <Settings className="size-4" />
               <Maximize className="size-4" />
             </div>
+            <style>{`
+              .demo-seek {
+                -webkit-appearance: none;
+                appearance: none;
+                height: 4px;
+                border-radius: 9999px;
+                cursor: pointer;
+              }
+              .demo-seek::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: #ffffff;
+                box-shadow: rgba(0,0,0,0.6) 0px 1px 4px;
+                transition: transform 0.15s;
+              }
+              .demo-seek:hover::-webkit-slider-thumb { transform: scale(1.2); }
+              .demo-seek:focus-visible {
+                outline: 2px solid #1ed760;
+                outline-offset: 3px;
+              }
+            `}</style>
           </div>
         </div>
       </div>
