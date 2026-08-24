@@ -1,12 +1,11 @@
-# Video Dub
+# Voxylio
 
-Real-time video dubbing in your browser. Video Dub is a Chrome extension that
+Real-time video dubbing in your browser. Voxylio is a Chrome extension that
 dubs any subtitled video into **French, Spanish, Italian, German or
 Portuguese** — live, while you watch.
 
-It was born from a simple need: following English video courses (like the
-[AI Coding Crash Course](https://www.aihero.dev/workshops/ai-coding-crash-course))
-in your own language, the way YouTube auto-dubbing does — but on any site.
+It was born from a simple need: following English video courses in your own
+language, the way YouTube auto-dubbing does — but on any site.
 
 ## How it works
 

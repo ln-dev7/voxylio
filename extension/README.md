@@ -1,9 +1,8 @@
-# Video Dub — Chrome extension
+# Voxylio — Chrome extension
 
 Dubs subtitled videos in real time — into **French, Spanish, Italian, German
-or Portuguese**. Built for course platforms like
-[AI Hero](https://www.aihero.dev), works on any site whose player exposes a
-subtitle track.
+or Portuguese**. Built for online course platforms, works on any site whose
+player exposes a subtitle track.
 
 ## How it works
 

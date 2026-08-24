@@ -1,12 +1,12 @@
 # Roadmap
 
-What Video Dub does today is documented in the [README](README.md). This
+What Voxylio does today is documented in the [README](README.md). This
 roadmap tracks where it goes next, roughly in order.
 
 ## Near term
 
 - **Publish a beta on the Chrome Web Store**, with real compatibility and
-  latency measurements across platforms (Udemy, Coursera, AI Hero,
+  latency measurements across platforms (Udemy, Coursera,
   Teachable, Thinkific, Kajabi, Vimeo, Mux, YouTube, standalone HTML5
   players) — a public compatibility matrix on the website.
 - **Privacy page & permission narrowing**: publish a full privacy policy,
@@ -30,7 +30,7 @@ roadmap tracks where it goes next, roughly in order.
 ## Course-companion suite
 
 The dubbing is the entry point; the durable value is the learning layer on
-top of it — this is where Video Dub diverges from generic dubbing tools:
+top of it — this is where Voxylio diverges from generic dubbing tools:
 
 - Searchable transcript across all videos of a course
 - Timecoded notes and voice bookmarks

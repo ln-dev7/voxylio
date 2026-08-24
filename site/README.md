@@ -1,6 +1,6 @@
-# Video Dub — website
+# Voxylio — website
 
-Presentation website for the Video Dub Chrome extension.
+Presentation website for the Voxylio Chrome extension.
 
 Built with [Next.js](https://nextjs.org) (App Router),
 [next-intl](https://next-intl.dev) for the bilingual routing (`/en`, `/fr`),
