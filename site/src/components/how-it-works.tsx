@@ -1,6 +1,5 @@
-import Image from "next/image";
 import { useTranslations } from "next-intl";
-import popupPreview from "../../public/popup-preview.png";
+import { ExtensionPopup } from "@/components/extension-popup";
 
 const STEPS = ["detect", "translate", "speak"] as const;
 
@@ -12,7 +11,7 @@ export function HowItWorks() {
       id="how-it-works"
       className="scroll-mt-16 border-t border-white/[0.06]"
     >
-      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-24 sm:px-6 lg:grid-cols-[1fr_320px]">
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-24 sm:px-6 lg:grid-cols-[1fr_360px]">
         <div>
           <h2 className="text-balance font-display text-3xl font-semibold tracking-tight sm:text-[2.6rem] sm:leading-[1.15]">
             {t("title")}
@@ -32,13 +31,13 @@ export function HowItWorks() {
               </li>
             ))}
           </ol>
+          <p className="mt-8 text-sm text-muted-foreground/80">
+            {t("tryIt")} →
+          </p>
         </div>
-        <div className="mx-auto w-full max-w-[320px] overflow-hidden rounded-xl border border-border shadow-[0_16px_48px_rgba(0,0,0,0.5)]">
-          <Image
-            src={popupPreview}
-            alt="Video Dub extension popup"
-            className="w-full"
-          />
+        {/* Live, fully interactive replica of the extension popup */}
+        <div className="mx-auto w-full max-w-[340px]">
+          <ExtensionPopup />
         </div>
       </div>
     </section>
