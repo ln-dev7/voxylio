@@ -42,7 +42,12 @@ diagnostic — planned, not started.
 
 ## 1. Workstream A — Chrome publishable (porting plan phase 2)
 
-### A1. Options page + settings plumbing  ☐
+### A1. Options page + settings plumbing  ✅
+
+✅ Shipped in v1.7.0: `options.html`/`options.js` (provider picker, BYO
+keys in storage.local with a DeepL key checker, per-site disable list,
+export/import), `packages/core/src/settings.js` (defaults/validate/
+migrate, unit-tested).
 
 The popup is full; provider keys and per-site controls need a real options
 page.
@@ -55,7 +60,15 @@ page.
 | Tests | unit-test settings schema migration in core (`packages/core/src/settings.js` — new module: defaults, validate, migrate) |
 | Exit | options page functional in Chrome; `pnpm test` green |
 
-### A2. Translation provider abstraction  ⚙ (engine hook exists) 🔶
+### A2. Translation provider abstraction  ✅ 🔶
+
+✅ Shipped in v1.7.0: `packages/core/src/translation.js`
+(`createTranslatorChain`: ordering, ready/attempt timeouts, per-pair
+cooldown — unit-tested with mock providers) + providers in
+`packages/webext/src/providers/` (builtin, gtx, deepl, googlev2; keys
+read by the background worker from storage.local). Defaults per owner
+decision #1: builtin → (selected paid provider) → gtx; strict-local
+unchanged.
 
 Replace the hardcoded chain (builtin → gtx) with providers.
 
@@ -80,7 +93,13 @@ Replace the hardcoded chain (builtin → gtx) with providers.
 Exit: unit tests for chain ordering/timeouts with mock providers; the three
 integration harnesses still pass with the chain in place.
 
-### A3. Permission minimization  ☐ 🔶
+### A3. Permission minimization  ⚙ 🔶
+
+⚙ The user-facing half shipped in v1.7.0 as the per-site **disable**
+list (options page; the content script stays fully inert on listed
+hosts). The optional_host_permissions + dynamic registration variant
+remains pending — it needs on-device runtime validation before touching
+the reviewed permission model.
 
 Today: `<all_urls>` content script (simple, but slows review and scares
 users).
@@ -103,7 +122,12 @@ Target model (keeps UX acceptable):
 Exit: extension works with zero host permissions until granted; regression
 harnesses adapted (grant simulated); store listing justification updated.
 
-### A4. Extension UI i18n  ☐
+### A4. Extension UI i18n  ✅
+
+✅ Shipped in v1.7.0: `_locales/{fr,en}` + `__MSG_*__` manifest
+(default_locale fr), popup/options localized via `chrome.i18n` with
+French fallback text in the markup. Overlay/caption strings remain
+French-only (small, follow-up).
 
 `_locales/{fr,en}/messages.json` + `__MSG_*__` in manifest name/description
 + a tiny `t()` helper in popup/options (`chrome.i18n.getMessage`). French
@@ -111,7 +135,11 @@ stays the source of truth; English translation of all popup/overlay/caption
 strings. Exit: `chrome://extensions` shows localized name; popup renders in
 the browser language.
 
-### A5. Beta release  ☐ (manual, never automated)
+### A5. Beta release  ✅ script / ☐ listing (manual, never automated)
+
+✅ `pnpm release:chrome` (scripts/release.mjs) builds and zips
+`dist-store/voxylio-chrome-<version>.zip` (also edge/firefox/source
+targets). Uploading stays a manual owner action.
 
 `pnpm release:chrome` script → builds, bumps version from
 `apps/chrome/static/manifest.json`, zips `/extension` (excluding *.md) to
@@ -146,9 +174,9 @@ Code: ⚙ builds + lints clean (0 errors, 2 advisory warnings).
    --source-dir apps/firefox/dist`. Walk the manual matrix: detection,
    dubbing via fallback provider, pause/seek/speed, overlay, captions,
    popup states.
-2. ☐ Fix the `innerHTML` linter warning properly: rewrite
-   `statusHTML()` to DOM building (`popup.js` — createElement/textContent),
-   which also hardens against any future interpolation mistake.
+2. ✅ Fixed in v1.7.0: popup status is DOM-built (no innerHTML with
+   dynamic content); addons-linter is down to the single Android
+   min-version advisory.
 3. ☐ Background event-page audit: our background only serves fetch
    translation calls — stateless, safe to suspend. Verify `runtime.onMessage`
    wakes it (it does per MDN; confirm on-device).
@@ -209,13 +237,17 @@ lanes) where they fit.
 | P3 translation | **Apple Translation framework** `TranslationSession` (macOS 15+, on-device, free) EN↔FR/ES/DE/IT/PT; fallback: provider chain from A2 via URLSession | correct sentence-level output, availability matrix per language pair |
 | P4 voice + duck | `AVSpeechSynthesizer` (incl. Personal Voice where authorized) + output device routing; duck the source app via the process tap gain (P1 alt path) or system volume compromise | dubbed voice over ducked original, A/B recording |
 
-Each proof is a small Xcode target in `apps/macos/Proofs/` with a README
-of measured numbers. No orchestrator work before P1-P4 are green.
+⚙ The proof harness is embedded in the app (ProofsView) so each proof
+runs the production code path; measured numbers go to
+`apps/macos/Proofs/README.md`. Code for P1-P4 is written (tap +
+passthrough duck, SFSpeech streaming, Translation bridge + availability
+matrix, AVSpeech pacing) — the MEASUREMENTS on real hardware are the
+remaining gate before further product work.
 🔶 OWNER before P3/P4 productization: minimum macOS version (15 for
 on-device translation vs 13 + cloud provider), and WhisperKit model
 download UX (bundled vs first-run download).
 
-### E1. Engine parity in Swift
+### E1. Engine parity in Swift  ✅ code / ☐ swift test run on the Mac
 
 Port ONLY the pure pipeline pieces the native app needs — grouping, pacing,
 glossary — as `VoxylioKit` (Swift package in `apps/macos/VoxylioKit`).
@@ -225,14 +257,14 @@ Parity is enforced by **shared test vectors**: add
 in/out) consumed by both `node:test` and `swift test`. A behavior change
 must update the vectors once, both sides follow.
 
-### E2. Orchestrator
+### E2. Orchestrator  ⚙ (written, pending on-device validation)
 
 State machine mirroring the content script's controller (idle → capturing →
 transcribing (partial/final segments) → translating → speaking; bounded
 queue, stale-segment skip, auto-pause impossible → instead adaptive delay
 target ~2 s). AsyncStream-based pipeline; every stage cancellable.
 
-### E3. App shell
+### E3. App shell  ⚙ (menu-bar app written: picker, pair, voice, duck, status, proofs)
 
 Menu-bar SwiftUI app: app picker (running apps with audio), language pair,
 voice picker + preview, original volume slider, live status (state machine
