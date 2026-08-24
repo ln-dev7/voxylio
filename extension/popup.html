@@ -248,6 +248,26 @@
     .action-btn:hover { background: #242424; color: #ffffff; }
     .action-btn:focus-visible { outline: 2px solid #1ed760; outline-offset: 2px; }
 
+    /* ---- account ---- */
+    .account-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid #2a2a2a;
+    }
+    .account-plan {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 3px;
+    }
+    .account-plan.pro { color: var(--accent); }
+    .account-btn { flex: 0 0 auto; padding: 7px 16px; }
+
     /* ---- footer ---- */
     .hint {
       font-size: 11px;
@@ -360,6 +380,14 @@
     <button id="retry" class="action-btn" title="Relance la détection de la vidéo, des sous-titres et de la traduction">Réessayer</button>
     <button id="diag" class="action-btn" title="Copie un diagnostic technique à joindre à un signalement">Diagnostic</button>
     <button id="reset" class="action-btn" title="Rétablit tous les réglages par défaut">Réinitialiser</button>
+  </div>
+
+  <div class="account-row">
+    <div>
+      <span class="field-label" style="margin: 0">Compte</span>
+      <span class="account-plan" id="accountPlan">…</span>
+    </div>
+    <button id="accountBtn" class="action-btn account-btn" title="Gérer votre compte Voxylio sur le site">Se connecter</button>
   </div>
 
   <p class="hint">

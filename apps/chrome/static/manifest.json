@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Voxylio — doublage multilingue",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "Double en temps réel les vidéos sous-titrées : traduction locale, voix synchronisée avec la lecture. FR, ES, IT, DE, PT.",
   "permissions": [
     "storage"
@@ -11,6 +11,11 @@
   ],
   "background": {
     "service_worker": "background.js"
+  },
+  "externally_connectable": {
+    "matches": [
+      "https://voxylio.lndev.me/*"
+    ]
   },
   "content_scripts": [
     {

@@ -153,6 +153,29 @@ async function refreshStatus() {
   }
 }
 
+async function refreshAccount() {
+  const plan = $("accountPlan");
+  const btn = $("accountBtn");
+  try {
+    const ent = await chrome.runtime.sendMessage({ type: "entitlements" });
+    if (!ent || !ent.linked) {
+      plan.textContent = "Non connecté";
+      plan.classList.remove("pro");
+      btn.textContent = "Se connecter";
+    } else if (ent.plan === "pro") {
+      plan.textContent = ent.status === "canceled" ? "Pro · fin de période" : "Pro";
+      plan.classList.add("pro");
+      btn.textContent = "Gérer";
+    } else {
+      plan.textContent = "Gratuit";
+      plan.classList.remove("pro");
+      btn.textContent = "Passer Pro";
+    }
+  } catch (e) {
+    plan.textContent = "Gratuit";
+  }
+}
+
 async function init() {
   settings = await chrome.storage.sync.get(DEFAULTS);
   render(settings);
@@ -225,6 +248,13 @@ async function init() {
     // must be refreshed — reload the popup after saving.
     save({ targetLang: e.target.value, voiceName: "" });
     setTimeout(() => window.location.reload(), 250);
+  });
+
+  // Account: plan comes from the background's cached entitlements.
+  // Free features never require it; the row only unlocks/reflects Pro.
+  refreshAccount();
+  $("accountBtn").addEventListener("click", () => {
+    chrome.tabs.create({ url: "https://voxylio.lndev.me/fr/account?from=extension" });
   });
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });

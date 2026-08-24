@@ -1,4 +1,4 @@
-// GENERATED FILE — do not edit. Source: apps/chrome/src (pnpm build:chrome).
+// GENERATED FILE — do not edit. Source: apps/chrome/src (pnpm build).
 (() => {
   // src/popup.js
   var DEFAULTS = {
@@ -136,6 +136,28 @@
       $("status").innerHTML = '<span class="warn">Impossible de communiquer avec la page.</span><br>Recharge la page (F5) puis rouvre ce panneau.';
     }
   }
+  async function refreshAccount() {
+    const plan = $("accountPlan");
+    const btn = $("accountBtn");
+    try {
+      const ent = await chrome.runtime.sendMessage({ type: "entitlements" });
+      if (!ent || !ent.linked) {
+        plan.textContent = "Non connect\xE9";
+        plan.classList.remove("pro");
+        btn.textContent = "Se connecter";
+      } else if (ent.plan === "pro") {
+        plan.textContent = ent.status === "canceled" ? "Pro \xB7 fin de p\xE9riode" : "Pro";
+        plan.classList.add("pro");
+        btn.textContent = "G\xE9rer";
+      } else {
+        plan.textContent = "Gratuit";
+        plan.classList.remove("pro");
+        btn.textContent = "Passer Pro";
+      }
+    } catch (e) {
+      plan.textContent = "Gratuit";
+    }
+  }
   async function init() {
     settings = await chrome.storage.sync.get(DEFAULTS);
     render(settings);
@@ -200,6 +222,10 @@
     $("lang").addEventListener("change", (e) => {
       save({ targetLang: e.target.value, voiceName: "" });
       setTimeout(() => window.location.reload(), 250);
+    });
+    refreshAccount();
+    $("accountBtn").addEventListener("click", () => {
+      chrome.tabs.create({ url: "https://voxylio.lndev.me/fr/account?from=extension" });
     });
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab || !tab.id) return;
