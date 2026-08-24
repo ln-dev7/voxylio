@@ -3,7 +3,15 @@
 const { spawnSync } = require('child_process');
 const path = require('path');
 
+try {
+  require.resolve('playwright');
+} catch {
+  console.error('Playwright is not installed. Run: pnpm install && pnpm exec playwright install chromium');
+  process.exit(1);
+}
+
 const suites = [
+  ['run-progressive.js', 'progressive + sliding-window captions (repetition bug)'],
   ['run.js', 'language switch mid-playback (en→fr→es)'],
   ['run-source.js', 'source detection (fr→en) + same-language silence'],
   ['run-roll.js', 'roll-up captions + playbackRate ×1.5'],
