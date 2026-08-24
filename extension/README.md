@@ -27,17 +27,29 @@ subtitle track.
 
 ## Settings (popup)
 
-- **Language**: dubbing language (fr, es, it, de, pt). More languages can be
-  added easily in `popup.html` (and `LOCALES` in `content.js` for the voice
-  locale).
-- **Voice**: automatic, or any installed voice for that language. On macOS:
-  System Settings → Accessibility → Spoken Content → download a "Premium"
-  voice for a much more natural result.
-- **Voice speed**: base speech rate (it self-adjusts slightly when the
-  translated sentence is longer than the original).
+- **Video language**: source language — auto-detected from the subtitle
+  track (or Chrome's language detector), or forced explicitly. Any-to-any
+  pairs work: en→fr, fr→en, es→de…
+- **Dubbing language**: target language (fr, es, it, de, pt). More can be
+  added easily in `popup.html` (and `LOCALES` in `content.js`).
+- **Voice**: automatic, or any installed voice for that language, with a
+  ▶ preview button. On macOS: System Settings → Accessibility → Spoken
+  Content → download a "Premium" voice for a much more natural result.
+- **Voice speed**: base speech rate. It follows the player's speed
+  (×1.25/×1.5/×2) and self-adjusts slightly on long sentences.
 - **Original audio**: video volume while dubbing.
-- **Floating menu**: the draggable on-page controller (power, language,
-  speed, original audio). Dismiss it with ✕, re-enable it from the popup.
+- **Auto-pause when behind**: pauses the video for a moment instead of
+  skipping lines when the voice falls too far behind.
+- **Strict local mode**: never use the online translation fallback —
+  nothing leaves the device.
+- **On-screen subtitles**: original + translation overlaid on the video.
+- **Floating menu**: the draggable on-page controller. Dismiss it with ✕,
+  re-enable it from the popup.
+- **Retry / Diagnostic / Reset**: re-detect everything, copy a technical
+  diagnostic for bug reports, or restore default settings.
+
+Only the currently playing, visible video is dubbed — thumbnails, previews
+and background players are ignored.
 
 ## Notes
 
