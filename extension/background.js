@@ -4,12 +4,14 @@
 
 const memCache = new Map(); // "lang::text" -> translation
 
-async function translateFallback(text, target) {
-  const key = target + "::" + text;
+async function translateFallback(text, source, target) {
+  const key = source + "->" + target + "::" + text;
   if (memCache.has(key)) return memCache.get(key);
 
   const url =
-    "https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=" +
+    "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" +
+    encodeURIComponent(source || "auto") +
+    "&tl=" +
     encodeURIComponent(target) +
     "&dt=t&q=" +
     encodeURIComponent(text);
@@ -30,7 +32,7 @@ async function translateFallback(text, target) {
 
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg && msg.type === "translate") {
-    translateFallback(msg.text, msg.target || "fr")
+    translateFallback(msg.text, msg.source || "auto", msg.target || "fr")
       .then((t) => sendResponse({ ok: true, text: t }))
       .catch((e) => sendResponse({ ok: false, error: String(e) }));
     return true; // asynchronous response

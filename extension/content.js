@@ -15,7 +15,9 @@
     rate: 1.1, // base voice speed
     duck: 12, // original audio volume (%) while dubbing
     voiceName: "", // "" = auto (best available voice for the language)
+    sourceLang: "auto", // "auto" = detect from the subtitle track
     targetLang: "fr",
+    subtitles: false, // on-screen translated captions
     overlay: true, // floating on-page controller
   };
   const settings = { ...DEFAULTS };
@@ -32,9 +34,9 @@
     for (const [k, v] of Object.entries(changes)) {
       if (k in settings) settings[k] = v.newValue;
     }
-    // Language change: cut the current voice and queue immediately —
-    // no line from the previous language may ever be heard.
-    if (changes.targetLang) {
+    // Language change (source or target): cut the current voice and queue
+    // immediately — no line from the previous pair may ever be heard.
+    if (changes.targetLang || changes.sourceLang) {
       for (const c of controllers.values()) c.flushSpeech();
     }
     refreshAll();
@@ -47,28 +49,29 @@
 
   // ------------------------------------------------------------ translation
 
-  const cache = new Map(); // "lang::text" -> Promise<string>
-  // One translator per target language, isolated from each other: switching
-  // languages can never file a translation under the wrong cache key.
-  const translators = new Map(); // target language -> Promise<Translator|null>
+  const cache = new Map(); // "source->target::text" -> Promise<string>
+  // One translator per (source, target) pair, isolated from each other:
+  // switching languages can never file a translation under the wrong key.
+  const translators = new Map(); // "source->target" -> Promise<Translator|null>
   let builtinBroken = false; // surfaced in the popup status
   let pendingCount = 0;
 
-  function getBuiltinTranslator(target) {
-    if (!translators.has(target)) {
+  function getBuiltinTranslator(source, target) {
+    const key = source + "->" + target;
+    if (!translators.has(key)) {
       translators.set(
-        target,
+        key,
         (async () => {
           try {
             if (typeof Translator === "undefined")
               throw new Error("no Translator API");
             const avail = await Translator.availability({
-              sourceLanguage: "en",
+              sourceLanguage: source,
               targetLanguage: target,
             });
             if (avail === "unavailable") throw new Error("pair unavailable");
             return await Translator.create({
-              sourceLanguage: "en",
+              sourceLanguage: source,
               targetLanguage: target,
             });
           } catch (e) {
@@ -78,29 +81,36 @@
         })()
       );
     }
-    return translators.get(target);
+    return translators.get(key);
   }
 
   // The local translator may take a while to initialize (model download):
   // never block a line on it. If it is not ready in time, the fallback
   // translates this one, and the local translator takes over once available.
-  async function builtinReadyOrNull(target, ms) {
+  async function builtinReadyOrNull(source, target, ms) {
     const timeout = new Promise((r) => setTimeout(() => r("__timeout__"), ms));
-    const res = await Promise.race([getBuiltinTranslator(target), timeout]);
+    const res = await Promise.race([
+      getBuiltinTranslator(source, target),
+      timeout,
+    ]);
     return res === "__timeout__" ? null : res;
   }
 
-  function translate(text) {
-    // The target language is frozen when the request is made: the whole
-    // pipeline (translator, fallback, cache key) uses this value, even if
+  function translate(text, source) {
+    // The language pair is frozen when the request is made: the whole
+    // pipeline (translator, fallback, cache key) uses these values, even if
     // the user switches languages mid-translation.
     const target = settings.targetLang;
-    const key = target + "::" + text;
+    const key = source + "->" + target + "::" + text;
     if (cache.has(key)) return cache.get(key);
     const p = (async () => {
       pendingCount++;
       try {
-        const t = await builtinReadyOrNull(target, 2500);
+        // The built-in API needs an explicit source; skip it when unknown.
+        const t =
+          source && source !== "auto"
+            ? await builtinReadyOrNull(source, target, 2500)
+            : null;
         if (t) {
           try {
             return await t.translate(text);
@@ -108,9 +118,11 @@
             /* try the fallback */
           }
         }
+        // Online fallback supports source auto-detection (sl=auto).
         const resp = await chrome.runtime.sendMessage({
           type: "translate",
           text,
+          source: source || "auto",
           target,
         });
         if (resp && resp.ok) return resp.text;
@@ -263,6 +275,10 @@
       cueKeys: new Set(), // deduplication
       groups: [], // full sentences rebuilt from the cues
       lastCueCount: -1,
+      trackLang: "", // language declared by the chosen subtitle track
+      detectedSource: null, // source language detected from cue text
+      detecting: false,
+      captionEl: null, // on-screen translated captions container
       trackListened: null,
       staticLoaded: false,
       lastSpokenKey: null,
@@ -331,17 +347,22 @@
       const tracks = Array.from(video.textTracks || []).filter(
         (t) => t.kind === "subtitles" || t.kind === "captions"
       );
+      const wanted = settings.sourceLang; // "auto" or an explicit source
       const score = (t) => {
         let s = 0;
         const lang = (t.language || "").toLowerCase();
         const label = (t.label || "").toLowerCase();
-        if (lang.startsWith("en")) s += 2;
+        // Explicit source choice wins; otherwise slight bias toward English,
+        // the most common source for course content.
+        if (wanted !== "auto" && lang.startsWith(wanted)) s += 4;
+        if (wanted === "auto" && lang.startsWith("en")) s += 2;
         if (label.includes("english") || label.includes("anglais")) s += 1;
         return s;
       };
       tracks.sort((a, b) => score(b) - score(a));
       const track = tracks[0];
       if (!track) return;
+      ctl.trackLang = (track.language || "").toLowerCase().split("-")[0];
 
       // 'hidden' forces cue loading without rendering them.
       // A track the user is already showing is left untouched.
@@ -387,6 +408,40 @@
       }
     }
 
+    // --- source language --------------------------------------------------
+
+    // Effective source: explicit user choice > track metadata > detection
+    // from cue text (Chrome's LanguageDetector) > "auto" (online fallback).
+    function effectiveSource() {
+      if (settings.sourceLang !== "auto") return settings.sourceLang;
+      if (ctl.trackLang) return ctl.trackLang;
+      if (ctl.detectedSource) return ctl.detectedSource;
+      maybeDetectSource();
+      return "auto";
+    }
+
+    async function maybeDetectSource() {
+      if (ctl.detecting || ctl.detectedSource || ctl.cues.length < 2) return;
+      ctl.detecting = true;
+      try {
+        if (typeof LanguageDetector === "undefined") return;
+        const sample = ctl.cues
+          .slice(0, 5)
+          .map((c) => c.text)
+          .join(" ");
+        const detector = await LanguageDetector.create();
+        const results = await detector.detect(sample);
+        const best = results && results[0];
+        if (best && best.confidence > 0.5) {
+          ctl.detectedSource = (best.detectedLanguage || "").split("-")[0];
+        }
+      } catch (e) {
+        /* detection is best-effort */
+      } finally {
+        ctl.detecting = false;
+      }
+    }
+
     // --- ahead-of-time translation ----------------------------------------
 
     function pretranslate() {
@@ -396,11 +451,13 @@
       const upcoming = ctl.groups.filter(
         (g) => g.end >= t && g.start <= t + 90
       );
+      const source = effectiveSource();
+      if (source !== "auto" && source === settings.targetLang) return;
       let launched = 0;
       for (const g of upcoming) {
-        const key = settings.targetLang + "::" + g.text;
+        const key = source + "->" + settings.targetLang + "::" + g.text;
         if (!cache.has(key)) {
-          translate(g.text).catch(() => {});
+          translate(g.text, source).catch(() => {});
           launched++;
           if (launched >= 8 || pendingCount > 10) break;
         }
@@ -467,15 +524,19 @@
     async function onCueEnter(cue) {
       ctl.lastSpokenKey = cue.key;
       const target = settings.targetLang; // language at trigger time
+      const source = effectiveSource();
+      // Video already in the target language: nothing to dub.
+      if (source !== "auto" && source === target) return;
       let text;
       try {
-        text = await translate(cue.text);
+        text = await translate(cue.text, source);
       } catch (e) {
         return; // no translation => do not interrupt the video
       }
       // The user switched languages during translation: this line belongs
       // to the previous language, so it is never spoken.
       if (settings.targetLang !== target) return;
+      if (settings.subtitles) showCaption(cue.text, text);
       // A translation may arrive after the video was paused: never speak
       // while the video is stopped.
       if (!ctl.active || video.paused || video.seeking) return;
@@ -487,6 +548,54 @@
       } else {
         speak(text, dur);
       }
+    }
+
+    // --- on-screen captions (original + translation) ----------------------
+
+    function ensureCaptionEl() {
+      if (ctl.captionEl) return ctl.captionEl;
+      const el = document.createElement("div");
+      el.style.cssText =
+        "position:fixed; z-index:2147483646; pointer-events:none;" +
+        "transform:translateX(-50%); max-width:min(80vw,900px);" +
+        "display:none; text-align:center;" +
+        "font-family:'Helvetica Neue',helvetica,arial,sans-serif;";
+      const orig = document.createElement("div");
+      orig.style.cssText =
+        "color:rgba(255,255,255,0.75); font-size:14px; line-height:1.35;" +
+        "text-shadow:0 1px 3px rgba(0,0,0,0.9); margin-bottom:4px;";
+      const trans = document.createElement("div");
+      trans.style.cssText =
+        "display:inline-block; color:#ffffff; font-size:19px; font-weight:600;" +
+        "line-height:1.4; background:rgba(0,0,0,0.6); border-radius:8px;" +
+        "padding:4px 12px; text-shadow:0 1px 2px rgba(0,0,0,0.8);";
+      el.appendChild(orig);
+      el.appendChild(trans);
+      document.documentElement.appendChild(el);
+      ctl.captionEl = el;
+      ctl.captionOrig = orig;
+      ctl.captionTrans = trans;
+      return el;
+    }
+
+    function showCaption(original, translated) {
+      const el = ensureCaptionEl();
+      ctl.captionOrig.textContent = original;
+      ctl.captionTrans.textContent = translated;
+      el.style.display = "block";
+      positionCaption();
+    }
+
+    function hideCaption() {
+      if (ctl.captionEl) ctl.captionEl.style.display = "none";
+    }
+
+    function positionCaption() {
+      if (!ctl.captionEl || ctl.captionEl.style.display === "none") return;
+      const r = video.getBoundingClientRect();
+      ctl.captionEl.style.left = r.left + r.width / 2 + "px";
+      ctl.captionEl.style.bottom =
+        window.innerHeight - r.bottom + Math.max(20, r.height * 0.07) + "px";
     }
 
     // --- sync loop ---------------------------------------------------------
@@ -530,7 +639,10 @@
       }
       if (current && current.key !== ctl.lastSpokenKey) {
         onCueEnter(current);
+      } else if (!current || !settings.subtitles) {
+        hideCaption();
       }
+      positionCaption();
       pretranslate();
     }
 
@@ -579,6 +691,7 @@
       video.removeEventListener("ended", hardStopSpeech);
       hardStopSpeech();
       restoreVolume();
+      hideCaption();
       ctl.lastSpokenKey = null;
     }
 
@@ -599,7 +712,13 @@
       rebuildGroups();
     };
 
-    ctl.destroy = stop;
+    ctl.destroy = () => {
+      stop();
+      if (ctl.captionEl) {
+        ctl.captionEl.remove();
+        ctl.captionEl = null;
+      }
+    };
     ctl.flushSpeech = hardStopSpeech; // immediate cut (language change)
     ctl.harvest();
     ctl.onSettingsChanged();

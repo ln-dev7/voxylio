@@ -3,7 +3,9 @@ const DEFAULTS = {
   rate: 1.1,
   duck: 12,
   voiceName: "",
+  sourceLang: "auto",
   targetLang: "fr",
+  subtitles: false,
   overlay: true,
 };
 
@@ -35,7 +37,9 @@ function updateFill(el) {
 
 function render(settings) {
   $("enabled").checked = settings.enabled;
+  $("sourceLang").value = settings.sourceLang;
   $("lang").value = settings.targetLang;
+  $("subtitles").checked = settings.subtitles;
   $("rate").value = settings.rate;
   $("rateVal").textContent = "×" + Number(settings.rate).toFixed(2);
   $("duck").value = settings.duck;
@@ -115,6 +119,8 @@ async function init() {
 
   $("enabled").addEventListener("change", (e) => save({ enabled: e.target.checked }));
   $("overlay").addEventListener("change", (e) => save({ overlay: e.target.checked }));
+  $("subtitles").addEventListener("change", (e) => save({ subtitles: e.target.checked }));
+  $("sourceLang").addEventListener("change", (e) => save({ sourceLang: e.target.value }));
   $("rate").addEventListener("input", (e) => {
     $("rateVal").textContent = "×" + Number(e.target.value).toFixed(2);
     updateFill(e.target);
