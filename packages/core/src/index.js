@@ -18,3 +18,19 @@ export { PROTECTED_TERMS, protectTerms, restoreTerms } from "./glossary.js";
 export { BoundedMap } from "./cache.js";
 export { computeUtteranceRate, WORDS_PER_SECOND } from "./pacing.js";
 export { pickVoice, LOCALES } from "./voices.js";
+export {
+  DEFAULTS,
+  SETTINGS_VERSION,
+  SOURCE_LANGS,
+  TARGET_LANGS,
+  PROVIDERS,
+  normalizeHost,
+  validateSettings,
+  migrateSettings,
+} from "./settings.js";
+export {
+  createTranslatorChain,
+  READY_TIMEOUT_MS,
+  ATTEMPT_TIMEOUT_MS,
+  COOLDOWN_MS,
+} from "./translation.js";
