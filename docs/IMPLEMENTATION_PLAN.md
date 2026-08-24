@@ -26,6 +26,18 @@ before implementing (per the porting plan §19).
 
 Known limits: `docs/LIMITATIONS.md`. Nothing is published anywhere yet.
 
+✅ **Repetition bug fixed** (progressive/sliding captions spoke partial
+sentences repeatedly): groups now carry a stable text-independent `id` +
+`version`, the trailing group is a `draft` finalized by text stability
+(350 ms when punctuated / 650 ms otherwise), speech is gated by
+`spokenIds`/`scheduledIds`/`inFlight` registries and a `generation`
+counter voids stale translations after seek/language/track changes;
+`mergeRollup` stitches sliding-window overlaps. Regression suite:
+`tests/integration/run-progressive.js` (fails on the pre-fix engine with
+the exact symptoms heard on real videos). Contextual translation
+(previous/next sentences, domain) remains workstream A2/§8-9 of the
+diagnostic — planned, not started.
+
 ---
 
 ## 1. Workstream A — Chrome publishable (porting plan phase 2)
