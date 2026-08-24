@@ -81,3 +81,15 @@ against the external git dir `$HOME/vd.git` with
 immutable objects is normal). Ship changes as a tarball extracted with
 `tar --overwrite`; move deletions into `../_to_delete/` (rename works,
 deletion does not). Never let `core.worktree` leak into `.git/config`.
+
+### Remote-line reconciliation (MANDATORY before any cloud-session commit)
+
+The user pushes and sometimes rebases from the Mac, so the external
+`vd.git` line can silently diverge from `origin/master`. Before creating
+commits: read `.git/refs/remotes/origin/master`; if it is not an ancestor
+of the vd.git master, copy `.git/objects` into vd.git, `reset --soft` onto
+the remote ref and recommit the delta — never force-push, never clobber
+`site/` component edits the user made. After the final `cp -R vd.git/.
+.git/`, run any verification `git` command through `GIT_DIR=$HOME/vd.git`,
+NOT inside the mount (an in-mount `git status` leaves an undeletable
+`index.lock` behind).
