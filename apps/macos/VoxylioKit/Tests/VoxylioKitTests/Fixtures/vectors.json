@@ -1,0 +1,389 @@
+{
+  "generator": "packages/core/scripts/export-vectors.mjs",
+  "textHash": [
+    {
+      "input": "",
+      "expected": "ztntfp"
+    },
+    {
+      "input": "Welcome",
+      "expected": "1uju8e8"
+    },
+    {
+      "input": "Welcome to the accelerated coding course.",
+      "expected": "185g5qc"
+    },
+    {
+      "input": "Nous allons faire cela en utilisant un playground.",
+      "expected": "hgh6p2"
+    },
+    {
+      "input": "É bom té-lo aqui! ♪",
+      "expected": "hcgpcz"
+    }
+  ],
+  "wordOverlap": [
+    {
+      "a": "Now we will explore the playground",
+      "b": "explore the playground together in depth",
+      "minWords": 2,
+      "expected": 3
+    },
+    {
+      "a": "Welcome to the course",
+      "b": "to the course of coding",
+      "minWords": 2,
+      "expected": 3
+    },
+    {
+      "a": "hello world",
+      "b": "completely different",
+      "minWords": 2,
+      "expected": 0
+    },
+    {
+      "a": "one two three",
+      "b": "three four",
+      "minWords": 2,
+      "expected": 0
+    },
+    {
+      "a": "one two three",
+      "b": "three four",
+      "minWords": 1,
+      "expected": 1
+    },
+    {
+      "a": "A B, c d!",
+      "b": "c d e f",
+      "minWords": 2,
+      "expected": 2
+    }
+  ],
+  "mergeRollup": [
+    {
+      "last": {
+        "text": "Welcome",
+        "end": 4.2
+      },
+      "start": 0.4,
+      "end": 4.2,
+      "text": "Welcome to the accelerated",
+      "expected": {
+        "text": "Welcome to the accelerated",
+        "end": 4.2,
+        "grew": true
+      }
+    },
+    {
+      "last": {
+        "text": "Welcome to the accelerated",
+        "end": 4.2
+      },
+      "start": 0.4,
+      "end": 4.2,
+      "text": "Welcome to the accelerated coding course.",
+      "expected": {
+        "text": "Welcome to the accelerated coding course.",
+        "end": 4.2,
+        "grew": true
+      }
+    },
+    {
+      "last": {
+        "text": "Now we will explore the playground",
+        "end": 6.6
+      },
+      "start": 5.4,
+      "end": 7.6,
+      "text": "explore the playground together in depth",
+      "expected": {
+        "text": "Now we will explore the playground together in depth",
+        "end": 7.6,
+        "grew": true
+      }
+    },
+    {
+      "last": {
+        "text": "A full sentence here",
+        "end": 2
+      },
+      "start": 5,
+      "end": 6,
+      "text": "Too late to merge",
+      "expected": null
+    },
+    {
+      "last": {
+        "text": "the tail of the sentence",
+        "end": 3
+      },
+      "start": 3.1,
+      "end": 3.5,
+      "text": "of the sentence",
+      "expected": {
+        "text": "the tail of the sentence",
+        "end": 3.5,
+        "grew": false
+      }
+    },
+    {
+      "last": null,
+      "start": 0,
+      "end": 1,
+      "text": "anything",
+      "expected": null
+    }
+  ],
+  "buildGroups": [
+    {
+      "name": "two sentences split by punctuation",
+      "cues": [
+        {
+          "start": 0.4,
+          "end": 2,
+          "text": "Welcome to the accelerated"
+        },
+        {
+          "start": 2,
+          "end": 4.2,
+          "text": "coding course."
+        },
+        {
+          "start": 4.6,
+          "end": 6.6,
+          "text": "Now we will explore the playground together in depth"
+        }
+      ],
+      "expected": [
+        {
+          "start": 0.4,
+          "end": 4.2,
+          "text": "Welcome to the accelerated coding course.",
+          "id": "g40",
+          "version": "185g5qc",
+          "final": true,
+          "key": "g40:185g5qc"
+        },
+        {
+          "start": 4.6,
+          "end": 6.6,
+          "text": "Now we will explore the playground together in depth",
+          "id": "g460",
+          "version": "1fx99ds",
+          "final": false,
+          "key": "g460:1fx99ds"
+        }
+      ]
+    },
+    {
+      "name": "gap closes a sentence",
+      "cues": [
+        {
+          "start": 0,
+          "end": 1,
+          "text": "First part"
+        },
+        {
+          "start": 3.5,
+          "end": 4.5,
+          "text": "after a long silence"
+        }
+      ],
+      "expected": [
+        {
+          "start": 0,
+          "end": 1,
+          "text": "First part",
+          "id": "g0",
+          "version": "1eve6x4",
+          "final": true,
+          "key": "g0:1eve6x4"
+        },
+        {
+          "start": 3.5,
+          "end": 4.5,
+          "text": "after a long silence",
+          "id": "g350",
+          "version": "1093dfb",
+          "final": false,
+          "key": "g350:1093dfb"
+        }
+      ]
+    },
+    {
+      "name": "duplicated fragment extends without repeating",
+      "cues": [
+        {
+          "start": 0,
+          "end": 2,
+          "text": "we will explore the playground"
+        },
+        {
+          "start": 1.5,
+          "end": 3,
+          "text": "the playground"
+        }
+      ],
+      "expected": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "we will explore the playground",
+          "id": "g0",
+          "version": "drask4",
+          "final": false,
+          "key": "g0:drask4"
+        }
+      ]
+    },
+    {
+      "name": "sound cues and dashes are cleaned",
+      "cues": [
+        {
+          "start": 0,
+          "end": 1.5,
+          "text": "[Music] - Hello everyone (applause)"
+        },
+        {
+          "start": 1.5,
+          "end": 3,
+          "text": "the API (introduced in v2) is here."
+        }
+      ],
+      "expected": [
+        {
+          "start": 0,
+          "end": 3,
+          "text": "- Hello everyone the API (introduced in v2) is here.",
+          "id": "g0",
+          "version": "1sqo9ek",
+          "final": false,
+          "key": "g0:1sqo9ek"
+        }
+      ]
+    }
+  ],
+  "pacing": [
+    {
+      "text": "a short line",
+      "cueDur": 4,
+      "baseRate": 1.1,
+      "playbackRate": 1,
+      "expected": 1.1
+    },
+    {
+      "text": "this is a very long translated sentence that clearly cannot fit inside its short segment at all",
+      "cueDur": 3,
+      "baseRate": 1.1,
+      "playbackRate": 1,
+      "expected": 1.375
+    },
+    {
+      "text": "this is a very long translated sentence that clearly cannot fit inside its short segment at all",
+      "cueDur": 3,
+      "baseRate": 1.1,
+      "playbackRate": 1.5,
+      "expected": 2.0625
+    },
+    {
+      "text": "tiny",
+      "cueDur": 0.3,
+      "baseRate": 1.4,
+      "playbackRate": 2,
+      "expected": 2.8
+    },
+    {
+      "text": "six words in this exact sentence",
+      "cueDur": 2,
+      "baseRate": 1,
+      "playbackRate": 1,
+      "expected": 1.1538461538461537
+    }
+  ],
+  "glossary": [
+    {
+      "input": "Open the playground and write a prompt.",
+      "protectedText": "Open the ⟦0⟧ and write a ⟦1⟧.",
+      "found": [
+        "playground",
+        "prompt"
+      ],
+      "translated": "Ouvre the ⟦0⟧ and écris a ⟦1⟧.",
+      "restored": "Ouvre the playground and écris a prompt.",
+      "ok": true
+    },
+    {
+      "input": "No protected words here.",
+      "protectedText": "No protected words here.",
+      "found": [],
+      "translated": "No protected words here.",
+      "restored": "No protected words here.",
+      "ok": true
+    },
+    {
+      "input": "The agent explores the codebase before any commit.",
+      "protectedText": "The ⟦0⟧ explores the ⟦1⟧ before any ⟦2⟧.",
+      "found": [
+        "agent",
+        "codebase",
+        "commit"
+      ],
+      "translated": "The ⟦0⟧ explores the ⟦1⟧ before any ⟦2⟧.",
+      "restored": "The agent explores the codebase before any commit.",
+      "ok": true
+    }
+  ],
+  "cleanCaption": [
+    {
+      "input": "[Music] Hello there",
+      "expected": "Hello there"
+    },
+    {
+      "input": "- Hi! (laughs)",
+      "expected": "Hi!"
+    },
+    {
+      "input": "the API (introduced in v2) lets you…",
+      "expected": "the API (introduced in v2) lets you…"
+    },
+    {
+      "input": "♪♪ la la ♪♪",
+      "expected": "la la"
+    },
+    {
+      "input": "  spaced   out  ",
+      "expected": "spaced out"
+    }
+  ],
+  "endsSentence": [
+    {
+      "input": "Done.",
+      "expected": true
+    },
+    {
+      "input": "Done!",
+      "expected": true
+    },
+    {
+      "input": "Really?",
+      "expected": true
+    },
+    {
+      "input": "wait…",
+      "expected": true
+    },
+    {
+      "input": "He said \"stop.\"",
+      "expected": true
+    },
+    {
+      "input": "not finished",
+      "expected": false
+    },
+    {
+      "input": "trailing.)",
+      "expected": true
+    }
+  ]
+}
