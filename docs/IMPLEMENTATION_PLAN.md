@@ -178,10 +178,9 @@ Code: ⚙ converter script ready; project generated on the Mac via
 3. ☐ Per-site permission onboarding (Safari always per-site): reuse the A3
    onboarding page; add Safari-specific copy ("enable in Safari Settings ▸
    Extensions").
-4. ☐ Distribution 🔶 OWNER: needs Apple Developer Program (99 $/yr) —
-   TestFlight beta (Mac App Store channel) vs notarized direct download.
-   Recommendation: Mac App Store channel; the wrapper app is trivial and
-   sandbox-compatible (the extension does no native work).
+4. ⚙ Distribution — Apple Developer account: ✅ available.
+   Channel: Mac App Store (TestFlight for the beta); the wrapper app is
+   trivial and sandbox-compatible (the extension does no native work).
 5. ☐ Commit policy for the generated Xcode project: keep gitignored,
    regenerate on demand; commit only if we start customizing the wrapper
    (onboarding screen inside the app → then commit and stop regenerating).
@@ -312,7 +311,7 @@ Recommended order: **F → A2 → A1 → A3 → A5 → B → C → D → E**.
 | --- | --- | --- | --- |
 | 1 | Paid translation provider | DeepL BYO-key / Google BYO-key / hosted proxy | BYO-key DeepL |
 | 2 | Host permissions default | all-sites / per-site | mechanism built, flag |
-| 3 | Apple Developer Program | join now (Safari+macOS) / postpone | postpone blocks D4/E |
+| 3 | Apple Developer Program | ✅ RESOLVED — the owner already has an account | D4 and E are unblocked |
 | 4 | Safari channel | App Store / TestFlight-only | App Store |
 | 5 | macOS minimum | 15 (on-device translation) / 13 + cloud | 15 |
 | 6 | macOS app pricing | free beta → paid / paid from day 1 | free beta |
