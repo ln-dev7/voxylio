@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import { SITE_URL } from "@/lib/constants";
 import "../globals.css";
 
 // Self-hosted fonts: Inter for body, Space Grotesk for display type
@@ -31,8 +32,28 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Meta" });
   return {
+    metadataBase: new URL(SITE_URL),
     title: t("title"),
     description: t("description"),
+    alternates: {
+      canonical: `/${locale}`,
+      languages: { en: "/en", fr: "/fr" },
+    },
+    openGraph: {
+      type: "website",
+      url: `/${locale}`,
+      siteName: "Voxylio",
+      title: t("title"),
+      description: t("description"),
+      locale: locale === "fr" ? "fr_FR" : "en_US",
+      images: [{ url: "/og.png", width: 1200, height: 630, alt: "Voxylio" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("description"),
+      images: ["/og.png"],
+    },
   };
 }
 
