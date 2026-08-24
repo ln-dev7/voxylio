@@ -1,0 +1,14 @@
+{
+  "name": "@voxylio/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Platform-agnostic dubbing engine: subtitle parsing, sentence grouping, glossary protection, bounded cache and speech pacing.",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "test": "node --test test/"
+  }
+}
