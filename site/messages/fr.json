@@ -13,7 +13,7 @@
     "closeMenu": "Fermer le menu"
   },
   "Hero": {
-    "title": "Suivez vos cours <accent>dans votre langue</accent>",
+    "title": "Suivez n’importe quelle vidéo <accent>dans votre langue</accent>",
     "subtitle": "Voxylio est une extension Chrome qui double les vidéos sous-titrées en temps réel. Elle reconstitue des phrases complètes à partir des sous-titres, les traduit localement et parle par-dessus la vidéo — synchronisée avec la lecture.",
     "ctaInstall": "Installer l’extension",
     "ctaGithub": "Voir sur GitHub",
@@ -140,7 +140,8 @@
       "install": "Installation",
       "faq": "FAQ",
       "license": "Licence MIT",
-      "issues": "Signaler un problème"
+      "issues": "Signaler un problème",
+      "privacy": "Confidentialité"
     }
   },
   "LocaleSwitcher": {
@@ -190,5 +191,21 @@
         "them": "Tout audio, même sans sous-titres"
       }
     }
+  },
+  "Privacy": {
+    "title": "Politique de confidentialité",
+    "updated": "Dernière mise à jour : 24 août 2026",
+    "intro": "Voxylio est conçu pour fonctionner sur votre appareil. Cette page décrit exactement ce que l’extension fait des données — et ce qu’elle ne fait jamais.",
+    "p1Title": "Ce que Voxylio traite",
+    "p1": "Voxylio lit la piste de sous-titres de la vidéo que vous regardez afin de la traduire et de la lire à voix haute. Vos réglages (langues, voix, vitesse, volume) sont conservés dans le stockage d’extension de votre navigateur, synchronisé par Chrome sur votre propre profil. Rien d’autre n’est lu, collecté ou conservé.",
+    "p2Title": "Local par défaut",
+    "p2": "La traduction s’exécute sur votre appareil avec l’API de traduction intégrée de Chrome dès qu’elle est disponible. Dans ce mode, aucun texte ne quitte votre ordinateur. La voix est générée par les voix de votre système, localement aussi.",
+    "p3Title": "Le fallback en ligne",
+    "p3": "Quand le traducteur local de Chrome est indisponible, Voxylio peut envoyer des phrases de sous-titres, une par une, à un service de traduction en ligne pour maintenir le doublage. Ce sont des phrases des sous-titres publics de la vidéo — jamais vos données personnelles, votre historique ou vos informations de compte. Vous pouvez désactiver ce mécanisme avec le « Mode strictement local » du popup ; Voxylio attendra alors le traducteur local au lieu de passer en ligne.",
+    "p4Title": "Ce que Voxylio ne fait jamais",
+    "p4": "Pas d’analytics, pas de tracking, pas de publicité, pas de compte, pas de fingerprinting. Voxylio ne collecte, ne vend et ne partage aucune donnée personnelle. Il ne garde aucun historique de ce que vous regardez. La permission d’accès aux sites sert uniquement à trouver le lecteur vidéo et sa piste de sous-titres sur la page visitée ; elle n’est jamais utilisée pour lire autre chose.",
+    "p5Title": "Vos données, votre contrôle",
+    "p5": "Le bouton « Réinitialiser » du popup rétablit les réglages par défaut et supprime tout ce que l’extension a stocké. Désinstaller l’extension supprime toutes ses données.",
+    "contact": "Une question ? Ouvrez une issue sur GitHub ou contactez l’auteur."
   }
 }
