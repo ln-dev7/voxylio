@@ -1,5 +1,8 @@
 # Voxylio — Chrome extension
 
+> ⚠️ The `.js` files in this folder are **generated** from `apps/chrome/src`
+> and `packages/core` (`pnpm build:chrome`). Edit the sources, not these files.
+
 Dubs subtitled videos in real time — into **French, Spanish, Italian, German
 or Portuguese**. Built for online course platforms, works on any site whose
 player exposes a subtitle track.

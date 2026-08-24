@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fr" style="color-scheme: dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="theme-color" content="#121212" />
+  <style>
+    /* Design system: immersive near-black, functional green accent,
+       pill geometry, compact type (Spotify-inspired — getdesign.md) */
+    :root {
+      --bg: #121212;
+      --surface: #181818;
+      --surface-2: #1f1f1f;
+      --text: #ffffff;
+      --text-muted: #b3b3b3;
+      --text-faint: #7c7c7c;
+      --accent: #1ed760;
+      --warn: #ffa42b;
+      --error: #f3727f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Helvetica Neue", helvetica, arial, sans-serif;
+      width: 320px;
+      margin: 0;
+      padding: 16px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+      touch-action: manipulation;
+    }
+
+    /* ---- header ---- */
+    header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+    .logo svg { display: block; }
+    h1 {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -0.2px;
+      flex: 1;
+    }
+
+    /* ---- toggle (pill) ---- */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 26px;
+      flex: 0 0 auto;
+      cursor: pointer;
+    }
+    .switch input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      cursor: pointer;
+    }
+    .slider-toggle {
+      position: absolute;
+      inset: 0;
+      background: var(--surface-2);
+      border-radius: 9999px;
+      transition: background 0.2s;
+      pointer-events: none;
+      box-shadow: rgb(18, 18, 18) 0px 1px 0px, rgb(124, 124, 124) 0px 0px 0px 1px inset;
+    }
+    .slider-toggle::before {
+      content: "";
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      top: 3px;
+      background: #ffffff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .switch input:checked + .slider-toggle {
+      background: var(--accent);
+      box-shadow: none;
+    }
+    .switch input:checked + .slider-toggle::before {
+      transform: translateX(20px);
+      background: #121212;
+    }
+    .switch input:focus-visible + .slider-toggle {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* ---- status card ---- */
+    .status {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      box-shadow: rgba(0, 0, 0, 0.3) 0px 8px 8px;
+    }
+    .status .ok { color: var(--accent); font-weight: 700; }
+    .status .warn { color: var(--warn); }
+
+    /* ---- controls ---- */
+    .field { margin: 14px 0; }
+    .field-label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    select {
+      width: 100%;
+      background-color: var(--surface-2);
+      color: var(--text);
+      border: none;
+      border-radius: 9999px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: inherit;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23b3b3b3' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      box-shadow: rgb(18, 18, 18) 0px 1px 0px, rgb(77, 77, 77) 0px 0px 0px 1px inset;
+      cursor: pointer;
+    }
+    select:hover { background-color: #242424; }
+    select:focus-visible {
+      outline: none;
+      box-shadow: rgb(18, 18, 18) 0px 1px 0px, var(--accent) 0px 0px 0px 1px inset;
+    }
+
+    /* ---- sliders ---- */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    input[type="range"] {
+      flex: 1;
+      min-width: 0;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      border-radius: 9999px;
+      background: linear-gradient(
+        to right,
+        var(--accent) 0%,
+        var(--accent) var(--fill, 50%),
+        #4d4d4d var(--fill, 50%),
+        #4d4d4d 100%
+      );
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 6px;
+      transition: transform 0.1s;
+    }
+    input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.15); }
+    input[type="range"]:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+    }
+    .value {
+      width: 46px;
+      text-align: right;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      flex: 0 0 auto;
+    }
+
+    .overlay-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .switch-sm { width: 38px; height: 22px; }
+    .switch-sm .slider-toggle::before { width: 16px; height: 16px; }
+    .switch-sm input:checked + .slider-toggle::before { transform: translateX(16px); }
+
+    .voice-row { display: flex; gap: 8px; align-items: center; }
+    .voice-row select { flex: 1; min-width: 0; }
+    .icon-btn {
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 50%;
+      background: #1f1f1f;
+      color: #1ed760;
+      font-size: 11px;
+      cursor: pointer;
+      box-shadow: rgb(18, 18, 18) 0px 1px 0px, rgb(77, 77, 77) 0px 0px 0px 1px inset;
+    }
+    .icon-btn:hover { background: #242424; }
+    .icon-btn:focus-visible { outline: 2px solid #1ed760; outline-offset: 2px; }
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .action-btn {
+      flex: 1;
+      border: none;
+      border-radius: 9999px;
+      background: #1f1f1f;
+      color: #b3b3b3;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 7px 0;
+      cursor: pointer;
+      box-shadow: rgb(18, 18, 18) 0px 1px 0px, rgb(77, 77, 77) 0px 0px 0px 1px inset;
+    }
+    .action-btn:hover { background: #242424; color: #ffffff; }
+    .action-btn:focus-visible { outline: 2px solid #1ed760; outline-offset: 2px; }
+
+    /* ---- footer ---- */
+    .hint {
+      font-size: 11px;
+      color: var(--text-faint);
+      line-height: 1.55;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid #2a2a2a;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="logo" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M2.5 6.5v3h2.4L8.5 12V4L4.9 6.5H2.5z" fill="#121212"/>
+        <path d="M10.5 5.5a3.4 3.4 0 010 5M12.3 4a5.8 5.8 0 010 8" stroke="#121212" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+      </svg>
+    </span>
+    <h1>Voxylio</h1>
+    <label class="switch" aria-label="Activer le doublage">
+      <input type="checkbox" id="enabled" />
+      <span class="slider-toggle" aria-hidden="true"></span>
+    </label>
+  </header>
+
+  <div class="status" id="status" aria-live="polite">Recherche d’une vidéo…</div>
+
+  <div class="field">
+    <label class="field-label" for="sourceLang">Langue de la vidéo</label>
+    <select id="sourceLang">
+      <option value="auto">Détection automatique</option>
+      <option value="en">English</option>
+      <option value="fr">Français</option>
+      <option value="es">Español</option>
+      <option value="it">Italiano</option>
+      <option value="de">Deutsch</option>
+      <option value="pt">Português</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label class="field-label" for="lang">Langue du doublage</label>
+    <select id="lang">
+      <option value="fr">Français</option>
+      <option value="es">Español</option>
+      <option value="it">Italiano</option>
+      <option value="de">Deutsch</option>
+      <option value="pt">Português</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label class="field-label" for="voice">Voix</label>
+    <div class="voice-row">
+      <select id="voice"><option value="">Automatique</option></select>
+      <button id="preview" class="icon-btn" title="Écouter un aperçu de la voix" aria-label="Écouter un aperçu de la voix">▶</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label" for="rate">Vitesse de la voix</label>
+    <div class="slider-row">
+      <input type="range" id="rate" min="0.8" max="1.6" step="0.05" />
+      <span class="value" id="rateVal"></span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label" for="duck">Audio original</label>
+    <div class="slider-row">
+      <input type="range" id="duck" min="0" max="60" step="1" />
+      <span class="value" id="duckVal"></span>
+    </div>
+  </div>
+
+  <div class="field overlay-row">
+    <label class="field-label" for="autoPause" style="margin: 0" title="Met la vidéo en pause quelques secondes quand la voix prend trop de retard, au lieu de sauter des phrases">Pause auto si la voix est en retard</label>
+    <label class="switch switch-sm" aria-label="Mettre la vidéo en pause quand le doublage est en retard">
+      <input type="checkbox" id="autoPause" />
+      <span class="slider-toggle" aria-hidden="true"></span>
+    </label>
+  </div>
+
+  <div class="field overlay-row" style="margin-top: 10px">
+    <label class="field-label" for="localOnly" style="margin: 0" title="N’utilise que la traduction locale de Chrome : aucun texte ne quitte votre appareil. Si elle est indisponible, le doublage attend au lieu de passer en ligne.">Mode strictement local</label>
+    <label class="switch switch-sm" aria-label="Utiliser uniquement la traduction locale">
+      <input type="checkbox" id="localOnly" />
+      <span class="slider-toggle" aria-hidden="true"></span>
+    </label>
+  </div>
+
+  <div class="field overlay-row" style="margin-top: 10px">
+    <label class="field-label" for="subtitles" style="margin: 0">Sous-titres traduits à l’écran</label>
+    <label class="switch switch-sm" aria-label="Afficher les sous-titres traduits sur la vidéo">
+      <input type="checkbox" id="subtitles" />
+      <span class="slider-toggle" aria-hidden="true"></span>
+    </label>
+  </div>
+
+  <div class="field overlay-row" style="margin-top: 10px">
+    <label class="field-label" for="overlay" style="margin: 0">Menu flottant sur la page</label>
+    <label class="switch switch-sm" aria-label="Afficher le menu flottant sur la page">
+      <input type="checkbox" id="overlay" />
+      <span class="slider-toggle" aria-hidden="true"></span>
+    </label>
+  </div>
+
+  <div class="actions">
+    <button id="retry" class="action-btn" title="Relance la détection de la vidéo, des sous-titres et de la traduction">Réessayer</button>
+    <button id="diag" class="action-btn" title="Copie un diagnostic technique à joindre à un signalement">Diagnostic</button>
+    <button id="reset" class="action-btn" title="Rétablit tous les réglages par défaut">Réinitialiser</button>
+  </div>
+
+  <p class="hint">
+    Lance la vidéo, puis active l’interrupteur : la voix suit les
+    sous-titres dans la langue choisie. À 0&nbsp;%, seul le doublage
+    est audible.
+  </p>
+
+  <script src="popup.js"></script>
+</body>
+</html>

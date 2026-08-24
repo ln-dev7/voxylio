@@ -1,0 +1,14 @@
+{
+  "name": "@voxylio/chrome",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Chrome build of the Voxylio extension: bundles the shared engine and copies static assets into /extension (the load-unpacked target).",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "@voxylio/core": "workspace:*",
+    "@voxylio/webext": "workspace:*"
+  }
+}
