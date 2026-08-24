@@ -74,13 +74,13 @@
     "tryIt": "Try it — every control on this popup actually works"
   },
   "Languages": {
-    "title": "From English to",
     "list": {
       "fr": "French",
       "es": "Spanish",
       "it": "Italian",
       "de": "German",
-      "pt": "Portuguese"
+      "pt": "Portuguese",
+      "en": "English"
     }
   },
   "Install": {

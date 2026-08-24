@@ -74,13 +74,13 @@
     "tryIt": "Essaie — chaque contrôle de ce popup fonctionne vraiment"
   },
   "Languages": {
-    "title": "De l’anglais vers",
     "list": {
       "fr": "Français",
       "es": "Espagnol",
       "it": "Italien",
       "de": "Allemand",
-      "pt": "Portugais"
+      "pt": "Portugais",
+      "en": "Anglais"
     }
   },
   "Install": {
