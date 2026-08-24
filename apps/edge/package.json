@@ -1,0 +1,15 @@
+{
+  "name": "@voxylio/edge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Microsoft Edge build of the Voxylio extension (Chromium MV3, platform manifest injected).",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "dependencies": {
+    "@voxylio/build-tools": "workspace:*",
+    "@voxylio/core": "workspace:*",
+    "@voxylio/webext": "workspace:*"
+  }
+}
