@@ -1,0 +1,71 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Video Dub design tokens.
+ * Dark-first system: near-black canvas, hairline borders, and a single
+ * functional green accent shared with the extension UI.
+ */
+:root {
+  --radius: 0.625rem;
+  --background: #07080a;
+  --foreground: #f4f4f6;
+  --card: #0d0d0d;
+  --card-foreground: #f4f4f6;
+  --popover: #101111;
+  --popover-foreground: #f4f4f6;
+  --primary: #1ed760;
+  --primary-foreground: #071008;
+  --secondary: #121212;
+  --secondary-foreground: #f4f4f6;
+  --muted: #101111;
+  --muted-foreground: #9c9c9d;
+  --accent: #16181a;
+  --accent-foreground: #f4f4f6;
+  --destructive: #ff6161;
+  --border: #242728;
+  --input: #242728;
+  --ring: #1ed760;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "calt", "kern", "liga", "ss03";
+  }
+}
