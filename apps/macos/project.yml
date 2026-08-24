@@ -1,0 +1,47 @@
+# XcodeGen spec for the native macOS app.
+#   brew install xcodegen && cd apps/macos && xcodegen
+# then open Voxylio.xcodeproj and set your signing team once.
+name: Voxylio
+options:
+  bundleIdPrefix: me.lndev
+  deploymentTarget:
+    macOS: "15.0"
+  createIntermediateGroups: true
+packages:
+  VoxylioKit:
+    path: VoxylioKit
+targets:
+  Voxylio:
+    type: application
+    platform: macOS
+    sources:
+      - Voxylio
+    dependencies:
+      - package: VoxylioKit
+    info:
+      path: Voxylio/Info.plist
+      properties:
+        CFBundleDisplayName: Voxylio
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSUIElement: true # menu-bar app, no Dock icon
+        NSAudioCaptureUsageDescription: >-
+          Voxylio captures the audio of the app you choose, to transcribe,
+          translate and dub it in your language. Nothing is recorded or sent
+          anywhere.
+        NSSpeechRecognitionUsageDescription: >-
+          Voxylio transcribes the captured audio (on-device when available)
+          so it can be translated and spoken in your language.
+    entitlements:
+      path: Voxylio/Voxylio.entitlements
+      properties:
+        # Direct distribution (Developer ID): audio capture is not
+        # sandbox-compatible, so the sandbox stays off by design.
+        com.apple.security.app-sandbox: false
+        com.apple.security.device.audio-input: true
+    settings:
+      base:
+        ENABLE_HARDENED_RUNTIME: YES
+        SWIFT_VERSION: "5.9"
+        CODE_SIGN_STYLE: Automatic
+        DEAD_CODE_STRIPPING: YES
