@@ -1,0 +1,18 @@
+{
+  "name": "voxylio",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "scripts": {
+    "build": "pnpm --filter @voxylio/chrome build && pnpm --filter site build",
+    "build:chrome": "pnpm --filter @voxylio/chrome build",
+    "build:site": "pnpm --filter site build",
+    "test": "pnpm test:unit && pnpm test:integration",
+    "test:unit": "node --test packages/core/test/*.test.js",
+    "test:integration": "node tests/integration/run-all.js",
+    "lint": "pnpm --filter site lint"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.0",
+    "playwright": "^1.58.0"
+  }
+}
