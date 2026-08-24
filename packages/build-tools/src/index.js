@@ -2,7 +2,7 @@
 // output directory and manifest overrides — the engine sources and static
 // assets stay single-sourced in apps/chrome.
 import { build } from "esbuild";
-import { cpSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const BANNER =
@@ -25,7 +25,8 @@ export async function buildExtension({
 }) {
   mkdirSync(outDir, { recursive: true });
 
-  for (const entry of ["content.js", "background.js", "popup.js"]) {
+  for (const entry of ["content.js", "background.js", "popup.js", "options.js"]) {
+    if (!existsSync(join(srcDir, entry))) continue;
     await build({
       entryPoints: [join(srcDir, entry)],
       bundle: true,
@@ -49,4 +50,8 @@ export async function buildExtension({
 
   cpSync(join(staticDir, "popup.html"), join(outDir, "popup.html"));
   cpSync(join(staticDir, "icons"), join(outDir, "icons"), { recursive: true });
+  for (const optional of ["options.html", "_locales"]) {
+    const src = join(staticDir, optional);
+    if (existsSync(src)) cpSync(src, join(outDir, optional), { recursive: true });
+  }
 }

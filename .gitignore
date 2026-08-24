@@ -32,3 +32,10 @@ apps/safari/Voxylio/
 
 # Committed template for required secrets
 !.env.example
+
+# Store packages
+dist-store/
+
+# Generated Xcode project (xcodegen)
+apps/macos/Voxylio.xcodeproj/
+apps/macos/VoxylioKit/.build/
