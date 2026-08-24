@@ -1,0 +1,14 @@
+{
+  "name": "@voxylio/build-tools",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared extension builder: bundles the engine and injects each platform's manifest — one builder, never five diverging copies.",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "dependencies": {
+    "esbuild": "^0.27.0"
+  }
+}

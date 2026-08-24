@@ -9,7 +9,11 @@
     "test": "pnpm test:unit && pnpm test:integration",
     "test:unit": "node --test packages/core/test/*.test.js",
     "test:integration": "node tests/integration/run-all.js",
-    "lint": "pnpm --filter site lint"
+    "lint": "pnpm --filter site lint",
+    "build:edge": "pnpm --filter @voxylio/edge build",
+    "build:firefox": "pnpm --filter @voxylio/firefox build",
+    "build:extensions": "pnpm build:chrome && pnpm build:edge && pnpm build:firefox",
+    "lint:firefox": "pnpm --filter @voxylio/firefox lint"
   },
   "devDependencies": {
     "esbuild": "^0.27.0",

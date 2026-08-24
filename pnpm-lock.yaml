@@ -17,12 +17,45 @@ importers:
 
   apps/chrome:
     dependencies:
+      '@voxylio/build-tools':
+        specifier: workspace:*
+        version: link:../../packages/build-tools
       '@voxylio/core':
         specifier: workspace:*
         version: link:../../packages/core
       '@voxylio/webext':
         specifier: workspace:*
         version: link:../../packages/webext
+
+  apps/edge:
+    dependencies:
+      '@voxylio/build-tools':
+        specifier: workspace:*
+        version: link:../../packages/build-tools
+      '@voxylio/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@voxylio/webext':
+        specifier: workspace:*
+        version: link:../../packages/webext
+
+  apps/firefox:
+    dependencies:
+      '@voxylio/build-tools':
+        specifier: workspace:*
+        version: link:../../packages/build-tools
+      '@voxylio/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@voxylio/webext':
+        specifier: workspace:*
+        version: link:../../packages/webext
+
+  packages/build-tools:
+    dependencies:
+      esbuild:
+        specifier: ^0.27.0
+        version: 0.27.7
 
   packages/core: {}
 

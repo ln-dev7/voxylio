@@ -25,3 +25,7 @@ Thumbs.db
 *.log
 npm-debug.log*
 pnpm-debug.log*
+
+# Platform build outputs (only /extension, the Chrome artifact, is committed)
+apps/*/dist/
+apps/safari/Voxylio/

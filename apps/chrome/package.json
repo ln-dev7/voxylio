@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@voxylio/core": "workspace:*",
-    "@voxylio/webext": "workspace:*"
+    "@voxylio/webext": "workspace:*",
+    "@voxylio/build-tools": "workspace:*"
   }
 }
