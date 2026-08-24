@@ -35,10 +35,21 @@ pnpm workspace — the dubbing engine is shared, platforms are adapters.
 
 ```bash
 pnpm install
-pnpm build:chrome   # bundle the engine into /extension
-pnpm test:unit      # core unit tests (node:test)
-pnpm test           # unit + content-script integration tests
+pnpm build:chrome       # bundle the engine into /extension
+pnpm build:extensions   # chrome + edge + firefox
+pnpm test:unit          # core unit tests (node:test)
+pnpm test               # unit + content-script integration tests
 ```
+
+## Platforms
+
+| Platform | Status | Where |
+| --- | --- | --- |
+| Chrome | ✅ builds, tested | `/extension` (generated) |
+| Edge | ✅ builds (Chromium parity) | `apps/edge/dist` |
+| Firefox | ✅ builds, addons-linter clean | `apps/firefox/dist` |
+| Safari | ⚙ converter ready (run on macOS) | `apps/safari/convert.sh` |
+| macOS app | 📋 planned (audio-capture dubbing) | `docs/IMPLEMENTATION_PLAN.md` §5 |
 
 ## Install the extension
 

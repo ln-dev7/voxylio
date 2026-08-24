@@ -1,5 +1,7 @@
 # Roadmap
 
+> Execution details live in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md).
+
 What Voxylio does today is documented in the [README](README.md). This
 roadmap tracks where it goes next, roughly in order.
 
