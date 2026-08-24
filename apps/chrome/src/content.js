@@ -15,6 +15,8 @@ import {
   computeUtteranceRate,
   pickVoice as pickBestVoice,
   LOCALES,
+  DEFAULTS as SHARED_DEFAULTS,
+  createTranslatorChain,
 } from "@voxylio/core";
 import {
   storage,
@@ -23,6 +25,10 @@ import {
   isAlive,
   safeSyncSet,
   safeLocalSet,
+  createBuiltinProvider,
+  createGtxProvider,
+  createDeeplProvider,
+  createGoogleV2Provider,
 } from "@voxylio/webext";
 
 
@@ -32,20 +38,19 @@ import {
 
   // ---------------------------------------------------------------- settings
 
-  const DEFAULTS = {
-    enabled: false,
-    rate: 1.1, // base voice speed
-    duck: 12, // original audio volume (%) while dubbing
-    voiceName: "", // "" = auto (best available voice for the language)
-    sourceLang: "auto", // "auto" = detect from the subtitle track
-    targetLang: "fr",
-    subtitles: false, // on-screen translated captions
-    overlay: true, // floating on-page controller
-    cloudFallback: true, // allow the online translation fallback
-    autoPause: false, // pause the video when dubbing falls too far behind
-    keepTerms: true, // keep common technical terms untranslated
-  };
+  // Shared schema (packages/core/src/settings.js): includes provider
+  // selection and the per-site disable list.
+  const DEFAULTS = { ...SHARED_DEFAULTS };
   const settings = { ...DEFAULTS };
+
+  // Voxylio can be switched off per hostname from the options page.
+  function siteDisabled() {
+    const host = (location.hostname || "").replace(/^www\./, "").toLowerCase();
+    return (
+      Array.isArray(settings.disabledSites) &&
+      settings.disabledSites.includes(host)
+    );
+  }
 
   const controllers = new Map(); // HTMLVideoElement -> controller
 
@@ -95,6 +100,14 @@ import {
   });
 
   storage.onChanged.addListener((changes, area) => {
+    if (area === "local") {
+      // Provider API keys are stored in storage.local by the options page.
+      if (changes.deeplKey) providerKeys.deepl = changes.deeplKey.newValue || "";
+      if (changes.googleKey)
+        providerKeys.googlev2 = changes.googleKey.newValue || "";
+      if (changes.deeplKey || changes.googleKey) rebuildChain();
+      return;
+    }
     if (area !== "sync") return;
     for (const [k, v] of Object.entries(changes)) {
       if (k in settings) settings[k] = v.newValue;
@@ -104,6 +117,7 @@ import {
     if (changes.targetLang || changes.sourceLang) {
       for (const c of controllers.values()) c.flushSpeech();
     }
+    if (changes.provider || changes.cloudFallback) rebuildChain();
     refreshAll();
   });
 
@@ -115,92 +129,61 @@ import {
   // ------------------------------------------------------------ translation
 
   const cache = new BoundedMap(3000); // "source->target::text" -> Promise<string>
-  // One translator per (source, target) pair, isolated from each other:
-  // switching languages can never file a translation under the wrong key.
-  const translators = new Map(); // "source->target" -> Promise<Translator|null>
   let builtinBroken = false; // surfaced in the popup status
   let pendingCount = 0;
   // What actually translated the last lines: "local" | "cloud" | "none".
   let translationMode = "none";
   let lastTranslateError = "";
 
+  // Provider chain (packages/core/src/translation.js): ordering, ready
+  // timeout (never block a line on a model download), attempt timeout and
+  // per-pair cooldown are pure engine logic; the providers themselves are
+  // platform adapters. The builtin provider is a singleton so its per-pair
+  // translator instances survive chain rebuilds.
+  const builtinProvider = createBuiltinProvider({
+    onBroken: () => {
+      builtinBroken = true;
+    },
+  });
+  const providerKeys = { deepl: "", googlev2: "" };
+  let chain = createTranslatorChain([builtinProvider]);
 
-
-  function getBuiltinTranslator(source, target) {
-    const key = source + "->" + target;
-    if (!translators.has(key)) {
-      translators.set(
-        key,
-        (async () => {
-          try {
-            if (typeof Translator === "undefined")
-              throw new Error("no Translator API");
-            const avail = await Translator.availability({
-              sourceLanguage: source,
-              targetLanguage: target,
-            });
-            if (avail === "unavailable") throw new Error("pair unavailable");
-            return await Translator.create({
-              sourceLanguage: source,
-              targetLanguage: target,
-            });
-          } catch (e) {
-            builtinBroken = true;
-            return null;
-          }
-        })()
-      );
+  function rebuildChain() {
+    const list = [builtinProvider];
+    if (settings.cloudFallback) {
+      if (settings.provider === "deepl" && providerKeys.deepl)
+        list.push(createDeeplProvider(() => providerKeys.deepl));
+      if (settings.provider === "googlev2" && providerKeys.googlev2)
+        list.push(createGoogleV2Provider(() => providerKeys.googlev2));
+      list.push(createGtxProvider());
     }
-    return translators.get(key);
+    chain = createTranslatorChain(list);
   }
-
-  // The local translator may take a while to initialize (model download):
-  // never block a line on it. If it is not ready in time, the fallback
-  // translates this one, and the local translator takes over once available.
-  async function builtinReadyOrNull(source, target, ms) {
-    const timeout = new Promise((r) => setTimeout(() => r("__timeout__"), ms));
-    const res = await Promise.race([
-      getBuiltinTranslator(source, target),
-      timeout,
-    ]);
-    return res === "__timeout__" ? null : res;
+  rebuildChain();
+  try {
+    storage.local.get({ deeplKey: "", googleKey: "" }, (k) => {
+      providerKeys.deepl = (k && k.deeplKey) || "";
+      providerKeys.googlev2 = (k && k.googleKey) || "";
+      rebuildChain();
+    });
+  } catch (e) {
+    /* no local storage (test stub): chain stays builtin+gtx */
   }
 
   // One translation attempt (optionally with protected technical terms).
   async function translateOnce(text, source, target) {
-    // The built-in API needs an explicit source; skip it when unknown.
-    const t =
-      source && source !== "auto"
-        ? await builtinReadyOrNull(source, target, 2500)
-        : null;
-    if (t) {
-      try {
-        const out = await t.translate(text);
-        translationMode = "local";
-        return out;
-      } catch (e) {
-        /* try the fallback */
-      }
-    }
-    if (!settings.cloudFallback) {
+    try {
+      const res = await chain.translate(text, source, target);
+      translationMode = res.kind === "local" ? "local" : "cloud";
+      lastTranslateError = "";
+      return res.text;
+    } catch (e) {
       translationMode = "none";
-      lastTranslateError = "local-only";
-      throw new Error("local translator unavailable (strict local mode)");
+      lastTranslateError = settings.cloudFallback
+        ? (e && e.message) || "translate failed"
+        : "local-only";
+      throw e;
     }
-    // Online fallback supports source auto-detection (sl=auto).
-    const resp = await runtime.sendMessage({
-      type: "translate",
-      text,
-      source: source || "auto",
-      target,
-    });
-    if (resp && resp.ok) {
-      translationMode = "cloud";
-      return resp.text;
-    }
-    translationMode = "none";
-    lastTranslateError = (resp && resp.error) || "translate failed";
-    throw new Error(lastTranslateError);
   }
 
   function translate(text, source) {
@@ -858,7 +841,8 @@ import {
 
     ctl.onSettingsChanged = () => {
       // Dub only the primary video — one voice, one duck, per page.
-      if (settings.enabled && video === primaryVideo) {
+      // A hostname on the options page's disabled list stays untouched.
+      if (settings.enabled && !siteDisabled() && video === primaryVideo) {
         start();
         applyDucking();
       } else {
@@ -1344,7 +1328,8 @@ import {
       );
       // Single explicit state for the popup
       let state = "no-video";
-      if (controllers.size > 0) {
+      if (siteDisabled()) state = "site-disabled";
+      else if (controllers.size > 0) {
         if (nCues > 0) {
           if (targetVoices.length === 0) state = "no-voice";
           else if (translationMode === "none" && lastTranslateError)
@@ -1368,6 +1353,8 @@ import {
         groups: nGroups,
         tracks,
         builtinTranslator: !builtinBroken,
+        provider: chain.lastProviderId(),
+        siteDisabled: siteDisabled(),
         voices: targetVoices.map((v) => ({ name: v.name, lang: v.lang })),
       };
     };
