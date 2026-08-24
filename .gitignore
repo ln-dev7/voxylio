@@ -29,3 +29,6 @@ pnpm-debug.log*
 # Platform build outputs (only /extension, the Chrome artifact, is committed)
 apps/*/dist/
 apps/safari/Voxylio/
+
+# Committed template for required secrets
+!.env.example
