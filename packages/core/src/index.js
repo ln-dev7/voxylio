@@ -9,6 +9,8 @@ export {
 export {
   buildGroups,
   mergeRollup,
+  wordOverlap,
+  textHash,
   GROUP_MAX_LEN,
   GROUP_MAX_GAP,
 } from "./grouping.js";

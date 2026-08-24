@@ -1,25 +1,107 @@
-// Sentence reconstruction — extracted verbatim from the Chrome POC.
+// Sentence reconstruction for progressive captions.
+//
+// Key invariants (see docs/IMPLEMENTATION_PLAN.md and the repetition-bug
+// post-mortem in the tests):
+//  - a group's `id` NEVER depends on its mutable text — only on its start;
+//  - `version` changes whenever the text changes, so consumers can detect
+//    growth without re-keying;
+//  - the LAST group of a live stream is a `draft` (still growing) — only
+//    the caller can finalize it (time-stability heuristics live there);
+//  - roll-up AND sliding-window caption feeds are merged into one cue.
 import { cleanCaption, endsSentence } from "./subtitles.js";
 
 export const GROUP_MAX_LEN = 280; // max characters per sentence (safety cap)
 export const GROUP_MAX_GAP = 1.4; // silence (s) that closes a sentence
 
-// Roll-up captions (YouTube-style): the same sentence is re-sent, each time
-// a little longer. Decide whether an incoming cue continues the last one.
-// Returns the updated cue when it merges, or null when it does not.
+// Cheap stable content hash (FNV-1a, 32-bit) for group versions.
+export function textHash(s) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = (h * 0x01000193) >>> 0;
+  }
+  return h.toString(36);
+}
+
+function normalizeWords(s) {
+  return s
+    .toLowerCase()
+    .replace(/[.,!?…;:'"«»()\[\]]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+// Longest overlap (in words) between the END of `a` and the START of `b`.
+// Returns the number of overlapping words of `b`, or 0.
+export function wordOverlap(a, b, minWords = 2) {
+  const aw = normalizeWords(a);
+  const bw = normalizeWords(b);
+  const max = Math.min(aw.length, bw.length);
+  for (let n = max; n >= minWords; n--) {
+    let match = true;
+    for (let i = 0; i < n; i++) {
+      if (aw[aw.length - n + i] !== bw[i]) {
+        match = false;
+        break;
+      }
+    }
+    if (match) return n;
+  }
+  return 0;
+}
+
+// Merge an incoming caption into the previous cue when the feed is
+// progressive. Handles BOTH shapes real players produce:
+//  - roll-up:        "Welcome" → "Welcome to the course"      (prefix growth)
+//  - sliding window: "Welcome to the course" → "to the course of coding"
+//    (the window drops leading words; the overlap must be stitched).
+// Returns { text, end, grew } when it merges, or null.
 export function mergeRollup(last, start, end, text) {
   if (!last) return null;
   if (start > last.end + 0.6) return null;
-  if (!(text.startsWith(last.text) || last.text.startsWith(text))) return null;
-  return {
-    text: text.length > last.text.length ? text : last.text,
-    end: Math.max(last.end, end),
-    grew: text.length > last.text.length,
-  };
+
+  // Prefix relation (classic roll-up)
+  if (text.startsWith(last.text) || last.text.startsWith(text)) {
+    return {
+      text: text.length > last.text.length ? text : last.text,
+      end: Math.max(last.end, end),
+      grew: text.length > last.text.length,
+    };
+  }
+
+  // Sliding window: longest suffix of last == prefix of incoming
+  const overlap = wordOverlap(last.text, text, 2);
+  if (overlap > 0) {
+    const bw = normalizeWords(text);
+    if (overlap >= bw.length) {
+      // incoming is entirely contained in the tail of last
+      return { text: last.text, end: Math.max(last.end, end), grew: false };
+    }
+    // Replace last's overlapping tail with the FULL incoming text: the
+    // incoming version of the shared words carries the richest
+    // punctuation ("…de codage." vs "…de codage").
+    const re = /\S+/g;
+    const starts = [];
+    let m;
+    while ((m = re.exec(last.text)) !== null) starts.push(m.index);
+    const cutIdx = starts[starts.length - overlap] ?? 0;
+    const head = last.text.slice(0, cutIdx).trimEnd();
+    const merged = head ? head + " " + text : text;
+    return {
+      text: merged,
+      end: Math.max(last.end, end),
+      grew: merged.length > last.text.length,
+    };
+  }
+  return null;
 }
 
-// Captions arrive as fragments: rebuild full sentences before translating
-// and speaking, like YouTube dubbing does.
+// Rebuild sentence groups from cues. The result is deterministic for a
+// given cue list; each group carries:
+//   id      — stable, start-derived, text-independent
+//   version — text hash, changes when the group grows
+//   final   — false ONLY for the trailing group (it may still grow);
+//             time-based stabilization is the caller's job.
 export function buildGroups(cues, opts = {}) {
   const MAX_LEN = opts.maxLen ?? GROUP_MAX_LEN;
   const MAX_GAP = opts.maxGap ?? GROUP_MAX_GAP;
@@ -48,8 +130,14 @@ export function buildGroups(cues, opts = {}) {
     }
   }
   if (cur) groups.push(cur);
-  for (const g of groups) {
-    g.key = Math.round(g.start * 100) + "|" + g.text.slice(0, 48);
+  for (let i = 0; i < groups.length; i++) {
+    const g = groups[i];
+    g.id = "g" + Math.round(g.start * 100);
+    g.version = textHash(g.text);
+    // The trailing group may still be growing (live/progressive feeds).
+    g.final = i < groups.length - 1;
+    // Kept for display/debug only — NEVER use as identity.
+    g.key = g.id + ":" + g.version;
   }
   return groups;
 }
