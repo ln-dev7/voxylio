@@ -9,6 +9,6 @@
     ".": "./src/index.js"
   },
   "scripts": {
-    "test": "node --test test/"
+    "test": "node --test"
   }
 }
