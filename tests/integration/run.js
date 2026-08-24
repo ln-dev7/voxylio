@@ -50,6 +50,7 @@ const http = require('http');
         onChanged: { addListener: (l) => listeners.push(l) },
       },
       runtime: {
+        id: 'test-extension',
         onMessage: { addListener: () => {} },
         // La "traduction" marque la langue cible : détecte tout mélange.
         sendMessage: (msg) =>

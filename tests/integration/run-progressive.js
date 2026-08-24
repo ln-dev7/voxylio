@@ -37,6 +37,7 @@ const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromi
         onChanged: { addListener: (l) => listeners.push(l) },
       },
       runtime: {
+        id: 'test-extension',
         onMessage: { addListener: () => {} },
         getManifest: () => ({ version: 'test' }),
         // random latency 100-400 ms, like a real translator
@@ -79,6 +80,22 @@ const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromi
 
   await page.waitForTimeout(10500);
   const spoken = await page.evaluate(() => window.__spoken);
+
+  // --- extension reloaded while the tab stays open (orphaned script) ---
+  const orphan = await page.evaluate(async () => {
+    const v = document.getElementById('v');
+    const before = { volume: v.volume, spoken: window.__spoken.length };
+    delete window.chrome.runtime.id; // context invalidated
+    await new Promise((r) => setTimeout(r, 800)); // > one 150ms tick
+    return {
+      before,
+      after: {
+        volume: v.volume,
+        spoken: window.__spoken.length,
+        flagReleased: window.__voxylioInjected === false,
+      },
+    };
+  });
   await browser.close();
   server.close();
 
@@ -106,6 +123,11 @@ const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromi
     }
   }
   if (spoken.length !== 2) fails.push(`exactement 2 répliques attendues, ${spoken.length} entendues`);
+  // teardown de l'orphelin : volume restauré, plus aucune parole, place libérée
+  if (orphan.before.volume >= 0.5) fails.push('le duck aurait dû être actif avant invalidation');
+  if (orphan.after.volume < 0.99) fails.push(`volume non restauré après invalidation (${orphan.after.volume})`);
+  if (orphan.after.spoken !== orphan.before.spoken) fails.push('l’orphelin a parlé après invalidation');
+  if (!orphan.after.flagReleased) fails.push('le flag d’injection n’a pas été libéré');
 
   if (fails.length) { console.log('❌', [...new Set(fails)]); process.exit(1); }
   console.log('\n✅ PROGRESSIF OK : aucune version partielle, chaque phrase une seule fois, couture sans doublon');

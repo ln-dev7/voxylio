@@ -25,7 +25,7 @@ const http = require('http');
       storage: { sync: { get: (d, cb) => cb({ ...d, ...store }),
           set: (p) => { const ch = {}; for (const [k, v] of Object.entries(p)) { ch[k] = { newValue: v }; store[k] = v; } listeners.forEach(l => l(ch, 'sync')); } },
         local: { get: (d, cb) => cb(d), set: () => {} }, onChanged: { addListener: l => listeners.push(l) } },
-      runtime: { onMessage: { addListener: () => {} }, getManifest: () => ({ version: 'test' }),
+      runtime: { id: 'test-extension', onMessage: { addListener: () => {} }, getManifest: () => ({ version: 'test' }),
         sendMessage: (msg) => new Promise(res => setTimeout(() => res({ ok: true, text: `[fr] ${msg.text}` }), 80)) },
     };
     window.__spoken = [];
