@@ -6,10 +6,16 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
-// Self-hosted Inter variable font
+// Self-hosted fonts: Inter for body, Space Grotesk for display type
 const inter = localFont({
   src: "../fonts/InterVariable.woff2",
   variable: "--font-inter",
+  display: "swap",
+});
+
+const spaceGrotesk = localFont({
+  src: "../fonts/SpaceGrotesk.ttf",
+  variable: "--font-space-grotesk",
   display: "swap",
 });
 
@@ -45,7 +51,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className="dark">
-      <body className={`${inter.variable} font-sans`}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans`}>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>

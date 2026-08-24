@@ -32,6 +32,8 @@
 
 @theme inline {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-inter), ui-sans-serif,
+    system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -67,5 +69,142 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "calt", "kern", "liga", "ss03";
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Motion patterns (ReactBits-inspired: aurora, shimmer, marquee,     */
+/* waveform, pulse rings). All CSS-only and reduced-motion aware.     */
+/* ------------------------------------------------------------------ */
+
+@keyframes aurora-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(60px, -40px) scale(1.15);
+  }
+  66% {
+    transform: translate(-50px, 30px) scale(0.95);
+  }
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes wave-bounce {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes ring-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+@keyframes player-progress {
+  0% {
+    width: 22%;
+  }
+  100% {
+    width: 74%;
+  }
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(110px);
+  animation: aurora-drift 14s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Shiny text: a light sweep across muted text (ReactBits "Shiny Text") */
+.shiny-text {
+  background: linear-gradient(
+    120deg,
+    rgba(158, 245, 189, 0.85) 35%,
+    #ffffff 50%,
+    rgba(158, 245, 189, 0.85) 65%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer-sweep 3.2s linear infinite;
+}
+
+/* Gradient text for the headline keyword */
+.gradient-text {
+  background: linear-gradient(100deg, #1ed760 0%, #7ef5ad 55%, #57c1ff 110%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.marquee-track {
+  animation: marquee-scroll 28s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.wave-bar {
+  transform-origin: center;
+  animation: wave-bounce 1.1s ease-in-out infinite;
+}
+
+.play-ring {
+  animation: ring-pulse 2.2s ease-out infinite;
+}
+
+.player-progress {
+  animation: player-progress 24s linear infinite alternate;
+}
+
+/* Dotted grid backdrop for media panels */
+.dot-grid {
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.055) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob,
+  .shiny-text,
+  .marquee-track,
+  .wave-bar,
+  .play-ring,
+  .player-progress {
+    animation: none;
   }
 }
