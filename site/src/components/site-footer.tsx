@@ -9,11 +9,12 @@ const WAVE_HEIGHTS = [8, 14, 10, 16, 9, 13, 7];
 export function SiteFooter() {
   const t = useTranslations("Footer");
 
+  // Locale-aware anchors so they resolve to the home page from any route.
   const product = [
-    { href: "#features", label: t("links.features") },
-    { href: "#how-it-works", label: t("links.howItWorks") },
-    { href: "#install", label: t("links.install") },
-    { href: "#faq", label: t("links.faq") },
+    { hash: "features", label: t("links.features") },
+    { hash: "how-it-works", label: t("links.howItWorks") },
+    { hash: "install", label: t("links.install") },
+    { hash: "faq", label: t("links.faq") },
   ];
   const resources = [
     { href: GITHUB_URL, label: "GitHub", external: true },
@@ -35,12 +36,12 @@ export function SiteFooter() {
         <div className="grid gap-10 sm:grid-cols-[1.4fr_1fr_1fr]">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2.5">
+            <Link href="/" className="flex w-fit items-center gap-2.5">
               <Logo />
               <span className="font-display text-[15px] font-semibold tracking-tight">
                 Voxylio
               </span>
-            </div>
+            </Link>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
               {t("tagline")}
             </p>
@@ -65,13 +66,13 @@ export function SiteFooter() {
             </h3>
             <ul className="mt-4 space-y-2.5">
               {product.map((l) => (
-                <li key={l.href}>
-                  <a
-                    href={l.href}
+                <li key={l.hash}>
+                  <Link
+                    href={{ pathname: "/", hash: l.hash }}
                     className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                   >
                     {l.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

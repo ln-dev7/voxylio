@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { GitHubIcon } from "@/components/github-icon";
 import { Aurora } from "@/components/aurora";
 import { DubDemo } from "@/components/dub-demo";
+import { Link } from "@/i18n/navigation";
 import { GITHUB_URL } from "@/lib/constants";
 
 export function Hero() {
@@ -32,10 +33,10 @@ export function Hero() {
               size="lg"
               className="h-12 rounded-full px-7 text-[15px] shadow-[0_0_40px_rgba(30,215,96,0.25)] transition-shadow hover:shadow-[0_0_60px_rgba(30,215,96,0.4)]"
             >
-              <a href="#install">
+              <Link href={{ pathname: "/", hash: "install" }}>
                 <Download data-slot="icon" />
                 {t("ctaInstall")}
-              </a>
+              </Link>
             </Button>
             <Button
               asChild
