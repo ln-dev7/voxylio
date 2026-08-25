@@ -218,7 +218,16 @@ final class Orchestrator: ObservableObject {
     }
 
     private func checkStability(gen: Int) {
-        guard gen == generation, !draftText.isEmpty else { return }
+        guard gen == generation else { return }
+        // Sentences finalize but nothing ever speaks → the translate or
+        // speech stage is stuck; say so instead of staying silent.
+        if stats.finalized > 2, stats.spoken == 0, warning == nil {
+            warning =
+                "Des phrases sont prêtes mais rien n'est parlé — traduction "
+                + "lente ou indisponible. Le modèle Apple se télécharge "
+                + "peut-être (bouton P3) ; le secours en ligne prend le relais."
+        }
+        guard !draftText.isEmpty else { return }
         let quiet = Date().timeIntervalSince(draftUpdatedAt)
         let needed = endsSentence(draftText) ? 0.35 : 0.65
         if quiet >= needed {
@@ -277,6 +286,7 @@ final class Orchestrator: ObservableObject {
                 }
                 self.lastDubbed = translated
                 self.stats.spoken += 1
+                self.warning = nil // the chain is flowing again
                 await self.speaker.speak(
                     translated,
                     language: self.targetLang,

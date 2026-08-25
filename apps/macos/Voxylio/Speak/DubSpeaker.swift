@@ -48,6 +48,19 @@ final class DubSpeaker: NSObject, AVSpeechSynthesizerDelegate {
         await withCheckedContinuation { (cont: CheckedContinuation<Void, Never>) in
             finishContinuation = cont
             synthesizer.speak(utterance)
+            // Safety net: if the synthesizer never calls back (bad voice,
+            // audio route change…), cut and move on — the pipeline must
+            // never wait forever on one line.
+            let cap = min(20.0, 3.0 + Double(text.count) / 8.0)
+            DispatchQueue.main.asyncAfter(deadline: .now() + cap) { [weak self] in
+                guard let self, self.finishContinuation != nil else { return }
+                self.synthesizer.stopSpeaking(at: .immediate)
+                // didCancel resumes; belt-and-braces if no delegate call:
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                    self?.finishContinuation?.resume()
+                    self?.finishContinuation = nil
+                }
+            }
         }
     }
 
