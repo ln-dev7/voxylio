@@ -93,7 +93,7 @@
       },
       "play": {
         "title": "Avvia un video",
-        "description": "Apri un video sottotitolato, accedi con Google dal popup (il piano gratuito basta), poi attiva l'interruttore."
+        "description": "Apri un video sottotitolato, accedi con Google dal popup, poi attiva l'interruttore."
       }
     },
     "cta": "Prendi Voxylio su GitHub",
@@ -112,7 +112,7 @@
       },
       "account": {
         "question": "Perché serve un account?",
-        "answer": "Un accesso con Google sblocca l'estensione e vi collega il tuo piano — il piano gratuito basta e resta gratuito. Il doppiaggio continua a girare sul tuo dispositivo; l'account conserva solo la tua email e il tuo piano."
+        "answer": "Un accesso con Google sblocca l'estensione e vi collega il tuo piano. Il doppiaggio continua a girare sul tuo dispositivo; l'account conserva solo la tua email e il tuo piano."
       },
       "voice": {
         "question": "Posso migliorare la qualità della voce?",
@@ -217,7 +217,7 @@
   "Account": {
     "title": "Il tuo account",
     "signedOutTitle": "Accedi a Voxylio",
-    "signedOutSubtitle": "Un account Google sblocca il doppiaggio — il piano gratuito basta e non viene mai chiesta una carta.",
+    "signedOutSubtitle": "Un account Google sblocca il doppiaggio — non viene mai chiesta una carta.",
     "signInGoogle": "Continua con Google",
     "plan": "Piano",
     "planFree": "Gratis",

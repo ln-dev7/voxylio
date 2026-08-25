@@ -54,7 +54,7 @@ import {
   }
 
   // ---------------------------------------------------------------- account
-  // Dubbing requires a linked Voxylio account (the free plan is enough).
+  // Dubbing requires a linked Voxylio account (free plan included).
   // The background owns the token and caches entitlements: once linked,
   // the check also succeeds offline, so a bad connection never locks a
   // signed-in user out mid-video.

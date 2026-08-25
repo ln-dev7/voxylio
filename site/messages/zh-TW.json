@@ -93,7 +93,7 @@
       },
       "play": {
         "title": "播放影片",
-        "description": "開啟任一含字幕的影片，在彈出視窗中用 Google 登入（免費方案即可），然後打開開關。"
+        "description": "開啟任一含字幕的影片，在彈出視窗中用 Google 登入，然後打開開關。"
       }
     },
     "cta": "在 GitHub 取得 Voxylio",
@@ -112,7 +112,7 @@
       },
       "account": {
         "question": "為什麼需要帳戶？",
-        "answer": "用 Google 登入即可解鎖擴充功能，並將你的方案綁定到帳戶 — 免費方案就夠用，而且永遠免費。配音仍然在你的裝置上執行；帳戶只保存你的電子郵件地址和方案。"
+        "answer": "用 Google 登入即可解鎖擴充功能，並將你的方案綁定到帳戶。配音仍然在你的裝置上執行；帳戶只保存你的電子郵件地址和方案。"
       },
       "voice": {
         "question": "可以提升語音品質嗎？",
@@ -217,7 +217,7 @@
   "Account": {
     "title": "我的帳戶",
     "signedOutTitle": "登入 Voxylio",
-    "signedOutSubtitle": "一個 Google 帳戶即可解鎖配音 — 免費方案就夠用，絕不要求信用卡。",
+    "signedOutSubtitle": "一個 Google 帳戶即可解鎖配音 — 絕不要求信用卡。",
     "signInGoogle": "使用 Google 繼續",
     "plan": "方案",
     "planFree": "免費",

@@ -93,7 +93,7 @@
       },
       "play": {
         "title": "Reproduza um vídeo",
-        "description": "Abra um vídeo legendado, entre com o Google pelo popup (o plano gratuito basta) e ative o interruptor."
+        "description": "Abra um vídeo legendado, entre com o Google pelo popup e ative o interruptor."
       }
     },
     "cta": "Baixar o Voxylio no GitHub",
@@ -112,7 +112,7 @@
       },
       "account": {
         "question": "Por que preciso de uma conta?",
-        "answer": "Entrar com o Google desbloqueia a extensão e vincula seu plano a ela — o plano gratuito basta e continua gratuito. A dublagem continua rodando no seu dispositivo; a conta guarda apenas seu e-mail e seu plano."
+        "answer": "Entrar com o Google desbloqueia a extensão e vincula seu plano a ela. A dublagem continua rodando no seu dispositivo; a conta guarda apenas seu e-mail e seu plano."
       },
       "voice": {
         "question": "Posso melhorar a qualidade da voz?",
@@ -217,7 +217,7 @@
   "Account": {
     "title": "Sua conta",
     "signedOutTitle": "Entrar no Voxylio",
-    "signedOutSubtitle": "Uma conta Google desbloqueia a dublagem — o plano gratuito basta e nenhum cartão é pedido.",
+    "signedOutSubtitle": "Uma conta Google desbloqueia a dublagem — nenhum cartão é pedido.",
     "signInGoogle": "Continuar com o Google",
     "plan": "Plano",
     "planFree": "Grátis",

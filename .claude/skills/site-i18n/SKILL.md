@@ -45,7 +45,8 @@ strings.
   concrete, never hype.
 - The account requirement is part of the copy since v1.7: dubbing needs
   a Google sign-in (free plan included). Never reintroduce "no account"
-  claims; the honest angle is "no card, no quota, free plan enough".
+  claims; the honest angle is "no card, no quota". Owner decision: never
+  write "the free plan is enough" — it undersells Pro.
 - Product terms NOT translated: Voxylio, Chrome, Chrome Web Store,
   GitHub, Pro, DeepL, Polar, shadow DOM, popup, MIT.
 - Prices stay in EUR with local number formatting (7,99 € / €7.99).

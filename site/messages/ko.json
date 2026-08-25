@@ -93,7 +93,7 @@
       },
       "play": {
         "title": "영상 재생",
-        "description": "자막 있는 영상을 열고, 팝업에서 Google로 로그인한 뒤(무료 플랜으로 충분합니다) 스위치를 켜세요."
+        "description": "자막 있는 영상을 열고, 팝업에서 Google로 로그인한 뒤 스위치를 켜세요."
       }
     },
     "cta": "GitHub에서 Voxylio 받기",
@@ -112,7 +112,7 @@
       },
       "account": {
         "question": "왜 계정이 필요한가요?",
-        "answer": "Google 로그인 한 번으로 확장 프로그램이 활성화되고 플랜이 계정에 연결됩니다 — 무료 플랜으로 충분하며 계속 무료입니다. 더빙은 여전히 기기에서 실행되고, 계정에는 이메일 주소와 플랜만 저장됩니다."
+        "answer": "Google 로그인 한 번으로 확장 프로그램이 활성화되고 플랜이 계정에 연결됩니다. 더빙은 여전히 기기에서 실행되고, 계정에는 이메일 주소와 플랜만 저장됩니다."
       },
       "voice": {
         "question": "목소리 품질을 높일 수 있나요?",
@@ -217,7 +217,7 @@
   "Account": {
     "title": "내 계정",
     "signedOutTitle": "Voxylio에 로그인",
-    "signedOutSubtitle": "Google 계정 하나로 더빙이 활성화됩니다 — 무료 플랜으로 충분하고, 카드는 요구하지 않습니다.",
+    "signedOutSubtitle": "Google 계정 하나로 더빙이 활성화됩니다 — 카드는 요구하지 않습니다.",
     "signInGoogle": "Google로 계속하기",
     "plan": "플랜",
     "planFree": "무료",

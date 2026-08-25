@@ -78,7 +78,7 @@
     "message": "Manage"
   },
   "accountNoteNotLinked": {
-    "message": "Sign in to start dubbing — the free plan is enough."
+    "message": "Sign in to start dubbing."
   },
   "accountNoteFree": {
     "message": "Unlock context-aware translation and upcoming Pro features."
@@ -243,6 +243,6 @@
     "message": "Continue with Google"
   },
   "signinNote": {
-    "message": "No card required — the free plan is enough."
+    "message": "No card required."
   }
 }

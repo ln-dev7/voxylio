@@ -93,7 +93,7 @@
       },
       "play": {
         "title": "播放视频",
-        "description": "打开任意带字幕的视频，在弹窗中用 Google 登录（免费计划即可），然后打开开关。"
+        "description": "打开任意带字幕的视频，在弹窗中用 Google 登录，然后打开开关。"
       }
     },
     "cta": "在 GitHub 获取 Voxylio",
@@ -112,7 +112,7 @@
       },
       "account": {
         "question": "为什么需要账户？",
-        "answer": "用 Google 登录即可解锁扩展，并把你的计划绑定到账户 — 免费计划就够用，而且永远免费。配音仍然在你的设备上运行；账户只保存你的邮箱地址和计划。"
+        "answer": "用 Google 登录即可解锁扩展，并把你的计划绑定到账户。配音仍然在你的设备上运行；账户只保存你的邮箱地址和计划。"
       },
       "voice": {
         "question": "可以提升语音质量吗？",
@@ -217,7 +217,7 @@
   "Account": {
     "title": "我的账户",
     "signedOutTitle": "登录 Voxylio",
-    "signedOutSubtitle": "一个 Google 账户即可解锁配音 — 免费计划就够用，绝不要求银行卡。",
+    "signedOutSubtitle": "一个 Google 账户即可解锁配音 — 绝不要求银行卡。",
     "signInGoogle": "使用 Google 继续",
     "plan": "计划",
     "planFree": "免费",

@@ -93,7 +93,7 @@
       },
       "play": {
         "title": "Reproduce un vídeo",
-        "description": "Abre cualquier vídeo subtitulado, inicia sesión con Google desde el popup (el plan gratuito basta) y activa el interruptor."
+        "description": "Abre cualquier vídeo subtitulado, inicia sesión con Google desde el popup y activa el interruptor."
       }
     },
     "cta": "Consigue Voxylio en GitHub",
@@ -112,7 +112,7 @@
       },
       "account": {
         "question": "¿Por qué una cuenta?",
-        "answer": "Iniciar sesión con Google desbloquea la extensión y le vincula tu plan — el plan gratuito basta y seguirá siendo gratuito. El doblaje sigue ejecutándose en tu dispositivo; la cuenta solo guarda tu correo y tu plan."
+        "answer": "Iniciar sesión con Google desbloquea la extensión y le vincula tu plan. El doblaje sigue ejecutándose en tu dispositivo; la cuenta solo guarda tu correo y tu plan."
       },
       "voice": {
         "question": "¿Puedo mejorar la calidad de la voz?",
@@ -217,7 +217,7 @@
   "Account": {
     "title": "Tu cuenta",
     "signedOutTitle": "Inicia sesión en Voxylio",
-    "signedOutSubtitle": "Una cuenta de Google desbloquea el doblaje — el plan gratuito basta y nunca se pide tarjeta.",
+    "signedOutSubtitle": "Una cuenta de Google desbloquea el doblaje — nunca se pide tarjeta.",
     "signInGoogle": "Continuar con Google",
     "plan": "Plan",
     "planFree": "Gratis",

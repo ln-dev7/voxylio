@@ -78,7 +78,7 @@
     "message": "Gérer"
   },
   "accountNoteNotLinked": {
-    "message": "Connecte-toi pour activer le doublage — le plan gratuit suffit."
+    "message": "Connecte-toi pour activer le doublage."
   },
   "accountNoteFree": {
     "message": "Débloquez la traduction contextuelle et les fonctions Pro à venir."
@@ -243,6 +243,6 @@
     "message": "Continuer avec Google"
   },
   "signinNote": {
-    "message": "Aucune carte demandée — le plan gratuit suffit."
+    "message": "Aucune carte demandée."
   }
 }

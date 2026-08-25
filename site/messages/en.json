@@ -93,7 +93,7 @@
       },
       "play": {
         "title": "Play a video",
-        "description": "Open any subtitled video, sign in with Google from the popup (the free plan is enough), then flip the switch."
+        "description": "Open any subtitled video, sign in with Google from the popup, then flip the switch."
       }
     },
     "cta": "Get Voxylio on GitHub",
@@ -112,7 +112,7 @@
       },
       "account": {
         "question": "Why do I need an account?",
-        "answer": "One Google sign-in unlocks the extension and ties your plan to it — the free plan is enough and stays free. Dubbing still runs on your device; the account stores only your email address and your plan."
+        "answer": "One Google sign-in unlocks the extension and ties your plan to it. Dubbing still runs on your device; the account stores only your email address and your plan."
       },
       "voice": {
         "question": "Can I improve the voice quality?",
@@ -217,7 +217,7 @@
   "Account": {
     "title": "Your account",
     "signedOutTitle": "Sign in to Voxylio",
-    "signedOutSubtitle": "One Google account unlocks dubbing — the free plan is enough, and no card is ever asked.",
+    "signedOutSubtitle": "One Google account unlocks dubbing — no card is ever asked.",
     "signInGoogle": "Continue with Google",
     "plan": "Plan",
     "planFree": "Free",

@@ -93,7 +93,7 @@
       },
       "play": {
         "title": "Video abspielen",
-        "description": "Öffne ein untertiteltes Video, melde dich im Popup mit Google an (der Gratis-Plan genügt) und leg den Schalter um."
+        "description": "Öffne ein untertiteltes Video, melde dich im Popup mit Google an und leg den Schalter um."
       }
     },
     "cta": "Voxylio auf GitHub holen",
@@ -112,7 +112,7 @@
       },
       "account": {
         "question": "Warum ein Konto?",
-        "answer": "Eine Google-Anmeldung schaltet die Erweiterung frei und verknüpft deinen Plan mit ihr — der Gratis-Plan genügt und bleibt gratis. Die Synchronisation läuft weiter auf deinem Gerät; das Konto speichert nur deine E-Mail-Adresse und deinen Plan."
+        "answer": "Eine Google-Anmeldung schaltet die Erweiterung frei und verknüpft deinen Plan mit ihr. Die Synchronisation läuft weiter auf deinem Gerät; das Konto speichert nur deine E-Mail-Adresse und deinen Plan."
       },
       "voice": {
         "question": "Kann ich die Stimmqualität verbessern?",
@@ -217,7 +217,7 @@
   "Account": {
     "title": "Dein Konto",
     "signedOutTitle": "Bei Voxylio anmelden",
-    "signedOutSubtitle": "Ein Google-Konto schaltet das Dubbing frei — der Gratis-Plan genügt, eine Karte wird nie verlangt.",
+    "signedOutSubtitle": "Ein Google-Konto schaltet das Dubbing frei — eine Karte wird nie verlangt.",
     "signInGoogle": "Mit Google fortfahren",
     "plan": "Plan",
     "planFree": "Kostenlos",

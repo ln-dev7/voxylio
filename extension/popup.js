@@ -413,7 +413,7 @@
         plan.classList.remove("pro");
         btn.textContent = t("signIn") || "Se connecter";
         btn.classList.remove("ghost");
-        note.textContent = t("accountNoteNotLinked") || "Connecte-toi pour activer le doublage \u2014 le plan gratuit suffit.";
+        note.textContent = t("accountNoteNotLinked") || "Connecte-toi pour activer le doublage.";
       } else if (ent.plan === "pro") {
         plan.textContent = t("accountPro") || "Pro";
         plan.classList.add("pro");

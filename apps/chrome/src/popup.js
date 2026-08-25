@@ -246,7 +246,7 @@ async function refreshAccount() {
       btn.classList.remove("ghost");
       note.textContent =
         t("accountNoteNotLinked") ||
-        "Connecte-toi pour activer le doublage — le plan gratuit suffit.";
+        "Connecte-toi pour activer le doublage.";
     } else if (ent.plan === "pro") {
       plan.textContent = t("accountPro") || "Pro";
       plan.classList.add("pro");
