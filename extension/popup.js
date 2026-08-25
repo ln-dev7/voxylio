@@ -403,11 +403,16 @@
     const btn = $("accountBtn");
     const note = $("accountNote");
     const banner = $("proBanner");
+    const email = $("accountEmail");
+    const signout = $("signoutBtn");
     try {
       const ent = await chrome.runtime.sendMessage({ type: "entitlements" });
       const linked = !!(ent && ent.linked);
       setSignedOut(!linked);
       banner.hidden = !linked || ent.plan === "pro";
+      email.textContent = linked && ent.email || "";
+      email.hidden = !(linked && ent.email);
+      signout.hidden = !linked;
       if (!linked) {
         plan.textContent = t("accountNotLinked") || "Non connect\xE9";
         plan.classList.remove("pro");
@@ -431,6 +436,8 @@
       setSignedOut(true);
       plan.textContent = t("accountNotLinked") || "Non connect\xE9";
       banner.hidden = true;
+      email.hidden = true;
+      signout.hidden = true;
     }
   }
   async function init() {
@@ -510,6 +517,10 @@
     $("accountBtn").addEventListener("click", openAccount);
     $("proBannerBtn").addEventListener("click", openAccount);
     $("signinBtn").addEventListener("click", openAccount);
+    $("signoutBtn").addEventListener("click", async () => {
+      await chrome.storage.local.remove(["accountToken", "entitlements"]);
+      refreshAccount();
+    });
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area === "local" && (changes.accountToken || changes.entitlements))
         refreshAccount();

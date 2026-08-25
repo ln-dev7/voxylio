@@ -233,12 +233,18 @@ async function refreshAccount() {
   const btn = $("accountBtn");
   const note = $("accountNote");
   const banner = $("proBanner");
+  const email = $("accountEmail");
+  const signout = $("signoutBtn");
   try {
     const ent = await chrome.runtime.sendMessage({ type: "entitlements" });
     const linked = !!(ent && ent.linked);
     setSignedOut(!linked);
     // The promoted CTA up top: visible for every linked non-Pro user.
     banner.hidden = !linked || ent.plan === "pro";
+    // Which account is linked (DubTab-style) + a way out of it.
+    email.textContent = (linked && ent.email) || "";
+    email.hidden = !(linked && ent.email);
+    signout.hidden = !linked;
     if (!linked) {
       plan.textContent = t("accountNotLinked") || "Non connecté";
       plan.classList.remove("pro");
@@ -272,6 +278,8 @@ async function refreshAccount() {
     setSignedOut(true);
     plan.textContent = t("accountNotLinked") || "Non connecté";
     banner.hidden = true;
+    email.hidden = true;
+    signout.hidden = true;
   }
 }
 
@@ -364,6 +372,12 @@ async function init() {
   $("accountBtn").addEventListener("click", openAccount);
   $("proBannerBtn").addEventListener("click", openAccount);
   $("signinBtn").addEventListener("click", openAccount);
+  // Sign out from the popup: dropping the token re-locks dubbing
+  // everywhere (the content scripts watch this storage key).
+  $("signoutBtn").addEventListener("click", async () => {
+    await chrome.storage.local.remove(["accountToken", "entitlements"]);
+    refreshAccount();
+  });
   // Unlock live when the site relays the token while the popup is open.
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === "local" && (changes.accountToken || changes.entitlements))

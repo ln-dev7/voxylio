@@ -171,6 +171,7 @@
         plan: data.plan || "free",
         status: data.status || "none",
         currentPeriodEnd: data.currentPeriodEnd || null,
+        email: data.email || null,
         checkedAt: Date.now()
       };
       chrome.storage.local.set({ entitlements: ent });

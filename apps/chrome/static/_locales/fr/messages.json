@@ -244,5 +244,8 @@
   },
   "signinNote": {
     "message": "Aucune carte demandée."
+  },
+  "signOut": {
+    "message": "Se déconnecter"
   }
 }

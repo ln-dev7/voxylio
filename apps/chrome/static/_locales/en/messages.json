@@ -244,5 +244,8 @@
   },
   "signinNote": {
     "message": "No card required."
+  },
+  "signOut": {
+    "message": "Sign out"
   }
 }

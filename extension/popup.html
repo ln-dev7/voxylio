@@ -20,7 +20,7 @@
     * { box-sizing: border-box; }
     body {
       font-family: "Helvetica Neue", helvetica, arial, sans-serif;
-      width: 320px;
+      width: 400px;
       margin: 0;
       padding: 16px;
       background: var(--bg);
@@ -121,6 +121,12 @@
 
     /* ---- controls ---- */
     .field { margin: 14px 0; }
+    .lang-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 10px;
+    }
+    .lang-grid .field { min-width: 0; }
     .field-label {
       display: block;
       font-size: 10.5px;
@@ -132,11 +138,12 @@
     }
     select {
       width: 100%;
+      text-overflow: ellipsis;
       background-color: var(--surface-2);
       color: var(--text);
       border: none;
       border-radius: 9999px;
-      padding: 8px 16px;
+      padding: 8px 30px 8px 16px;
       font-size: 13px;
       font-weight: 700;
       font-family: inherit;
@@ -331,6 +338,31 @@
       line-height: 1.5;
       margin: 8px 0 0;
     }
+    .account-email {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      max-width: 230px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .account-email[hidden] { display: none; }
+    .account-signout {
+      background: none;
+      border: none;
+      padding: 0;
+      margin-top: 10px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-faint);
+      cursor: pointer;
+    }
+    .account-signout:hover { color: var(--error); }
+    .account-signout:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .account-signout[hidden] { display: none; }
 
     /* ---- sign-in gate ---- */
     .signin-card {
@@ -417,18 +449,19 @@
 
   <div class="status" id="status" aria-live="polite">Recherche d’une vidéo…</div>
 
-  <div class="field">
-    <label class="field-label" for="sourceLang" data-i18n="srcLabel">Langue de la vidéo</label>
-    <!-- Populated from the shared language catalog (popup.js) -->
-    <select id="sourceLang">
-      <option value="auto" data-i18n="detectAuto">Détection automatique</option>
-    </select>
-  </div>
-
-  <div class="field">
-    <label class="field-label" for="lang" data-i18n="targetLabel">Langue du doublage</label>
-    <!-- Populated from the shared language catalog (popup.js) -->
-    <select id="lang"></select>
+  <div class="lang-grid">
+    <div class="field">
+      <label class="field-label" for="sourceLang" data-i18n="srcLabel">Langue de la vidéo</label>
+      <!-- Populated from the shared language catalog (popup.js) -->
+      <select id="sourceLang">
+        <option value="auto" data-i18n="detectAuto">Détection automatique</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="field-label" for="lang" data-i18n="targetLabel">Langue du doublage</label>
+      <!-- Populated from the shared language catalog (popup.js) -->
+      <select id="lang"></select>
+    </div>
   </div>
 
   <div class="field">
@@ -499,10 +532,12 @@
       <div>
         <span class="field-label" style="margin: 0" data-i18n="accountLabel">Compte</span>
         <span class="account-plan" id="accountPlan">…</span>
+        <span class="account-email" id="accountEmail" hidden></span>
       </div>
       <button id="accountBtn" class="account-cta" title="Gérer votre compte Voxylio sur le site">Se connecter</button>
     </div>
-    <p class="account-note" id="accountNote">Le doublage local reste gratuit, illimité et sans compte.</p>
+    <p class="account-note" id="accountNote">Connecte-toi pour activer le doublage.</p>
+    <button id="signoutBtn" class="account-signout" data-i18n="signOut" hidden>Se déconnecter</button>
   </div>
 
   <p class="hint" data-i18n="hint">
