@@ -73,7 +73,7 @@ export function Pricing() {
             </div>
             <div className="flex items-baseline gap-1">
               <span className="font-display text-4xl font-semibold tracking-tight">
-                0 €
+                {t("priceFree")}
               </span>
               <span className="text-sm text-muted-foreground">{t("forever")}</span>
             </div>
@@ -110,7 +110,7 @@ export function Pricing() {
             </div>
             <div className="flex items-baseline gap-1">
               <span className="font-display text-4xl font-semibold tracking-tight tabular-nums">
-                {cadence === "monthly" ? "7,99 €" : "5 €"}
+                {cadence === "monthly" ? t("priceMonthly") : t("priceYearlyMonthly")}
               </span>
               <span className="text-sm text-muted-foreground">{t("perMonth")}</span>
               {cadence === "yearly" && (

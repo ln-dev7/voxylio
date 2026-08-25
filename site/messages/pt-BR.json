@@ -223,7 +223,7 @@
     "planFree": "Grátis",
     "planPro": "Pro",
     "statusCanceled": "Ativo até {date}",
-    "upgrade": "Assinar o Pro — 7,99 €/mês",
+    "upgrade": "Assinar o Pro — US$ 7,99/mês",
     "manage": "Gerenciar a assinatura",
     "signOut": "Sair",
     "extensionTitle": "Extensão",
@@ -235,16 +235,19 @@
     "extensionMissing": "O Voxylio não está instalado neste navegador.",
     "extensionError": "Não foi possível contatar a extensão. Abra esta página no Chrome com o Voxylio instalado.",
     "checkoutSuccess": "Pagamento recebido — seu plano Pro será ativado em segundos.",
-    "upgradeYearly": "ou 59,99 €/ano (−37%)"
+    "upgradeYearly": "ou US$ 59,99/ano (−37%)"
   },
   "Pricing": {
     "title": "Um preço simples e honesto",
     "subtitle": "Tudo o que roda no seu dispositivo é grátis, para sempre — um login com o Google e você já está dublando. O Pro financia os recursos que precisam de servidor.",
     "monthly": "Mensal",
     "yearly": "Anual",
+    "priceFree": "US$ 0",
+    "priceMonthly": "US$ 7,99",
+    "priceYearlyMonthly": "US$ 5",
     "forever": "para sempre",
     "perMonth": "/mês",
-    "billedYearly": "cobrado 59,99 €/ano",
+    "billedYearly": "cobrado US$ 59,99/ano",
     "note": "Pagamento seguro via Polar. Impostos tratados automaticamente. Cancele quando quiser, com efeito no fim do período.",
     "free": {
       "name": "Grátis",

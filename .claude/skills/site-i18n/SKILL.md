@@ -49,7 +49,9 @@ strings.
   write "the free plan is enough" — it undersells Pro.
 - Product terms NOT translated: Voxylio, Chrome, Chrome Web Store,
   GitHub, Pro, DeepL, Polar, shadow DOM, popup, MIT.
-- Prices stay in EUR with local number formatting (7,99 € / €7.99).
+- Prices are in USD — the Polar product is USD-based, never advertise
+  EUR. Local formatting: $7.99 (en/ja/ko/zh), 7,99 $ (fr/es/de/it),
+  US$ 7,99 (pt-BR). Card figures live in `Pricing.price*` keys.
 - "65+ languages" claims: keep in sync with
   `packages/core/src/languages.js` (currently 71 entries — the copy
   says "more than 65" on purpose; update everywhere at once if the

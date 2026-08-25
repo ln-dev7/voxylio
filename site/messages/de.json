@@ -223,7 +223,7 @@
     "planFree": "Kostenlos",
     "planPro": "Pro",
     "statusCanceled": "Aktiv bis {date}",
-    "upgrade": "Pro holen — 7,99 €/Monat",
+    "upgrade": "Pro holen — 7,99 $/Monat",
     "manage": "Abo verwalten",
     "signOut": "Abmelden",
     "extensionTitle": "Erweiterung",
@@ -235,16 +235,19 @@
     "extensionMissing": "Voxylio ist in diesem Browser nicht installiert.",
     "extensionError": "Die Erweiterung ist nicht erreichbar. Öffne diese Seite in Chrome mit installiertem Voxylio.",
     "checkoutSuccess": "Zahlung erhalten — dein Pro-Plan wird in wenigen Sekunden aktiviert.",
-    "upgradeYearly": "oder 59,99 €/Jahr (−37 %)"
+    "upgradeYearly": "oder 59,99 $/Jahr (−37 %)"
   },
   "Pricing": {
     "title": "Ein einfacher, ehrlicher Preis",
     "subtitle": "Alles, was auf deinem Gerät läuft, ist für immer gratis — einmal mit Google anmelden und du dubbst. Pro finanziert die Funktionen, die einen Server brauchen.",
     "monthly": "Monatlich",
     "yearly": "Jährlich",
+    "priceFree": "0 $",
+    "priceMonthly": "7,99 $",
+    "priceYearlyMonthly": "5 $",
     "forever": "für immer",
     "perMonth": "/Monat",
-    "billedYearly": "abgerechnet mit 59,99 €/Jahr",
+    "billedYearly": "abgerechnet mit 59,99 $/Jahr",
     "note": "Sichere Zahlung über Polar. Umsatzsteuer wird automatisch abgewickelt. Jederzeit kündbar, wirksam zum Periodenende.",
     "free": {
       "name": "Kostenlos",

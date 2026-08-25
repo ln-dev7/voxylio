@@ -223,7 +223,7 @@
     "planFree": "Gratuit",
     "planPro": "Pro",
     "statusCanceled": "Actif jusqu'au {date}",
-    "upgrade": "Passer Pro — 7,99 €/mois",
+    "upgrade": "Passer Pro — 7,99 $/mois",
     "manage": "Gérer mon abonnement",
     "signOut": "Se déconnecter",
     "extensionTitle": "Extension",
@@ -235,13 +235,16 @@
     "extensionMissing": "Voxylio n'est pas installée dans ce navigateur.",
     "extensionError": "Impossible de contacter l'extension. Ouvrez cette page dans Chrome avec Voxylio installée.",
     "checkoutSuccess": "Paiement reçu — votre plan Pro s'active dans quelques secondes.",
-    "upgradeYearly": "ou 59,99 €/an (−37 %)"
+    "upgradeYearly": "ou 59,99 $/an (−37 %)"
   },
   "Pricing": {
     "title": "Un prix simple et honnête",
     "subtitle": "Tout ce qui tourne sur votre appareil est gratuit, pour toujours — une connexion Google et vous doublez. Le plan Pro finance les fonctions qui demandent un serveur.",
     "monthly": "Mensuel",
     "yearly": "Annuel",
+    "priceFree": "0 $",
+    "priceMonthly": "7,99 $",
+    "priceYearlyMonthly": "5 $",
     "forever": "pour toujours",
     "perMonth": "/mois",
     "note": "Paiement sécurisé via Polar. TVA gérée automatiquement. Annulable à tout moment, effectif en fin de période.",
@@ -270,6 +273,6 @@
         "f5": "Un même compte sur tous vos navigateurs"
       }
     },
-    "billedYearly": "facturé 59,99 €/an"
+    "billedYearly": "facturé 59,99 $/an"
   }
 }

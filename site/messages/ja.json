@@ -223,7 +223,7 @@
     "planFree": "無料",
     "planPro": "Pro",
     "statusCanceled": "{date}まで有効",
-    "upgrade": "Proにする — €7.99/月",
+    "upgrade": "Proにする — $7.99/月",
     "manage": "サブスクリプションを管理",
     "signOut": "サインアウト",
     "extensionTitle": "拡張機能",
@@ -235,16 +235,19 @@
     "extensionMissing": "このブラウザにVoxylioがインストールされていません。",
     "extensionError": "拡張機能に接続できませんでした。Voxylioをインストール済みのChromeでこのページを開いてください。",
     "checkoutSuccess": "お支払いを受領しました — Proプランは数秒で有効になります。",
-    "upgradeYearly": "または €59.99/年（−37%）"
+    "upgradeYearly": "または $59.99/年（−37%）"
   },
   "Pricing": {
     "title": "シンプルで正直な料金",
     "subtitle": "端末上で動くものはすべて、ずっと無料 — Google でサインインすればすぐ吹き替えられます。Pro はサーバーが必要な機能を支えます。",
     "monthly": "月払い",
     "yearly": "年払い",
+    "priceFree": "$0",
+    "priceMonthly": "$7.99",
+    "priceYearlyMonthly": "$5",
     "forever": "ずっと",
     "perMonth": "/月",
-    "billedYearly": "年額 €59.99 の請求",
+    "billedYearly": "年額 $59.99 の請求",
     "note": "Polarによる安全な決済。税は自動処理。いつでも解約でき、期間終了時に反映されます。",
     "free": {
       "name": "無料",

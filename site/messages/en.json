@@ -223,7 +223,7 @@
     "planFree": "Free",
     "planPro": "Pro",
     "statusCanceled": "Active until {date}",
-    "upgrade": "Go Pro — €7.99/mo",
+    "upgrade": "Go Pro — $7.99/mo",
     "manage": "Manage subscription",
     "signOut": "Sign out",
     "extensionTitle": "Extension",
@@ -235,13 +235,16 @@
     "extensionMissing": "Voxylio isn't installed in this browser.",
     "extensionError": "Couldn't reach the extension. Open this page in Chrome with Voxylio installed.",
     "checkoutSuccess": "Payment received — your Pro plan activates in a few seconds.",
-    "upgradeYearly": "or €59.99/yr (−37%)"
+    "upgradeYearly": "or $59.99/yr (−37%)"
   },
   "Pricing": {
     "title": "Simple, honest pricing",
     "subtitle": "Everything that runs on your device is free, forever — one Google sign-in and you're dubbing. Pro funds the features that need a server.",
     "monthly": "Monthly",
     "yearly": "Yearly",
+    "priceFree": "$0",
+    "priceMonthly": "$7.99",
+    "priceYearlyMonthly": "$5",
     "forever": "forever",
     "perMonth": "/month",
     "note": "Secure payment via Polar. VAT handled automatically. Cancel anytime, effective at the end of the period.",
@@ -270,6 +273,6 @@
         "f5": "One account across all your browsers"
       }
     },
-    "billedYearly": "billed at €59.99/year"
+    "billedYearly": "billed at $59.99/year"
   }
 }

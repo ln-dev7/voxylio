@@ -223,7 +223,7 @@
     "planFree": "免費",
     "planPro": "Pro",
     "statusCanceled": "有效至 {date}",
-    "upgrade": "升級 Pro — €7.99/月",
+    "upgrade": "升級 Pro — $7.99/月",
     "manage": "管理訂閱",
     "signOut": "登出",
     "extensionTitle": "擴充功能",
@@ -235,16 +235,19 @@
     "extensionMissing": "此瀏覽器未安裝 Voxylio。",
     "extensionError": "無法連上擴充功能。請在已安裝 Voxylio 的 Chrome 中開啟本頁。",
     "checkoutSuccess": "已收到付款 — 你的 Pro 方案將在幾秒內啟用。",
-    "upgradeYearly": "或 €59.99/年（−37%）"
+    "upgradeYearly": "或 $59.99/年（−37%）"
   },
   "Pricing": {
     "title": "簡單而誠實的價格",
     "subtitle": "在你裝置上執行的一切永久免費 — 用 Google 登入即可開始配音。Pro 用於支撐需要伺服器的功能。",
     "monthly": "月繳",
     "yearly": "年繳",
+    "priceFree": "$0",
+    "priceMonthly": "$7.99",
+    "priceYearlyMonthly": "$5",
     "forever": "永久",
     "perMonth": "/月",
-    "billedYearly": "按年計費 €59.99",
+    "billedYearly": "按年計費 $59.99",
     "note": "透過 Polar 安全付款。稅金自動處理。隨時取消，期末生效。",
     "free": {
       "name": "免費",
