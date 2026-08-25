@@ -16,7 +16,11 @@ export function currentPeriod(): string {
 }
 
 export function proProviderConfigured(): boolean {
-  return !!(process.env.PRO_DEEPL_KEY || process.env.OPENAI_API_KEY);
+  return !!(
+    process.env.GEMINI_API_KEY ||
+    process.env.PRO_DEEPL_KEY ||
+    process.env.OPENAI_API_KEY
+  );
 }
 
 // DeepL target codes for our catalog subset (regioned where required).
@@ -37,15 +41,65 @@ export type ContextualRequest = {
 };
 
 /**
- * Context-aware translation through the configured provider:
- * PRO_DEEPL_KEY (DeepL v2 with its `context` parameter — fast, made for
- * this) or OPENAI_API_KEY (gpt-4o-mini, better register handling).
- * Throws on provider errors; the caller maps them to clean HTTP codes.
+ * Context-aware translation through the configured provider, in order of
+ * preference: GEMINI_API_KEY (Gemini Flash-Lite — the chosen stack, see
+ * docs/PRICING.md), PRO_DEEPL_KEY (DeepL v2 `context` parameter), or
+ * OPENAI_API_KEY. Throws on provider errors; the caller maps them to
+ * clean HTTP codes.
  */
 export async function contextualTranslate(req: ContextualRequest): Promise<string> {
+  if (process.env.GEMINI_API_KEY) return geminiTranslate(req);
   if (process.env.PRO_DEEPL_KEY) return deeplTranslate(req);
   if (process.env.OPENAI_API_KEY) return openaiTranslate(req);
   throw Object.assign(new Error("provider unconfigured"), { code: 503 });
+}
+
+async function geminiTranslate(req: ContextualRequest): Promise<string> {
+  const model = process.env.PRO_GEMINI_MODEL || "gemini-3.5-flash-lite";
+  const before = req.before.length
+    ? `Previous lines:\n${req.before.join("\n")}\n\n`
+    : "";
+  const after = req.after.length
+    ? `\n\nUpcoming lines (context only, do not translate):\n${req.after.join("\n")}`
+    : "";
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+    {
+      method: "POST",
+      headers: {
+        "x-goog-api-key": process.env.GEMINI_API_KEY!,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        systemInstruction: {
+          parts: [
+            {
+              text: "You translate one subtitle line for live dubbing. Use the surrounding lines only to resolve pronouns, tone, register, proper nouns and terminology. Produce natural spoken language, never literal word-for-word. Never invent content. Reply with the translation of the TARGET line only — no quotes, no commentary.",
+            },
+          ],
+        },
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: `${before}TARGET line (translate into ${req.target}):\n${req.text}${after}`,
+              },
+            ],
+          },
+        ],
+        generationConfig: { temperature: 0.2, maxOutputTokens: 512 },
+      }),
+    },
+  );
+  if (res.status === 429)
+    throw Object.assign(new Error("provider quota"), { code: 503 });
+  if (!res.ok)
+    throw Object.assign(new Error("Gemini HTTP " + res.status), { code: 502 });
+  const data = await res.json();
+  const out = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+  if (!out) throw Object.assign(new Error("empty translation"), { code: 502 });
+  return out;
 }
 
 async function deeplTranslate(req: ContextualRequest): Promise<string> {

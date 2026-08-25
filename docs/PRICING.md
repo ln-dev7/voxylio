@@ -89,6 +89,30 @@ Cost per transcription minute, per voice minute, per translated
 character; average consumption; % of users hitting the cap; cost of the
 top-10% heaviest users. Launch quotas as "beta, may evolve", then fix.
 
+## The chosen stack (owner decision, 2026-08-25)
+
+- **Deepgram Nova-3** hears: streaming STT for no-subtitle videos only
+  (≈ $0.0048–0.0058/min streaming ⇒ ≈ $0.35/h).
+- **Gemini Flash-Lite** translates: contextual text-to-text (cheap;
+  `GEMINI_API_KEY`, default model `gemini-3.5-flash-lite`) — SHIPPED as
+  the primary provider of `/api/pro/translate`.
+- **Google Cloud TTS Neural2** speaks: ≈ $16/1M chars ⇒ ≈ $0.80–0.95/h
+  of spoken video. Cartesia/ElevenLabs stay optional upsells for later.
+- **Voxylio** groups, caches, meters and syncs.
+
+Estimated full-chain cost: ≈ $1–1.25/h with subtitles, ≈ $1.30–1.60/h
+without. Cloud budget target stays ≈ $2/subscriber/month on average.
+
+### Premium Audio quotas at launch (publish ONLY when the pipeline ships)
+
+- Monthly $7.99 → **60 min/month** of Premium Audio (transcription +
+  neural voice; contextual TEXT translation stays on its own generous
+  character meter and does not consume these minutes).
+- Yearly $69.99 → **12 h pool for the whole year**, spend freely, no
+  monthly expiry.
+- Keys are NEVER in the extension; the backend can mint short-lived
+  Deepgram tokens if direct streaming is ever needed.
+
 ## The three Pro pillars (build in this order)
 
 1. **Context-aware translation** — translate a sliding window of
