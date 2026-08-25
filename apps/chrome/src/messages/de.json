@@ -143,5 +143,6 @@
  "uiLangHint": "Gilt für das Popup, diese Seite und die schwebende Leiste. Die Synchronsprachen wählst du separat.",
  "uiLangAuto": "Browsersprache",
  "proTransLabel": "Kontextbewusste Pro-Übersetzung",
- "translationPro": "Übersetzung: Pro (kontextbewusst)"
+ "translationPro": "Übersetzung: Pro (kontextbewusst)",
+ "proVoiceLabel": "Neuronale Pro-Stimme"
 }

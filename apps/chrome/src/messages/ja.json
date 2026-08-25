@@ -143,5 +143,6 @@
  "uiLangHint": "ポップアップ、このページ、フローティングバーに適用されます。吹き替え言語は別に選びます。",
  "uiLangAuto": "ブラウザの言語",
  "proTransLabel": "Pro 文脈対応翻訳",
- "translationPro": "翻訳：Pro（文脈対応）"
+ "translationPro": "翻訳：Pro（文脈対応）",
+ "proVoiceLabel": "Pro ニューラル音声"
 }

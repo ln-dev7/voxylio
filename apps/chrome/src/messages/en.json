@@ -143,5 +143,6 @@
  "uiLangHint": "Applies to the popup, this page and the floating bar. Dubbing languages are chosen separately.",
  "uiLangAuto": "Browser language",
  "proTransLabel": "Pro contextual translation",
- "translationPro": "Translation: Pro (contextual)"
+ "translationPro": "Translation: Pro (contextual)",
+ "proVoiceLabel": "Pro neural voice"
 }

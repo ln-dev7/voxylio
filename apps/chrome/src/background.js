@@ -137,6 +137,12 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       .catch((e) => sendResponse({ ok: false, error: String(e && e.message) }));
     return true;
   }
+  if (msg && msg.type === "speak-pro") {
+    speakPro(msg)
+      .then((r) => sendResponse({ ok: true, audio: r.audio, mime: r.mime }))
+      .catch((e) => sendResponse({ ok: false, error: String(e && e.message) }));
+    return true;
+  }
   if (msg && msg.type === "entitlements") {
     refreshEntitlements(!!msg.force)
       .then(sendResponse)
@@ -268,6 +274,56 @@ async function translatePro(msg) {
   if (!data || typeof data.text !== "string" || !data.text)
     throw new Error("empty translation");
   return data.text;
+}
+
+// Pro neural voice relay — same shape as translatePro: backend holds the
+// Deepgram key and meters TTS characters; refusals cool down locally and
+// the content script falls back to the system voice.
+
+let voiceBlockedUntil = 0;
+
+async function speakPro(msg) {
+  if (Date.now() < voiceBlockedUntil) throw new Error("voice cooling down");
+  const { accountToken } = await getLocal({ accountToken: "" });
+  if (!accountToken) {
+    voiceBlockedUntil = Date.now() + 60_000;
+    throw new Error("not signed in");
+  }
+  const res = await fetch(SITE_ORIGIN + "/api/pro/speech", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accountToken,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      text: String(msg.text || "").slice(0, 1200),
+      lang: msg.lang,
+    }),
+  });
+  if (res.status === 402 || res.status === 429) {
+    voiceBlockedUntil = Date.now() + 10 * 60_000;
+    throw new Error("voice quota exhausted");
+  }
+  if (res.status === 401 || res.status === 403 || res.status === 422) {
+    voiceBlockedUntil = Date.now() + 5 * 60_000;
+    throw new Error("not entitled");
+  }
+  if (res.status === 503) {
+    voiceBlockedUntil = Date.now() + 5 * 60_000;
+    throw new Error("voice provider unconfigured");
+  }
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  const mime = res.headers.get("content-type") || "audio/mpeg";
+  const buf = await res.arrayBuffer();
+  if (!buf || buf.byteLength === 0) throw new Error("empty audio");
+  // base64 without call-stack limits (chunked)
+  const bytes = new Uint8Array(buf);
+  let bin = "";
+  const CHUNK = 0x8000;
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+  }
+  return { audio: btoa(bin), mime };
 }
 
 chrome.runtime.onMessageExternal.addListener((msg, sender, sendResponse) => {

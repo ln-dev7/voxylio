@@ -67,6 +67,7 @@ function render(settings) {
   $("autoPause").checked = settings.autoPause;
   $("localOnly").checked = !settings.cloudFallback;
   $("proTrans").checked = !!settings.proTranslation;
+  $("proVoice").checked = !!settings.proVoice;
   $("rate").value = settings.rate;
   $("rateVal").textContent = "×" + Number(settings.rate).toFixed(2);
   $("duck").value = settings.duck;
@@ -221,8 +222,10 @@ async function refreshAccount() {
     email.textContent = (linked && ent.email) || "";
     email.hidden = !(linked && ent.email);
     signout.hidden = !linked;
-    // The Pro contextual-translation toggle only exists for Pro users.
-    $("proTransRow").hidden = !(linked && ent.plan === "pro");
+    // The Pro toggles only exist for Pro users.
+    const isPro = linked && ent.plan === "pro";
+    $("proTransRow").hidden = !isPro;
+    $("proVoiceRow").hidden = !isPro;
     if (!linked) {
       plan.textContent = t("accountNotLinked") || "Non connecté";
       plan.classList.remove("pro");
@@ -275,6 +278,7 @@ async function init() {
   $("autoPause").addEventListener("change", (e) => save({ autoPause: e.target.checked }));
   $("localOnly").addEventListener("change", (e) => save({ cloudFallback: !e.target.checked }));
   $("proTrans").addEventListener("change", (e) => save({ proTranslation: e.target.checked }));
+  $("proVoice").addEventListener("change", (e) => save({ proVoice: e.target.checked }));
 
   // Voice preview — spoken from the popup itself (its click counts as
   // the user activation speech synthesis requires)

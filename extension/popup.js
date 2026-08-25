@@ -231,6 +231,8 @@
     // Pro contextual translation (opt-in; only effective for Pro accounts —
     // the background and the backend both enforce it).
     proTranslation: false,
+    // Pro neural voice (opt-in, Aura-2 languages; local voice otherwise).
+    proVoice: false,
     autoPause: false,
     keepTerms: true,
     // Preferred paid provider when a key is configured ("auto" = none:
@@ -397,7 +399,8 @@
     uiLangHint: "Applies to the popup, this page and the floating bar. Dubbing languages are chosen separately.",
     uiLangAuto: "Browser language",
     proTransLabel: "Pro contextual translation",
-    translationPro: "Translation: Pro (contextual)"
+    translationPro: "Translation: Pro (contextual)",
+    proVoiceLabel: "Pro neural voice"
   };
 
   // src/messages/fr.json
@@ -546,7 +549,8 @@
     uiLangHint: "S'applique au popup, \xE0 cette page et \xE0 la barre flottante. Les langues de doublage se choisissent \xE0 part.",
     uiLangAuto: "Langue du navigateur",
     proTransLabel: "Traduction contextuelle Pro",
-    translationPro: "Traduction : Pro (contextuelle)"
+    translationPro: "Traduction : Pro (contextuelle)",
+    proVoiceLabel: "Voix neurale Pro"
   };
 
   // src/messages/es.json
@@ -695,7 +699,8 @@
     uiLangHint: "Se aplica al popup, a esta p\xE1gina y a la barra flotante. Los idiomas de doblaje se eligen aparte.",
     uiLangAuto: "Idioma del navegador",
     proTransLabel: "Traducci\xF3n contextual Pro",
-    translationPro: "Traducci\xF3n: Pro (contextual)"
+    translationPro: "Traducci\xF3n: Pro (contextual)",
+    proVoiceLabel: "Voz neuronal Pro"
   };
 
   // src/messages/de.json
@@ -844,7 +849,8 @@
     uiLangHint: "Gilt f\xFCr das Popup, diese Seite und die schwebende Leiste. Die Synchronsprachen w\xE4hlst du separat.",
     uiLangAuto: "Browsersprache",
     proTransLabel: "Kontextbewusste Pro-\xDCbersetzung",
-    translationPro: "\xDCbersetzung: Pro (kontextbewusst)"
+    translationPro: "\xDCbersetzung: Pro (kontextbewusst)",
+    proVoiceLabel: "Neuronale Pro-Stimme"
   };
 
   // src/messages/it.json
@@ -993,7 +999,8 @@
     uiLangHint: "Vale per il popup, questa pagina e la barra flottante. Le lingue di doppiaggio si scelgono a parte.",
     uiLangAuto: "Lingua del browser",
     proTransLabel: "Traduzione contestuale Pro",
-    translationPro: "Traduzione: Pro (contestuale)"
+    translationPro: "Traduzione: Pro (contestuale)",
+    proVoiceLabel: "Voce neurale Pro"
   };
 
   // src/messages/ja.json
@@ -1142,7 +1149,8 @@
     uiLangHint: "\u30DD\u30C3\u30D7\u30A2\u30C3\u30D7\u3001\u3053\u306E\u30DA\u30FC\u30B8\u3001\u30D5\u30ED\u30FC\u30C6\u30A3\u30F3\u30B0\u30D0\u30FC\u306B\u9069\u7528\u3055\u308C\u307E\u3059\u3002\u5439\u304D\u66FF\u3048\u8A00\u8A9E\u306F\u5225\u306B\u9078\u3073\u307E\u3059\u3002",
     uiLangAuto: "\u30D6\u30E9\u30A6\u30B6\u306E\u8A00\u8A9E",
     proTransLabel: "Pro \u6587\u8108\u5BFE\u5FDC\u7FFB\u8A33",
-    translationPro: "\u7FFB\u8A33\uFF1APro\uFF08\u6587\u8108\u5BFE\u5FDC\uFF09"
+    translationPro: "\u7FFB\u8A33\uFF1APro\uFF08\u6587\u8108\u5BFE\u5FDC\uFF09",
+    proVoiceLabel: "Pro \u30CB\u30E5\u30FC\u30E9\u30EB\u97F3\u58F0"
   };
 
   // src/messages/ko.json
@@ -1291,7 +1299,8 @@
     uiLangHint: "\uD31D\uC5C5, \uC774 \uD398\uC774\uC9C0, \uD50C\uB85C\uD305 \uBC14\uC5D0 \uC801\uC6A9\uB429\uB2C8\uB2E4. \uB354\uBE59 \uC5B8\uC5B4\uB294 \uB530\uB85C \uC120\uD0DD\uD569\uB2C8\uB2E4.",
     uiLangAuto: "\uBE0C\uB77C\uC6B0\uC800 \uC5B8\uC5B4",
     proTransLabel: "Pro \uBB38\uB9E5 \uC778\uC2DD \uBC88\uC5ED",
-    translationPro: "\uBC88\uC5ED: Pro(\uBB38\uB9E5 \uC778\uC2DD)"
+    translationPro: "\uBC88\uC5ED: Pro(\uBB38\uB9E5 \uC778\uC2DD)",
+    proVoiceLabel: "Pro \uC2E0\uACBD\uB9DD \uC74C\uC131"
   };
 
   // src/messages/zh-CN.json
@@ -1440,7 +1449,8 @@
     uiLangHint: "\u4F5C\u7528\u4E8E\u5F39\u7A97\u3001\u672C\u9875\u9762\u548C\u60AC\u6D6E\u6761\u3002\u914D\u97F3\u8BED\u8A00\u53E6\u884C\u9009\u62E9\u3002",
     uiLangAuto: "\u6D4F\u89C8\u5668\u8BED\u8A00",
     proTransLabel: "Pro \u4E0A\u4E0B\u6587\u7FFB\u8BD1",
-    translationPro: "\u7FFB\u8BD1\uFF1APro\uFF08\u7ED3\u5408\u4E0A\u4E0B\u6587\uFF09"
+    translationPro: "\u7FFB\u8BD1\uFF1APro\uFF08\u7ED3\u5408\u4E0A\u4E0B\u6587\uFF09",
+    proVoiceLabel: "Pro \u795E\u7ECF\u8BED\u97F3"
   };
 
   // src/messages/zh-TW.json
@@ -1589,7 +1599,8 @@
     uiLangHint: "\u5957\u7528\u65BC\u5F48\u51FA\u8996\u7A97\u3001\u6B64\u9801\u9762\u8207\u61F8\u6D6E\u5217\u3002\u914D\u97F3\u8A9E\u8A00\u53E6\u884C\u9078\u64C7\u3002",
     uiLangAuto: "\u700F\u89BD\u5668\u8A9E\u8A00",
     proTransLabel: "Pro \u4E0A\u4E0B\u6587\u7FFB\u8B6F",
-    translationPro: "\u7FFB\u8B6F\uFF1APro\uFF08\u7D50\u5408\u4E0A\u4E0B\u6587\uFF09"
+    translationPro: "\u7FFB\u8B6F\uFF1APro\uFF08\u7D50\u5408\u4E0A\u4E0B\u6587\uFF09",
+    proVoiceLabel: "Pro \u795E\u7D93\u8A9E\u97F3"
   };
 
   // src/messages/pt-BR.json
@@ -1738,7 +1749,8 @@
     uiLangHint: "Vale para o popup, esta p\xE1gina e a barra flutuante. Os idiomas de dublagem s\xE3o escolhidos \xE0 parte.",
     uiLangAuto: "Idioma do navegador",
     proTransLabel: "Tradu\xE7\xE3o contextual Pro",
-    translationPro: "Tradu\xE7\xE3o: Pro (contextual)"
+    translationPro: "Tradu\xE7\xE3o: Pro (contextual)",
+    proVoiceLabel: "Voz neural Pro"
   };
 
   // src/i18n.js
@@ -1832,6 +1844,7 @@
     $("autoPause").checked = settings2.autoPause;
     $("localOnly").checked = !settings2.cloudFallback;
     $("proTrans").checked = !!settings2.proTranslation;
+    $("proVoice").checked = !!settings2.proVoice;
     $("rate").value = settings2.rate;
     $("rateVal").textContent = "\xD7" + Number(settings2.rate).toFixed(2);
     $("duck").value = settings2.duck;
@@ -1964,7 +1977,9 @@
       email.textContent = linked && ent.email || "";
       email.hidden = !(linked && ent.email);
       signout.hidden = !linked;
-      $("proTransRow").hidden = !(linked && ent.plan === "pro");
+      const isPro = linked && ent.plan === "pro";
+      $("proTransRow").hidden = !isPro;
+      $("proVoiceRow").hidden = !isPro;
       if (!linked) {
         plan.textContent = t("accountNotLinked") || "Non connect\xE9";
         plan.classList.remove("pro");
@@ -2005,6 +2020,7 @@
     $("autoPause").addEventListener("change", (e) => save({ autoPause: e.target.checked }));
     $("localOnly").addEventListener("change", (e) => save({ cloudFallback: !e.target.checked }));
     $("proTrans").addEventListener("change", (e) => save({ proTranslation: e.target.checked }));
+    $("proVoice").addEventListener("change", (e) => save({ proVoice: e.target.checked }));
     $("preview").addEventListener("click", () => {
       const s = window.speechSynthesis;
       if (!s) return;

@@ -143,5 +143,6 @@
  "uiLangHint": "Se aplica al popup, a esta página y a la barra flotante. Los idiomas de doblaje se eligen aparte.",
  "uiLangAuto": "Idioma del navegador",
  "proTransLabel": "Traducción contextual Pro",
- "translationPro": "Traducción: Pro (contextual)"
+ "translationPro": "Traducción: Pro (contextual)",
+ "proVoiceLabel": "Voz neuronal Pro"
 }

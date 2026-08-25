@@ -39,6 +39,7 @@ import {
   createDeeplProvider,
   createGoogleV2Provider,
   createProProvider,
+  AURA2_LANGS,
 } from "@voxylio/webext";
 import { makeT, resolveUiLang } from "./i18n.js";
 
@@ -127,6 +128,42 @@ import { makeT, resolveUiLang } from "./i18n.js";
         } catch (e) {}
       }
     });
+  }
+
+  // ------------------------------------------------------ cloud voice (Pro)
+  // Aura-2 neural voices, generated per sentence by the backend (which
+  // holds the key and meters usage). Bounded cache of ready audio; any
+  // refusal falls back to the local engine in speak().
+  const cloudAudioCache = new BoundedMap(80); // "lang::text" -> Promise<dataUrl|null>
+
+  function cloudVoiceActive() {
+    return (
+      !!settings.proVoice &&
+      accountLinked &&
+      AURA2_LANGS.has(settings.targetLang)
+    );
+  }
+
+  function getCloudAudio(text) {
+    const key = settings.targetLang + "::" + text;
+    if (cloudAudioCache.has(key)) return cloudAudioCache.get(key);
+    const p = (async () => {
+      try {
+        const resp = await runtime.sendMessage({
+          type: "speak-pro",
+          text,
+          lang: settings.targetLang,
+        });
+        if (resp && resp.ok && resp.audio)
+          return "data:" + (resp.mime || "audio/mpeg") + ";base64," + resp.audio;
+      } catch (e) {}
+      return null;
+    })();
+    cloudAudioCache.set(key, p);
+    p.then((v) => {
+      if (!v) cloudAudioCache.delete(key); // failures are retryable
+    });
+    return p;
   }
 
   // ------------------------------------------------- DOM captions (sites)
@@ -757,7 +794,14 @@ import { makeT, resolveUiLang } from "./i18n.js";
       for (const g of upcoming) {
         const key = source + "->" + settings.targetLang + "::" + g.text;
         if (!cache.has(key)) {
-          translate(g.text, source, groupContext(g.id)).catch(() => {});
+          translate(g.text, source, groupContext(g.id))
+            .then((txt) => {
+              // Pre-generate the neural voice shortly before its moment,
+              // never the whole window: skipped lines must cost nothing.
+              if (cloudVoiceActive() && g.start - video.currentTime < 25)
+                getCloudAudio(txt);
+            })
+            .catch(() => {});
           launched++;
           if (launched >= 8 || pendingCount > 10) break;
         }
@@ -773,6 +817,60 @@ import { makeT, resolveUiLang } from "./i18n.js";
         ctl.scheduledIds.delete(id);
         ctl.inFlight.delete(id);
       }
+      // Pro neural voice (Aura-2 languages only): cloud engine first,
+      // automatic local fallback — dubbing never stops on a cloud hiccup.
+      if (cloudVoiceActive()) {
+        speakCloud(text, cueDur);
+        return;
+      }
+      speakLocal(text, cueDur);
+    }
+
+    async function speakCloud(text, cueDur) {
+      // Occupy the speech slot immediately: drainQueue and anySpeaking
+      // treat currentUtterance as "voice busy" whatever the engine.
+      const token = { cloud: true };
+      ctl.currentUtterance = token;
+      const url = await getCloudAudio(text);
+      if (ctl.currentUtterance !== token) return; // cancelled meanwhile
+      if (!url) {
+        // Cloud refused (quota, offline, unsupported): local takes over.
+        ctl.currentUtterance = null;
+        speakLocal(text, cueDur);
+        return;
+      }
+      const a = new Audio(url);
+      const vv = Number(settings.voiceVolume);
+      a.volume = Math.max(0, Math.min(100, Number.isFinite(vv) ? vv : 100)) / 100;
+      a.playbackRate = computeUtteranceRate({
+        text,
+        cueDur,
+        baseRate: settings.rate,
+        playbackRate: video.playbackRate || 1,
+      });
+      ctl.cloudAudio = a;
+      const spokeAt = performance.now();
+      const finish = () => {
+        if (ctl.cloudAudio === a) ctl.cloudAudio = null;
+        if (ctl.currentUtterance === token) ctl.currentUtterance = null;
+        recordSpokenSeconds((performance.now() - spokeAt) / 1000);
+        drainQueue();
+      };
+      a.onended = finish;
+      a.onerror = finish;
+      try {
+        await a.play();
+      } catch (e) {
+        // Autoplay refusal or decode error: same sentence, local voice.
+        if (ctl.cloudAudio === a) ctl.cloudAudio = null;
+        if (ctl.currentUtterance === token) {
+          ctl.currentUtterance = null;
+          speakLocal(text, cueDur);
+        }
+      }
+    }
+
+    function speakLocal(text, cueDur) {
       const u = new SpeechSynthesisUtterance(text);
       const v = pickVoice();
       if (v) u.voice = v;
@@ -1039,6 +1137,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
       ctl.queue.length = 0;
       ctl.currentUtterance = null;
       ctl.autoPaused = false;
+      if (ctl.cloudAudio) {
+        try {
+          ctl.cloudAudio.pause();
+        } catch (e) {}
+        ctl.cloudAudio = null;
+      }
       // Only cancel the engine when WE were speaking — never interrupt a
       // page's own use of speech synthesis.
       if (hadSpeech) {
