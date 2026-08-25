@@ -2,7 +2,13 @@ import { createHash } from "node:crypto";
 import { and, eq, sql } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { db, schema } from "@/db";
-import { currentPeriod, proMonthlyChars, proProviderConfigured } from "@/lib/pro";
+import {
+  currentPeriod,
+  proMonthlyChars,
+  proMonthlyTtsChars,
+  proProviderConfigured,
+  voiceProviderConfigured,
+} from "@/lib/pro";
 
 export const dynamic = "force-dynamic";
 
@@ -97,6 +103,7 @@ export async function GET(req: Request) {
   // extension renders these, it never decides on its own.
   const isPro = out.plan === "pro";
   let cloudCharsRemaining = 0;
+  let ttsCharsRemaining = 0;
   if (isPro) {
     try {
       const [usage] = await db
@@ -110,20 +117,31 @@ export async function GET(req: Request) {
         )
         .limit(1);
       cloudCharsRemaining = Math.max(0, proMonthlyChars() - (usage?.chars ?? 0));
+      ttsCharsRemaining = Math.max(
+        0,
+        proMonthlyTtsChars() - (usage?.ttsChars ?? 0),
+      );
     } catch {
       /* table may not exist yet: report 0, never fail */
     }
   }
   const caps = {
     contextual_translation: isPro && proProviderConfigured(),
-    cloud_voices: false,
+    cloud_voices: isPro && voiceProviderConfigured(),
     audio_transcription: false,
     ai_summary: false,
     cloud_sync: false,
   };
 
   return Response.json(
-    { ...out, email, caps, cloudCharsRemaining, checkedAt: new Date().toISOString() },
+    {
+      ...out,
+      email,
+      caps,
+      cloudCharsRemaining,
+      ttsCharsRemaining,
+      checkedAt: new Date().toISOString(),
+    },
     { headers: CORS },
   );
 }

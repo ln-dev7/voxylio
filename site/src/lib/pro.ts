@@ -15,6 +15,60 @@ export function currentPeriod(): string {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 }
 
+const DEFAULT_MONTHLY_TTS_CHARS = 100_000; // ≈ 1 h 45 of spoken voice
+
+export function proMonthlyTtsChars(): number {
+  const n = Number(process.env.PRO_MONTHLY_TTS_CHARS);
+  return Number.isFinite(n) && n > 0 ? Math.round(n) : DEFAULT_MONTHLY_TTS_CHARS;
+}
+
+export function voiceProviderConfigured(): boolean {
+  return !!process.env.DEEPGRAM_API_KEY;
+}
+
+// Deepgram Aura-2 voices (featured per language). Google TTS Neural2
+// will widen coverage later behind the same endpoint — only this routing
+// will change, never the extension.
+export const AURA2_VOICES: Record<string, string> = {
+  en: "aura-2-thalia-en",
+  es: "aura-2-celeste-es",
+  de: "aura-2-julius-de",
+  fr: "aura-2-agathe-fr",
+  nl: "aura-2-rhea-nl",
+  it: "aura-2-livia-it",
+  ja: "aura-2-fujin-ja",
+};
+
+/**
+ * One sentence → one MP3, through Deepgram Aura-2. Throws with a `code`
+ * the route maps to clean HTTP statuses.
+ */
+export async function synthesizeSpeech(text: string, lang: string): Promise<{ audio: ArrayBuffer; mime: string }> {
+  const model = AURA2_VOICES[lang];
+  if (!model) throw Object.assign(new Error("unsupported language"), { code: 422 });
+  if (!process.env.DEEPGRAM_API_KEY)
+    throw Object.assign(new Error("provider unconfigured"), { code: 503 });
+  const res = await fetch(
+    `https://api.deepgram.com/v1/speak?model=${encodeURIComponent(model)}&encoding=mp3`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Token " + process.env.DEEPGRAM_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text }),
+    },
+  );
+  if (res.status === 429)
+    throw Object.assign(new Error("provider quota"), { code: 503 });
+  if (!res.ok)
+    throw Object.assign(new Error("Deepgram HTTP " + res.status), { code: 502 });
+  const audio = await res.arrayBuffer();
+  if (!audio || audio.byteLength === 0)
+    throw Object.assign(new Error("empty audio"), { code: 502 });
+  return { audio, mime: res.headers.get("content-type") || "audio/mpeg" };
+}
+
 export function proProviderConfigured(): boolean {
   return !!(
     process.env.GEMINI_API_KEY ||

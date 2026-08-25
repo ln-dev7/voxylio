@@ -41,7 +41,8 @@ export const proUsage = pgTable(
   {
     userId: text("user_id").notNull(),
     period: text("period").notNull(), // "YYYY-MM" (UTC)
-    chars: integer("chars").notNull().default(0),
+    chars: integer("chars").notNull().default(0), // contextual translation
+    ttsChars: integer("tts_chars").notNull().default(0), // neural voice
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
   (t) => [uniqueIndex("pro_usage_user_period_idx").on(t.userId, t.period)],
