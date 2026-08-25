@@ -358,5 +358,80 @@
   },
   "voicesLink": {
     "message": "Voices"
+  },
+  "ovlMove": {
+    "message": "Move"
+  },
+  "ovlStatusOn": {
+    "message": "Dubbing active"
+  },
+  "ovlStatusOff": {
+    "message": "Paused"
+  },
+  "ovlSpeaking": {
+    "message": "Voice speaking"
+  },
+  "ovlPower": {
+    "message": "Turn dubbing on or off"
+  },
+  "ovlLang": {
+    "message": "Dubbing language"
+  },
+  "ovlVoice": {
+    "message": "Voice"
+  },
+  "ovlAuto": {
+    "message": "Automatic"
+  },
+  "ovlAutoHint": {
+    "message": "Best installed voice, picked for you"
+  },
+  "ovlMixer": {
+    "message": "Audio mixer"
+  },
+  "ovlOrig": {
+    "message": "Original audio"
+  },
+  "ovlVoiceVol": {
+    "message": "Voice volume"
+  },
+  "ovlDuck": {
+    "message": "Original during the voice"
+  },
+  "ovlPresetImmersion": {
+    "message": "Immersion"
+  },
+  "ovlPresetBalanced": {
+    "message": "Balanced"
+  },
+  "ovlPresetVO": {
+    "message": "Original forward"
+  },
+  "ovlQuick": {
+    "message": "Quick settings"
+  },
+  "ovlRate": {
+    "message": "Voice speed"
+  },
+  "ovlCaptionSize": {
+    "message": "Subtitle size"
+  },
+  "ovlSubs": {
+    "message": "On-screen subtitles"
+  },
+  "ovlAutoPause": {
+    "message": "Auto-pause when the voice falls behind"
+  },
+  "ovlMinimize": {
+    "message": "Minimize"
+  },
+  "ovlExpand": {
+    "message": "Expand"
+  },
+  "ovlClose": {
+    "message": "Hide (re-enable from the popup)"
+  },
+  "ovlListen": {
+    "message": "Play a preview"
   }
 }

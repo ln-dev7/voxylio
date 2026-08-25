@@ -358,5 +358,80 @@
   },
   "voicesLink": {
     "message": "Voix"
+  },
+  "ovlMove": {
+    "message": "Déplacer"
+  },
+  "ovlStatusOn": {
+    "message": "Doublage actif"
+  },
+  "ovlStatusOff": {
+    "message": "En pause"
+  },
+  "ovlSpeaking": {
+    "message": "Voix en cours"
+  },
+  "ovlPower": {
+    "message": "Activer ou couper le doublage"
+  },
+  "ovlLang": {
+    "message": "Langue du doublage"
+  },
+  "ovlVoice": {
+    "message": "Voix"
+  },
+  "ovlAuto": {
+    "message": "Automatique"
+  },
+  "ovlAutoHint": {
+    "message": "Meilleure voix installée, choisie pour vous"
+  },
+  "ovlMixer": {
+    "message": "Mixeur audio"
+  },
+  "ovlOrig": {
+    "message": "Audio original"
+  },
+  "ovlVoiceVol": {
+    "message": "Volume de la voix"
+  },
+  "ovlDuck": {
+    "message": "Original pendant la voix"
+  },
+  "ovlPresetImmersion": {
+    "message": "Immersion"
+  },
+  "ovlPresetBalanced": {
+    "message": "Équilibré"
+  },
+  "ovlPresetVO": {
+    "message": "VO présente"
+  },
+  "ovlQuick": {
+    "message": "Réglages rapides"
+  },
+  "ovlRate": {
+    "message": "Vitesse de la voix"
+  },
+  "ovlCaptionSize": {
+    "message": "Taille des sous-titres"
+  },
+  "ovlSubs": {
+    "message": "Sous-titres à l'écran"
+  },
+  "ovlAutoPause": {
+    "message": "Pause auto si la voix est en retard"
+  },
+  "ovlMinimize": {
+    "message": "Réduire"
+  },
+  "ovlExpand": {
+    "message": "Agrandir"
+  },
+  "ovlClose": {
+    "message": "Masquer (réactivable depuis le popup)"
+  },
+  "ovlListen": {
+    "message": "Écouter un aperçu"
   }
 }

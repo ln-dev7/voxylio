@@ -372,6 +372,31 @@
     tl: ["fil"],
     he: ["iw"]
   };
+  var PREVIEW_SAMPLES = {
+    fr: "Bonjour ! Voici la voix de votre doublage.",
+    es: "\xA1Hola! Esta es la voz de tu doblaje.",
+    it: "Ciao! Questa \xE8 la voce del tuo doppiaggio.",
+    de: "Hallo! Das ist die Stimme deiner Synchronisation.",
+    pt: "Ol\xE1! Esta \xE9 a voz da sua dublagem.",
+    en: "Hi! This is your dubbing voice.",
+    nl: "Hallo! Dit is de stem van je nasynchronisatie.",
+    pl: "Cze\u015B\u0107! To jest g\u0142os twojego dubbingu.",
+    ru: "\u041F\u0440\u0438\u0432\u0435\u0442! \u042D\u0442\u043E \u0433\u043E\u043B\u043E\u0441 \u0432\u0430\u0448\u0435\u0433\u043E \u0434\u0443\u0431\u043B\u044F\u0436\u0430.",
+    uk: "\u041F\u0440\u0438\u0432\u0456\u0442! \u0426\u0435 \u0433\u043E\u043B\u043E\u0441 \u0432\u0430\u0448\u043E\u0433\u043E \u0434\u0443\u0431\u043B\u044F\u0436\u0443.",
+    tr: "Merhaba! Bu, dublaj sesiniz.",
+    ar: "\u0645\u0631\u062D\u0628\u0627\u064B! \u0647\u0630\u0627 \u0635\u0648\u062A \u0627\u0644\u062F\u0628\u0644\u062C\u0629.",
+    hi: "\u0928\u092E\u0938\u094D\u0924\u0947! \u092F\u0939 \u0906\u092A\u0915\u0940 \u0921\u092C\u093F\u0902\u0917 \u0915\u0940 \u0906\u0935\u093E\u091C\u093C \u0939\u0948\u0964",
+    ja: "\u3053\u3093\u306B\u3061\u306F\uFF01\u3053\u308C\u304C\u3042\u306A\u305F\u306E\u5439\u304D\u66FF\u3048\u306E\u58F0\u3067\u3059\u3002",
+    ko: "\uC548\uB155\uD558\uC138\uC694! \uC774\uAC83\uC774 \uB354\uBE59 \uBAA9\uC18C\uB9AC\uC785\uB2C8\uB2E4.",
+    zh: "\u4F60\u597D\uFF01\u8FD9\u662F\u4F60\u7684\u914D\u97F3\u58F0\u97F3\u3002",
+    vi: "Xin ch\xE0o! \u0110\xE2y l\xE0 gi\u1ECDng l\u1ED3ng ti\u1EBFng c\u1EE7a b\u1EA1n.",
+    th: "\u0E2A\u0E27\u0E31\u0E2A\u0E14\u0E35! \u0E19\u0E35\u0E48\u0E04\u0E37\u0E2D\u0E40\u0E2A\u0E35\u0E22\u0E07\u0E1E\u0E32\u0E01\u0E22\u0E4C\u0E02\u0E2D\u0E07\u0E04\u0E38\u0E13",
+    id: "Halo! Ini suara sulih suara Anda.",
+    sv: "Hej! Det h\xE4r \xE4r din dubbningsr\xF6st.",
+    el: "\u0393\u03B5\u03B9\u03B1 \u03C3\u03B1\u03C2! \u0391\u03C5\u03C4\u03AE \u03B5\u03AF\u03BD\u03B1\u03B9 \u03B7 \u03C6\u03C9\u03BD\u03AE \u03C4\u03B7\u03C2 \u03BC\u03B5\u03C4\u03B1\u03B3\u03BB\u03CE\u03C4\u03C4\u03B9\u03C3\u03AE\u03C2 \u03C3\u03B1\u03C2.",
+    ro: "Salut! Aceasta este vocea dublajului t\u0103u.",
+    cs: "Ahoj! Tohle je hlas va\u0161eho dabingu."
+  };
 
   // ../../packages/core/src/voices.js
   function pickVoice(voices, { targetLang, voiceName = "" }) {
@@ -410,6 +435,9 @@
     enabled: false,
     rate: 1.1,
     duck: 12,
+    // Synthesized voice volume (0–100) and on-screen caption size (px).
+    voiceVolume: 100,
+    captionSize: 19,
     voiceName: "",
     // Preferred voice per target language ({ fr: "Amélie", … }); falls
     // back to voiceName, then to the automatic scoring.
@@ -554,6 +582,15 @@
       totalS: (s.totalS || 0) + seconds,
       totalL: (s.totalL || 0) + lines
     };
+  }
+  function fmtTime(sec) {
+    const t = Math.max(0, Math.floor(Number(sec) || 0));
+    const h = Math.floor(t / 3600);
+    const m = Math.floor(t % 3600 / 60);
+    const s = t % 60;
+    const mm = String(m).padStart(2, "0");
+    const ss = String(s).padStart(2, "0");
+    return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
   }
 
   // ../../packages/webext/src/providers/builtin.js
@@ -1233,6 +1270,8 @@
         const v = pickVoice2();
         if (v) u.voice = v;
         u.lang = LOCALES[settings.targetLang] || settings.targetLang;
+        const vv = Number(settings.voiceVolume);
+        u.volume = Math.max(0, Math.min(100, Number.isFinite(vv) ? vv : 100)) / 100;
         u.rate = computeUtteranceRate({
           text,
           cueDur,
@@ -1351,6 +1390,9 @@
       }
       function showCaption(original, translated) {
         const el = ensureCaptionEl();
+        const size = Number(settings.captionSize) || 19;
+        ctl.captionTrans.style.fontSize = size + "px";
+        ctl.captionOrig.style.fontSize = Math.max(12, size - 5) + "px";
         ctl.captionOrig.textContent = original;
         ctl.captionTrans.textContent = translated;
         el.style.display = "block";
@@ -1513,170 +1555,380 @@
     }
     var overlayHost = null;
     var overlayRefs = null;
+    function voicesForTarget() {
+      loadVoices();
+      const code = settings.targetLang;
+      const prefixes = [code, ...VOICE_PREFIX_ALIASES[code] || []];
+      return voices.filter((v) => {
+        const l = (v.lang || "").toLowerCase();
+        return prefixes.some(
+          (p) => l === p || l.startsWith(p + "-") || l.startsWith(p + "_")
+        );
+      });
+    }
+    function previewVoice(v) {
+      try {
+        const u = new SpeechSynthesisUtterance(
+          PREVIEW_SAMPLES[settings.targetLang] || PREVIEW_SAMPLES.en
+        );
+        if (v) u.voice = v;
+        u.lang = v ? v.lang : LOCALES[settings.targetLang] || settings.targetLang;
+        const vv = Number(settings.voiceVolume);
+        u.volume = Math.max(0, Math.min(100, Number.isFinite(vv) ? vv : 100)) / 100;
+        speechSynthesis.speak(u);
+      } catch (e) {
+      }
+    }
     function createOverlay() {
       if (overlayHost) return;
-      const OVERLAY_LANGS = LANGUAGES.map((l) => [l.code, l.code.toUpperCase()]);
+      const T = {
+        move: t2("ovlMove", "D\xE9placer"),
+        on: t2("ovlStatusOn", "Doublage actif"),
+        off: t2("ovlStatusOff", "En pause"),
+        speaking: t2("ovlSpeaking", "Voix en cours"),
+        power: t2("ovlPower", "Activer ou couper le doublage"),
+        langT: t2("ovlLang", "Langue du doublage"),
+        voice: t2("ovlVoice", "Voix"),
+        auto: t2("ovlAuto", "Automatique"),
+        autoHint: t2("ovlAutoHint", "Meilleure voix install\xE9e, choisie pour vous"),
+        mixer: t2("ovlMixer", "Mixeur audio"),
+        voiceVol: t2("ovlVoiceVol", "Volume de la voix"),
+        duckL: t2("ovlDuck", "Original pendant la voix"),
+        pImm: t2("ovlPresetImmersion", "Immersion"),
+        pBal: t2("ovlPresetBalanced", "\xC9quilibr\xE9"),
+        pVo: t2("ovlPresetVO", "VO pr\xE9sente"),
+        quick: t2("ovlQuick", "R\xE9glages rapides"),
+        rateL: t2("ovlRate", "Vitesse de la voix"),
+        capL: t2("ovlCaptionSize", "Taille des sous-titres"),
+        subsL: t2("ovlSubs", "Sous-titres \xE0 l'\xE9cran"),
+        pauseL: t2("ovlAutoPause", "Pause auto si la voix est en retard"),
+        minimize: t2("ovlMinimize", "R\xE9duire"),
+        expand: t2("ovlExpand", "Agrandir"),
+        close: t2("ovlClose", "Masquer (r\xE9activable depuis le popup)"),
+        listen: t2("ovlListen", "\xC9couter un aper\xE7u"),
+        local: t2("appLocalVoice", "locale")
+      };
       overlayHost = document.createElement("div");
       overlayHost.style.cssText = "all:initial; position:fixed; z-index:2147483647; bottom:24px; right:24px; left:auto; top:auto;";
       const root = overlayHost.attachShadow({ mode: "closed" });
       root.innerHTML = `
       <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        .wrap { position: relative; font-family: "Helvetica Neue", helvetica, arial, sans-serif; }
         .bar {
           display: flex;
           align-items: center;
-          gap: 8px;
-          background: #181818;
+          gap: 7px;
+          background: #161616;
           border-radius: 9999px;
-          padding: 8px 12px 8px 8px;
-          box-shadow: rgba(0,0,0,0.5) 0px 8px 24px, rgb(124,124,124) 0px 0px 0px 1px inset;
-          font-family: "Helvetica Neue", helvetica, arial, sans-serif;
+          padding: 7px 10px 7px 6px;
+          box-shadow: rgba(0,0,0,0.55) 0px 10px 28px, rgb(90,90,90) 0px 0px 0px 1px inset;
           font-size: 12px;
           color: #ffffff;
           user-select: none;
           -webkit-user-select: none;
         }
-        .handle {
-          cursor: grab;
-          color: #7c7c7c;
-          font-size: 14px;
-          padding: 4px 2px 4px 6px;
-          letter-spacing: -1px;
-        }
+        .handle { cursor: grab; color: #7c7c7c; font-size: 14px; padding: 4px 0 4px 6px; letter-spacing: -1px; }
         .handle:active { cursor: grabbing; }
+        .status {
+          display: flex; align-items: center; gap: 7px;
+          padding: 0 8px 0 4px; min-width: 0; white-space: nowrap;
+        }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #7c7c7c; flex: 0 0 auto; }
+        .dot.on { background: #1ed760; }
+        @keyframes dot-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(30,215,96,0.5);} 50% { box-shadow: 0 0 0 5px rgba(30,215,96,0);} }
+        .dot.speaking { animation: dot-pulse 1.2s ease-out infinite; }
+        .stext { font-weight: 700; font-size: 11.5px; color: #e8e8e8; }
+        .timer { font-size: 11px; color: #7c7c7c; font-variant-numeric: tabular-nums; border-left: 1px solid #2c2c2c; padding-left: 7px; }
         button {
-          font-family: inherit;
-          border: none;
-          background: #1f1f1f;
-          color: #ffffff;
-          cursor: pointer;
-          border-radius: 9999px;
+          font-family: inherit; border: none; background: #222222; color: #ffffff;
+          cursor: pointer; border-radius: 9999px;
         }
-        button:hover { background: #242424; }
+        button:hover { background: #2c2c2c; }
         button:focus-visible { outline: 2px solid #1ed760; outline-offset: 2px; }
-        .power {
-          width: 30px;
-          height: 30px;
-          border-radius: 50%;
-          display: grid;
-          place-items: center;
-          flex: 0 0 auto;
-          transition: background 0.15s;
-        }
+        .power { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; flex: 0 0 auto; transition: background 0.15s; }
         .power svg { display: block; }
         .power.on { background: #1ed760; color: #121212; }
         .power.on:hover { background: #3be477; }
-        @keyframes speak-pulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(30,215,96,0.55); }
-          50% { box-shadow: 0 0 0 6px rgba(30,215,96,0); }
-        }
-        .power.speaking { animation: speak-pulse 1.2s ease-out infinite; }
         .power.on svg path { stroke: #121212; }
         select {
-          background-color: #1f1f1f;
-          color: #ffffff;
-          border: none;
-          border-radius: 9999px;
-          font-family: inherit;
-          font-size: 11px;
-          font-weight: 700;
-          padding: 5px 8px;
-          cursor: pointer;
-          appearance: none;
-          text-align: center;
+          background-color: #222222; color: #ffffff; border: none; border-radius: 9999px;
+          font-family: inherit; font-size: 11px; font-weight: 700; padding: 6px 8px;
+          cursor: pointer; appearance: none; text-align: center;
         }
-        select:hover { background-color: #242424; }
+        select:hover { background-color: #2c2c2c; }
         select:focus-visible { outline: 2px solid #1ed760; outline-offset: 2px; }
-        .step {
-          width: 22px;
-          height: 22px;
-          font-size: 13px;
-          font-weight: 700;
-          line-height: 1;
-          display: grid;
-          place-items: center;
+        .chip {
+          display: flex; align-items: center; gap: 6px;
+          font-size: 11px; font-weight: 700; padding: 6px 10px; max-width: 130px;
         }
-        .rate {
-          font-weight: 700;
-          font-variant-numeric: tabular-nums;
-          color: #b3b3b3;
-          min-width: 38px;
-          text-align: center;
+        .chip .vname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .chip .chev, .chip svg { color: #9a9a9a; flex: 0 0 auto; }
+        .icon { width: 28px; height: 28px; display: grid; place-items: center; flex: 0 0 auto; color: #d9d9d9; }
+        .icon svg { display: block; }
+        .ghost { background: transparent; color: #7c7c7c; width: 24px; height: 24px; font-size: 12px; display: grid; place-items: center; }
+        .ghost:hover { background: #222222; color: #ffffff; }
+        .bar.mini .status, .bar.mini .lang, .bar.mini .voiceBtn, .bar.mini .mixBtn,
+        .bar.mini .setBtn, .bar.mini .close { display: none; }
+
+        .pop {
+          position: absolute; right: 0; width: 272px;
+          background: #161616; border-radius: 14px; padding: 14px;
+          box-shadow: rgba(0,0,0,0.55) 0px 14px 34px, rgb(90,90,90) 0px 0px 0px 1px inset;
+          color: #ffffff;
         }
+        .pop[hidden] { display: none; }
+        .pop.above { bottom: calc(100% + 10px); }
+        .pop.below { top: calc(100% + 10px); }
+        .pop h3 {
+          font-size: 10px; font-weight: 700; text-transform: uppercase;
+          letter-spacing: 1.4px; color: #b3b3b3; margin-bottom: 12px;
+        }
+        .prow { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 10px 0 6px; }
+        .prow .plabel { font-size: 12px; font-weight: 600; color: #e8e8e8; }
+        .prow .pval { font-size: 11.5px; color: #b3b3b3; font-variant-numeric: tabular-nums; }
         input[type="range"] {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 64px;
-          height: 4px;
-          border-radius: 9999px;
+          -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 9999px;
           background: linear-gradient(to right, #1ed760 0%, #1ed760 var(--fill, 20%), #4d4d4d var(--fill, 20%), #4d4d4d 100%);
-          cursor: pointer;
+          cursor: pointer; display: block;
         }
         input[type="range"]::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 11px;
-          height: 11px;
-          border-radius: 50%;
-          background: #ffffff;
-          box-shadow: rgba(0,0,0,0.5) 0px 2px 6px;
+          -webkit-appearance: none; appearance: none; width: 12px; height: 12px;
+          border-radius: 50%; background: #ffffff; box-shadow: rgba(0,0,0,0.5) 0px 2px 6px;
         }
         input[type="range"]:focus-visible { outline: 2px solid #1ed760; outline-offset: 4px; }
-        .vol { color: #7c7c7c; font-size: 11px; }
-        .close {
-          width: 22px;
-          height: 22px;
-          background: transparent;
-          color: #7c7c7c;
-          font-size: 12px;
-          display: grid;
-          place-items: center;
+        .presets { display: flex; gap: 6px; margin-top: 12px; }
+        .presets button { flex: 1; font-size: 10.5px; font-weight: 700; padding: 7px 4px; }
+        .presets button.on { background: #1ed760; color: #121212; }
+        .sep { border-top: 1px solid #262626; margin: 12px 0; }
+        .trow { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 10px 0; }
+        .trow .plabel { font-size: 12px; font-weight: 600; color: #e8e8e8; }
+        .switch { position: relative; width: 36px; height: 21px; flex: 0 0 auto; cursor: pointer; display: inline-block; }
+        .switch input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+        .knob { position: absolute; inset: 0; background: #333333; border-radius: 9999px; pointer-events: none; transition: background 0.15s; }
+        .knob::before { content: ""; position: absolute; width: 15px; height: 15px; left: 3px; top: 3px; background: #ffffff; border-radius: 50%; transition: transform 0.15s; }
+        .switch input:checked + .knob { background: #1ed760; }
+        .switch input:checked + .knob::before { transform: translateX(15px); background: #121212; }
+
+        .vlist { max-height: 250px; overflow-y: auto; margin: 0 -4px; padding: 0 4px; }
+        .vitem {
+          width: 100%; display: flex; align-items: center; gap: 8px;
+          background: none; border-radius: 10px; padding: 8px 10px; text-align: left;
         }
-        .close:hover { background: #1f1f1f; color: #ffffff; }
+        .vitem:hover { background: #222222; }
+        .vitem.sel { background: #1f2b22; box-shadow: rgba(30,215,96,0.5) 0px 0px 0px 1px inset; }
+        .vitem .vmain { flex: 1; min-width: 0; }
+        .vitem .vlabel { display: block; font-size: 12.5px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .vitem.sel .vlabel { color: #1ed760; }
+        .vitem .vsub { display: block; font-size: 10.5px; color: #8f8f8f; margin-top: 1px; }
+        .vplay {
+          flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%;
+          display: grid; place-items: center; background: #222222; color: #1ed760;
+          font-size: 10px; cursor: pointer;
+        }
+        .vplay:hover { background: #2c2c2c; }
       </style>
-      <div class="bar" role="toolbar" aria-label="Voxylio">
-        <span class="handle" title="D\xE9placer">\u283F</span>
-        <button class="power" aria-label="Activer ou couper le doublage" title="Doublage">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <path d="M2.5 6.5v3h2.4L8.5 12V4L4.9 6.5H2.5z" fill="currentColor" stroke="none"/>
-            <path d="M10.5 5.5a3.4 3.4 0 010 5M12.3 4a5.8 5.8 0 010 8" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round"/>
-          </svg>
-        </button>
-        <select class="lang" aria-label="Langue du doublage" title="Langue"></select>
-        <button class="step minus" aria-label="Ralentir la voix" title="Ralentir">\u2212</button>
-        <span class="rate">\xD71.10</span>
-        <button class="step plus" aria-label="Acc\xE9l\xE9rer la voix" title="Acc\xE9l\xE9rer">+</button>
-        <input class="duck" type="range" min="0" max="60" step="1" aria-label="Volume de l\u2019audio original" title="Audio original" />
-        <button class="close" aria-label="Masquer le menu flottant" title="Masquer (r\xE9activable depuis le popup)">\u2715</button>
+      <div class="wrap">
+        <div class="bar" role="toolbar" aria-label="Voxylio">
+          <span class="handle" title="${T.move}">\u283F</span>
+          <span class="status"><span class="dot"></span><span class="stext"></span><span class="timer">00:00</span></span>
+          <button class="power" aria-label="${T.power}" title="${T.power}">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+              <path d="M2.5 6.5v3h2.4L8.5 12V4L4.9 6.5H2.5z" fill="currentColor" stroke="none"/>
+              <path d="M10.5 5.5a3.4 3.4 0 010 5M12.3 4a5.8 5.8 0 010 8" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <select class="lang" aria-label="${T.langT}" title="${T.langT}"></select>
+          <button class="chip voiceBtn" title="${T.voice}">
+            <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="5.6" y="1.8" width="4.8" height="8" rx="2.4"/><path d="M3.2 8a4.8 4.8 0 009.6 0M8 12.8v1.6"/></svg>
+            <span class="vname"></span><span class="chev">\u25BE</span>
+          </button>
+          <button class="icon mixBtn" title="${T.mixer}" aria-label="${T.mixer}">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3.5 2.5v6M3.5 11.5v2M8 2.5v2M8 7.5v6M12.5 2.5v6M12.5 11.5v2"/><circle cx="3.5" cy="10" r="1.6"/><circle cx="8" cy="6" r="1.6"/><circle cx="12.5" cy="10" r="1.6"/></svg>
+          </button>
+          <button class="icon setBtn" title="${T.quick}" aria-label="${T.quick}">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.1"/><path d="M8 1.9v1.8M8 12.3v1.8M1.9 8h1.8M12.3 8h1.8M3.7 3.7L5 5M11 11l1.3 1.3M12.3 3.7L11 5M5 11l-1.3 1.3"/></svg>
+          </button>
+          <button class="ghost mini" title="${T.minimize}">\u2013</button>
+          <button class="ghost close" aria-label="${T.close}" title="${T.close}">\u2715</button>
+        </div>
+
+        <div class="pop pop-voice above" hidden>
+          <h3 class="vtitle">${T.voice}</h3>
+          <div class="vlist"></div>
+        </div>
+
+        <div class="pop pop-mix above" hidden>
+          <h3>${T.mixer}</h3>
+          <div class="prow"><span class="plabel">${T.voiceVol}</span><span class="pval voiceVal"></span></div>
+          <input class="voiceVol" type="range" min="0" max="100" step="1" aria-label="${T.voiceVol}" />
+          <div class="prow"><span class="plabel">${T.duckL}</span><span class="pval duckVal"></span></div>
+          <input class="duckR" type="range" min="0" max="60" step="1" aria-label="${T.duckL}" />
+          <div class="presets">
+            <button class="pImm">${T.pImm}</button>
+            <button class="pBal">${T.pBal}</button>
+            <button class="pVo">${T.pVo}</button>
+          </div>
+        </div>
+
+        <div class="pop pop-set above" hidden>
+          <h3>${T.quick}</h3>
+          <div class="prow"><span class="plabel">${T.rateL}</span><span class="pval rateVal"></span></div>
+          <input class="rateR" type="range" min="0.8" max="1.6" step="0.05" aria-label="${T.rateL}" />
+          <div class="prow"><span class="plabel">${T.capL}</span><span class="pval capVal"></span></div>
+          <input class="capR" type="range" min="14" max="34" step="1" aria-label="${T.capL}" />
+          <div class="sep"></div>
+          <div class="trow"><span class="plabel">${T.subsL}</span>
+            <label class="switch"><input type="checkbox" class="subsT" /><span class="knob"></span></label></div>
+          <div class="trow"><span class="plabel">${T.pauseL}</span>
+            <label class="switch"><input type="checkbox" class="pauseT" /><span class="knob"></span></label></div>
+        </div>
       </div>`;
       const q = (sel) => root.querySelector(sel);
       overlayRefs = {
+        T,
         bar: q(".bar"),
+        wrap: q(".wrap"),
+        dot: q(".dot"),
+        stext: q(".stext"),
+        timer: q(".timer"),
         power: q(".power"),
         lang: q(".lang"),
-        rate: q(".rate"),
-        duck: q(".duck")
+        vname: q(".vname"),
+        pops: {
+          voice: q(".pop-voice"),
+          mix: q(".pop-mix"),
+          set: q(".pop-set")
+        },
+        vlist: q(".vlist"),
+        vtitle: q(".vtitle"),
+        voiceVol: q(".voiceVol"),
+        voiceVal: q(".voiceVal"),
+        duckR: q(".duckR"),
+        duckVal: q(".duckVal"),
+        rateR: q(".rateR"),
+        rateVal: q(".rateVal"),
+        capR: q(".capR"),
+        capVal: q(".capVal"),
+        subsT: q(".subsT"),
+        pauseT: q(".pauseT"),
+        mini: false,
+        activeMs: 0,
+        lastTick: performance.now()
       };
-      for (const [val, label] of OVERLAY_LANGS) {
+      for (const l of LANGUAGES) {
         const opt = document.createElement("option");
-        opt.value = val;
-        opt.textContent = label;
+        opt.value = l.code;
+        opt.textContent = l.code.toUpperCase();
         overlayRefs.lang.appendChild(opt);
+      }
+      const openPop = (name) => {
+        const target = overlayRefs.pops[name];
+        const willOpen = target.hidden;
+        for (const p of Object.values(overlayRefs.pops)) p.hidden = true;
+        if (!willOpen) return;
+        const rect = overlayHost.getBoundingClientRect();
+        const below = rect.top < 340;
+        for (const p of Object.values(overlayRefs.pops)) {
+          p.classList.toggle("above", !below);
+          p.classList.toggle("below", below);
+        }
+        if (name === "voice") renderVoiceList();
+        target.hidden = false;
+        renderOverlay();
+      };
+      overlayRefs.closePops = () => {
+        if (!overlayRefs) return;
+        for (const p of Object.values(overlayRefs.pops)) p.hidden = true;
+      };
+      q(".voiceBtn").addEventListener("click", () => openPop("voice"));
+      q(".mixBtn").addEventListener("click", () => openPop("mix"));
+      q(".setBtn").addEventListener("click", () => openPop("set"));
+      overlayRefs.onDocDown = (e) => {
+        if (!overlayHost) return;
+        if (!e.composedPath().includes(overlayHost)) overlayRefs.closePops();
+      };
+      window.addEventListener("pointerdown", overlayRefs.onDocDown, true);
+      function renderVoiceList() {
+        const list = overlayRefs.vlist;
+        list.replaceChildren();
+        const langMeta = LANGUAGES.find((l) => l.code === settings.targetLang);
+        overlayRefs.vtitle.textContent = T.voice + " \u2014 " + (langMeta ? langMeta.name : settings.targetLang);
+        const chosen = settings.voiceByLang && settings.voiceByLang[settings.targetLang] || settings.voiceName;
+        const mkItem = (label, sub, sel, voice, name) => {
+          const item = document.createElement("button");
+          item.className = "vitem" + (sel ? " sel" : "");
+          const main = document.createElement("span");
+          main.className = "vmain";
+          const lab = document.createElement("span");
+          lab.className = "vlabel";
+          lab.textContent = label;
+          const s = document.createElement("span");
+          s.className = "vsub";
+          s.textContent = sub;
+          main.append(lab, s);
+          const play = document.createElement("span");
+          play.className = "vplay";
+          play.textContent = "\u25B6";
+          play.title = T.listen;
+          play.addEventListener("click", (e) => {
+            e.stopPropagation();
+            previewVoice(voice);
+          });
+          item.append(main, play);
+          item.addEventListener("click", () => {
+            const vb = { ...settings.voiceByLang || {} };
+            if (name) vb[settings.targetLang] = name;
+            else delete vb[settings.targetLang];
+            settings.voiceByLang = vb;
+            settings.voiceName = name;
+            safeSyncSet({ voiceName: name, voiceByLang: vb });
+            renderVoiceList();
+            renderOverlay();
+          });
+          list.appendChild(item);
+        };
+        mkItem(T.auto, T.autoHint, !chosen, null, "");
+        for (const v of voicesForTarget()) {
+          mkItem(
+            v.name,
+            v.lang + (v.localService ? " \xB7 " + T.local : ""),
+            chosen === v.name,
+            v,
+            v.name
+          );
+        }
       }
       q(".power").addEventListener("click", () => {
         safeSyncSet({ enabled: !settings.enabled });
       });
       overlayRefs.lang.addEventListener("change", (e) => {
-        safeSyncSet({ targetLang: e.target.value, voiceName: "" });
+        const next = e.target.value;
+        safeSyncSet({
+          targetLang: next,
+          voiceName: (settings.voiceByLang || {})[next] || ""
+        });
       });
-      const bumpRate = (d) => {
-        const r = Math.min(1.6, Math.max(0.8, Math.round((settings.rate + d) * 100) / 100));
-        safeSyncSet({ rate: r });
-      };
-      q(".minus").addEventListener("click", () => bumpRate(-0.05));
-      q(".plus").addEventListener("click", () => bumpRate(0.05));
+      q(".mini").addEventListener("click", (e) => {
+        overlayRefs.mini = !overlayRefs.mini;
+        e.target.textContent = overlayRefs.mini ? "\u2922" : "\u2013";
+        e.target.title = overlayRefs.mini ? T.expand : T.minimize;
+        overlayRefs.closePops();
+        renderOverlay();
+      });
+      q(".close").addEventListener("click", () => {
+        safeSyncSet({ overlay: false });
+      });
+      let volTimer = null;
+      overlayRefs.voiceVol.addEventListener("input", (e) => {
+        const v = Number(e.target.value);
+        settings.voiceVolume = v;
+        renderOverlay();
+        clearTimeout(volTimer);
+        volTimer = setTimeout(() => safeSyncSet({ voiceVolume: v }), 250);
+      });
       let duckTimer = null;
-      overlayRefs.duck.addEventListener("input", (e) => {
+      overlayRefs.duckR.addEventListener("input", (e) => {
         const v = Number(e.target.value);
         settings.duck = v;
         renderOverlay();
@@ -1684,8 +1936,30 @@
         clearTimeout(duckTimer);
         duckTimer = setTimeout(() => safeSyncSet({ duck: v }), 250);
       });
-      q(".close").addEventListener("click", () => {
-        safeSyncSet({ overlay: false });
+      q(".pImm").addEventListener("click", () => safeSyncSet({ duck: 0 }));
+      q(".pBal").addEventListener("click", () => safeSyncSet({ duck: 12 }));
+      q(".pVo").addEventListener("click", () => safeSyncSet({ duck: 35 }));
+      let rateTimer = null;
+      overlayRefs.rateR.addEventListener("input", (e) => {
+        const v = Number(e.target.value);
+        settings.rate = v;
+        renderOverlay();
+        clearTimeout(rateTimer);
+        rateTimer = setTimeout(() => safeSyncSet({ rate: v }), 250);
+      });
+      let capTimer = null;
+      overlayRefs.capR.addEventListener("input", (e) => {
+        const v = Number(e.target.value);
+        settings.captionSize = v;
+        renderOverlay();
+        clearTimeout(capTimer);
+        capTimer = setTimeout(() => safeSyncSet({ captionSize: v }), 250);
+      });
+      overlayRefs.subsT.addEventListener("change", (e) => {
+        safeSyncSet({ subtitles: e.target.checked });
+      });
+      overlayRefs.pauseT.addEventListener("change", (e) => {
+        safeSyncSet({ autoPause: e.target.checked });
       });
       const handle = q(".handle");
       let drag = null;
@@ -1704,7 +1978,7 @@
         overlayHost.style.right = "auto";
         overlayHost.style.bottom = "auto";
       });
-      handle.addEventListener("pointerup", (e) => {
+      handle.addEventListener("pointerup", () => {
         if (!drag) return;
         drag = null;
         const r = overlayHost.getBoundingClientRect();
@@ -1726,9 +2000,17 @@
           teardownAll();
           return;
         }
-        if (overlayRefs) {
-          overlayRefs.power.classList.toggle("speaking", anySpeaking());
+        if (!overlayRefs) return;
+        const now = performance.now();
+        const delta = now - overlayRefs.lastTick;
+        overlayRefs.lastTick = now;
+        if (settings.enabled && primaryVideo && !primaryVideo.paused && delta < 2e3) {
+          overlayRefs.activeMs += delta;
         }
+        const speaking = anySpeaking();
+        overlayRefs.dot.classList.toggle("speaking", speaking);
+        overlayRefs.stext.textContent = !settings.enabled ? overlayRefs.T.off : speaking ? overlayRefs.T.speaking : overlayRefs.T.on;
+        overlayRefs.timer.textContent = fmtTime(overlayRefs.activeMs / 1e3);
       }, 400);
       overlayRefs.onResize = () => {
         if (!overlayHost || overlayHost.style.left === "auto") return;
@@ -1741,24 +2023,48 @@
       window.addEventListener("resize", overlayRefs.onResize);
       renderOverlay();
     }
+    function t2(key, fallback) {
+      try {
+        return runtime && chrome.i18n && chrome.i18n.getMessage(key) || fallback;
+      } catch (e) {
+        return fallback;
+      }
+    }
     function destroyOverlay() {
       if (!overlayHost) return;
       if (overlayRefs) {
         clearInterval(overlayRefs.speakTimer);
         window.removeEventListener("resize", overlayRefs.onResize);
+        window.removeEventListener("pointerdown", overlayRefs.onDocDown, true);
       }
       overlayHost.remove();
       overlayHost = null;
       overlayRefs = null;
     }
+    const setFill = (el, pct) => el.style.setProperty("--fill", pct + "%");
     function renderOverlay() {
       if (!overlayRefs) return;
-      overlayRefs.power.classList.toggle("on", !!settings.enabled);
-      overlayRefs.lang.value = settings.targetLang;
-      overlayRefs.rate.textContent = "\xD7" + Number(settings.rate).toFixed(2);
-      overlayRefs.duck.value = settings.duck;
-      const pct = settings.duck / 60 * 100;
-      overlayRefs.duck.style.setProperty("--fill", pct + "%");
+      const r = overlayRefs;
+      r.bar.classList.toggle("mini", !!r.mini);
+      r.power.classList.toggle("on", !!settings.enabled);
+      r.dot.classList.toggle("on", !!settings.enabled);
+      r.lang.value = settings.targetLang;
+      const chosen = settings.voiceByLang && settings.voiceByLang[settings.targetLang] || settings.voiceName;
+      r.vname.textContent = chosen ? chosen.split(" ")[0] : r.T.auto;
+      r.voiceVol.value = settings.voiceVolume;
+      r.voiceVal.textContent = settings.voiceVolume + " %";
+      setFill(r.voiceVol, settings.voiceVolume);
+      r.duckR.value = settings.duck;
+      r.duckVal.textContent = settings.duck + " %";
+      setFill(r.duckR, settings.duck / 60 * 100);
+      r.rateR.value = settings.rate;
+      r.rateVal.textContent = "\xD7" + Number(settings.rate).toFixed(2);
+      setFill(r.rateR, (settings.rate - 0.8) / 0.8 * 100);
+      r.capR.value = settings.captionSize;
+      r.capVal.textContent = settings.captionSize + " px";
+      setFill(r.capR, (settings.captionSize - 14) / 20 * 100);
+      r.subsT.checked = !!settings.subtitles;
+      r.pauseT.checked = !!settings.autoPause;
     }
     function syncOverlay() {
       const wanted = settings.overlay && accountLinked && controllers.size > 0;
