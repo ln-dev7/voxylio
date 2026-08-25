@@ -30,6 +30,8 @@
       font-size: 14px;
       -webkit-font-smoothing: antialiased;
       display: flex;
+      height: 100vh;
+      overflow: hidden; /* app layout: each column scrolls on its own */
     }
 
     /* ---- sidebar ---- */
@@ -41,9 +43,8 @@
       gap: 4px;
       padding: 20px 12px;
       background: #0b0b0b;
-      min-height: 100vh;
-      position: sticky;
-      top: 0;
+      height: 100vh;
+      overflow-y: auto;
     }
     .brand {
       display: flex;
@@ -85,8 +86,8 @@
     }
 
     /* ---- main ---- */
-    main { flex: 1; min-width: 0; }
-    .view { display: none; min-height: 100vh; }
+    main { flex: 1; min-width: 0; height: 100vh; overflow-y: auto; }
+    .view { display: none; min-height: 100%; }
     .view.active { display: block; }
     .single {
       max-width: 760px;
@@ -181,7 +182,7 @@
     .badge.green { background: rgba(30, 215, 96, 0.14); color: var(--accent); }
 
     /* ---- two-pane views (history, voices) ---- */
-    .split { display: flex; min-height: 100vh; }
+    .split { display: flex; height: 100vh; }
     .pane {
       width: 300px;
       flex: 0 0 auto;
@@ -190,13 +191,11 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      max-height: 100vh;
+      height: 100vh;
       overflow-y: auto;
-      position: sticky;
-      top: 0;
     }
     .pane h1 { font-size: 18px; margin: 0 4px 4px; }
-    .content { flex: 1; min-width: 0; padding: 28px 30px 60px; }
+    .content { flex: 1; min-width: 0; padding: 28px 30px 60px; height: 100vh; overflow-y: auto; }
 
     .session-item, .lang-item {
       border: none;
