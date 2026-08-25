@@ -1,16 +1,20 @@
 import { defineRouting } from "next-intl/routing";
 
 export const routing = defineRouting({
-  locales: ["en", "fr", "es", "de", "it", "pt"],
+  locales: ["en", "zh-CN", "zh-TW", "ja", "ko", "fr", "de", "es", "it", "pt-BR"],
   defaultLocale: "en",
 });
 
 /** Native label per locale, for the language Select. */
 export const LOCALE_LABELS: Record<string, string> = {
   en: "English",
+  "zh-CN": "简体中文",
+  "zh-TW": "繁體中文",
+  ja: "日本語",
+  ko: "한국어",
   fr: "Français",
-  es: "Español",
   de: "Deutsch",
+  es: "Español",
   it: "Italiano",
-  pt: "Português",
+  "pt-BR": "Português (BR)",
 };

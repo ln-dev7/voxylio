@@ -76,27 +76,7 @@
     "tryIt": "Try it — every control on this popup actually works"
   },
   "Languages": {
-    "list": {
-      "en": "English",
-      "fr": "French",
-      "es": "Spanish",
-      "it": "Italian",
-      "de": "German",
-      "pt": "Portuguese",
-      "ja": "Japanese",
-      "zh": "Chinese",
-      "ru": "Russian",
-      "ar": "Arabic",
-      "hi": "Hindi",
-      "ko": "Korean",
-      "tr": "Turkish",
-      "pl": "Polish",
-      "uk": "Ukrainian",
-      "nl": "Dutch",
-      "vi": "Vietnamese",
-      "sv": "Swedish"
-    },
-    "title": "65+ languages, both directions",
+    "title": "<count></count> languages, in both directions",
     "subtitle": "The source language is auto-detected — dub from any language into yours."
   },
   "Install": {

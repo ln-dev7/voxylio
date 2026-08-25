@@ -76,27 +76,7 @@
     "tryIt": "Probier es aus — jedes Element dieses Popups funktioniert wirklich"
   },
   "Languages": {
-    "list": {
-      "en": "Englisch",
-      "fr": "Französisch",
-      "es": "Spanisch",
-      "it": "Italienisch",
-      "de": "Deutsch",
-      "pt": "Portugiesisch",
-      "ja": "Japanisch",
-      "zh": "Chinesisch",
-      "ru": "Russisch",
-      "ar": "Arabisch",
-      "hi": "Hindi",
-      "ko": "Koreanisch",
-      "tr": "Türkisch",
-      "pl": "Polnisch",
-      "uk": "Ukrainisch",
-      "nl": "Niederländisch",
-      "vi": "Vietnamesisch",
-      "sv": "Schwedisch"
-    },
-    "title": "Über 65 Sprachen, in beide Richtungen",
+    "title": "<count></count> Sprachen, in beide Richtungen",
     "subtitle": "Die Ausgangssprache wird automatisch erkannt — synchronisiere aus jeder Sprache in deine."
   },
   "Install": {

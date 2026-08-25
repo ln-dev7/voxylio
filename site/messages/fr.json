@@ -76,27 +76,7 @@
     "tryIt": "Essaie — chaque contrôle de ce popup fonctionne vraiment"
   },
   "Languages": {
-    "list": {
-      "en": "Anglais",
-      "fr": "Français",
-      "es": "Espagnol",
-      "it": "Italien",
-      "de": "Allemand",
-      "pt": "Portugais",
-      "ja": "Japonais",
-      "zh": "Chinois",
-      "ru": "Russe",
-      "ar": "Arabe",
-      "hi": "Hindi",
-      "ko": "Coréen",
-      "tr": "Turc",
-      "pl": "Polonais",
-      "uk": "Ukrainien",
-      "nl": "Néerlandais",
-      "vi": "Vietnamien",
-      "sv": "Suédois"
-    },
-    "title": "Plus de 65 langues, dans les deux sens",
+    "title": "<count></count> langues, dans les deux sens",
     "subtitle": "La langue source est détectée automatiquement — doublez de n'importe quelle langue vers la vôtre."
   },
   "Install": {

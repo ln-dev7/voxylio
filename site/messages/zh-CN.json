@@ -1,0 +1,270 @@
+{
+  "Meta": {
+    "title": "Voxylio — 在浏览器中实时视频配音",
+    "description": "一款实时为带字幕视频配音的 Chrome 扩展 — 支持 65 种以上语言。本地翻译，语音与播放同步。"
+  },
+  "Header": {
+    "features": "功能",
+    "howItWorks": "工作原理",
+    "install": "安装",
+    "faq": "常见问题",
+    "github": "GitHub",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单",
+    "account": "账户",
+    "pricing": "价格"
+  },
+  "Hero": {
+    "title": "用<accent>你的语言</accent>观看任何视频",
+    "subtitle": "Voxylio 是一款实时为带字幕视频配音的 Chrome 扩展。它从字幕中重建完整句子，在本地完成翻译，并与播放同步地在视频上朗读出来。",
+    "ctaInstall": "安装扩展",
+    "ctaGithub": "在 GitHub 查看",
+    "note": "适用于播放器公开字幕轨道的视频 — 大多数课程平台都支持。",
+    "ticks": {
+      "free": "免费",
+      "local": "100% 本地",
+      "noAccount": "无需账户",
+      "noQuota": "没有限额"
+    }
+  },
+  "Features": {
+    "title": "像真正的配音棚一样打造",
+    "subtitle": "不是机械的字幕朗读器。Voxylio 重建句子、保持声音一致，并根据说话人调整语速。",
+    "items": {
+      "sentences": {
+        "title": "整句配音",
+        "description": "字幕碎片在翻译前会被合并成完整句子，让声音自然流畅，翻译保留完整语境。"
+      },
+      "local": {
+        "title": "本地翻译",
+        "description": "优先使用 Chrome 内置的设备端翻译 API — 免费、私密、可离线使用 — 不可用时自动切换到在线备用方案。"
+      },
+      "sync": {
+        "title": "始终同步",
+        "description": "语音跟随视频时钟：暂停、快进或重播，声音都会立即响应。柔和的语速调整让长句依然清晰可懂。"
+      },
+      "voices": {
+        "title": "一致的声音",
+        "description": "每次会话只选用一个声音以保持连贯。可选择系统中安装的任意语音，包括 macOS 的高品质语音。"
+      },
+      "overlay": {
+        "title": "悬浮控制条",
+        "description": "页面上可拖动的控制条让你无需离开视频即可开关配音、切换语言、调整语速并压低原声。"
+      },
+      "languages": {
+        "title": "65 种以上语言",
+        "description": "将任何带字幕的视频配音成 65 种以上语言 — 法语、西班牙语、日语、阿拉伯语、印地语等。播放中切换语言即刻生效，绝不混音。"
+      }
+    }
+  },
+  "HowItWorks": {
+    "title": "工作原理",
+    "steps": {
+      "detect": {
+        "title": "检测视频",
+        "description": "扩展会找到页面上的播放器 — 即使在 Mux 这类 shadow DOM 播放器内部 — 并读取其字幕轨道。"
+      },
+      "translate": {
+        "title": "提前翻译",
+        "description": "即将播放的句子会用 Chrome 的本地翻译模型提前翻译，并按语言缓存。"
+      },
+      "speak": {
+        "title": "在视频上朗读",
+        "description": "合成语音在恰当的时刻读出每个句子，原声会自动降低。"
+      }
+    },
+    "tryIt": "试试看 — 这个弹窗上的每个控件都真的可以用"
+  },
+  "Languages": {
+    "title": "<count></count> 种语言，双向互译",
+    "subtitle": "源语言自动检测 — 从任何语言配音到你的语言。"
+  },
+  "Install": {
+    "title": "两分钟完成安装",
+    "subtitle": "Voxylio 尚未上架 Chrome 应用商店 — 请以「加载已解压的扩展程序」方式安装。",
+    "steps": {
+      "clone": {
+        "title": "获取代码",
+        "description": "克隆仓库或下载 ZIP，然后把扩展文件夹放到一个固定位置。"
+      },
+      "load": {
+        "title": "加载到 Chrome",
+        "description": "打开 chrome://extensions，启用开发者模式，点击「加载已解压的扩展程序」并选择扩展文件夹。"
+      },
+      "play": {
+        "title": "播放视频",
+        "description": "打开任意带字幕的视频，播放几秒后，在弹窗或悬浮条中打开开关。"
+      }
+    },
+    "cta": "在 GitHub 获取 Voxylio",
+    "storeSoon": "即将上架 Chrome 应用商店"
+  },
+  "Faq": {
+    "title": "常见问题",
+    "items": {
+      "sites": {
+        "question": "支持哪些网站？",
+        "answer": "任何播放器公开字幕轨道的网站 — 课程平台、文档视频、大多数 HTML5 播放器。如果播放器不通过文本轨道绘制字幕，目前还无法配音。"
+      },
+      "cost": {
+        "question": "真的免费吗？",
+        "answer": "是的。翻译通过 Chrome 内置 API（Chrome 138+）在设备上运行，语音使用系统自带的声音。无账户、无 API 密钥、无限额。"
+      },
+      "voice": {
+        "question": "可以提升语音质量吗？",
+        "answer": "可以 — 安装更高质量的系统语音。在 macOS 上：系统设置 → 辅助功能 → 朗读内容 → 下载你所用语言的高品质语音，然后在弹窗中选择它。"
+      },
+      "privacy": {
+        "question": "隐私如何保障？",
+        "answer": "只要 Chrome 的设备端模型可用，字幕就会在本地翻译。只有当它不可用时，句子才会被发送到在线翻译备用服务。除此之外，没有任何内容离开你的浏览器。"
+      },
+      "youtube": {
+        "question": "这和 YouTube 的自动配音有什么区别？",
+        "answer": "YouTube 的配音只存在于 YouTube。Voxylio 把同样的体验 — 整句翻译、单一声音、压低的原声 — 带到任何有字幕的网站。"
+      }
+    }
+  },
+  "Footer": {
+    "tagline": "在浏览器中实时视频配音。",
+    "madeBy": "开发者",
+    "license": "MIT 许可证",
+    "product": "产品",
+    "resources": "资源",
+    "links": {
+      "features": "功能",
+      "howItWorks": "工作原理",
+      "install": "安装",
+      "faq": "常见问题",
+      "license": "MIT 许可证",
+      "issues": "报告问题",
+      "privacy": "隐私"
+    },
+    "theme": {
+      "label": "主题",
+      "light": "浅色",
+      "system": "跟随系统",
+      "dark": "深色"
+    }
+  },
+  "LocaleSwitcher": {
+    "label": "语言"
+  },
+  "Popup": {
+    "toggle": "启用配音",
+    "statusVideo": "检测到 1 个视频",
+    "statusLines": "42 个句子已就绪",
+    "statusOff": "配音已暂停",
+    "statusTranslation": "翻译：Chrome（本地）",
+    "langLabel": "配音语言",
+    "voiceLabel": "声音",
+    "rateLabel": "语速",
+    "duckLabel": "原声音量",
+    "hint": "播放视频并打开开关：声音会以所选语言跟随字幕。调到 0% 时只听得到配音。"
+  },
+  "Compare": {
+    "title": "为什么基于字幕的配音更胜一筹",
+    "subtitle": "其他工具捕获标签页音频、在云端做语音识别、按小时计费。Voxylio 则直接读取官方字幕。",
+    "them": "音频捕获类工具",
+    "note": "与音频捕获类配音扩展的对比，基于其公开价格与文档。",
+    "rows": {
+      "price": {
+        "label": "价格",
+        "us": "免费，不限时长",
+        "them": "每月 19–129 美元，按小时限额"
+      },
+      "accuracy": {
+        "label": "准确度",
+        "us": "官方字幕文本，逐字精准",
+        "them": "近似的语音识别"
+      },
+      "privacy": {
+        "label": "隐私",
+        "us": "本地翻译 — 没有内容离开你的浏览器",
+        "them": "你的音频被传到他们的服务器"
+      },
+      "sync": {
+        "label": "同步",
+        "us": "锁定视频时钟，快进快退无忧",
+        "them": "相对音频存在固定延迟"
+      },
+      "coverage": {
+        "label": "覆盖范围",
+        "us": "任何带字幕轨道的视频",
+        "them": "任何音频，即使没有字幕"
+      }
+    }
+  },
+  "Privacy": {
+    "title": "隐私政策",
+    "updated": "最后更新：2026 年 8 月 24 日",
+    "intro": "Voxylio 被设计为在你的设备上运行。本页准确说明扩展会对数据做什么 — 以及绝不会做什么。",
+    "p1Title": "Voxylio 处理什么",
+    "p1": "Voxylio 读取你正在观看视频的字幕轨道，以便翻译并朗读。你的设置（语言、声音、语速、音量）保存在浏览器的扩展存储中，由 Chrome 同步到你自己的账户配置。除此之外不读取、不收集、不存储任何内容。",
+    "p2Title": "默认本地运行",
+    "p2": "只要可用，翻译就通过 Chrome 内置翻译 API 在你的设备上进行。在该模式下，任何文本都不会离开你的电脑。语音由系统声音生成，同样在本地。",
+    "p3Title": "在线备用方案",
+    "p3": "当 Chrome 的本地翻译不可用时，Voxylio 可能将单条字幕句子发送到在线翻译服务，以维持配音。这些只是视频公开字幕中的句子 — 绝不是你的个人数据、浏览记录或账户信息。你可以在弹窗中用「严格本地模式」完全禁用它；此后 Voxylio 会等待本地翻译，而不是联网。",
+    "p4Title": "Voxylio 绝不会做的事",
+    "p4": "没有分析、没有跟踪、没有广告、没有账户、没有指纹识别。Voxylio 不收集、出售或分享任何个人数据，也不保留你的观看记录。宽泛的网站访问权限仅用于在你访问的页面上找到视频播放器及其字幕轨道，绝不会用来读取其他任何内容。",
+    "p5Title": "你的数据，由你掌控",
+    "p5": "弹窗中的「重置」按钮会恢复默认设置并删除扩展存储的所有内容。卸载扩展即删除其全部数据。",
+    "contact": "有问题？在 GitHub 上提交 issue，或联系作者。"
+  },
+  "Account": {
+    "title": "我的账户",
+    "signedOutTitle": "登录 Voxylio",
+    "signedOutSubtitle": "只需一个 Google 账户。它仅用于 Pro 计划 — 所有本地功能依旧无需账户。",
+    "signInGoogle": "使用 Google 继续",
+    "plan": "计划",
+    "planFree": "免费",
+    "planPro": "Pro",
+    "statusCanceled": "有效期至 {date}",
+    "upgrade": "升级 Pro — €7.99/月",
+    "manage": "管理订阅",
+    "signOut": "退出登录",
+    "extensionTitle": "扩展",
+    "extensionHint": "关联此浏览器中的扩展，即可在其中解锁 Pro 功能。",
+    "extensionConnect": "关联扩展",
+    "extensionLinking": "关联中…",
+    "extensionLinked": "扩展已关联",
+    "extensionMissing": "此浏览器未安装 Voxylio。",
+    "extensionError": "无法连接扩展。请在已安装 Voxylio 的 Chrome 中打开本页。",
+    "checkoutSuccess": "已收到付款 — 你的 Pro 计划将在几秒内激活。",
+    "upgradeYearly": "或 €59.99/年（−37%）"
+  },
+  "Pricing": {
+    "title": "简单而诚实的价格",
+    "subtitle": "在你设备上运行的一切永久免费，无需账户。Pro 用于支撑需要服务器的功能。",
+    "monthly": "按月",
+    "yearly": "按年",
+    "forever": "永久",
+    "perMonth": "/月",
+    "billedYearly": "按年计费 €59.99",
+    "note": "通过 Polar 安全支付。税费自动处理。随时取消，期末生效。",
+    "free": {
+      "name": "免费",
+      "tagline": "面向所有人，无需账户",
+      "cta": "安装扩展",
+      "features": {
+        "f1": "无限次实时配音，100% 在你的设备上",
+        "f2": "65 种以上配音语言，源语言自动检测",
+        "f3": "翻译字幕直接显示在视频上",
+        "f4": "任何内容都不离开你的设备 — 无需账户",
+        "f5": "开源（MIT）"
+      }
+    },
+    "pro": {
+      "name": "Pro",
+      "tagline": "需要服务器的功能",
+      "cta": "升级 Pro",
+      "badge": "支持本项目",
+      "features": {
+        "f1": "结合上下文的云端翻译，更加忠实（即将推出）",
+        "f2": "新的 Pro 功能上线即享",
+        "f3": "抢先体验新语言与新平台",
+        "f4": "优先支持",
+        "f5": "一个账户，通行所有浏览器"
+      }
+    }
+  }
+}

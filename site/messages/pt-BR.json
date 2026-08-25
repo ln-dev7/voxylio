@@ -1,0 +1,270 @@
+{
+  "Meta": {
+    "title": "Voxylio — Dublagem de vídeo em tempo real no seu navegador",
+    "description": "Uma extensão Chrome que dubla em tempo real qualquer vídeo legendado — em mais de 65 idiomas. Tradução local, voz sincronizada com a reprodução."
+  },
+  "Header": {
+    "features": "Recursos",
+    "howItWorks": "Como funciona",
+    "install": "Instalar",
+    "faq": "FAQ",
+    "github": "GitHub",
+    "openMenu": "Abrir o menu",
+    "closeMenu": "Fechar o menu",
+    "account": "Conta",
+    "pricing": "Preços"
+  },
+  "Hero": {
+    "title": "Assista a qualquer vídeo no <accent>seu idioma</accent>",
+    "subtitle": "O Voxylio é uma extensão Chrome que dubla vídeos legendados em tempo real. Ele reconstrói frases completas a partir das legendas, traduz localmente e fala por cima do vídeo — em sincronia com a reprodução.",
+    "ctaInstall": "Instalar a extensão",
+    "ctaGithub": "Ver no GitHub",
+    "note": "Funciona com vídeos cujo player expõe uma trilha de legendas — a maioria das plataformas de cursos expõe.",
+    "ticks": {
+      "free": "Grátis",
+      "local": "100% local",
+      "noAccount": "Sem conta",
+      "noQuota": "Sem limites"
+    }
+  },
+  "Features": {
+    "title": "Construído como um verdadeiro estúdio de dublagem",
+    "subtitle": "Não é um leitor robótico de legendas. O Voxylio reconstrói as frases, mantém uma voz consistente e adapta o ritmo a quem fala.",
+    "items": {
+      "sentences": {
+        "title": "Dublagem por frases completas",
+        "description": "Os fragmentos de legendas são unidos em frases completas antes da tradução, para que a voz flua com naturalidade e as traduções mantenham o contexto."
+      },
+      "local": {
+        "title": "Tradução local",
+        "description": "Usa primeiro a API de tradução integrada do Chrome — gratuita, privada e utilizável offline — com um recurso online quando não está disponível."
+      },
+      "sync": {
+        "title": "Sempre em sincronia",
+        "description": "A voz segue o relógio do vídeo: pause, avance ou repita e a voz responde na hora. Uma adaptação suave da velocidade mantém as frases longas inteligíveis."
+      },
+      "voices": {
+        "title": "Uma voz consistente",
+        "description": "Uma única voz é escolhida por sessão. Escolha qualquer voz instalada no sistema, incluindo as vozes premium do macOS."
+      },
+      "overlay": {
+        "title": "Controles flutuantes",
+        "description": "Um controlador arrastável na página permite ativar a dublagem, trocar de idioma, ajustar a velocidade e reduzir o áudio original sem sair do vídeo."
+      },
+      "languages": {
+        "title": "Mais de 65 idiomas",
+        "description": "Duble qualquer vídeo legendado em mais de 65 idiomas: francês, espanhol, japonês, árabe, hindi e muito mais. Trocar de idioma no meio do vídeo é instantâneo e nunca mistura vozes."
+      }
+    }
+  },
+  "HowItWorks": {
+    "title": "Como funciona",
+    "steps": {
+      "detect": {
+        "title": "Detecta o vídeo",
+        "description": "A extensão encontra o player na página — mesmo dentro de players com shadow DOM como o Mux — e lê sua trilha de legendas."
+      },
+      "translate": {
+        "title": "Traduz com antecedência",
+        "description": "As próximas frases são traduzidas antes da reprodução com o modelo local do Chrome, com cache por idioma."
+      },
+      "speak": {
+        "title": "Fala por cima do vídeo",
+        "description": "Uma voz sintetizada lê cada frase no momento certo enquanto o áudio original é reduzido automaticamente."
+      }
+    },
+    "tryIt": "Experimente — todos os controles deste popup funcionam de verdade"
+  },
+  "Languages": {
+    "title": "<count></count> idiomas, nos dois sentidos",
+    "subtitle": "O idioma de origem é detectado automaticamente — duble de qualquer idioma para o seu."
+  },
+  "Install": {
+    "title": "Instale em dois minutos",
+    "subtitle": "O Voxylio ainda não está na Chrome Web Store — instale-o como extensão sem compactação.",
+    "steps": {
+      "clone": {
+        "title": "Baixe o código",
+        "description": "Clone o repositório ou baixe como ZIP e guarde a pasta da extensão em um local permanente."
+      },
+      "load": {
+        "title": "Carregue no Chrome",
+        "description": "Abra chrome://extensions, ative o modo do desenvolvedor, clique em «Carregar sem compactação» e escolha a pasta da extensão."
+      },
+      "play": {
+        "title": "Reproduza um vídeo",
+        "description": "Abra um vídeo legendado, deixe rodar alguns segundos e ative o interruptor no popup ou na barra flutuante."
+      }
+    },
+    "cta": "Baixar o Voxylio no GitHub",
+    "storeSoon": "Em breve na Chrome Web Store"
+  },
+  "Faq": {
+    "title": "Perguntas frequentes",
+    "items": {
+      "sites": {
+        "question": "Em quais sites funciona?",
+        "answer": "Em qualquer site cujo player exponha uma trilha de legendas: plataformas de cursos, vídeos de documentação, a maioria dos players HTML5. Se o player desenha as legendas sem trilha de texto, a dublagem ainda não é possível."
+      },
+      "cost": {
+        "question": "É grátis mesmo?",
+        "answer": "Sim. A tradução roda no seu dispositivo com a API integrada do Chrome (Chrome 138+) e a voz usa as vozes do seu sistema. Sem conta, sem chave de API, sem limites."
+      },
+      "voice": {
+        "question": "Posso melhorar a qualidade da voz?",
+        "answer": "Sim — instale vozes de sistema de maior qualidade. No macOS: Ajustes do Sistema → Acessibilidade → Conteúdo falado → baixe uma voz premium para o seu idioma e escolha-a no popup."
+      },
+      "privacy": {
+        "question": "E a privacidade?",
+        "answer": "As legendas são traduzidas localmente sempre que o modelo integrado do Chrome está disponível. Só quando não está é que as frases são enviadas a um serviço de tradução online de reserva. Nada mais sai do seu navegador."
+      },
+      "youtube": {
+        "question": "Qual a diferença para a dublagem automática do YouTube?",
+        "answer": "A dublagem do YouTube só existe no YouTube. O Voxylio traz a mesma experiência — frases completas, uma só voz, áudio original reduzido — para qualquer site com legendas."
+      }
+    }
+  },
+  "Footer": {
+    "tagline": "Dublagem de vídeo em tempo real no seu navegador.",
+    "madeBy": "Criado por",
+    "license": "Licença MIT",
+    "product": "Produto",
+    "resources": "Recursos",
+    "links": {
+      "features": "Recursos",
+      "howItWorks": "Como funciona",
+      "install": "Instalar",
+      "faq": "FAQ",
+      "license": "Licença MIT",
+      "issues": "Reportar um problema",
+      "privacy": "Privacidade"
+    },
+    "theme": {
+      "label": "Tema",
+      "light": "Claro",
+      "system": "Sistema",
+      "dark": "Escuro"
+    }
+  },
+  "LocaleSwitcher": {
+    "label": "Idioma"
+  },
+  "Popup": {
+    "toggle": "Ativar a dublagem",
+    "statusVideo": "1 vídeo detectado",
+    "statusLines": "42 frases prontas",
+    "statusOff": "Dublagem pausada",
+    "statusTranslation": "Tradução: Chrome (local)",
+    "langLabel": "Idioma da dublagem",
+    "voiceLabel": "Voz",
+    "rateLabel": "Velocidade da voz",
+    "duckLabel": "Áudio original",
+    "hint": "Reproduza o vídeo e ative o interruptor: a voz segue as legendas no idioma escolhido. Em 0%, só se ouve a dublagem."
+  },
+  "Compare": {
+    "title": "Por que a dublagem baseada em legendas vence",
+    "subtitle": "Outras ferramentas capturam o áudio da aba, fazem reconhecimento de voz na nuvem e cobram por hora. O Voxylio lê as legendas oficiais.",
+    "them": "Ferramentas de captura de áudio",
+    "note": "Comparação com extensões de dublagem por captura de áudio, segundo seus preços e documentação públicos.",
+    "rows": {
+      "price": {
+        "label": "Preço",
+        "us": "Grátis, horas ilimitadas",
+        "them": "US$ 19–129/mês, cotas por hora"
+      },
+      "accuracy": {
+        "label": "Precisão",
+        "us": "Texto oficial das legendas, palavra por palavra",
+        "them": "Reconhecimento de voz aproximado"
+      },
+      "privacy": {
+        "label": "Privacidade",
+        "us": "Tradução local — nada sai do seu navegador",
+        "them": "Seu áudio é enviado para os servidores deles"
+      },
+      "sync": {
+        "label": "Sincronização",
+        "us": "Ancorada ao relógio do vídeo, à prova de saltos",
+        "them": "Atraso fixo em relação ao áudio"
+      },
+      "coverage": {
+        "label": "Cobertura",
+        "us": "Qualquer vídeo com trilha de legendas",
+        "them": "Qualquer áudio, mesmo sem legendas"
+      }
+    }
+  },
+  "Privacy": {
+    "title": "Política de privacidade",
+    "updated": "Última atualização: 24 de agosto de 2026",
+    "intro": "O Voxylio foi projetado para trabalhar no seu dispositivo. Esta página descreve exatamente o que a extensão faz com os dados — e o que nunca faz.",
+    "p1Title": "O que o Voxylio processa",
+    "p1": "O Voxylio lê a trilha de legendas do vídeo que você está assistindo para traduzi-la e lê-la em voz alta. Suas configurações (idiomas, voz, velocidade, volume) ficam no armazenamento de extensões do navegador, sincronizado pelo Chrome com o seu próprio perfil. Nada mais é lido, coletado ou guardado.",
+    "p2Title": "Local por padrão",
+    "p2": "A tradução roda no seu dispositivo com a API de tradução integrada do Chrome sempre que disponível. Nesse modo, nenhum texto sai do seu computador. A voz é gerada pelas vozes do sistema, também localmente.",
+    "p3Title": "O recurso online",
+    "p3": "Quando o tradutor local do Chrome não está disponível, o Voxylio pode enviar frases individuais das legendas para um serviço de tradução online, para que a dublagem continue. São frases das legendas públicas do vídeo — nunca seus dados pessoais, histórico de navegação ou informações de conta. Você pode desativar isso por completo com o «Modo estritamente local» no popup; o Voxylio passa então a esperar o tradutor local em vez de ir para a internet.",
+    "p4Title": "O que o Voxylio nunca faz",
+    "p4": "Sem analytics, sem rastreamento, sem anúncios, sem conta, sem fingerprinting. O Voxylio não coleta, vende nem compartilha dados pessoais e não guarda histórico do que você assiste. A permissão ampla de acesso aos sites existe apenas para a extensão encontrar o player de vídeo e sua trilha de legendas na página que você visita; nunca é usada para ler mais nada.",
+    "p5Title": "Seus dados, seu controle",
+    "p5": "O botão «Redefinir» no popup restaura as configurações padrão e apaga tudo o que a extensão guardou. Remover a extensão remove todos os seus dados.",
+    "contact": "Dúvidas? Abra uma issue no GitHub ou fale com o autor."
+  },
+  "Account": {
+    "title": "Sua conta",
+    "signedOutTitle": "Entrar no Voxylio",
+    "signedOutSubtitle": "Uma conta Google, nada mais. Ela só serve para o plano Pro — tudo o que é local continua sem conta.",
+    "signInGoogle": "Continuar com o Google",
+    "plan": "Plano",
+    "planFree": "Grátis",
+    "planPro": "Pro",
+    "statusCanceled": "Ativo até {date}",
+    "upgrade": "Assinar o Pro — 7,99 €/mês",
+    "manage": "Gerenciar a assinatura",
+    "signOut": "Sair",
+    "extensionTitle": "Extensão",
+    "extensionHint": "Vincule a extensão deste navegador para desbloquear nela os recursos Pro.",
+    "extensionConnect": "Vincular a extensão",
+    "extensionLinking": "Vinculando…",
+    "extensionLinked": "Extensão vinculada",
+    "extensionMissing": "O Voxylio não está instalado neste navegador.",
+    "extensionError": "Não foi possível contatar a extensão. Abra esta página no Chrome com o Voxylio instalado.",
+    "checkoutSuccess": "Pagamento recebido — seu plano Pro será ativado em segundos.",
+    "upgradeYearly": "ou 59,99 €/ano (−37%)"
+  },
+  "Pricing": {
+    "title": "Um preço simples e honesto",
+    "subtitle": "Tudo o que roda no seu dispositivo é grátis, para sempre, sem conta. O Pro financia os recursos que precisam de um servidor.",
+    "monthly": "Mensal",
+    "yearly": "Anual",
+    "forever": "para sempre",
+    "perMonth": "/mês",
+    "billedYearly": "cobrado 59,99 €/ano",
+    "note": "Pagamento seguro via Polar. Impostos tratados automaticamente. Cancele quando quiser, com efeito no fim do período.",
+    "free": {
+      "name": "Grátis",
+      "tagline": "Para todos, sem conta",
+      "cta": "Instalar a extensão",
+      "features": {
+        "f1": "Dublagem em tempo real ilimitada, 100% no seu dispositivo",
+        "f2": "Mais de 65 idiomas de dublagem, origem autodetectada",
+        "f3": "Legendas traduzidas direto no vídeo",
+        "f4": "Nada sai do seu dispositivo — sem conta",
+        "f5": "Código aberto (MIT)"
+      }
+    },
+    "pro": {
+      "name": "Pro",
+      "tagline": "Os recursos que precisam de um servidor",
+      "cta": "Assinar o Pro",
+      "badge": "Apoie o projeto",
+      "features": {
+        "f1": "Tradução contextual na nuvem, mais fiel (em breve)",
+        "f2": "Novos recursos Pro assim que saírem",
+        "f3": "Acesso antecipado a novos idiomas e plataformas",
+        "f4": "Suporte prioritário",
+        "f5": "Uma só conta em todos os seus navegadores"
+      }
+    }
+  }
+}

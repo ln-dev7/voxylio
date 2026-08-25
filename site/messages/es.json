@@ -76,27 +76,7 @@
     "tryIt": "Pruébalo — todos los controles de este popup funcionan de verdad"
   },
   "Languages": {
-    "list": {
-      "en": "Inglés",
-      "fr": "Francés",
-      "es": "Español",
-      "it": "Italiano",
-      "de": "Alemán",
-      "pt": "Portugués",
-      "ja": "Japonés",
-      "zh": "Chino",
-      "ru": "Ruso",
-      "ar": "Árabe",
-      "hi": "Hindi",
-      "ko": "Coreano",
-      "tr": "Turco",
-      "pl": "Polaco",
-      "uk": "Ucraniano",
-      "nl": "Neerlandés",
-      "vi": "Vietnamita",
-      "sv": "Sueco"
-    },
-    "title": "Más de 65 idiomas, en ambos sentidos",
+    "title": "<count></count> idiomas, en ambos sentidos",
     "subtitle": "El idioma de origen se detecta automáticamente — dobla desde cualquier idioma al tuyo."
   },
   "Install": {
