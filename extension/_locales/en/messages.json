@@ -78,7 +78,7 @@
     "message": "Manage"
   },
   "accountNoteNotLinked": {
-    "message": "Local dubbing stays free, unlimited and account-free."
+    "message": "Sign in to start dubbing — the free plan is enough."
   },
   "accountNoteFree": {
     "message": "Unlock context-aware translation and upcoming Pro features."
@@ -232,5 +232,17 @@
   },
   "proBanner": {
     "message": "✦ Context-aware translation and upcoming features"
+  },
+  "signinTitle": {
+    "message": "Sign in to start dubbing"
+  },
+  "signinText": {
+    "message": "Free with a Google account. Dubbing and your settings stay on your device."
+  },
+  "signinCta": {
+    "message": "Continue with Google"
+  },
+  "signinNote": {
+    "message": "No card required — the free plan is enough."
   }
 }

@@ -78,7 +78,7 @@
     "message": "Gérer"
   },
   "accountNoteNotLinked": {
-    "message": "Le doublage local reste gratuit, illimité et sans compte."
+    "message": "Connecte-toi pour activer le doublage — le plan gratuit suffit."
   },
   "accountNoteFree": {
     "message": "Débloquez la traduction contextuelle et les fonctions Pro à venir."
@@ -232,5 +232,17 @@
   },
   "proBanner": {
     "message": "✦ Traduction contextuelle et fonctions à venir"
+  },
+  "signinTitle": {
+    "message": "Connecte-toi pour activer le doublage"
+  },
+  "signinText": {
+    "message": "Gratuit avec un compte Google. Le doublage et tes réglages restent sur ton appareil."
+  },
+  "signinCta": {
+    "message": "Continuer avec Google"
+  },
+  "signinNote": {
+    "message": "Aucune carte demandée — le plan gratuit suffit."
   }
 }

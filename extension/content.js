@@ -702,6 +702,24 @@
       const host = (location.hostname || "").replace(/^www\./, "").toLowerCase();
       return Array.isArray(settings.disabledSites) && settings.disabledSites.includes(host);
     }
+    let accountLinked = false;
+    function recheckAccount() {
+      try {
+        const p = runtime.sendMessage({ type: "entitlements" });
+        if (p && typeof p.then === "function") {
+          p.then((ent) => {
+            const linked = !!(ent && ent.linked);
+            if (linked !== accountLinked) {
+              accountLinked = linked;
+              refreshAll();
+            }
+          }).catch(() => {
+          });
+        }
+      } catch (e) {
+      }
+    }
+    recheckAccount();
     const controllers = /* @__PURE__ */ new Map();
     let primaryVideo = null;
     function isEligibleVideo(v) {
@@ -741,6 +759,7 @@
     });
     storage.onChanged.addListener((changes, area) => {
       if (area === "local") {
+        if (changes.accountToken || changes.entitlements) recheckAccount();
         if (changes.deeplKey) providerKeys.deepl = changes.deeplKey.newValue || "";
         if (changes.googleKey)
           providerKeys.googlev2 = changes.googleKey.newValue || "";
@@ -1312,7 +1331,7 @@
         ctl.spokenIds.clear();
       }
       ctl.onSettingsChanged = () => {
-        if (settings.enabled && !siteDisabled() && video === primaryVideo) {
+        if (settings.enabled && accountLinked && !siteDisabled() && video === primaryVideo) {
           start();
           applyDucking();
         } else {
@@ -1595,7 +1614,7 @@
       overlayRefs.duck.style.setProperty("--fill", pct + "%");
     }
     function syncOverlay() {
-      const wanted = settings.overlay && controllers.size > 0;
+      const wanted = settings.overlay && accountLinked && controllers.size > 0;
       if (wanted) createOverlay();
       else destroyOverlay();
       renderOverlay();
@@ -1747,6 +1766,7 @@
           version: manifestVersion(),
           page: location.hostname,
           state,
+          signinRequired: !accountLinked,
           speaking: anySpeaking(),
           translationMode,
           lastTranslateError,

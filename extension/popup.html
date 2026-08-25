@@ -332,6 +332,50 @@
       margin: 8px 0 0;
     }
 
+    /* ---- sign-in gate ---- */
+    .signin-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 24px 18px 20px;
+      text-align: center;
+      box-shadow: rgba(0, 0, 0, 0.3) 0px 8px 8px;
+    }
+    .signin-card[hidden] { display: none; }
+    .signin-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0 0 8px;
+      letter-spacing: -0.2px;
+    }
+    .signin-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin: 0 0 16px;
+    }
+    .signin-cta {
+      width: 100%;
+      border: none;
+      border-radius: 9999px;
+      background: var(--accent);
+      color: #121212;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 11px 0;
+      cursor: pointer;
+    }
+    .signin-cta:hover { filter: brightness(1.08); }
+    .signin-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .signin-note {
+      font-size: 11px;
+      color: var(--text-faint);
+      line-height: 1.5;
+      margin: 12px 0 0;
+    }
+    body.signed-out header .switch { display: none; }
+    #mainUi[hidden] { display: none; }
+
     /* ---- footer ---- */
     .hint {
       font-size: 11px;
@@ -358,6 +402,14 @@
     </label>
   </header>
 
+  <div class="signin-card" id="signinCard" hidden>
+    <h2 class="signin-title" data-i18n="signinTitle">Connecte-toi pour activer le doublage</h2>
+    <p class="signin-text" data-i18n="signinText">Gratuit avec un compte Google. Le doublage et tes réglages restent sur ton appareil.</p>
+    <button id="signinBtn" class="signin-cta" data-i18n="signinCta">Continuer avec Google</button>
+    <p class="signin-note" data-i18n="signinNote">Aucune carte demandée — le plan gratuit suffit.</p>
+  </div>
+
+  <main id="mainUi">
   <div class="pro-banner" id="proBanner" hidden>
     <span class="pro-banner-text" data-i18n="proBanner">✦ Traduction contextuelle et fonctions à venir</span>
     <button id="proBannerBtn" class="pro-banner-cta" data-i18n="goPro" title="Débloquer le plan Pro">Passer Pro</button>
@@ -458,6 +510,7 @@
     sous-titres dans la langue choisie. À 0&nbsp;%, seul le doublage
     est audible.
   </p>
+  </main>
 
   <script src="popup.js"></script>
 </body>

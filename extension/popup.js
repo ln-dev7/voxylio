@@ -393,6 +393,11 @@
       );
     }
   }
+  function setSignedOut(out) {
+    document.body.classList.toggle("signed-out", out);
+    $("signinCard").hidden = !out;
+    $("mainUi").hidden = out;
+  }
   async function refreshAccount() {
     const plan = $("accountPlan");
     const btn = $("accountBtn");
@@ -400,13 +405,15 @@
     const banner = $("proBanner");
     try {
       const ent = await chrome.runtime.sendMessage({ type: "entitlements" });
-      banner.hidden = !!(ent && ent.linked && ent.plan === "pro");
-      if (!ent || !ent.linked) {
+      const linked = !!(ent && ent.linked);
+      setSignedOut(!linked);
+      banner.hidden = !linked || ent.plan === "pro";
+      if (!linked) {
         plan.textContent = t("accountNotLinked") || "Non connect\xE9";
         plan.classList.remove("pro");
         btn.textContent = t("signIn") || "Se connecter";
         btn.classList.remove("ghost");
-        note.textContent = t("accountNoteNotLinked") || "Le doublage local reste gratuit, illimit\xE9 et sans compte.";
+        note.textContent = t("accountNoteNotLinked") || "Connecte-toi pour activer le doublage \u2014 le plan gratuit suffit.";
       } else if (ent.plan === "pro") {
         plan.textContent = t("accountPro") || "Pro";
         plan.classList.add("pro");
@@ -421,8 +428,9 @@
         note.textContent = t("accountNoteFree") || "D\xE9bloquez la traduction contextuelle et les fonctions Pro \xE0 venir.";
       }
     } catch (e) {
-      plan.textContent = t("accountFree") || "Gratuit";
-      banner.hidden = false;
+      setSignedOut(true);
+      plan.textContent = t("accountNotLinked") || "Non connect\xE9";
+      banner.hidden = true;
     }
   }
   async function init() {
@@ -501,6 +509,11 @@
     };
     $("accountBtn").addEventListener("click", openAccount);
     $("proBannerBtn").addEventListener("click", openAccount);
+    $("signinBtn").addEventListener("click", openAccount);
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area === "local" && (changes.accountToken || changes.entitlements))
+        refreshAccount();
+    });
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab || !tab.id) return;
     tabId = tab.id;
