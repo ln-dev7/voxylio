@@ -111,7 +111,7 @@ export function SiteFooter() {
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Voxylio · {t("madeBy")}{" "}
             <a
-              href="https://github.com/ln-dev7"
+              href="https://x.com/ln_dev7"
               target="_blank"
               rel="noreferrer"
               className="font-medium text-foreground underline-offset-4 hover:underline"
