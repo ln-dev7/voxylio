@@ -87,6 +87,15 @@ test("toSRT ends each cue at the next start, bounded", () => {
   assert.match(srt, /3\n00:00:30,000 --> 00:00:34,000\nC\n/); // last +4 s
 });
 
+test("voiceVolume and captionSize are clamped with sane fallbacks", () => {
+  assert.deepEqual(validateSettings({ voiceVolume: 250 }), { voiceVolume: 100 });
+  assert.deepEqual(validateSettings({ voiceVolume: 0 }), { voiceVolume: 0 });
+  assert.deepEqual(validateSettings({ voiceVolume: "nope" }), { voiceVolume: 100 });
+  assert.deepEqual(validateSettings({ captionSize: 8 }), { captionSize: 14 });
+  assert.deepEqual(validateSettings({ captionSize: 99 }), { captionSize: 34 });
+  assert.deepEqual(validateSettings({ captionSize: "x" }), { captionSize: 19 });
+});
+
 test("voiceByLang validates as a bounded lang→name map", () => {
   const out = validateSettings({
     voiceByLang: { fr: "Amélie", xx: "Nope", es: 42, de: "Anna" },

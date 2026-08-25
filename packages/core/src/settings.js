@@ -15,6 +15,9 @@ export const DEFAULTS = Object.freeze({
   enabled: false,
   rate: 1.1,
   duck: 12,
+  // Synthesized voice volume (0–100) and on-screen caption size (px).
+  voiceVolume: 100,
+  captionSize: 19,
   voiceName: "",
   // Preferred voice per target language ({ fr: "Amélie", … }); falls
   // back to voiceName, then to the automatic scoring.
@@ -73,6 +76,18 @@ export function validateSettings(patch) {
         break;
       case "duck":
         out.duck = clamp(Math.round(Number(v) || 0), 0, 60);
+        break;
+      case "voiceVolume": {
+        const n = Number(v);
+        out.voiceVolume = clamp(
+          Number.isFinite(n) ? Math.round(n) : DEFAULTS.voiceVolume,
+          0,
+          100,
+        );
+        break;
+      }
+      case "captionSize":
+        out.captionSize = clamp(Math.round(Number(v) || DEFAULTS.captionSize), 14, 34);
         break;
       case "voiceName":
         out.voiceName = typeof v === "string" ? v.slice(0, 200) : "";
