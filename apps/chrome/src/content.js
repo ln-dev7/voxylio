@@ -76,6 +76,49 @@ import {
   }
   recheckAccount();
 
+  // On the Voxylio site, relay the account link from the page to the
+  // background. Unlike externally_connectable messaging this does not
+  // depend on the extension ID the site was built with, so it works for
+  // ANY installed copy — store build and load-unpacked alike.
+  const ACCOUNT_HOSTS = ["voxylio.lndev.me", "localhost", "127.0.0.1"];
+  if (ACCOUNT_HOSTS.includes(location.hostname) && window === window.top) {
+    window.addEventListener("message", (event) => {
+      if (event.source !== window || event.origin !== location.origin) return;
+      const msg = event.data;
+      if (!msg || typeof msg !== "object") return;
+      if (
+        msg.type === "voxylio:link" &&
+        typeof msg.token === "string" &&
+        msg.token.startsWith("vxt_")
+      ) {
+        try {
+          const p = runtime.sendMessage({
+            type: "voxylio:link-relay",
+            token: msg.token,
+          });
+          if (p && typeof p.then === "function") {
+            p.then((resp) => {
+              window.postMessage(
+                {
+                  type: "voxylio:linked",
+                  ok: !!(resp && resp.ok),
+                  plan: (resp && resp.plan) || "free",
+                },
+                location.origin,
+              );
+            }).catch(() => {});
+          }
+        } catch (e) {}
+      }
+      if (msg.type === "voxylio:unlink") {
+        try {
+          const p = runtime.sendMessage({ type: "voxylio:unlink-relay" });
+          if (p && typeof p.catch === "function") p.catch(() => {});
+        } catch (e) {}
+      }
+    });
+  }
+
   const controllers = new Map(); // HTMLVideoElement -> controller
 
   // Only ONE video is dubbed at a time: the "primary" — playing, visible

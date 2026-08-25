@@ -137,6 +137,28 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       .catch(() => sendResponse({ plan: "free", status: "none", linked: false }));
     return true;
   }
+  // Relayed by the content script running on the Voxylio site (the page
+  // itself cannot know the ID of a load-unpacked copy). Internal messages
+  // only ever come from our own extension contexts.
+  if (
+    msg &&
+    msg.type === "voxylio:link-relay" &&
+    typeof msg.token === "string" &&
+    msg.token.startsWith("vxt_")
+  ) {
+    chrome.storage.local.set({ accountToken: msg.token }, () => {
+      refreshEntitlements(true)
+        .then((ent) => sendResponse({ ok: true, plan: ent.plan }))
+        .catch(() => sendResponse({ ok: true, plan: "free" }));
+    });
+    return true;
+  }
+  if (msg && msg.type === "voxylio:unlink-relay") {
+    chrome.storage.local.remove(["accountToken", "entitlements"], () =>
+      sendResponse({ ok: true }),
+    );
+    return true;
+  }
 });
 
 // ── Account / entitlements ──────────────────────────────────────────

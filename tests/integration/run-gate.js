@@ -46,17 +46,25 @@ const http = require('http');
       runtime: {
         id: 'test-extension',
         onMessage: { addListener: () => {} },
-        sendMessage: (msg) => msg && msg.type === 'entitlements'
-          ? Promise.resolve({ plan: 'free', status: 'none', linked: window.__linked })
-          : new Promise((res) => setTimeout(() => res({ ok: true, text: `[fr] ${msg.text}` }), 120)),
+        sendMessage: (msg) => {
+          if (msg && msg.type === 'entitlements')
+            return Promise.resolve({ plan: 'free', status: 'none', linked: window.__linked });
+          if (msg && msg.type === 'voxylio:link-relay') {
+            // Like the real background: store the token (fires the
+            // storage.local change the content script listens to).
+            window.__linked = true;
+            listeners.forEach((l) => l({ accountToken: { newValue: msg.token } }, 'local'));
+            return Promise.resolve({ ok: true, plan: 'free' });
+          }
+          return new Promise((res) => setTimeout(() => res({ ok: true, text: `[fr] ${msg.text}` }), 120));
+        },
       },
     };
-    // The test drives the "link" the way the real background does: a
-    // storage.local change observed by the content script.
-    window.__link = () => {
-      window.__linked = true;
-      listeners.forEach((l) => l({ accountToken: { newValue: 'vxt_test' } }, 'local'));
-    };
+    // The page-side ack the site waits for after posting voxylio:link.
+    window.__ack = null;
+    window.addEventListener('message', (e) => {
+      if (e.data && e.data.type === 'voxylio:linked') window.__ack = e.data;
+    });
     window.__spoken = [];
     Object.defineProperty(window, 'SpeechSynthesisUtterance', { value: function (t) { this.text = t; }, configurable: true });
     const fake = { speaking: false, pending: false, _c: null,
@@ -76,19 +84,22 @@ const http = require('http');
   await page.waitForTimeout(5000);
   const lockedCount = await page.evaluate(() => window.__spoken.length);
 
-  // "Sign-in": the site relayed the token, storage.local changed.
-  await page.evaluate(() => window.__link());
+  // "Sign-in": the page posts the token exactly like the account page
+  // does — through the content-script bridge (any-ID path).
+  await page.evaluate(() => window.postMessage({ type: 'voxylio:link', token: 'vxt_test' }, location.origin));
   await page.waitForTimeout(6000);
-  const result = await page.evaluate(() => ({ spoken: window.__spoken, t: document.getElementById('v').currentTime }));
+  const result = await page.evaluate(() => ({ spoken: window.__spoken, ack: window.__ack, t: document.getElementById('v').currentTime }));
   await browser.close();
   server.close();
 
   console.log('locked phase spoken:', lockedCount);
+  console.log('bridge ack:', JSON.stringify(result.ack));
   console.log('after link spoken:', result.spoken.length, '| video t =', result.t.toFixed(1), 's');
   result.spoken.forEach((s) => console.log('  ' + s));
 
   const fails = [];
   if (lockedCount !== 0) fails.push(`spoke while signed out (${lockedCount} utterances)`);
+  if (!result.ack || result.ack.ok !== true) fails.push('bridge sent no voxylio:linked ack');
   if (result.spoken.length < 1) fails.push('no speech after linking the account');
   if (!result.spoken.every((s) => s.startsWith('[fr]'))) fails.push('untranslated speech after link');
 
