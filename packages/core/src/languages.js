@@ -111,3 +111,31 @@ export const VOICE_PREFIX_ALIASES = {
   tl: ["fil"],
   he: ["iw"],
 };
+
+/** Short native sample sentence per language, used for voice previews.
+ *  Languages without an entry fall back to the English sample. */
+export const PREVIEW_SAMPLES = {
+  fr: "Bonjour ! Voici la voix de votre doublage.",
+  es: "¡Hola! Esta es la voz de tu doblaje.",
+  it: "Ciao! Questa è la voce del tuo doppiaggio.",
+  de: "Hallo! Das ist die Stimme deiner Synchronisation.",
+  pt: "Olá! Esta é a voz da sua dublagem.",
+  en: "Hi! This is your dubbing voice.",
+  nl: "Hallo! Dit is de stem van je nasynchronisatie.",
+  pl: "Cześć! To jest głos twojego dubbingu.",
+  ru: "Привет! Это голос вашего дубляжа.",
+  uk: "Привіт! Це голос вашого дубляжу.",
+  tr: "Merhaba! Bu, dublaj sesiniz.",
+  ar: "مرحباً! هذا صوت الدبلجة.",
+  hi: "नमस्ते! यह आपकी डबिंग की आवाज़ है।",
+  ja: "こんにちは！これがあなたの吹き替えの声です。",
+  ko: "안녕하세요! 이것이 더빙 목소리입니다.",
+  zh: "你好！这是你的配音声音。",
+  vi: "Xin chào! Đây là giọng lồng tiếng của bạn.",
+  th: "สวัสดี! นี่คือเสียงพากย์ของคุณ",
+  id: "Halo! Ini suara sulih suara Anda.",
+  sv: "Hej! Det här är din dubbningsröst.",
+  el: "Γεια σας! Αυτή είναι η φωνή της μεταγλώττισής σας.",
+  ro: "Salut! Aceasta este vocea dublajului tău.",
+  cs: "Ahoj! Tohle je hlas vašeho dabingu.",
+};

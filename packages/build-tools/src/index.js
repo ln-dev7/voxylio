@@ -25,7 +25,7 @@ export async function buildExtension({
 }) {
   mkdirSync(outDir, { recursive: true });
 
-  for (const entry of ["content.js", "background.js", "popup.js", "options.js"]) {
+  for (const entry of ["content.js", "background.js", "popup.js", "app.js"]) {
     if (!existsSync(join(srcDir, entry))) continue;
     await build({
       entryPoints: [join(srcDir, entry)],
@@ -50,7 +50,7 @@ export async function buildExtension({
 
   cpSync(join(staticDir, "popup.html"), join(outDir, "popup.html"));
   cpSync(join(staticDir, "icons"), join(outDir, "icons"), { recursive: true });
-  for (const optional of ["options.html", "_locales"]) {
+  for (const optional of ["app.html", "_locales"]) {
     const src = join(staticDir, optional);
     if (existsSync(src)) cpSync(src, join(outDir, optional), { recursive: true });
   }

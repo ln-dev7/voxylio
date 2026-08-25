@@ -4,7 +4,7 @@
 
 import { LANGUAGE_CODES } from "./languages.js";
 
-export const SETTINGS_VERSION = 2;
+export const SETTINGS_VERSION = 3;
 
 export const TARGET_LANGS = LANGUAGE_CODES;
 export const SOURCE_LANGS = ["auto", ...LANGUAGE_CODES];
@@ -16,6 +16,9 @@ export const DEFAULTS = Object.freeze({
   rate: 1.1,
   duck: 12,
   voiceName: "",
+  // Preferred voice per target language ({ fr: "Amélie", … }); falls
+  // back to voiceName, then to the automatic scoring.
+  voiceByLang: {},
   sourceLang: "auto",
   targetLang: "fr",
   subtitles: false,
@@ -74,6 +77,17 @@ export function validateSettings(patch) {
       case "voiceName":
         out.voiceName = typeof v === "string" ? v.slice(0, 200) : "";
         break;
+      case "voiceByLang": {
+        const map = {};
+        if (v && typeof v === "object" && !Array.isArray(v)) {
+          for (const [lang, name] of Object.entries(v)) {
+            if (TARGET_LANGS.includes(lang) && typeof name === "string" && name)
+              map[lang] = name.slice(0, 200);
+          }
+        }
+        out.voiceByLang = map;
+        break;
+      }
       case "sourceLang":
         out.sourceLang = SOURCE_LANGS.includes(v) ? v : DEFAULTS.sourceLang;
         break;
