@@ -54,6 +54,23 @@
       letter-spacing: -0.2px;
       flex: 1;
     }
+    .gear-btn {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 auto;
+      border: none;
+      border-radius: 50%;
+      background: var(--surface-2);
+      color: var(--accent);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: rgb(18, 18, 18) 0px 1px 0px, rgba(30, 215, 96, 0.45) 0px 0px 0px 1px inset;
+      margin-right: 2px;
+    }
+    .gear-btn:hover { background: var(--accent); color: #121212; }
+    .gear-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .gear-btn svg { display: block; }
 
     /* ---- toggle (pill) ---- */
     .switch {
@@ -448,6 +465,12 @@
       </svg>
     </span>
     <h1>Voxylio</h1>
+    <button id="gearBtn" class="gear-btn" data-i18n-title="appSettings" title="Paramètres" aria-label="Paramètres">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="8" cy="8" r="2.1"/>
+        <path d="M8 1.9v1.8M8 12.3v1.8M1.9 8h1.8M12.3 8h1.8M3.7 3.7L5 5M11 11l1.3 1.3M12.3 3.7L11 5M5 11l-1.3 1.3"/>
+      </svg>
+    </button>
     <label class="switch" aria-label="Activer le doublage">
       <input type="checkbox" id="enabled" />
       <span class="slider-toggle" aria-hidden="true"></span>

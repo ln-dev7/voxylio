@@ -42,7 +42,7 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "default_locale": "fr",
+  "default_locale": "en",
   "options_ui": {
     "page": "app.html",
     "open_in_tab": true
