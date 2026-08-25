@@ -141,5 +141,7 @@
  "ovlListen": "試聽",
  "uiLangLabel": "介面語言",
  "uiLangHint": "套用於彈出視窗、此頁面與懸浮列。配音語言另行選擇。",
- "uiLangAuto": "瀏覽器語言"
+ "uiLangAuto": "瀏覽器語言",
+ "proTransLabel": "Pro 上下文翻譯",
+ "translationPro": "翻譯：Pro（結合上下文）"
 }

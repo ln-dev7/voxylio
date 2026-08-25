@@ -131,6 +131,12 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       .catch((e) => sendResponse({ ok: false, error: String(e) }));
     return true;
   }
+  if (msg && msg.type === "translate-pro") {
+    translatePro(msg)
+      .then((text) => sendResponse({ ok: true, text }))
+      .catch((e) => sendResponse({ ok: false, error: String(e && e.message) }));
+    return true;
+  }
   if (msg && msg.type === "entitlements") {
     refreshEntitlements(!!msg.force)
       .then(sendResponse)
@@ -213,6 +219,55 @@ async function refreshEntitlements(force) {
     if (cached && age < GRACE_MS) return { ...cached, linked: true, offline: true };
     return { plan: "free", status: "offline", linked: true, offline: true };
   }
+}
+
+// ── Pro contextual translation relay ────────────────────────────────
+// The extension never talks to the AI provider: the backend meters the
+// monthly quota and holds the provider keys. When the backend refuses
+// (not Pro, quota out, provider down), a short local cooldown avoids
+// hammering it and the chain falls back to the local engine.
+
+let proBlockedUntil = 0;
+
+async function translatePro(msg) {
+  if (Date.now() < proBlockedUntil) throw new Error("pro cooling down");
+  const { accountToken } = await getLocal({ accountToken: "" });
+  if (!accountToken) {
+    proBlockedUntil = Date.now() + 60_000;
+    throw new Error("not signed in");
+  }
+  const res = await fetch(SITE_ORIGIN + "/api/pro/translate", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accountToken,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      text: String(msg.text || "").slice(0, 1200),
+      before: (msg.before || []).slice(-4).map((s) => String(s).slice(0, 300)),
+      after: (msg.after || []).slice(0, 2).map((s) => String(s).slice(0, 300)),
+      source: msg.source || "auto",
+      target: msg.target,
+    }),
+  });
+  if (res.status === 402 || res.status === 429) {
+    // Quota exhausted: stand down for a while — dubbing continues locally.
+    proBlockedUntil = Date.now() + 10 * 60_000;
+    throw new Error("quota exhausted");
+  }
+  if (res.status === 401 || res.status === 403) {
+    proBlockedUntil = Date.now() + 5 * 60_000;
+    throw new Error("not entitled");
+  }
+  if (res.status === 503) {
+    proBlockedUntil = Date.now() + 5 * 60_000;
+    throw new Error("provider unconfigured");
+  }
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  const data = await res.json();
+  if (!data || typeof data.text !== "string" || !data.text)
+    throw new Error("empty translation");
+  return data.text;
 }
 
 chrome.runtime.onMessageExternal.addListener((msg, sender, sendResponse) => {

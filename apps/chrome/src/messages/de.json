@@ -141,5 +141,7 @@
  "ovlListen": "Hörprobe abspielen",
  "uiLangLabel": "Sprache der Oberfläche",
  "uiLangHint": "Gilt für das Popup, diese Seite und die schwebende Leiste. Die Synchronsprachen wählst du separat.",
- "uiLangAuto": "Browsersprache"
+ "uiLangAuto": "Browsersprache",
+ "proTransLabel": "Kontextbewusste Pro-Übersetzung",
+ "translationPro": "Übersetzung: Pro (kontextbewusst)"
 }

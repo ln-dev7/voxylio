@@ -141,5 +141,7 @@
  "ovlListen": "미리 듣기",
  "uiLangLabel": "인터페이스 언어",
  "uiLangHint": "팝업, 이 페이지, 플로팅 바에 적용됩니다. 더빙 언어는 따로 선택합니다.",
- "uiLangAuto": "브라우저 언어"
+ "uiLangAuto": "브라우저 언어",
+ "proTransLabel": "Pro 문맥 인식 번역",
+ "translationPro": "번역: Pro(문맥 인식)"
 }

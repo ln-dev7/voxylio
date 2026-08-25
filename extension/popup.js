@@ -228,6 +228,9 @@
     subtitles: false,
     overlay: true,
     cloudFallback: true,
+    // Pro contextual translation (opt-in; only effective for Pro accounts —
+    // the background and the backend both enforce it).
+    proTranslation: false,
     autoPause: false,
     keepTerms: true,
     // Preferred paid provider when a key is configured ("auto" = none:
@@ -392,7 +395,9 @@
     statusEnableSubs: "Turn on subtitles (CC) in the player: Voxylio reads them live on this site.",
     uiLangLabel: "Interface language",
     uiLangHint: "Applies to the popup, this page and the floating bar. Dubbing languages are chosen separately.",
-    uiLangAuto: "Browser language"
+    uiLangAuto: "Browser language",
+    proTransLabel: "Pro contextual translation",
+    translationPro: "Translation: Pro (contextual)"
   };
 
   // src/messages/fr.json
@@ -539,7 +544,9 @@
     statusEnableSubs: "Active les sous-titres (CC) dans le lecteur : Voxylio les lit en direct sur ce site.",
     uiLangLabel: "Langue de l'interface",
     uiLangHint: "S'applique au popup, \xE0 cette page et \xE0 la barre flottante. Les langues de doublage se choisissent \xE0 part.",
-    uiLangAuto: "Langue du navigateur"
+    uiLangAuto: "Langue du navigateur",
+    proTransLabel: "Traduction contextuelle Pro",
+    translationPro: "Traduction : Pro (contextuelle)"
   };
 
   // src/messages/es.json
@@ -686,7 +693,9 @@
     ovlListen: "Escuchar una muestra",
     uiLangLabel: "Idioma de la interfaz",
     uiLangHint: "Se aplica al popup, a esta p\xE1gina y a la barra flotante. Los idiomas de doblaje se eligen aparte.",
-    uiLangAuto: "Idioma del navegador"
+    uiLangAuto: "Idioma del navegador",
+    proTransLabel: "Traducci\xF3n contextual Pro",
+    translationPro: "Traducci\xF3n: Pro (contextual)"
   };
 
   // src/messages/de.json
@@ -833,7 +842,9 @@
     ovlListen: "H\xF6rprobe abspielen",
     uiLangLabel: "Sprache der Oberfl\xE4che",
     uiLangHint: "Gilt f\xFCr das Popup, diese Seite und die schwebende Leiste. Die Synchronsprachen w\xE4hlst du separat.",
-    uiLangAuto: "Browsersprache"
+    uiLangAuto: "Browsersprache",
+    proTransLabel: "Kontextbewusste Pro-\xDCbersetzung",
+    translationPro: "\xDCbersetzung: Pro (kontextbewusst)"
   };
 
   // src/messages/it.json
@@ -980,7 +991,9 @@
     ovlListen: "Ascolta un'anteprima",
     uiLangLabel: "Lingua dell'interfaccia",
     uiLangHint: "Vale per il popup, questa pagina e la barra flottante. Le lingue di doppiaggio si scelgono a parte.",
-    uiLangAuto: "Lingua del browser"
+    uiLangAuto: "Lingua del browser",
+    proTransLabel: "Traduzione contestuale Pro",
+    translationPro: "Traduzione: Pro (contestuale)"
   };
 
   // src/messages/ja.json
@@ -1127,7 +1140,9 @@
     ovlListen: "\u30B5\u30F3\u30D7\u30EB\u3092\u518D\u751F",
     uiLangLabel: "\u30A4\u30F3\u30BF\u30FC\u30D5\u30A7\u30FC\u30B9\u306E\u8A00\u8A9E",
     uiLangHint: "\u30DD\u30C3\u30D7\u30A2\u30C3\u30D7\u3001\u3053\u306E\u30DA\u30FC\u30B8\u3001\u30D5\u30ED\u30FC\u30C6\u30A3\u30F3\u30B0\u30D0\u30FC\u306B\u9069\u7528\u3055\u308C\u307E\u3059\u3002\u5439\u304D\u66FF\u3048\u8A00\u8A9E\u306F\u5225\u306B\u9078\u3073\u307E\u3059\u3002",
-    uiLangAuto: "\u30D6\u30E9\u30A6\u30B6\u306E\u8A00\u8A9E"
+    uiLangAuto: "\u30D6\u30E9\u30A6\u30B6\u306E\u8A00\u8A9E",
+    proTransLabel: "Pro \u6587\u8108\u5BFE\u5FDC\u7FFB\u8A33",
+    translationPro: "\u7FFB\u8A33\uFF1APro\uFF08\u6587\u8108\u5BFE\u5FDC\uFF09"
   };
 
   // src/messages/ko.json
@@ -1274,7 +1289,9 @@
     ovlListen: "\uBBF8\uB9AC \uB4E3\uAE30",
     uiLangLabel: "\uC778\uD130\uD398\uC774\uC2A4 \uC5B8\uC5B4",
     uiLangHint: "\uD31D\uC5C5, \uC774 \uD398\uC774\uC9C0, \uD50C\uB85C\uD305 \uBC14\uC5D0 \uC801\uC6A9\uB429\uB2C8\uB2E4. \uB354\uBE59 \uC5B8\uC5B4\uB294 \uB530\uB85C \uC120\uD0DD\uD569\uB2C8\uB2E4.",
-    uiLangAuto: "\uBE0C\uB77C\uC6B0\uC800 \uC5B8\uC5B4"
+    uiLangAuto: "\uBE0C\uB77C\uC6B0\uC800 \uC5B8\uC5B4",
+    proTransLabel: "Pro \uBB38\uB9E5 \uC778\uC2DD \uBC88\uC5ED",
+    translationPro: "\uBC88\uC5ED: Pro(\uBB38\uB9E5 \uC778\uC2DD)"
   };
 
   // src/messages/zh-CN.json
@@ -1421,7 +1438,9 @@
     ovlListen: "\u8BD5\u542C",
     uiLangLabel: "\u754C\u9762\u8BED\u8A00",
     uiLangHint: "\u4F5C\u7528\u4E8E\u5F39\u7A97\u3001\u672C\u9875\u9762\u548C\u60AC\u6D6E\u6761\u3002\u914D\u97F3\u8BED\u8A00\u53E6\u884C\u9009\u62E9\u3002",
-    uiLangAuto: "\u6D4F\u89C8\u5668\u8BED\u8A00"
+    uiLangAuto: "\u6D4F\u89C8\u5668\u8BED\u8A00",
+    proTransLabel: "Pro \u4E0A\u4E0B\u6587\u7FFB\u8BD1",
+    translationPro: "\u7FFB\u8BD1\uFF1APro\uFF08\u7ED3\u5408\u4E0A\u4E0B\u6587\uFF09"
   };
 
   // src/messages/zh-TW.json
@@ -1568,7 +1587,9 @@
     ovlListen: "\u8A66\u807D",
     uiLangLabel: "\u4ECB\u9762\u8A9E\u8A00",
     uiLangHint: "\u5957\u7528\u65BC\u5F48\u51FA\u8996\u7A97\u3001\u6B64\u9801\u9762\u8207\u61F8\u6D6E\u5217\u3002\u914D\u97F3\u8A9E\u8A00\u53E6\u884C\u9078\u64C7\u3002",
-    uiLangAuto: "\u700F\u89BD\u5668\u8A9E\u8A00"
+    uiLangAuto: "\u700F\u89BD\u5668\u8A9E\u8A00",
+    proTransLabel: "Pro \u4E0A\u4E0B\u6587\u7FFB\u8B6F",
+    translationPro: "\u7FFB\u8B6F\uFF1APro\uFF08\u7D50\u5408\u4E0A\u4E0B\u6587\uFF09"
   };
 
   // src/messages/pt-BR.json
@@ -1715,7 +1736,9 @@
     ovlListen: "Ouvir uma amostra",
     uiLangLabel: "Idioma da interface",
     uiLangHint: "Vale para o popup, esta p\xE1gina e a barra flutuante. Os idiomas de dublagem s\xE3o escolhidos \xE0 parte.",
-    uiLangAuto: "Idioma do navegador"
+    uiLangAuto: "Idioma do navegador",
+    proTransLabel: "Tradu\xE7\xE3o contextual Pro",
+    translationPro: "Tradu\xE7\xE3o: Pro (contextual)"
   };
 
   // src/i18n.js
@@ -1808,6 +1831,7 @@
     $("subtitles").checked = settings2.subtitles;
     $("autoPause").checked = settings2.autoPause;
     $("localOnly").checked = !settings2.cloudFallback;
+    $("proTrans").checked = !!settings2.proTranslation;
     $("rate").value = settings2.rate;
     $("rateVal").textContent = "\xD7" + Number(settings2.rate).toFixed(2);
     $("duck").value = settings2.duck;
@@ -1827,6 +1851,8 @@
     return span;
   }
   function translationLine(resp) {
+    if (resp.translationMode === "pro")
+      return t("translationPro") || "Traduction : Pro (contextuelle)";
     if (resp.translationMode === "local")
       return t("translationLocal") || "Traduction : locale (Chrome)";
     if (resp.translationMode === "cloud")
@@ -1938,6 +1964,7 @@
       email.textContent = linked && ent.email || "";
       email.hidden = !(linked && ent.email);
       signout.hidden = !linked;
+      $("proTransRow").hidden = !(linked && ent.plan === "pro");
       if (!linked) {
         plan.textContent = t("accountNotLinked") || "Non connect\xE9";
         plan.classList.remove("pro");
@@ -1977,6 +2004,7 @@
     $("sourceLang").addEventListener("change", (e) => save({ sourceLang: e.target.value }));
     $("autoPause").addEventListener("change", (e) => save({ autoPause: e.target.checked }));
     $("localOnly").addEventListener("change", (e) => save({ cloudFallback: !e.target.checked }));
+    $("proTrans").addEventListener("change", (e) => save({ proTranslation: e.target.checked }));
     $("preview").addEventListener("click", () => {
       const s = window.speechSynthesis;
       if (!s) return;

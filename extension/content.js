@@ -447,6 +447,9 @@
     subtitles: false,
     overlay: true,
     cloudFallback: true,
+    // Pro contextual translation (opt-in; only effective for Pro accounts —
+    // the background and the backend both enforce it).
+    proTranslation: false,
     autoPause: false,
     keepTerms: true,
     // Preferred paid provider when a key is configured ("auto" = none:
@@ -502,7 +505,7 @@
     function recordSuccess(id, source, target) {
       pairState.delete(stateKey(id, source, target));
     }
-    async function translate(text, source, target) {
+    async function translate(text, source, target, opts2) {
       const errors = [];
       for (const p of providers) {
         if (inCooldown(p.id, source, target)) {
@@ -522,7 +525,7 @@
           continue;
         }
         try {
-          const out = await withTimeout(translator.translate(text), attemptTimeoutMs, TIMEOUT);
+          const out = await withTimeout(translator.translate(text, opts2), attemptTimeoutMs, TIMEOUT);
           if (out === TIMEOUT) throw new Error("attempt timed out");
           if (typeof out !== "string" || !out) throw new Error("empty translation");
           recordSuccess(p.id, source, target);
@@ -778,6 +781,30 @@
     };
   }
 
+  // ../../packages/webext/src/providers/pro.js
+  function createProProvider() {
+    const translatorFor = (source, target) => ({
+      translate: async (text, opts) => {
+        const ctx = opts && opts.context || {};
+        const resp = await runtime.sendMessage({
+          type: "translate-pro",
+          text,
+          before: Array.isArray(ctx.before) ? ctx.before.slice(-4) : [],
+          after: Array.isArray(ctx.after) ? ctx.after.slice(0, 2) : [],
+          source: source || "auto",
+          target
+        });
+        if (resp && resp.ok) return resp.text;
+        throw new Error(resp && resp.error || "pro translate failed");
+      }
+    });
+    return {
+      id: "pro",
+      kind: "pro",
+      ready: (source, target) => Promise.resolve(translatorFor(source, target))
+    };
+  }
+
   // ../../packages/webext/src/index.js
   var api = typeof browser !== "undefined" && browser?.runtime ? browser : typeof chrome !== "undefined" ? chrome : void 0;
   if (!api) {
@@ -956,7 +983,9 @@
     statusEnableSubs: "Turn on subtitles (CC) in the player: Voxylio reads them live on this site.",
     uiLangLabel: "Interface language",
     uiLangHint: "Applies to the popup, this page and the floating bar. Dubbing languages are chosen separately.",
-    uiLangAuto: "Browser language"
+    uiLangAuto: "Browser language",
+    proTransLabel: "Pro contextual translation",
+    translationPro: "Translation: Pro (contextual)"
   };
 
   // src/messages/fr.json
@@ -1103,7 +1132,9 @@
     statusEnableSubs: "Active les sous-titres (CC) dans le lecteur : Voxylio les lit en direct sur ce site.",
     uiLangLabel: "Langue de l'interface",
     uiLangHint: "S'applique au popup, \xE0 cette page et \xE0 la barre flottante. Les langues de doublage se choisissent \xE0 part.",
-    uiLangAuto: "Langue du navigateur"
+    uiLangAuto: "Langue du navigateur",
+    proTransLabel: "Traduction contextuelle Pro",
+    translationPro: "Traduction : Pro (contextuelle)"
   };
 
   // src/messages/es.json
@@ -1250,7 +1281,9 @@
     ovlListen: "Escuchar una muestra",
     uiLangLabel: "Idioma de la interfaz",
     uiLangHint: "Se aplica al popup, a esta p\xE1gina y a la barra flotante. Los idiomas de doblaje se eligen aparte.",
-    uiLangAuto: "Idioma del navegador"
+    uiLangAuto: "Idioma del navegador",
+    proTransLabel: "Traducci\xF3n contextual Pro",
+    translationPro: "Traducci\xF3n: Pro (contextual)"
   };
 
   // src/messages/de.json
@@ -1397,7 +1430,9 @@
     ovlListen: "H\xF6rprobe abspielen",
     uiLangLabel: "Sprache der Oberfl\xE4che",
     uiLangHint: "Gilt f\xFCr das Popup, diese Seite und die schwebende Leiste. Die Synchronsprachen w\xE4hlst du separat.",
-    uiLangAuto: "Browsersprache"
+    uiLangAuto: "Browsersprache",
+    proTransLabel: "Kontextbewusste Pro-\xDCbersetzung",
+    translationPro: "\xDCbersetzung: Pro (kontextbewusst)"
   };
 
   // src/messages/it.json
@@ -1544,7 +1579,9 @@
     ovlListen: "Ascolta un'anteprima",
     uiLangLabel: "Lingua dell'interfaccia",
     uiLangHint: "Vale per il popup, questa pagina e la barra flottante. Le lingue di doppiaggio si scelgono a parte.",
-    uiLangAuto: "Lingua del browser"
+    uiLangAuto: "Lingua del browser",
+    proTransLabel: "Traduzione contestuale Pro",
+    translationPro: "Traduzione: Pro (contestuale)"
   };
 
   // src/messages/ja.json
@@ -1691,7 +1728,9 @@
     ovlListen: "\u30B5\u30F3\u30D7\u30EB\u3092\u518D\u751F",
     uiLangLabel: "\u30A4\u30F3\u30BF\u30FC\u30D5\u30A7\u30FC\u30B9\u306E\u8A00\u8A9E",
     uiLangHint: "\u30DD\u30C3\u30D7\u30A2\u30C3\u30D7\u3001\u3053\u306E\u30DA\u30FC\u30B8\u3001\u30D5\u30ED\u30FC\u30C6\u30A3\u30F3\u30B0\u30D0\u30FC\u306B\u9069\u7528\u3055\u308C\u307E\u3059\u3002\u5439\u304D\u66FF\u3048\u8A00\u8A9E\u306F\u5225\u306B\u9078\u3073\u307E\u3059\u3002",
-    uiLangAuto: "\u30D6\u30E9\u30A6\u30B6\u306E\u8A00\u8A9E"
+    uiLangAuto: "\u30D6\u30E9\u30A6\u30B6\u306E\u8A00\u8A9E",
+    proTransLabel: "Pro \u6587\u8108\u5BFE\u5FDC\u7FFB\u8A33",
+    translationPro: "\u7FFB\u8A33\uFF1APro\uFF08\u6587\u8108\u5BFE\u5FDC\uFF09"
   };
 
   // src/messages/ko.json
@@ -1838,7 +1877,9 @@
     ovlListen: "\uBBF8\uB9AC \uB4E3\uAE30",
     uiLangLabel: "\uC778\uD130\uD398\uC774\uC2A4 \uC5B8\uC5B4",
     uiLangHint: "\uD31D\uC5C5, \uC774 \uD398\uC774\uC9C0, \uD50C\uB85C\uD305 \uBC14\uC5D0 \uC801\uC6A9\uB429\uB2C8\uB2E4. \uB354\uBE59 \uC5B8\uC5B4\uB294 \uB530\uB85C \uC120\uD0DD\uD569\uB2C8\uB2E4.",
-    uiLangAuto: "\uBE0C\uB77C\uC6B0\uC800 \uC5B8\uC5B4"
+    uiLangAuto: "\uBE0C\uB77C\uC6B0\uC800 \uC5B8\uC5B4",
+    proTransLabel: "Pro \uBB38\uB9E5 \uC778\uC2DD \uBC88\uC5ED",
+    translationPro: "\uBC88\uC5ED: Pro(\uBB38\uB9E5 \uC778\uC2DD)"
   };
 
   // src/messages/zh-CN.json
@@ -1985,7 +2026,9 @@
     ovlListen: "\u8BD5\u542C",
     uiLangLabel: "\u754C\u9762\u8BED\u8A00",
     uiLangHint: "\u4F5C\u7528\u4E8E\u5F39\u7A97\u3001\u672C\u9875\u9762\u548C\u60AC\u6D6E\u6761\u3002\u914D\u97F3\u8BED\u8A00\u53E6\u884C\u9009\u62E9\u3002",
-    uiLangAuto: "\u6D4F\u89C8\u5668\u8BED\u8A00"
+    uiLangAuto: "\u6D4F\u89C8\u5668\u8BED\u8A00",
+    proTransLabel: "Pro \u4E0A\u4E0B\u6587\u7FFB\u8BD1",
+    translationPro: "\u7FFB\u8BD1\uFF1APro\uFF08\u7ED3\u5408\u4E0A\u4E0B\u6587\uFF09"
   };
 
   // src/messages/zh-TW.json
@@ -2132,7 +2175,9 @@
     ovlListen: "\u8A66\u807D",
     uiLangLabel: "\u4ECB\u9762\u8A9E\u8A00",
     uiLangHint: "\u5957\u7528\u65BC\u5F48\u51FA\u8996\u7A97\u3001\u6B64\u9801\u9762\u8207\u61F8\u6D6E\u5217\u3002\u914D\u97F3\u8A9E\u8A00\u53E6\u884C\u9078\u64C7\u3002",
-    uiLangAuto: "\u700F\u89BD\u5668\u8A9E\u8A00"
+    uiLangAuto: "\u700F\u89BD\u5668\u8A9E\u8A00",
+    proTransLabel: "Pro \u4E0A\u4E0B\u6587\u7FFB\u8B6F",
+    translationPro: "\u7FFB\u8B6F\uFF1APro\uFF08\u7D50\u5408\u4E0A\u4E0B\u6587\uFF09"
   };
 
   // src/messages/pt-BR.json
@@ -2279,7 +2324,9 @@
     ovlListen: "Ouvir uma amostra",
     uiLangLabel: "Idioma da interface",
     uiLangHint: "Vale para o popup, esta p\xE1gina e a barra flutuante. Os idiomas de dublagem s\xE3o escolhidos \xE0 parte.",
-    uiLangAuto: "Idioma do navegador"
+    uiLangAuto: "Idioma do navegador",
+    proTransLabel: "Tradu\xE7\xE3o contextual Pro",
+    translationPro: "Tradu\xE7\xE3o: Pro (contextual)"
   };
 
   // src/i18n.js
@@ -2489,7 +2536,8 @@
       if (changes.targetLang || changes.sourceLang) {
         for (const c of controllers.values()) c.flushSpeech();
       }
-      if (changes.provider || changes.cloudFallback) rebuildChain();
+      if (changes.provider || changes.cloudFallback || changes.proTranslation)
+        rebuildChain();
       if (changes.uiLang) {
         uiT = null;
         destroyOverlay();
@@ -2511,9 +2559,12 @@
       }
     });
     const providerKeys = { deepl: "", googlev2: "" };
+    const proProvider = createProProvider();
     let chain = createTranslatorChain([builtinProvider]);
     function rebuildChain() {
-      const list = [builtinProvider];
+      const list = [];
+      if (settings.proTranslation) list.push(proProvider);
+      list.push(builtinProvider);
       if (settings.cloudFallback) {
         if (settings.provider === "deepl" && providerKeys.deepl)
           list.push(createDeeplProvider(() => providerKeys.deepl));
@@ -2532,10 +2583,10 @@
       });
     } catch (e) {
     }
-    async function translateOnce(text, source, target) {
+    async function translateOnce(text, source, target, opts) {
       try {
-        const res = await chain.translate(text, source, target);
-        translationMode = res.kind === "local" ? "local" : "cloud";
+        const res = await chain.translate(text, source, target, opts);
+        translationMode = res.kind === "pro" ? "pro" : res.kind === "local" ? "local" : "cloud";
         lastTranslateError = "";
         return res.text;
       } catch (e) {
@@ -2544,22 +2595,23 @@
         throw e;
       }
     }
-    function translate(text, source) {
+    function translate(text, source, context) {
       const target = settings.targetLang;
       const key = source + "->" + target + "::" + text;
       if (cache.has(key)) return cache.get(key);
+      const opts = context ? { context } : void 0;
       const p = (async () => {
         pendingCount++;
         try {
           if (settings.keepTerms) {
             const { protectedText, found } = protectTerms(text);
             if (found.length > 0) {
-              const raw = await translateOnce(protectedText, source, target);
+              const raw = await translateOnce(protectedText, source, target, opts);
               const { restored, ok } = restoreTerms(raw, found);
               if (ok) return restored;
             }
           }
-          return await translateOnce(text, source, target);
+          return await translateOnce(text, source, target, opts);
         } finally {
           pendingCount--;
         }
@@ -2756,6 +2808,14 @@
           ctl.lastDomCue.end = Math.max(ctl.lastDomCue.start + 0.8, at);
         }
       };
+      function groupContext(groupId) {
+        const idx = ctl.groups.findIndex((g) => g.id === groupId);
+        if (idx < 0) return void 0;
+        return {
+          before: ctl.groups.slice(Math.max(0, idx - 3), idx).map((g) => g.text),
+          after: ctl.groups.slice(idx + 1, idx + 3).map((g) => g.text)
+        };
+      }
       function rebuildGroups() {
         if (ctl.cues.length === ctl.lastCueCount) return;
         ctl.lastCueCount = ctl.cues.length;
@@ -2874,7 +2934,7 @@
         for (const g of upcoming) {
           const key = source + "->" + settings.targetLang + "::" + g.text;
           if (!cache.has(key)) {
-            translate(g.text, source).catch(() => {
+            translate(g.text, source, groupContext(g.id)).catch(() => {
             });
             launched++;
             if (launched >= 8 || pendingCount > 10) break;
@@ -2954,7 +3014,7 @@
         if (!entry || entry.version !== group.version) {
           entry = {
             version: group.version,
-            promise: translate(group.text, source)
+            promise: translate(group.text, source, groupContext(group.id))
           };
           ctl.inFlight.set(group.id, entry);
         }

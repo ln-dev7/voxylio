@@ -141,5 +141,7 @@
  "statusEnableSubs": "Active les sous-titres (CC) dans le lecteur : Voxylio les lit en direct sur ce site.",
  "uiLangLabel": "Langue de l'interface",
  "uiLangHint": "S'applique au popup, à cette page et à la barre flottante. Les langues de doublage se choisissent à part.",
- "uiLangAuto": "Langue du navigateur"
+ "uiLangAuto": "Langue du navigateur",
+ "proTransLabel": "Traduction contextuelle Pro",
+ "translationPro": "Traduction : Pro (contextuelle)"
 }

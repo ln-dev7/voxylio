@@ -141,5 +141,7 @@
  "statusEnableSubs": "Turn on subtitles (CC) in the player: Voxylio reads them live on this site.",
  "uiLangLabel": "Interface language",
  "uiLangHint": "Applies to the popup, this page and the floating bar. Dubbing languages are chosen separately.",
- "uiLangAuto": "Browser language"
+ "uiLangAuto": "Browser language",
+ "proTransLabel": "Pro contextual translation",
+ "translationPro": "Translation: Pro (contextual)"
 }

@@ -38,6 +38,7 @@ import {
   createGtxProvider,
   createDeeplProvider,
   createGoogleV2Provider,
+  createProProvider,
 } from "@voxylio/webext";
 import { makeT, resolveUiLang } from "./i18n.js";
 
@@ -251,7 +252,8 @@ import { makeT, resolveUiLang } from "./i18n.js";
     if (changes.targetLang || changes.sourceLang) {
       for (const c of controllers.values()) c.flushSpeech();
     }
-    if (changes.provider || changes.cloudFallback) rebuildChain();
+    if (changes.provider || changes.cloudFallback || changes.proTranslation)
+      rebuildChain();
     if (changes.uiLang) {
       // Rebuild the floating bar in the new language.
       uiT = null;
@@ -285,10 +287,16 @@ import { makeT, resolveUiLang } from "./i18n.js";
     },
   });
   const providerKeys = { deepl: "", googlev2: "" };
+  const proProvider = createProProvider();
   let chain = createTranslatorChain([builtinProvider]);
 
   function rebuildChain() {
-    const list = [builtinProvider];
+    const list = [];
+    // Pro contextual translation first (opt-in): background + backend
+    // enforce the plan and the quota; any refusal falls through to the
+    // local engine below without interrupting dubbing.
+    if (settings.proTranslation) list.push(proProvider);
+    list.push(builtinProvider);
     if (settings.cloudFallback) {
       if (settings.provider === "deepl" && providerKeys.deepl)
         list.push(createDeeplProvider(() => providerKeys.deepl));
@@ -310,10 +318,11 @@ import { makeT, resolveUiLang } from "./i18n.js";
   }
 
   // One translation attempt (optionally with protected technical terms).
-  async function translateOnce(text, source, target) {
+  async function translateOnce(text, source, target, opts) {
     try {
-      const res = await chain.translate(text, source, target);
-      translationMode = res.kind === "local" ? "local" : "cloud";
+      const res = await chain.translate(text, source, target, opts);
+      translationMode =
+        res.kind === "pro" ? "pro" : res.kind === "local" ? "local" : "cloud";
       lastTranslateError = "";
       return res.text;
     } catch (e) {
@@ -325,13 +334,14 @@ import { makeT, resolveUiLang } from "./i18n.js";
     }
   }
 
-  function translate(text, source) {
+  function translate(text, source, context) {
     // The language pair is frozen when the request is made: the whole
     // pipeline (translator, fallback, cache key) uses these values, even if
     // the user switches languages mid-translation.
     const target = settings.targetLang;
     const key = source + "->" + target + "::" + text;
     if (cache.has(key)) return cache.get(key);
+    const opts = context ? { context } : undefined;
     const p = (async () => {
       pendingCount++;
       try {
@@ -340,12 +350,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
         if (settings.keepTerms) {
           const { protectedText, found } = protectTerms(text);
           if (found.length > 0) {
-            const raw = await translateOnce(protectedText, source, target);
+            const raw = await translateOnce(protectedText, source, target, opts);
             const { restored, ok } = restoreTerms(raw, found);
             if (ok) return restored;
           }
         }
-        return await translateOnce(text, source, target);
+        return await translateOnce(text, source, target, opts);
       } finally {
         pendingCount--;
       }
@@ -579,6 +589,17 @@ import { makeT, resolveUiLang } from "./i18n.js";
       }
     };
 
+    // Neighbouring sentences for context-aware translation (Pro): what
+    // was said just before and what comes next. Pure read, tiny window.
+    function groupContext(groupId) {
+      const idx = ctl.groups.findIndex((g) => g.id === groupId);
+      if (idx < 0) return undefined;
+      return {
+        before: ctl.groups.slice(Math.max(0, idx - 3), idx).map((g) => g.text),
+        after: ctl.groups.slice(idx + 1, idx + 3).map((g) => g.text),
+      };
+    }
+
     // Sentence reconstruction lives in @voxylio/core (buildGroups).
     function rebuildGroups() {
       if (ctl.cues.length === ctl.lastCueCount) return;
@@ -736,7 +757,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       for (const g of upcoming) {
         const key = source + "->" + settings.targetLang + "::" + g.text;
         if (!cache.has(key)) {
-          translate(g.text, source).catch(() => {});
+          translate(g.text, source, groupContext(g.id)).catch(() => {});
           launched++;
           if (launched >= 8 || pendingCount > 10) break;
         }
@@ -839,7 +860,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       if (!entry || entry.version !== group.version) {
         entry = {
           version: group.version,
-          promise: translate(group.text, source),
+          promise: translate(group.text, source, groupContext(group.id)),
         };
         ctl.inFlight.set(group.id, entry);
       }

@@ -141,5 +141,7 @@
  "ovlListen": "サンプルを再生",
  "uiLangLabel": "インターフェースの言語",
  "uiLangHint": "ポップアップ、このページ、フローティングバーに適用されます。吹き替え言語は別に選びます。",
- "uiLangAuto": "ブラウザの言語"
+ "uiLangAuto": "ブラウザの言語",
+ "proTransLabel": "Pro 文脈対応翻訳",
+ "translationPro": "翻訳：Pro（文脈対応）"
 }

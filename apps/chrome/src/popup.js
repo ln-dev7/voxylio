@@ -66,6 +66,7 @@ function render(settings) {
   $("subtitles").checked = settings.subtitles;
   $("autoPause").checked = settings.autoPause;
   $("localOnly").checked = !settings.cloudFallback;
+  $("proTrans").checked = !!settings.proTranslation;
   $("rate").value = settings.rate;
   $("rateVal").textContent = "×" + Number(settings.rate).toFixed(2);
   $("duck").value = settings.duck;
@@ -90,6 +91,8 @@ function line(text, cls) {
 }
 
 function translationLine(resp) {
+  if (resp.translationMode === "pro")
+    return t("translationPro") || "Traduction : Pro (contextuelle)";
   if (resp.translationMode === "local")
     return t("translationLocal") || "Traduction : locale (Chrome)";
   if (resp.translationMode === "cloud")
@@ -218,6 +221,8 @@ async function refreshAccount() {
     email.textContent = (linked && ent.email) || "";
     email.hidden = !(linked && ent.email);
     signout.hidden = !linked;
+    // The Pro contextual-translation toggle only exists for Pro users.
+    $("proTransRow").hidden = !(linked && ent.plan === "pro");
     if (!linked) {
       plan.textContent = t("accountNotLinked") || "Non connecté";
       plan.classList.remove("pro");
@@ -269,6 +274,7 @@ async function init() {
   $("sourceLang").addEventListener("change", (e) => save({ sourceLang: e.target.value }));
   $("autoPause").addEventListener("change", (e) => save({ autoPause: e.target.checked }));
   $("localOnly").addEventListener("change", (e) => save({ cloudFallback: !e.target.checked }));
+  $("proTrans").addEventListener("change", (e) => save({ proTranslation: e.target.checked }));
 
   // Voice preview — spoken from the popup itself (its click counts as
   // the user activation speech synthesis requires)

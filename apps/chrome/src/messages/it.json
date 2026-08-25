@@ -141,5 +141,7 @@
  "ovlListen": "Ascolta un'anteprima",
  "uiLangLabel": "Lingua dell'interfaccia",
  "uiLangHint": "Vale per il popup, questa pagina e la barra flottante. Le lingue di doppiaggio si scelgono a parte.",
- "uiLangAuto": "Lingua del browser"
+ "uiLangAuto": "Lingua del browser",
+ "proTransLabel": "Traduzione contestuale Pro",
+ "translationPro": "Traduzione: Pro (contestuale)"
 }
