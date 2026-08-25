@@ -7,19 +7,19 @@
     },
     {
       "input": "Welcome",
-      "expected": "1uju8e8"
+      "expected": "okelqr"
     },
     {
       "input": "Welcome to the accelerated coding course.",
-      "expected": "185g5qc"
+      "expected": "1jf1yvn"
     },
     {
       "input": "Nous allons faire cela en utilisant un playground.",
-      "expected": "hgh6p2"
+      "expected": "8s0e2v"
     },
     {
       "input": "É bom té-lo aqui! ♪",
-      "expected": "hcgpcz"
+      "expected": "1brw8i4"
     }
   ],
   "wordOverlap": [
@@ -161,18 +161,18 @@
           "end": 4.2,
           "text": "Welcome to the accelerated coding course.",
           "id": "g40",
-          "version": "185g5qc",
+          "version": "1jf1yvn",
           "final": true,
-          "key": "g40:185g5qc"
+          "key": "g40:1jf1yvn"
         },
         {
           "start": 4.6,
           "end": 6.6,
           "text": "Now we will explore the playground together in depth",
           "id": "g460",
-          "version": "1fx99ds",
+          "version": "1bzcz6o",
           "final": false,
-          "key": "g460:1fx99ds"
+          "key": "g460:1bzcz6o"
         }
       ]
     },
@@ -196,18 +196,18 @@
           "end": 1,
           "text": "First part",
           "id": "g0",
-          "version": "1eve6x4",
+          "version": "1hpte9a",
           "final": true,
-          "key": "g0:1eve6x4"
+          "key": "g0:1hpte9a"
         },
         {
           "start": 3.5,
           "end": 4.5,
           "text": "after a long silence",
           "id": "g350",
-          "version": "1093dfb",
+          "version": "tkzpu7",
           "final": false,
-          "key": "g350:1093dfb"
+          "key": "g350:tkzpu7"
         }
       ]
     },
@@ -231,9 +231,9 @@
           "end": 3,
           "text": "we will explore the playground",
           "id": "g0",
-          "version": "drask4",
+          "version": "44w5n0",
           "final": false,
-          "key": "g0:drask4"
+          "key": "g0:44w5n0"
         }
       ]
     },
@@ -257,9 +257,9 @@
           "end": 3,
           "text": "- Hello everyone the API (introduced in v2) is here.",
           "id": "g0",
-          "version": "1sqo9ek",
+          "version": "1pqpgk9",
           "final": false,
-          "key": "g0:1sqo9ek"
+          "key": "g0:1pqpgk9"
         }
       ]
     }

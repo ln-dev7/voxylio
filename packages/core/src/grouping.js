@@ -14,11 +14,15 @@ export const GROUP_MAX_LEN = 280; // max characters per sentence (safety cap)
 export const GROUP_MAX_GAP = 1.4; // silence (s) that closes a sentence
 
 // Cheap stable content hash (FNV-1a, 32-bit) for group versions.
+// Math.imul keeps the multiply in true 32-bit integer arithmetic — the
+// previous float multiply silently rounded low bits above 2^53, which
+// made the Swift port (VoxylioKit) impossible to match. Hashes are only
+// compared within a session, so changing the algorithm is safe.
 export function textHash(s) {
   let h = 0x811c9dc5;
   for (let i = 0; i < s.length; i++) {
     h ^= s.charCodeAt(i);
-    h = (h * 0x01000193) >>> 0;
+    h = Math.imul(h, 0x01000193) >>> 0;
   }
   return h.toString(36);
 }

@@ -47,7 +47,7 @@
     let h = 2166136261;
     for (let i = 0; i < s.length; i++) {
       h ^= s.charCodeAt(i);
-      h = h * 16777619 >>> 0;
+      h = Math.imul(h, 16777619) >>> 0;
     }
     return h.toString(36);
   }
