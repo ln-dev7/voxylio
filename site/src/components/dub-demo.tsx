@@ -198,7 +198,7 @@ export function DubDemo() {
           </div>
 
           {/* Player chrome */}
-          <div className="absolute inset-x-0 bottom-0 border-t border-white/[0.06] bg-gradient-to-t from-black/70 to-transparent px-4 pb-3.5 pt-6 sm:px-5">
+          <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent px-4 pb-3.5 pt-6 sm:px-5">
             {/* Seekable timeline: really seeks the video */}
             <input
               type="range"
