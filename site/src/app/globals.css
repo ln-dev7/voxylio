@@ -219,3 +219,35 @@
     animation: none;
   }
 }
+
+/* ReactBits "GlareHover": a diagonal sheen sweeps across the card. */
+.glare-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 60%
+  );
+  transform: translateX(-120%);
+  opacity: 0;
+  pointer-events: none;
+}
+.dark .glare-card::after {
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.09) 50%,
+    transparent 60%
+  );
+}
+.glare-card:hover::after {
+  opacity: 1;
+  transform: translateX(120%);
+  transition: transform 0.65s ease, opacity 0.15s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .glare-card::after { display: none; }
+}

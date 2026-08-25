@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/site-header";
 import { Hero } from "@/components/hero";
 import { Features } from "@/components/features";
 import { HowItWorks } from "@/components/how-it-works";
-import { LanguagesStrip } from "@/components/languages-strip";
+import { LanguagesGrid } from "@/components/languages-grid";
 import { Compare } from "@/components/compare";
 import { Pricing } from "@/components/pricing";
 import { Install } from "@/components/install";
@@ -25,7 +25,7 @@ export default async function HomePage({
         <Hero />
         <Features />
         <HowItWorks />
-        <LanguagesStrip />
+        <LanguagesGrid />
         <Compare />
         <Pricing />
         <Install />
