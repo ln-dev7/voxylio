@@ -3,18 +3,18 @@ import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/logo";
 import { GitHubIcon } from "@/components/github-icon";
 import { GITHUB_URL } from "@/lib/constants";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const WAVE_HEIGHTS = [8, 14, 10, 16, 9, 13, 7];
 
 export function SiteFooter() {
   const t = useTranslations("Footer");
 
-  // Locale-aware anchors so they resolve to the home page from any route.
   const product = [
-    { hash: "features", label: t("links.features") },
-    { hash: "how-it-works", label: t("links.howItWorks") },
-    { hash: "install", label: t("links.install") },
-    { hash: "faq", label: t("links.faq") },
+    { href: "#features", label: t("links.features") },
+    { href: "#how-it-works", label: t("links.howItWorks") },
+    { href: "#install", label: t("links.install") },
+    { href: "#faq", label: t("links.faq") },
   ];
   const resources = [
     { href: GITHUB_URL, label: "GitHub", external: true },
@@ -31,17 +31,17 @@ export function SiteFooter() {
   ];
 
   return (
-    <footer className="border-t border-white/[0.06] bg-[#050607]">
+    <footer className="border-t border-border bg-card dark:bg-[#050607]">
       <div className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
         <div className="grid gap-10 sm:grid-cols-[1.4fr_1fr_1fr]">
           {/* Brand */}
           <div>
-            <Link href="/" className="flex w-fit items-center gap-2.5">
+            <div className="flex items-center gap-2.5">
               <Logo />
               <span className="font-display text-[15px] font-semibold tracking-tight">
                 Voxylio
               </span>
-            </Link>
+            </div>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
               {t("tagline")}
             </p>
@@ -66,13 +66,13 @@ export function SiteFooter() {
             </h3>
             <ul className="mt-4 space-y-2.5">
               {product.map((l) => (
-                <li key={l.hash}>
-                  <Link
-                    href={{ pathname: "/", hash: l.hash }}
+                <li key={l.href}>
+                  <a
+                    href={l.href}
                     className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                   >
                     {l.label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -107,7 +107,7 @@ export function SiteFooter() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-6 sm:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 sm:flex-row">
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Voxylio · {t("madeBy")}{" "}
             <a
@@ -119,15 +119,18 @@ export function SiteFooter() {
               LN
             </a>
           </p>
-          <a
-            href={GITHUB_URL}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="GitHub"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <GitHubIcon className="size-[18px]" />
-          </a>
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <a
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="GitHub"
+              className="text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <GitHubIcon className="size-[18px]" />
+            </a>
+          </div>
         </div>
       </div>
     </footer>

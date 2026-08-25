@@ -4,12 +4,36 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Video Dub design tokens.
- * Dark-first system: near-black canvas, hairline borders, and a single
- * functional green accent shared with the extension UI.
+ * Voxylio design tokens.
+ * Two-theme system sharing one functional green accent with the
+ * extension UI. `:root` is the light palette; `.dark` (set by
+ * next-themes, defaulting to the system preference) is the original
+ * near-black canvas with hairline borders.
  */
 :root {
   --radius: 0.625rem;
+  --background: #f7f8f8;
+  --foreground: #101312;
+  --card: #ffffff;
+  --card-foreground: #101312;
+  --popover: #ffffff;
+  --popover-foreground: #101312;
+  --primary: #0e9a4b;
+  --primary-foreground: #ffffff;
+  --secondary: #eef0ef;
+  --secondary-foreground: #101312;
+  --muted: #eff1f0;
+  --muted-foreground: #5b6360;
+  --accent: #e8efe9;
+  --accent-foreground: #101312;
+  --destructive: #dc2626;
+  --border: #e2e6e4;
+  --input: #e2e6e4;
+  --ring: #0e9a4b;
+  color-scheme: light;
+}
+
+.dark {
   --background: #07080a;
   --foreground: #f4f4f6;
   --card: #0d0d0d;
@@ -28,6 +52,7 @@
   --border: #242728;
   --input: #242728;
   --ring: #1ed760;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -63,7 +88,6 @@
     @apply border-border outline-ring/50;
   }
   html {
-    color-scheme: dark;
     scroll-behavior: smooth;
   }
   body {
