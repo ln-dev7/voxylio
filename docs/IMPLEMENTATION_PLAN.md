@@ -290,3 +290,15 @@ Recommended order: **F → A2 → A1 → A3 → A5 → B → C → D**.
 | 5 | macOS minimum | — | moot: workstream E dropped |
 | 6 | macOS app pricing | — | moot: workstream E dropped |
 | 7 | Telemetry | none / opt-in error counter | none |
+
+---
+
+## 10. Workstream G — Pro capabilities (post-launch)
+
+Positioning, the Free/Pro split, quotas and the entitlement/metering
+architecture are locked in **`docs/PRICING.md`** (owner decisions,
+2026-08-25: no free AI trial — the site carries a pre-rendered
+local-vs-Pro comparison demo instead; account mandatory for everyone;
+two plans only). Build order: contextual translation → neural cloud
+voices → no-subtitle dubbing. The capability-based `/api/entitlements`
+shape ships together with the first pillar, never before.
