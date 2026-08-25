@@ -218,72 +218,15 @@ matrix; beta distributed via chosen channel.
 
 ---
 
-## 5. Workstream E — macOS native app (phase 6)
+## 5. Workstream E — macOS native app  ✖ DROPPED (owner decision, 2026-08-25)
 
-Purpose: dub videos **without accessible subtitles** — the premium track —
-by capturing app audio, transcribing, translating, speaking. All prior
-workstreams stay subtitle-based and free.
-
-Existing reference: `~/Desktop/LN/Perso/Roster` (owner's shipped macOS app)
-— reuse its project conventions (SwiftUI structure, signing setup, CI
-lanes) where they fit.
-
-### E0. Proofs before product (hard gates, in order)
-
-| Proof | Spec | Acceptance |
-| --- | --- | --- |
-| P1 capture | ScreenCaptureKit `SCStream` with audio-only filter on one chosen app (macOS 13+); fallback/alternative: Core Audio process tap (`AudioHardwareCreateProcessTap`, macOS 14.2+) | 10 min of Chrome audio captured to PCM buffers, < 5 % CPU, no drops |
-| P2 transcription | Bench harness comparing **Speech.framework `SFSpeechRecognizer`** (on-device, free) vs **WhisperKit** (small/base models) on 3 fixture videos (clear EN course, fast EN, FR) | table: WER, median latency per finalized segment, CPU/RAM; pick default |
-| P3 translation | **Apple Translation framework** `TranslationSession` (macOS 15+, on-device, free) EN↔FR/ES/DE/IT/PT; fallback: provider chain from A2 via URLSession | correct sentence-level output, availability matrix per language pair |
-| P4 voice + duck | `AVSpeechSynthesizer` (incl. Personal Voice where authorized) + output device routing; duck the source app via the process tap gain (P1 alt path) or system volume compromise | dubbed voice over ducked original, A/B recording |
-
-⚙ The proof harness is embedded in the app (ProofsView) so each proof
-runs the production code path; measured numbers go to
-`apps/macos/Proofs/README.md`. Code for P1-P4 is written (tap +
-passthrough duck, SFSpeech streaming, Translation bridge + availability
-matrix, AVSpeech pacing) — the MEASUREMENTS on real hardware are the
-remaining gate before further product work.
-🔶 OWNER before P3/P4 productization: minimum macOS version (15 for
-on-device translation vs 13 + cloud provider), and WhisperKit model
-download UX (bundled vs first-run download).
-
-### E1. Engine parity in Swift  ✅ code / ☐ swift test run on the Mac
-
-Port ONLY the pure pipeline pieces the native app needs — grouping, pacing,
-glossary — as `VoxylioKit` (Swift package in `apps/macos/VoxylioKit`).
-Parity is enforced by **shared test vectors**: add
-`packages/core/scripts/export-vectors.mjs` dumping JSON fixtures
-(input cues → expected groups; pacing inputs → expected rate; glossary
-in/out) consumed by both `node:test` and `swift test`. A behavior change
-must update the vectors once, both sides follow.
-
-### E2. Orchestrator  ⚙ (written, pending on-device validation)
-
-State machine mirroring the content script's controller (idle → capturing →
-transcribing (partial/final segments) → translating → speaking; bounded
-queue, stale-segment skip, auto-pause impossible → instead adaptive delay
-target ~2 s). AsyncStream-based pipeline; every stage cancellable.
-
-### E3. App shell  ⚙ (menu-bar app written: picker, pair, voice, duck, status, proofs)
-
-Menu-bar SwiftUI app: app picker (running apps with audio), language pair,
-voice picker + preview, original volume slider, live status (state machine
-surfaced verbatim, like the popup), diagnostics copy. Permissions flow:
-Screen Recording TCC prompt with explainer; Speech recognition
-authorization if SFSpeechRecognizer chosen.
-
-### E4. Distribution
-
-Developer ID signing + `notarytool` notarization + DMG; Sparkle for
-updates. Mac App Store later only if the capture entitlements allow it
-(screen/audio capture is generally NOT sandboxable → assume direct
-distribution). 🔶 OWNER: pricing/licensing for this premium app.
-
-Exit (per porting plan §18): full manual matrix incl. multi-app audio,
-volume restore on crash (audit the tap teardown path), bounded everything,
-no secret in the binary.
-
----
+The owner chose to focus exclusively on the browser extensions. The
+native app (per-app audio capture → transcription → translation →
+voice), its VoxylioKit Swift port and the shared test vectors were
+removed from the repo; the last commit containing them is tagged in
+history (`fix(macos): bounded translation with guaranteed fallback…`).
+If the track ever reopens, start from that commit — capture,
+transcription and the P1/P2 path were validated on the owner's M3.
 
 ## 6. Workstream F — Release infrastructure & site
 
@@ -330,12 +273,11 @@ A2 providers (M)─┼─→ A3 permissions (M) → A4 i18n (S) → A5 Chrome be
 B Edge (S) ─────┘         (B publishable as soon as A2 defaults land)
 C Firefox runtime+AMO (M) — after A2 (needs provider order)
 D Safari (M, Mac-local)   — after A2; independent of A3/A4
-E macOS proofs P1-P4 (L)  — parallel track, gated by owner decisions
 F CI + release scripts (S)— immediately, protects everything else
 ```
 
 S ≈ half-day, M ≈ 1-2 days, L ≈ 1-2 weeks of focused work.
-Recommended order: **F → A2 → A1 → A3 → A5 → B → C → D → E**.
+Recommended order: **F → A2 → A1 → A3 → A5 → B → C → D**.
 
 ## 9. Owner decision log (blockers marked 🔶 above)
 
@@ -345,6 +287,6 @@ Recommended order: **F → A2 → A1 → A3 → A5 → B → C → D → E**.
 | 2 | Host permissions default | all-sites / per-site | mechanism built, flag |
 | 3 | Apple Developer Program | ✅ RESOLVED — the owner already has an account | D4 and E are unblocked |
 | 4 | Safari channel | App Store / TestFlight-only | App Store |
-| 5 | macOS minimum | 15 (on-device translation) / 13 + cloud | 15 |
-| 6 | macOS app pricing | free beta → paid / paid from day 1 | free beta |
+| 5 | macOS minimum | — | moot: workstream E dropped |
+| 6 | macOS app pricing | — | moot: workstream E dropped |
 | 7 | Telemetry | none / opt-in error counter | none |

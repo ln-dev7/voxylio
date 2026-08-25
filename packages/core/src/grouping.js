@@ -16,8 +16,8 @@ export const GROUP_MAX_GAP = 1.4; // silence (s) that closes a sentence
 // Cheap stable content hash (FNV-1a, 32-bit) for group versions.
 // Math.imul keeps the multiply in true 32-bit integer arithmetic — the
 // previous float multiply silently rounded low bits above 2^53, which
-// made the Swift port (VoxylioKit) impossible to match. Hashes are only
-// compared within a session, so changing the algorithm is safe.
+// no integer-exact port could ever reproduce. Hashes are only compared
+// within a session, so changing the algorithm was safe.
 export function textHash(s) {
   let h = 0x811c9dc5;
   for (let i = 0; i < s.length; i++) {

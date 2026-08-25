@@ -49,7 +49,6 @@ pnpm test               # unit + content-script integration tests
 | Edge | ✅ builds (Chromium parity) | `apps/edge/dist` |
 | Firefox | ✅ builds, addons-linter clean | `apps/firefox/dist` |
 | Safari | ⚙ converter ready (run on macOS) | `apps/safari/convert.sh` |
-| macOS app | 📋 planned (audio-capture dubbing) | `docs/IMPLEMENTATION_PLAN.md` §5 |
 
 ## Install the extension
 

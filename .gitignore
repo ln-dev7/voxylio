@@ -35,10 +35,3 @@ apps/safari/Voxylio/
 
 # Store packages
 dist-store/
-
-# Generated Xcode project (xcodegen)
-apps/macos/Voxylio.xcodeproj/
-apps/macos/VoxylioKit/.build/
-apps/macos/**/.swiftpm/
-apps/macos/Voxylio/Info.plist
-apps/macos/Voxylio/Voxylio.entitlements
