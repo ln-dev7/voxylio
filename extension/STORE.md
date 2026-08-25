@@ -50,7 +50,7 @@ synchronisée avec la lecture, pendant que l'audio original est
 automatiquement baissé.
 
 ★ Doublage par phrases complètes — voix fluide, traductions en contexte
-★ Toutes les paires de langues — source auto-détectée, doublage FR / ES / IT / DE / PT
+★ Plus de 65 langues de doublage — source auto-détectée, toutes les paires
 ★ 100 % local par défaut — sans compte, sans clé API, sans quota d'heures
 ★ Mode strictement local — rien ne quitte votre appareil
 ★ Sous-titres bilingues à l'écran (original + traduction)

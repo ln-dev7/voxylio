@@ -2,8 +2,9 @@
 (() => {
   // src/background.js
   var memCache = /* @__PURE__ */ new Map();
+  var GTX_CODE = { he: "iw", zh: "zh-CN" };
   async function translateGtx(text, source, target) {
-    const url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + encodeURIComponent(source || "auto") + "&tl=" + encodeURIComponent(target) + "&dt=t&q=" + encodeURIComponent(text);
+    const url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + encodeURIComponent(GTX_CODE[source] || source || "auto") + "&tl=" + encodeURIComponent(GTX_CODE[target] || target) + "&dt=t&q=" + encodeURIComponent(text);
     const res = await fetch(url);
     if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
@@ -11,14 +12,49 @@
     if (!out) throw new Error("empty translation");
     return out;
   }
-  var DEEPL_TARGET = { fr: "FR", es: "ES", it: "IT", de: "DE", pt: "PT-PT", en: "EN-US" };
+  var DEEPL_TARGET = {
+    ar: "AR",
+    bg: "BG",
+    cs: "CS",
+    da: "DA",
+    de: "DE",
+    el: "EL",
+    en: "EN-US",
+    es: "ES",
+    et: "ET",
+    fi: "FI",
+    fr: "FR",
+    he: "HE",
+    hu: "HU",
+    id: "ID",
+    it: "IT",
+    ja: "JA",
+    ko: "KO",
+    lt: "LT",
+    lv: "LV",
+    nl: "NL",
+    no: "NB",
+    pl: "PL",
+    pt: "PT-PT",
+    ro: "RO",
+    ru: "RU",
+    sk: "SK",
+    sl: "SL",
+    sv: "SV",
+    th: "TH",
+    tr: "TR",
+    uk: "UK",
+    vi: "VI",
+    zh: "ZH-HANS"
+  };
   async function translateDeepl(text, source, target) {
     const { deeplKey } = await getLocal({ deeplKey: "" });
     if (!deeplKey) throw new Error("no DeepL key");
+    if (!DEEPL_TARGET[target]) throw new Error("DeepL: unsupported target " + target);
     const host = deeplKey.endsWith(":fx") ? "api-free.deepl.com" : "api.deepl.com";
     const body = {
       text: [text],
-      target_lang: DEEPL_TARGET[target] || target.toUpperCase()
+      target_lang: DEEPL_TARGET[target]
     };
     if (source && source !== "auto") body.source_lang = source.toUpperCase();
     const res = await fetch(`https://${host}/v2/translate`, {
