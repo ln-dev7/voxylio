@@ -229,5 +229,8 @@
   },
   "optSaved": {
     "message": "Saved ✓"
+  },
+  "proBanner": {
+    "message": "✦ Context-aware translation and upcoming features"
   }
 }

@@ -229,5 +229,8 @@
   },
   "optSaved": {
     "message": "Enregistré ✓"
+  },
+  "proBanner": {
+    "message": "✦ Traduction contextuelle et fonctions à venir"
   }
 }

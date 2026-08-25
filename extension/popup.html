@@ -248,6 +248,41 @@
     .action-btn:hover { background: #242424; color: #ffffff; }
     .action-btn:focus-visible { outline: 2px solid #1ed760; outline-offset: 2px; }
 
+    /* ---- pro banner (top) ---- */
+    .pro-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding: 9px 12px;
+      border-radius: 9999px;
+      background: linear-gradient(100deg, rgba(30, 215, 96, 0.14), rgba(30, 215, 96, 0.05));
+      box-shadow: rgba(30, 215, 96, 0.35) 0px 0px 0px 1px inset;
+    }
+    .pro-banner[hidden] { display: none; }
+    .pro-banner-text {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+      min-width: 0;
+    }
+    .pro-banner-cta {
+      flex: 0 0 auto;
+      border: none;
+      border-radius: 9999px;
+      background: var(--accent);
+      color: #121212;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 7px 14px;
+      cursor: pointer;
+    }
+    .pro-banner-cta:hover { filter: brightness(1.08); }
+    .pro-banner-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
     /* ---- account ---- */
     .account-card {
       background: var(--surface);
@@ -322,6 +357,11 @@
       <span class="slider-toggle" aria-hidden="true"></span>
     </label>
   </header>
+
+  <div class="pro-banner" id="proBanner" hidden>
+    <span class="pro-banner-text" data-i18n="proBanner">✦ Traduction contextuelle et fonctions à venir</span>
+    <button id="proBannerBtn" class="pro-banner-cta" data-i18n="goPro" title="Débloquer le plan Pro">Passer Pro</button>
+  </div>
 
   <div class="status" id="status" aria-live="polite">Recherche d’une vidéo…</div>
 

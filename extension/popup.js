@@ -397,8 +397,10 @@
     const plan = $("accountPlan");
     const btn = $("accountBtn");
     const note = $("accountNote");
+    const banner = $("proBanner");
     try {
       const ent = await chrome.runtime.sendMessage({ type: "entitlements" });
+      banner.hidden = !!(ent && ent.linked && ent.plan === "pro");
       if (!ent || !ent.linked) {
         plan.textContent = t("accountNotLinked") || "Non connect\xE9";
         plan.classList.remove("pro");
@@ -420,6 +422,7 @@
       }
     } catch (e) {
       plan.textContent = t("accountFree") || "Gratuit";
+      banner.hidden = false;
     }
   }
   async function init() {
@@ -493,9 +496,11 @@
       setTimeout(() => window.location.reload(), 250);
     });
     refreshAccount();
-    $("accountBtn").addEventListener("click", () => {
+    const openAccount = () => {
       chrome.tabs.create({ url: "https://voxylio.lndev.me/fr/account?from=extension" });
-    });
+    };
+    $("accountBtn").addEventListener("click", openAccount);
+    $("proBannerBtn").addEventListener("click", openAccount);
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab || !tab.id) return;
     tabId = tab.id;

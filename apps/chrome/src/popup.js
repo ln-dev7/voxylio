@@ -224,8 +224,11 @@ async function refreshAccount() {
   const plan = $("accountPlan");
   const btn = $("accountBtn");
   const note = $("accountNote");
+  const banner = $("proBanner");
   try {
     const ent = await chrome.runtime.sendMessage({ type: "entitlements" });
+    // The promoted CTA up top: visible for everyone except Pro users.
+    banner.hidden = !!(ent && ent.linked && ent.plan === "pro");
     if (!ent || !ent.linked) {
       plan.textContent = t("accountNotLinked") || "Non connecté";
       plan.classList.remove("pro");
@@ -255,6 +258,7 @@ async function refreshAccount() {
     }
   } catch (e) {
     plan.textContent = t("accountFree") || "Gratuit";
+    banner.hidden = false;
   }
 }
 
@@ -340,9 +344,11 @@ async function init() {
   // Account: plan comes from the background's cached entitlements.
   // Free features never require it; the row only unlocks/reflects Pro.
   refreshAccount();
-  $("accountBtn").addEventListener("click", () => {
+  const openAccount = () => {
     chrome.tabs.create({ url: "https://voxylio.lndev.me/fr/account?from=extension" });
-  });
+  };
+  $("accountBtn").addEventListener("click", openAccount);
+  $("proBannerBtn").addEventListener("click", openAccount);
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab || !tab.id) return;

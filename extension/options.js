@@ -31,10 +31,86 @@
     "gi"
   );
 
+  // ../../packages/core/src/languages.js
+  var LANGUAGES = [
+    { code: "af", name: "Afrikaans", english: "Afrikaans" },
+    { code: "am", name: "\u12A0\u121B\u122D\u129B", english: "Amharic" },
+    { code: "ar", name: "\u0627\u0644\u0639\u0631\u0628\u064A\u0629", english: "Arabic" },
+    { code: "az", name: "Az\u0259rbaycan", english: "Azerbaijani" },
+    { code: "be", name: "\u0411\u0435\u043B\u0430\u0440\u0443\u0441\u043A\u0430\u044F", english: "Belarusian" },
+    { code: "bg", name: "\u0411\u044A\u043B\u0433\u0430\u0440\u0441\u043A\u0438", english: "Bulgarian" },
+    { code: "bn", name: "\u09AC\u09BE\u0982\u09B2\u09BE", english: "Bengali" },
+    { code: "bs", name: "Bosanski", english: "Bosnian" },
+    { code: "ca", name: "Catal\xE0", english: "Catalan" },
+    { code: "cs", name: "\u010Ce\u0161tina", english: "Czech" },
+    { code: "cy", name: "Cymraeg", english: "Welsh" },
+    { code: "da", name: "Dansk", english: "Danish" },
+    { code: "de", name: "Deutsch", english: "German" },
+    { code: "el", name: "\u0395\u03BB\u03BB\u03B7\u03BD\u03B9\u03BA\u03AC", english: "Greek" },
+    { code: "en", name: "English", english: "English" },
+    { code: "es", name: "Espa\xF1ol", english: "Spanish" },
+    { code: "et", name: "Eesti", english: "Estonian" },
+    { code: "eu", name: "Euskara", english: "Basque" },
+    { code: "fa", name: "\u0641\u0627\u0631\u0633\u06CC", english: "Persian" },
+    { code: "fi", name: "Suomi", english: "Finnish" },
+    { code: "fr", name: "Fran\xE7ais", english: "French" },
+    { code: "gl", name: "Galego", english: "Galician" },
+    { code: "gu", name: "\u0A97\u0AC1\u0A9C\u0AB0\u0ABE\u0AA4\u0AC0", english: "Gujarati" },
+    { code: "he", name: "\u05E2\u05D1\u05E8\u05D9\u05EA", english: "Hebrew" },
+    { code: "hi", name: "\u0939\u093F\u0928\u094D\u0926\u0940", english: "Hindi" },
+    { code: "hr", name: "Hrvatski", english: "Croatian" },
+    { code: "hu", name: "Magyar", english: "Hungarian" },
+    { code: "hy", name: "\u0540\u0561\u0575\u0565\u0580\u0565\u0576", english: "Armenian" },
+    { code: "id", name: "Bahasa Indonesia", english: "Indonesian" },
+    { code: "is", name: "\xCDslenska", english: "Icelandic" },
+    { code: "it", name: "Italiano", english: "Italian" },
+    { code: "ja", name: "\u65E5\u672C\u8A9E", english: "Japanese" },
+    { code: "ka", name: "\u10E5\u10D0\u10E0\u10D7\u10E3\u10DA\u10D8", english: "Georgian" },
+    { code: "kk", name: "\u049A\u0430\u0437\u0430\u049B\u0448\u0430", english: "Kazakh" },
+    { code: "km", name: "\u1781\u17D2\u1798\u17C2\u179A", english: "Khmer" },
+    { code: "kn", name: "\u0C95\u0CA8\u0CCD\u0CA8\u0CA1", english: "Kannada" },
+    { code: "ko", name: "\uD55C\uAD6D\uC5B4", english: "Korean" },
+    { code: "lo", name: "\u0EA5\u0EB2\u0EA7", english: "Lao" },
+    { code: "lt", name: "Lietuvi\u0173", english: "Lithuanian" },
+    { code: "lv", name: "Latvie\u0161u", english: "Latvian" },
+    { code: "mk", name: "\u041C\u0430\u043A\u0435\u0434\u043E\u043D\u0441\u043A\u0438", english: "Macedonian" },
+    { code: "ml", name: "\u0D2E\u0D32\u0D2F\u0D3E\u0D33\u0D02", english: "Malayalam" },
+    { code: "mn", name: "\u041C\u043E\u043D\u0433\u043E\u043B", english: "Mongolian" },
+    { code: "mr", name: "\u092E\u0930\u093E\u0920\u0940", english: "Marathi" },
+    { code: "ms", name: "Bahasa Melayu", english: "Malay" },
+    { code: "my", name: "\u1019\u103C\u1014\u103A\u1019\u102C", english: "Burmese" },
+    { code: "ne", name: "\u0928\u0947\u092A\u093E\u0932\u0940", english: "Nepali" },
+    { code: "nl", name: "Nederlands", english: "Dutch" },
+    { code: "no", name: "Norsk", english: "Norwegian" },
+    { code: "pa", name: "\u0A2A\u0A70\u0A1C\u0A3E\u0A2C\u0A40", english: "Punjabi" },
+    { code: "pl", name: "Polski", english: "Polish" },
+    { code: "pt", name: "Portugu\xEAs", english: "Portuguese" },
+    { code: "ro", name: "Rom\xE2n\u0103", english: "Romanian" },
+    { code: "ru", name: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439", english: "Russian" },
+    { code: "si", name: "\u0DC3\u0DD2\u0D82\u0DC4\u0DBD", english: "Sinhala" },
+    { code: "sk", name: "Sloven\u010Dina", english: "Slovak" },
+    { code: "sl", name: "Sloven\u0161\u010Dina", english: "Slovenian" },
+    { code: "sq", name: "Shqip", english: "Albanian" },
+    { code: "sr", name: "\u0421\u0440\u043F\u0441\u043A\u0438", english: "Serbian" },
+    { code: "sv", name: "Svenska", english: "Swedish" },
+    { code: "sw", name: "Kiswahili", english: "Swahili" },
+    { code: "ta", name: "\u0BA4\u0BAE\u0BBF\u0BB4\u0BCD", english: "Tamil" },
+    { code: "te", name: "\u0C24\u0C46\u0C32\u0C41\u0C17\u0C41", english: "Telugu" },
+    { code: "th", name: "\u0E44\u0E17\u0E22", english: "Thai" },
+    { code: "tl", name: "Tagalog", english: "Tagalog" },
+    { code: "tr", name: "T\xFCrk\xE7e", english: "Turkish" },
+    { code: "uk", name: "\u0423\u043A\u0440\u0430\u0457\u043D\u0441\u044C\u043A\u0430", english: "Ukrainian" },
+    { code: "ur", name: "\u0627\u0631\u062F\u0648", english: "Urdu" },
+    { code: "uz", name: "O\u02BBzbekcha", english: "Uzbek" },
+    { code: "vi", name: "Ti\u1EBFng Vi\u1EC7t", english: "Vietnamese" },
+    { code: "zh", name: "\u4E2D\u6587", english: "Chinese" }
+  ];
+  var LANGUAGE_CODES = LANGUAGES.map((l) => l.code);
+
   // ../../packages/core/src/settings.js
   var SETTINGS_VERSION = 2;
-  var TARGET_LANGS = ["fr", "es", "it", "de", "pt"];
-  var SOURCE_LANGS = ["auto", "en", "fr", "es", "it", "de", "pt"];
+  var TARGET_LANGS = LANGUAGE_CODES;
+  var SOURCE_LANGS = ["auto", ...LANGUAGE_CODES];
   var PROVIDERS = ["auto", "deepl", "googlev2"];
   var DEFAULTS = Object.freeze({
     v: SETTINGS_VERSION,
