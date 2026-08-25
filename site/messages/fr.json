@@ -1,7 +1,7 @@
 {
   "Meta": {
     "title": "Voxylio — Doublage vidéo en temps réel dans votre navigateur",
-    "description": "Une extension Chrome qui double en temps réel toute vidéo sous-titrée — en français, espagnol, italien, allemand ou portugais. Traduction locale, voix synchronisée, zéro configuration."
+    "description": "Une extension Chrome qui double en temps réel toute vidéo sous-titrée — dans plus de 65 langues. Traduction locale, voix synchronisée avec la lecture."
   },
   "Header": {
     "features": "Fonctionnalités",
@@ -52,8 +52,8 @@
         "description": "Un contrôleur déplaçable posé sur la page permet d’activer le doublage, changer de langue, ajuster la vitesse et baisser l’audio original sans quitter la vidéo."
       },
       "languages": {
-        "title": "Cinq langues",
-        "description": "Doublez les vidéos anglaises en français, espagnol, italien, allemand ou portugais. Le changement de langue en pleine lecture est instantané, sans mélange."
+        "title": "Plus de 65 langues",
+        "description": "Doublez n'importe quelle vidéo sous-titrée vers plus de 65 langues — le français, l'espagnol, le japonais, l'arabe, le hindi… Le changement de langue en pleine lecture est instantané, sans mélange."
       }
     }
   },
@@ -77,13 +77,27 @@
   },
   "Languages": {
     "list": {
+      "en": "Anglais",
       "fr": "Français",
       "es": "Espagnol",
       "it": "Italien",
       "de": "Allemand",
       "pt": "Portugais",
-      "en": "Anglais"
-    }
+      "ja": "Japonais",
+      "zh": "Chinois",
+      "ru": "Russe",
+      "ar": "Arabe",
+      "hi": "Hindi",
+      "ko": "Coréen",
+      "tr": "Turc",
+      "pl": "Polonais",
+      "uk": "Ukrainien",
+      "nl": "Néerlandais",
+      "vi": "Vietnamien",
+      "sv": "Suédois"
+    },
+    "title": "Plus de 65 langues, dans les deux sens",
+    "subtitle": "La langue source est détectée automatiquement — doublez de n'importe quelle langue vers la vôtre."
   },
   "Install": {
     "title": "Installée en deux minutes",
@@ -247,7 +261,7 @@
       "cta": "Installer l'extension",
       "features": {
         "f1": "Doublage en temps réel illimité, 100 % sur votre appareil",
-        "f2": "5 langues de doublage, langue source auto-détectée",
+        "f2": "Plus de 65 langues de doublage, langue source auto-détectée",
         "f3": "Sous-titres traduits affichés sur la vidéo",
         "f4": "Rien ne quitte votre appareil — aucun compte requis",
         "f5": "Open source (MIT)"

@@ -4,13 +4,21 @@ import { ArrowRight } from "lucide-react";
 // Mixed pairs: dubbing works between any languages, not only from English
 const PAIRS = [
   ["en", "fr"],
-  ["fr", "en"],
+  ["ja", "en"],
   ["es", "de"],
+  ["zh", "fr"],
   ["en", "pt"],
+  ["ar", "fr"],
   ["it", "en"],
-  ["de", "fr"],
-  ["en", "es"],
+  ["hi", "en"],
+  ["de", "pl"],
+  ["ko", "fr"],
+  ["ru", "es"],
+  ["en", "tr"],
   ["pt", "it"],
+  ["uk", "de"],
+  ["nl", "en"],
+  ["en", "vi"],
 ] as const;
 
 /** Infinite left-to-right marquee of language pairs. */
@@ -28,6 +36,12 @@ export function LanguagesStrip() {
 
   return (
     <section className="border-t border-white/[0.06] py-14">
+      <div className="mx-auto mb-10 max-w-2xl px-4 text-center sm:px-6">
+        <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
+          {t("title")}
+        </h2>
+        <p className="mt-3 text-sm text-muted-foreground">{t("subtitle")}</p>
+      </div>
       <div className="marquee relative overflow-hidden">
         {/* Edge fades */}
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 bg-gradient-to-r from-background to-transparent" />
