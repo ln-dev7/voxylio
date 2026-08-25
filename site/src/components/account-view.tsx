@@ -23,6 +23,63 @@ type ChromeRuntime = {
   };
 };
 
+// Fallback when the page↔content-script bridge gets no answer: message
+// the extension directly by ID (works only for IDs listed here, so the
+// bridge — which works for any installed copy — is tried first).
+const STORE_EXTENSION_ID = "hahcpbcjfdanjncobfcdeidodfggggkp";
+
+// The content script on this page relays the token to the extension's
+// background, whatever its ID (store build or load-unpacked).
+function linkViaBridge(token: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    const finish = (ok: boolean) => {
+      clearTimeout(timer);
+      window.removeEventListener("message", onMsg);
+      resolve(ok);
+    };
+    const onMsg = (event: MessageEvent) => {
+      if (event.source !== window || event.origin !== window.location.origin)
+        return;
+      const d = event.data as { type?: string; ok?: boolean } | null;
+      if (d && d.type === "voxylio:linked") finish(!!d.ok);
+    };
+    const timer = setTimeout(() => finish(false), 1500);
+    window.addEventListener("message", onMsg);
+    window.postMessage({ type: "voxylio:link", token }, window.location.origin);
+  });
+}
+
+function linkViaExtensionId(token: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    const ids = (process.env.NEXT_PUBLIC_EXTENSION_ID || STORE_EXTENSION_ID)
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const cr = (window as unknown as { chrome?: ChromeRuntime }).chrome;
+    if (!cr?.runtime?.sendMessage || ids.length === 0) {
+      resolve(false);
+      return;
+    }
+    let pending = ids.length;
+    let done = false;
+    for (const id of ids) {
+      try {
+        cr.runtime.sendMessage(id, { type: "voxylio:link", token }, (resp) => {
+          void cr.runtime?.lastError; // read it: silences "Unchecked runtime.lastError"
+          if (!done && resp?.ok) {
+            done = true;
+            resolve(true);
+          } else if (--pending === 0 && !done) {
+            resolve(false);
+          }
+        });
+      } catch {
+        if (--pending === 0 && !done) resolve(false);
+      }
+    }
+  });
+}
+
 function GoogleIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
@@ -96,18 +153,11 @@ export function AccountView() {
   const linkExtension = useCallback(async () => {
     setExt("linking");
     try {
-      const extId = process.env.NEXT_PUBLIC_EXTENSION_ID;
-      const cr = (window as unknown as { chrome?: ChromeRuntime }).chrome;
-      if (!extId || !cr?.runtime?.sendMessage) {
-        setExt("missing");
-        return;
-      }
       const res = await fetch("/api/extension/token", { method: "POST" });
       if (!res.ok) throw new Error("mint failed");
       const { token } = (await res.json()) as { token: string };
-      cr.runtime.sendMessage(extId, { type: "voxylio:link", token }, (resp) => {
-        setExt(resp?.ok ? "linked" : "missing");
-      });
+      const ok = (await linkViaBridge(token)) || (await linkViaExtensionId(token));
+      setExt(ok ? "linked" : "missing");
     } catch {
       setExt("error");
     }
