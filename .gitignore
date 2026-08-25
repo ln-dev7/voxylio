@@ -39,3 +39,4 @@ dist-store/
 # Generated Xcode project (xcodegen)
 apps/macos/Voxylio.xcodeproj/
 apps/macos/VoxylioKit/.build/
+apps/macos/**/.swiftpm/
