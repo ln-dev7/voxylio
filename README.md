@@ -74,25 +74,6 @@ styled with Tailwind CSS and [shadcn/ui](https://ui.shadcn.com).
 
 See [ROADMAP.md](ROADMAP.md) for what's next.
 
-## Auto-push (owner's Mac)
-
-Claude cloud sessions write files and commits straight into this repo;
-the only step needing GitHub credentials is `git push`. The LaunchAgent
-in `scripts/` automates it (fast-forward only, never force). One-time
-install:
-
-```bash
-chmod +x scripts/autopush.sh
-cp scripts/me.lndev.voxylio.autopush.plist ~/Library/LaunchAgents/
-launchctl unload ~/Library/LaunchAgents/me.lndev.voxylio.autopush.plist 2>/dev/null
-launchctl load ~/Library/LaunchAgents/me.lndev.voxylio.autopush.plist
-```
-
-It checks every 3 minutes and logs to
-`~/Library/Logs/voxylio-autopush.log`. Uninstall with `launchctl unload`
-+ delete the plist. If pushes fail there, the SSH key likely needs
-`UseKeychain yes` in `~/.ssh/config` (passphrase-protected keys).
-
 ## License
 
 [MIT](LICENSE) © Leonel Ngoya

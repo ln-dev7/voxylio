@@ -85,6 +85,4 @@ deletion does not). Never let `core.worktree` leak into `.git/config`.
 The user's working copy is ALWAYS current after a delivery: files and
 commits land directly in the Mac repo. NEVER tell the user to `git
 pull` — there is nothing to pull. The only manual step is `git push`
-(needs the user's GitHub credentials), and `scripts/autopush.sh`
-(a LaunchAgent, install instructions in the README) automates even
-that: fast-forward pushes only, never force.
+(needs the user's GitHub credentials).
