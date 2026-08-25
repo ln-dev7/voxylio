@@ -114,6 +114,10 @@
         "question": "Warum ein Konto?",
         "answer": "Eine Google-Anmeldung schaltet die Erweiterung frei und verknüpft deinen Plan mit ihr. Die Synchronisation läuft weiter auf deinem Gerät; das Konto speichert nur deine E-Mail-Adresse und deinen Plan."
       },
+      "pro": {
+        "question": "Was enthält der Pro-Plan?",
+        "answer": "Alles Lokale bleibt gratis und unbegrenzt. Pro finanziert die Funktionen, die einen Server brauchen — allen voran die kontextbewusste Übersetzung: benachbarte Sätze werden zusammen übertragen, damit Pronomen, Ton, Namen und Terminologie stimmen, innerhalb eines großzügigen Monatskontingents. Ist es aufgebraucht, läuft die Synchronisation einfach mit der kostenlosen lokalen Engine weiter — ein Video wird nie unterbrochen. Natürliche Cloud-Stimmen, Zusammenfassungen und Geräte-Sync folgen nach und nach."
+      },
       "voice": {
         "question": "Kann ich die Stimmqualität verbessern?",
         "answer": "Ja — installiere hochwertigere Systemstimmen. Auf macOS: Systemeinstellungen → Bedienungshilfen → Gesprochene Inhalte → lade eine Premium-Stimme für deine Sprache herunter und wähle sie im Popup."

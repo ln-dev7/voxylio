@@ -114,6 +114,10 @@
         "question": "Pourquoi un compte ?",
         "answer": "Une connexion Google débloque l'extension et y rattache votre plan. Le doublage continue de tourner sur votre appareil ; le compte ne conserve que votre adresse e-mail et votre plan."
       },
+      "pro": {
+        "question": "Que comprend le plan Pro ?",
+        "answer": "Tout ce qui est local reste gratuit et illimité. Le Pro finance les fonctions qui demandent un serveur — à commencer par la traduction contextuelle : les phrases voisines sont envoyées ensemble pour garder pronoms, ton, noms propres et terminologie justes, dans la limite d'un volume mensuel généreux. Quand le volume est épuisé, le doublage continue simplement avec le moteur local gratuit — une vidéo n'est jamais interrompue. Les voix cloud naturelles, les résumés et la synchronisation entre appareils rejoindront le Pro au fil du temps."
+      },
       "voice": {
         "question": "Comment améliorer la qualité de la voix ?",
         "answer": "Installez de meilleures voix système. Sur macOS : Réglages Système → Accessibilité → Contenu énoncé → téléchargez une voix premium pour votre langue, puis choisissez-la dans le popup."

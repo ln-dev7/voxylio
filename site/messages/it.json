@@ -114,6 +114,10 @@
         "question": "Perché serve un account?",
         "answer": "Un accesso con Google sblocca l'estensione e vi collega il tuo piano. Il doppiaggio continua a girare sul tuo dispositivo; l'account conserva solo la tua email e il tuo piano."
       },
+      "pro": {
+        "question": "Cosa include il piano Pro?",
+        "answer": "Tutto ciò che è locale resta gratis e illimitato. Il Pro finanzia le funzioni che richiedono un server — a cominciare dalla traduzione contestuale: le frasi vicine vengono inviate insieme per mantenere corretti pronomi, tono, nomi e terminologia, entro un generoso volume mensile. Quando si esaurisce, il doppiaggio continua con il motore locale gratuito — un video non viene mai interrotto. Voci cloud naturali, riassunti e sincronizzazione tra dispositivi arriveranno nel tempo."
+      },
       "voice": {
         "question": "Posso migliorare la qualità della voce?",
         "answer": "Sì — installa voci di sistema di qualità superiore. Su macOS: Impostazioni di Sistema → Accessibilità → Contenuto letto ad alta voce → scarica una voce premium per la tua lingua, poi sceglila nel popup."

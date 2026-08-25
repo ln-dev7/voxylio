@@ -114,6 +114,10 @@
         "question": "Why do I need an account?",
         "answer": "One Google sign-in unlocks the extension and ties your plan to it. Dubbing still runs on your device; the account stores only your email address and your plan."
       },
+      "pro": {
+        "question": "What does Pro include?",
+        "answer": "Everything local stays free and unlimited. Pro funds the features that need a server — starting with context-aware translation: nearby sentences are sent together so pronouns, tone, names and terminology stay right, within a generous monthly allowance. When the allowance runs out, dubbing simply continues with the free local engine — a video is never interrupted. Natural cloud voices, summaries and cross-device sync will join Pro over time."
+      },
       "voice": {
         "question": "Can I improve the voice quality?",
         "answer": "Yes — install higher-quality system voices. On macOS: System Settings → Accessibility → Spoken Content → download a premium voice for your language, then pick it in the popup."

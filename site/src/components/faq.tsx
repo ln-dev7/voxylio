@@ -6,7 +6,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const ITEMS = ["sites", "cost", "account", "voice", "privacy", "youtube"] as const;
+const ITEMS = ["sites", "cost", "account", "pro", "voice", "privacy", "youtube"] as const;
 
 export function Faq() {
   const t = useTranslations("Faq");
