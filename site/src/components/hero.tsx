@@ -53,7 +53,7 @@ export function Hero() {
 
           {/* The promises that matter: free, local, no account, no quota */}
           <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-            {(["free", "local", "noAccount", "noQuota"] as const).map((k) => (
+            {(["free", "local", "noCard", "noQuota"] as const).map((k) => (
               <li
                 key={k}
                 className="flex items-center gap-1.5 text-[13px] font-medium text-muted-foreground"

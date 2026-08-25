@@ -23,7 +23,7 @@
     "ticks": {
       "free": "Gratuit",
       "local": "100 % local",
-      "noAccount": "Sans compte",
+      "noCard": "Sans carte bancaire",
       "noQuota": "Sans quota"
     }
   },
@@ -93,7 +93,7 @@
       },
       "play": {
         "title": "Lancez une vidéo",
-        "description": "Ouvrez une vidéo sous-titrée, laissez-la jouer quelques secondes, puis activez l’interrupteur dans le popup ou la barre flottante."
+        "description": "Ouvrez une vidéo sous-titrée, connectez-vous avec Google depuis le popup (le plan gratuit suffit), puis activez l'interrupteur."
       }
     },
     "cta": "Récupérer Voxylio sur GitHub",
@@ -108,7 +108,11 @@
       },
       "cost": {
         "question": "C’est vraiment gratuit ?",
-        "answer": "Oui. La traduction tourne sur l’appareil avec l’API intégrée de Chrome (138+) et la voix utilise les voix de votre système. Pas de compte, pas de clé API, pas de quota."
+        "answer": "Oui. Le plan gratuit est illimité — il suffit de vous connecter avec Google. La traduction tourne sur l'appareil avec l'API intégrée de Chrome (138+) et la voix utilise les voix de votre système. Pas de carte, pas de clé API, pas de quota."
+      },
+      "account": {
+        "question": "Pourquoi un compte ?",
+        "answer": "Une connexion Google débloque l'extension et y rattache votre plan — le plan gratuit suffit et le reste. Le doublage continue de tourner sur votre appareil ; le compte ne conserve que votre adresse e-mail et votre plan."
       },
       "voice": {
         "question": "Comment améliorer la qualité de la voix ?",
@@ -199,13 +203,13 @@
     "updated": "Dernière mise à jour : 24 août 2026",
     "intro": "Voxylio est conçu pour fonctionner sur votre appareil. Cette page décrit exactement ce que l’extension fait des données — et ce qu’elle ne fait jamais.",
     "p1Title": "Ce que Voxylio traite",
-    "p1": "Voxylio lit la piste de sous-titres de la vidéo que vous regardez afin de la traduire et de la lire à voix haute. Vos réglages (langues, voix, vitesse, volume) sont conservés dans le stockage d’extension de votre navigateur, synchronisé par Chrome sur votre propre profil. Rien d’autre n’est lu, collecté ou conservé.",
+    "p1": "Voxylio lit la piste de sous-titres de la vidéo que vous regardez afin de la traduire et de la lire à voix haute. Vos réglages (langues, voix, vitesse, volume) sont conservés dans le stockage d’extension de votre navigateur, synchronisé par Chrome sur votre propre profil. Rien d’autre n’est lu, collecté ou conservé. Si vous créez un compte, Voxylio conserve en plus votre adresse e-mail et votre plan — rien de plus.",
     "p2Title": "Local par défaut",
     "p2": "La traduction s’exécute sur votre appareil avec l’API de traduction intégrée de Chrome dès qu’elle est disponible. Dans ce mode, aucun texte ne quitte votre ordinateur. La voix est générée par les voix de votre système, localement aussi.",
     "p3Title": "Le fallback en ligne",
     "p3": "Quand le traducteur local de Chrome est indisponible, Voxylio peut envoyer des phrases de sous-titres, une par une, à un service de traduction en ligne pour maintenir le doublage. Ce sont des phrases des sous-titres publics de la vidéo — jamais vos données personnelles, votre historique ou vos informations de compte. Vous pouvez désactiver ce mécanisme avec le « Mode strictement local » du popup ; Voxylio attendra alors le traducteur local au lieu de passer en ligne.",
     "p4Title": "Ce que Voxylio ne fait jamais",
-    "p4": "Pas d’analytics, pas de tracking, pas de publicité, pas de compte, pas de fingerprinting. Voxylio ne collecte, ne vend et ne partage aucune donnée personnelle. Il ne garde aucun historique de ce que vous regardez. La permission d’accès aux sites sert uniquement à trouver le lecteur vidéo et sa piste de sous-titres sur la page visitée ; elle n’est jamais utilisée pour lire autre chose.",
+    "p4": "Pas d'analytics, pas de tracking, pas de publicité, pas de fingerprinting. Votre compte ne contient que votre adresse e-mail et votre plan — Voxylio ne vend ni ne partage aucune donnée personnelle et ne garde aucun historique de ce que vous regardez. La permission d'accès étendue aux sites sert uniquement à trouver le lecteur vidéo et sa piste de sous-titres sur la page visitée ; elle ne sert jamais à lire quoi que ce soit d'autre.",
     "p5Title": "Vos données, votre contrôle",
     "p5": "Le bouton « Réinitialiser » du popup rétablit les réglages par défaut et supprime tout ce que l’extension a stocké. Désinstaller l’extension supprime toutes ses données.",
     "contact": "Une question ? Ouvrez une issue sur GitHub ou contactez l’auteur."
@@ -213,7 +217,7 @@
   "Account": {
     "title": "Votre compte",
     "signedOutTitle": "Connexion à Voxylio",
-    "signedOutSubtitle": "Un compte Google, rien d'autre. Il ne sert qu'au plan Pro — tout ce qui est local reste sans compte.",
+    "signedOutSubtitle": "Un compte Google débloque le doublage — le plan gratuit suffit, et aucune carte n'est demandée.",
     "signInGoogle": "Continuer avec Google",
     "plan": "Abonnement",
     "planFree": "Gratuit",
@@ -223,10 +227,11 @@
     "manage": "Gérer mon abonnement",
     "signOut": "Se déconnecter",
     "extensionTitle": "Extension",
-    "extensionHint": "Associez l'extension de ce navigateur pour y débloquer les fonctions Pro.",
+    "extensionHint": "Liez l'extension de ce navigateur pour y débloquer le doublage.",
     "extensionConnect": "Associer l'extension",
     "extensionLinking": "Association…",
     "extensionLinked": "Extension associée",
+    "extensionLinkedBack": "Extension liée — retournez sur votre vidéo et activez l'interrupteur.",
     "extensionMissing": "Voxylio n'est pas installée dans ce navigateur.",
     "extensionError": "Impossible de contacter l'extension. Ouvrez cette page dans Chrome avec Voxylio installée.",
     "checkoutSuccess": "Paiement reçu — votre plan Pro s'active dans quelques secondes.",
@@ -234,7 +239,7 @@
   },
   "Pricing": {
     "title": "Un prix simple et honnête",
-    "subtitle": "Tout ce qui tourne sur votre appareil est gratuit, pour toujours, sans compte. Le plan Pro finance les fonctions qui demandent un serveur.",
+    "subtitle": "Tout ce qui tourne sur votre appareil est gratuit, pour toujours — une connexion Google et vous doublez. Le plan Pro finance les fonctions qui demandent un serveur.",
     "monthly": "Mensuel",
     "yearly": "Annuel",
     "forever": "pour toujours",
@@ -242,13 +247,13 @@
     "note": "Paiement sécurisé via Polar. TVA gérée automatiquement. Annulable à tout moment, effectif en fin de période.",
     "free": {
       "name": "Gratuit",
-      "tagline": "Pour tout le monde, sans compte",
+      "tagline": "Pour tout le monde, avec un compte gratuit",
       "cta": "Installer l'extension",
       "features": {
         "f1": "Doublage en temps réel illimité, 100 % sur votre appareil",
         "f2": "Plus de 65 langues de doublage, langue source auto-détectée",
         "f3": "Sous-titres traduits affichés sur la vidéo",
-        "f4": "Rien ne quitte votre appareil — aucun compte requis",
+        "f4": "Ce que vous regardez ne quitte jamais votre appareil",
         "f5": "Open source (MIT)"
       }
     },

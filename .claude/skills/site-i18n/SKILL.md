@@ -9,8 +9,9 @@ description: >-
 
 # Voxylio site translations
 
-The site (Next.js + next-intl v4) ships in six locales: `en` (the
-reference), `fr`, `es`, `de`, `it`, `pt`. All copy lives in
+The site (Next.js + next-intl v4) ships in ten locales: `en` (the
+reference), `zh-CN`, `zh-TW`, `ja`, `ko`, `fr`, `de`, `es`, `it`,
+`pt-BR`. All copy lives in
 `site/messages/<locale>.json` — components NEVER hardcode user-facing
 strings.
 
@@ -38,9 +39,13 @@ strings.
 
 ## Translation rules
 
-- Tone per language: FR tutoie ("tu") comme l'extension; ES/IT/PT use
-  the informal register (tú / tu / você-informal PT-PT); DE uses "du";
-  EN stays neutral-direct. Marketing stays concrete, never hype.
+- Tone per language: FR vouvoie on the site (the extension UI tutoie);
+  ES/IT use tú/tu, PT-BR uses você, DE uses "du"; JA/KO/ZH use the
+  standard polite register; EN stays neutral-direct. Marketing stays
+  concrete, never hype.
+- The account requirement is part of the copy since v1.7: dubbing needs
+  a Google sign-in (free plan included). Never reintroduce "no account"
+  claims; the honest angle is "no card, no quota, free plan enough".
 - Product terms NOT translated: Voxylio, Chrome, Chrome Web Store,
   GitHub, Pro, DeepL, Polar, shadow DOM, popup, MIT.
 - Prices stay in EUR with local number formatting (7,99 € / €7.99).

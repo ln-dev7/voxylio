@@ -23,7 +23,7 @@
     "ticks": {
       "free": "Grátis",
       "local": "100% local",
-      "noAccount": "Sem conta",
+      "noCard": "Sem cartão de crédito",
       "noQuota": "Sem limites"
     }
   },
@@ -93,7 +93,7 @@
       },
       "play": {
         "title": "Reproduza um vídeo",
-        "description": "Abra um vídeo legendado, deixe rodar alguns segundos e ative o interruptor no popup ou na barra flutuante."
+        "description": "Abra um vídeo legendado, entre com o Google pelo popup (o plano gratuito basta) e ative o interruptor."
       }
     },
     "cta": "Baixar o Voxylio no GitHub",
@@ -108,7 +108,11 @@
       },
       "cost": {
         "question": "É grátis mesmo?",
-        "answer": "Sim. A tradução roda no seu dispositivo com a API integrada do Chrome (Chrome 138+) e a voz usa as vozes do seu sistema. Sem conta, sem chave de API, sem limites."
+        "answer": "Sim. O plano gratuito é ilimitado — basta entrar com o Google. A tradução roda no dispositivo com a API integrada do Chrome (138+) e a voz usa as vozes do seu sistema. Sem cartão, sem chave de API, sem cotas."
+      },
+      "account": {
+        "question": "Por que preciso de uma conta?",
+        "answer": "Entrar com o Google desbloqueia a extensão e vincula seu plano a ela — o plano gratuito basta e continua gratuito. A dublagem continua rodando no seu dispositivo; a conta guarda apenas seu e-mail e seu plano."
       },
       "voice": {
         "question": "Posso melhorar a qualidade da voz?",
@@ -199,13 +203,13 @@
     "updated": "Última atualização: 24 de agosto de 2026",
     "intro": "O Voxylio foi projetado para trabalhar no seu dispositivo. Esta página descreve exatamente o que a extensão faz com os dados — e o que nunca faz.",
     "p1Title": "O que o Voxylio processa",
-    "p1": "O Voxylio lê a trilha de legendas do vídeo que você está assistindo para traduzi-la e lê-la em voz alta. Suas configurações (idiomas, voz, velocidade, volume) ficam no armazenamento de extensões do navegador, sincronizado pelo Chrome com o seu próprio perfil. Nada mais é lido, coletado ou guardado.",
+    "p1": "O Voxylio lê a trilha de legendas do vídeo que você está assistindo para traduzi-la e lê-la em voz alta. Suas configurações (idiomas, voz, velocidade, volume) ficam no armazenamento de extensões do navegador, sincronizado pelo Chrome com o seu próprio perfil. Nada mais é lido, coletado ou guardado. Se você criar uma conta, o Voxylio guarda também seu endereço de e-mail e seu plano — nada mais.",
     "p2Title": "Local por padrão",
     "p2": "A tradução roda no seu dispositivo com a API de tradução integrada do Chrome sempre que disponível. Nesse modo, nenhum texto sai do seu computador. A voz é gerada pelas vozes do sistema, também localmente.",
     "p3Title": "O recurso online",
     "p3": "Quando o tradutor local do Chrome não está disponível, o Voxylio pode enviar frases individuais das legendas para um serviço de tradução online, para que a dublagem continue. São frases das legendas públicas do vídeo — nunca seus dados pessoais, histórico de navegação ou informações de conta. Você pode desativar isso por completo com o «Modo estritamente local» no popup; o Voxylio passa então a esperar o tradutor local em vez de ir para a internet.",
     "p4Title": "O que o Voxylio nunca faz",
-    "p4": "Sem analytics, sem rastreamento, sem anúncios, sem conta, sem fingerprinting. O Voxylio não coleta, vende nem compartilha dados pessoais e não guarda histórico do que você assiste. A permissão ampla de acesso aos sites existe apenas para a extensão encontrar o player de vídeo e sua trilha de legendas na página que você visita; nunca é usada para ler mais nada.",
+    "p4": "Sem analytics, sem rastreamento, sem publicidade, sem fingerprinting. Sua conta contém apenas seu endereço de e-mail e seu plano — o Voxylio não vende nem compartilha nenhum dado pessoal e não guarda histórico do que você assiste. A permissão ampla de acesso aos sites serve apenas para encontrar o player de vídeo e sua trilha de legendas na página visitada; nunca é usada para ler qualquer outra coisa.",
     "p5Title": "Seus dados, seu controle",
     "p5": "O botão «Redefinir» no popup restaura as configurações padrão e apaga tudo o que a extensão guardou. Remover a extensão remove todos os seus dados.",
     "contact": "Dúvidas? Abra uma issue no GitHub ou fale com o autor."
@@ -213,7 +217,7 @@
   "Account": {
     "title": "Sua conta",
     "signedOutTitle": "Entrar no Voxylio",
-    "signedOutSubtitle": "Uma conta Google, nada mais. Ela só serve para o plano Pro — tudo o que é local continua sem conta.",
+    "signedOutSubtitle": "Uma conta Google desbloqueia a dublagem — o plano gratuito basta e nenhum cartão é pedido.",
     "signInGoogle": "Continuar com o Google",
     "plan": "Plano",
     "planFree": "Grátis",
@@ -223,10 +227,11 @@
     "manage": "Gerenciar a assinatura",
     "signOut": "Sair",
     "extensionTitle": "Extensão",
-    "extensionHint": "Vincule a extensão deste navegador para desbloquear nela os recursos Pro.",
+    "extensionHint": "Vincule a extensão deste navegador para desbloquear nela a dublagem.",
     "extensionConnect": "Vincular a extensão",
     "extensionLinking": "Vinculando…",
     "extensionLinked": "Extensão vinculada",
+    "extensionLinkedBack": "Extensão vinculada — volte ao seu vídeo e ative o interruptor.",
     "extensionMissing": "O Voxylio não está instalado neste navegador.",
     "extensionError": "Não foi possível contatar a extensão. Abra esta página no Chrome com o Voxylio instalado.",
     "checkoutSuccess": "Pagamento recebido — seu plano Pro será ativado em segundos.",
@@ -234,7 +239,7 @@
   },
   "Pricing": {
     "title": "Um preço simples e honesto",
-    "subtitle": "Tudo o que roda no seu dispositivo é grátis, para sempre, sem conta. O Pro financia os recursos que precisam de um servidor.",
+    "subtitle": "Tudo o que roda no seu dispositivo é grátis, para sempre — um login com o Google e você já está dublando. O Pro financia os recursos que precisam de servidor.",
     "monthly": "Mensal",
     "yearly": "Anual",
     "forever": "para sempre",
@@ -243,13 +248,13 @@
     "note": "Pagamento seguro via Polar. Impostos tratados automaticamente. Cancele quando quiser, com efeito no fim do período.",
     "free": {
       "name": "Grátis",
-      "tagline": "Para todos, sem conta",
+      "tagline": "Para todo mundo, com uma conta gratuita",
       "cta": "Instalar a extensão",
       "features": {
         "f1": "Dublagem em tempo real ilimitada, 100% no seu dispositivo",
         "f2": "Mais de 65 idiomas de dublagem, origem autodetectada",
         "f3": "Legendas traduzidas direto no vídeo",
-        "f4": "Nada sai do seu dispositivo — sem conta",
+        "f4": "O que você assiste nunca sai do seu dispositivo",
         "f5": "Código aberto (MIT)"
       }
     },
