@@ -116,7 +116,7 @@
       },
       "pro": {
         "question": "What does Pro include?",
-        "answer": "Everything local stays free and unlimited. Pro funds the features that need a server — starting with context-aware translation: nearby sentences are sent together so pronouns, tone, names and terminology stay right, within a generous monthly allowance. When the allowance runs out, dubbing simply continues with the free local engine — a video is never interrupted. Natural cloud voices, summaries and cross-device sync will join Pro over time."
+        "answer": "Everything local stays free and unlimited. Pro funds the features that need a server — starting with context-aware translation: nearby sentences are sent together so pronouns, tone, names and terminology stay right, within a generous monthly allowance. When the allowance runs out, dubbing simply continues with the free local engine — a video is never interrupted. Natural neural voices, summaries and cross-device sync will join Pro over time."
       },
       "voice": {
         "question": "Can I improve the voice quality?",
@@ -239,7 +239,7 @@
     "extensionMissing": "Voxylio isn't installed in this browser.",
     "extensionError": "Couldn't reach the extension. Open this page in Chrome with Voxylio installed.",
     "checkoutSuccess": "Payment received — your Pro plan activates in a few seconds.",
-    "upgradeYearly": "or $59.99/yr (−37%)"
+    "upgradeYearly": "or $69.99/yr (−27%)"
   },
   "Pricing": {
     "title": "Simple, honest pricing",
@@ -248,7 +248,7 @@
     "yearly": "Yearly",
     "priceFree": "$0",
     "priceMonthly": "$7.99",
-    "priceYearlyMonthly": "$5",
+    "priceYearlyMonthly": "$5.83",
     "forever": "forever",
     "perMonth": "/month",
     "note": "Secure payment via Polar. VAT handled automatically. Cancel anytime, effective at the end of the period.",
@@ -270,13 +270,13 @@
       "cta": "Go Pro",
       "badge": "Support the project",
       "features": {
-        "f1": "Context-aware cloud translation, more faithful (soon)",
+        "f1": "Context-aware AI translation, more faithful (soon)",
         "f2": "New Pro features as they ship",
         "f3": "Early access to new languages and platforms",
         "f4": "Priority support",
         "f5": "One account across all your browsers"
       }
     },
-    "billedYearly": "billed at $59.99/year"
+    "billedYearly": "billed at $69.99/year"
   }
 }

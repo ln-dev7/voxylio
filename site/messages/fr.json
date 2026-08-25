@@ -116,7 +116,7 @@
       },
       "pro": {
         "question": "Que comprend le plan Pro ?",
-        "answer": "Tout ce qui est local reste gratuit et illimité. Le Pro finance les fonctions qui demandent un serveur — à commencer par la traduction contextuelle : les phrases voisines sont envoyées ensemble pour garder pronoms, ton, noms propres et terminologie justes, dans la limite d'un volume mensuel généreux. Quand le volume est épuisé, le doublage continue simplement avec le moteur local gratuit — une vidéo n'est jamais interrompue. Les voix cloud naturelles, les résumés et la synchronisation entre appareils rejoindront le Pro au fil du temps."
+        "answer": "Tout ce qui est local reste gratuit et illimité. Le Pro finance les fonctions qui demandent un serveur — à commencer par la traduction contextuelle : les phrases voisines sont envoyées ensemble pour garder pronoms, ton, noms propres et terminologie justes, dans la limite d'un volume mensuel généreux. Quand le volume est épuisé, le doublage continue simplement avec le moteur local gratuit — une vidéo n'est jamais interrompue. Les voix neurales naturelles, les résumés et la synchronisation entre appareils rejoindront le Pro au fil du temps."
       },
       "voice": {
         "question": "Comment améliorer la qualité de la voix ?",
@@ -239,7 +239,7 @@
     "extensionMissing": "Voxylio n'est pas installée dans ce navigateur.",
     "extensionError": "Impossible de contacter l'extension. Ouvrez cette page dans Chrome avec Voxylio installée.",
     "checkoutSuccess": "Paiement reçu — votre plan Pro s'active dans quelques secondes.",
-    "upgradeYearly": "ou 59,99 $/an (−37 %)"
+    "upgradeYearly": "ou 69,99 $/an (−27 %)"
   },
   "Pricing": {
     "title": "Un prix simple et honnête",
@@ -248,7 +248,7 @@
     "yearly": "Annuel",
     "priceFree": "0 $",
     "priceMonthly": "7,99 $",
-    "priceYearlyMonthly": "5 $",
+    "priceYearlyMonthly": "5,83 $",
     "forever": "pour toujours",
     "perMonth": "/mois",
     "note": "Paiement sécurisé via Polar. TVA gérée automatiquement. Annulable à tout moment, effectif en fin de période.",
@@ -270,13 +270,13 @@
       "cta": "Passer Pro",
       "badge": "Soutenez le projet",
       "features": {
-        "f1": "Traduction contextuelle cloud, plus fidèle (bientôt)",
+        "f1": "Traduction IA contextuelle, plus fidèle (bientôt)",
         "f2": "Nouvelles fonctions Pro dès leur sortie",
         "f3": "Accès anticipé aux nouvelles langues et plateformes",
         "f4": "Support prioritaire",
         "f5": "Un même compte sur tous vos navigateurs"
       }
     },
-    "billedYearly": "facturé 59,99 $/an"
+    "billedYearly": "facturé 69,99 $/an"
   }
 }

@@ -47,9 +47,47 @@ experience the product's value.
 | Cross-device history sync | No | Yes |
 | Priority support | No | Yes |
 
-Prices stay as shipped: **$7.99/mo, $59.99/yr (−37%)**, Polar billing.
-Later add-on packs (indicative): +5 h ≈ $4.99, +15 h ≈ $9.99,
-+40 h ≈ $19.99.
+Prices: **$7.99/mo, $69.99/yr (−27%)** — both configured in Polar.
+Add-on packs come later and their prices are NOT published until the
+real cost per cloud hour is measured (see "Two meters" below); the cloud
+budget per subscriber should average ≈ $2/mo to protect margin.
+
+## Two meters, never one bare "cloud" number
+
+"Cloud" is not one thing and must never be sold as one:
+
+- **Contextual AI translation** (text only) — cheap per call. Metered
+  **in characters** with a generous monthly allowance (shipped:
+  `pro_usage.chars`, default 1.5M). Never expressed in "hours".
+- **Premium Audio** (future) — transcription of no-subtitle videos +
+  neural voices. The EXPENSIVE meter, **in minutes**, with warnings at
+  80% and 100% of the allowance. Add-on packs (non-renewing, 12-month
+  validity) apply to this meter only. Do NOT advertise "X hours
+  included" anywhere until this pipeline exists and its real cost is
+  measured — pack prices follow `price ≥ cost/h ÷ cloud-budget-share`.
+
+Accounts, entitlements checks and payments are cloud too but are never
+metered against the user.
+
+## How the offer is worded (site copy rules)
+
+Never "$7.99 for N hours" — that reads as "the extension stops after N
+hours". Always: **unlimited local dubbing** + what Pro adds, with the
+fallback promise spelled out ("when an allowance runs out, dubbing
+continues free with the local engine"). Marketing vocabulary: "doublage
+local", "traduction IA contextuelle", "Audio Premium", "synchronisation
+du compte" — never bare "cloud" as a selling word; users buy a result,
+not infrastructure.
+
+Yearly plan: when Premium Audio ships, prefer the **flexible pool**
+(e.g. N hours credited for the whole year, spend freely) over
+monthly-expiring hours; decide with real data.
+
+## Measure during beta before fixing any quota publicly
+
+Cost per transcription minute, per voice minute, per translated
+character; average consumption; % of users hitting the cap; cost of the
+top-10% heaviest users. Launch quotas as "beta, may evolve", then fix.
 
 ## The three Pro pillars (build in this order)
 

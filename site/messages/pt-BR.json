@@ -116,7 +116,7 @@
       },
       "pro": {
         "question": "O que o plano Pro inclui?",
-        "answer": "Tudo o que é local continua grátis e ilimitado. O Pro financia os recursos que precisam de servidor — começando pela tradução contextual: as frases vizinhas são enviadas juntas para manter pronomes, tom, nomes e terminologia corretos, dentro de um generoso volume mensal. Quando o volume acaba, a dublagem simplesmente continua com o motor local gratuito — um vídeo nunca é interrompido. Vozes cloud naturais, resumos e sincronização entre dispositivos chegarão ao Pro com o tempo."
+        "answer": "Tudo o que é local continua grátis e ilimitado. O Pro financia os recursos que precisam de servidor — começando pela tradução contextual: as frases vizinhas são enviadas juntas para manter pronomes, tom, nomes e terminologia corretos, dentro de um generoso volume mensal. Quando o volume acaba, a dublagem simplesmente continua com o motor local gratuito — um vídeo nunca é interrompido. Vozes neurais naturais, resumos e sincronização entre dispositivos chegarão ao Pro com o tempo."
       },
       "voice": {
         "question": "Posso melhorar a qualidade da voz?",
@@ -239,7 +239,7 @@
     "extensionMissing": "O Voxylio não está instalado neste navegador.",
     "extensionError": "Não foi possível contatar a extensão. Abra esta página no Chrome com o Voxylio instalado.",
     "checkoutSuccess": "Pagamento recebido — seu plano Pro será ativado em segundos.",
-    "upgradeYearly": "ou US$ 59,99/ano (−37%)"
+    "upgradeYearly": "ou US$ 69,99/ano (−27%)"
   },
   "Pricing": {
     "title": "Um preço simples e honesto",
@@ -248,10 +248,10 @@
     "yearly": "Anual",
     "priceFree": "US$ 0",
     "priceMonthly": "US$ 7,99",
-    "priceYearlyMonthly": "US$ 5",
+    "priceYearlyMonthly": "US$ 5,83",
     "forever": "para sempre",
     "perMonth": "/mês",
-    "billedYearly": "cobrado US$ 59,99/ano",
+    "billedYearly": "cobrado US$ 69,99/ano",
     "note": "Pagamento seguro via Polar. Impostos tratados automaticamente. Cancele quando quiser, com efeito no fim do período.",
     "free": {
       "name": "Grátis",
@@ -271,7 +271,7 @@
       "cta": "Assinar o Pro",
       "badge": "Apoie o projeto",
       "features": {
-        "f1": "Tradução contextual na nuvem, mais fiel (em breve)",
+        "f1": "Tradução IA contextual, mais fiel (em breve)",
         "f2": "Novos recursos Pro assim que saírem",
         "f3": "Acesso antecipado a novos idiomas e plataformas",
         "f4": "Suporte prioritário",

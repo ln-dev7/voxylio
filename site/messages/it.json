@@ -116,7 +116,7 @@
       },
       "pro": {
         "question": "Cosa include il piano Pro?",
-        "answer": "Tutto ciò che è locale resta gratis e illimitato. Il Pro finanzia le funzioni che richiedono un server — a cominciare dalla traduzione contestuale: le frasi vicine vengono inviate insieme per mantenere corretti pronomi, tono, nomi e terminologia, entro un generoso volume mensile. Quando si esaurisce, il doppiaggio continua con il motore locale gratuito — un video non viene mai interrotto. Voci cloud naturali, riassunti e sincronizzazione tra dispositivi arriveranno nel tempo."
+        "answer": "Tutto ciò che è locale resta gratis e illimitato. Il Pro finanzia le funzioni che richiedono un server — a cominciare dalla traduzione contestuale: le frasi vicine vengono inviate insieme per mantenere corretti pronomi, tono, nomi e terminologia, entro un generoso volume mensile. Quando si esaurisce, il doppiaggio continua con il motore locale gratuito — un video non viene mai interrotto. Voci neurali naturali, riassunti e sincronizzazione tra dispositivi arriveranno nel tempo."
       },
       "voice": {
         "question": "Posso migliorare la qualità della voce?",
@@ -239,7 +239,7 @@
     "extensionMissing": "Voxylio non è installato in questo browser.",
     "extensionError": "Impossibile raggiungere l'estensione. Apri questa pagina in Chrome con Voxylio installato.",
     "checkoutSuccess": "Pagamento ricevuto — il tuo piano Pro si attiva tra pochi secondi.",
-    "upgradeYearly": "oppure 59,99 $/anno (−37%)"
+    "upgradeYearly": "oppure 69,99 $/anno (−27%)"
   },
   "Pricing": {
     "title": "Un prezzo semplice e onesto",
@@ -248,10 +248,10 @@
     "yearly": "Annuale",
     "priceFree": "0 $",
     "priceMonthly": "7,99 $",
-    "priceYearlyMonthly": "5 $",
+    "priceYearlyMonthly": "5,83 $",
     "forever": "per sempre",
     "perMonth": "/mese",
-    "billedYearly": "fatturato 59,99 $/anno",
+    "billedYearly": "fatturato 69,99 $/anno",
     "note": "Pagamento sicuro con Polar. IVA gestita automaticamente. Annulli quando vuoi, con effetto a fine periodo.",
     "free": {
       "name": "Gratis",
@@ -271,7 +271,7 @@
       "cta": "Passa a Pro",
       "badge": "Sostieni il progetto",
       "features": {
-        "f1": "Traduzione contestuale nel cloud, più fedele (presto)",
+        "f1": "Traduzione IA contestuale, più fedele (presto)",
         "f2": "Nuove funzioni Pro appena disponibili",
         "f3": "Accesso anticipato a nuove lingue e piattaforme",
         "f4": "Supporto prioritario",

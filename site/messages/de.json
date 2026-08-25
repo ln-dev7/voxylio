@@ -116,7 +116,7 @@
       },
       "pro": {
         "question": "Was enthält der Pro-Plan?",
-        "answer": "Alles Lokale bleibt gratis und unbegrenzt. Pro finanziert die Funktionen, die einen Server brauchen — allen voran die kontextbewusste Übersetzung: benachbarte Sätze werden zusammen übertragen, damit Pronomen, Ton, Namen und Terminologie stimmen, innerhalb eines großzügigen Monatskontingents. Ist es aufgebraucht, läuft die Synchronisation einfach mit der kostenlosen lokalen Engine weiter — ein Video wird nie unterbrochen. Natürliche Cloud-Stimmen, Zusammenfassungen und Geräte-Sync folgen nach und nach."
+        "answer": "Alles Lokale bleibt gratis und unbegrenzt. Pro finanziert die Funktionen, die einen Server brauchen — allen voran die kontextbewusste Übersetzung: benachbarte Sätze werden zusammen übertragen, damit Pronomen, Ton, Namen und Terminologie stimmen, innerhalb eines großzügigen Monatskontingents. Ist es aufgebraucht, läuft die Synchronisation einfach mit der kostenlosen lokalen Engine weiter — ein Video wird nie unterbrochen. Natürliche neuronale Stimmen, Zusammenfassungen und Geräte-Sync folgen nach und nach."
       },
       "voice": {
         "question": "Kann ich die Stimmqualität verbessern?",
@@ -239,7 +239,7 @@
     "extensionMissing": "Voxylio ist in diesem Browser nicht installiert.",
     "extensionError": "Die Erweiterung ist nicht erreichbar. Öffne diese Seite in Chrome mit installiertem Voxylio.",
     "checkoutSuccess": "Zahlung erhalten — dein Pro-Plan wird in wenigen Sekunden aktiviert.",
-    "upgradeYearly": "oder 59,99 $/Jahr (−37 %)"
+    "upgradeYearly": "oder 69,99 $/Jahr (−27 %)"
   },
   "Pricing": {
     "title": "Ein einfacher, ehrlicher Preis",
@@ -248,10 +248,10 @@
     "yearly": "Jährlich",
     "priceFree": "0 $",
     "priceMonthly": "7,99 $",
-    "priceYearlyMonthly": "5 $",
+    "priceYearlyMonthly": "5,83 $",
     "forever": "für immer",
     "perMonth": "/Monat",
-    "billedYearly": "abgerechnet mit 59,99 $/Jahr",
+    "billedYearly": "abgerechnet mit 69,99 $/Jahr",
     "note": "Sichere Zahlung über Polar. Umsatzsteuer wird automatisch abgewickelt. Jederzeit kündbar, wirksam zum Periodenende.",
     "free": {
       "name": "Kostenlos",
@@ -271,7 +271,7 @@
       "cta": "Pro holen",
       "badge": "Projekt unterstützen",
       "features": {
-        "f1": "Kontextbewusste Cloud-Übersetzung, noch treuer (bald)",
+        "f1": "Kontextbewusste KI-Übersetzung, treffender (bald)",
         "f2": "Neue Pro-Funktionen, sobald sie erscheinen",
         "f3": "Früher Zugang zu neuen Sprachen und Plattformen",
         "f4": "Bevorzugter Support",
