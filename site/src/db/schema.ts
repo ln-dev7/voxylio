@@ -1,4 +1,10 @@
-import { pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import {
+  integer,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 
 // Users and sessions live in the `neon_auth` schema, managed by Neon
 // Auth. These tables only reference the Neon Auth user id as plain
@@ -24,6 +30,23 @@ export const entitlement = pgTable("entitlement", {
  * SHA-256 hash is stored; the token itself is shown once at creation
  * and relayed to the extension by the account page.
  */
+/**
+ * Monthly Pro cloud consumption, one row per (user, "YYYY-MM"). Only
+ * metered characters of translated text — context windows are free.
+ * `/api/pro/translate` increments it atomically; `/api/entitlements`
+ * reads it to report the remaining quota.
+ */
+export const proUsage = pgTable(
+  "pro_usage",
+  {
+    userId: text("user_id").notNull(),
+    period: text("period").notNull(), // "YYYY-MM" (UTC)
+    chars: integer("chars").notNull().default(0),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("pro_usage_user_period_idx").on(t.userId, t.period)],
+);
+
 export const extensionToken = pgTable(
   "extension_token",
   {

@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { db, schema } from "@/db";
+import { currentPeriod, proMonthlyChars, proProviderConfigured } from "@/lib/pro";
 
 export const dynamic = "force-dynamic";
 
@@ -92,8 +93,37 @@ export async function GET(req: Request) {
     out = { ...FREE, status: "revoked" };
   }
 
+  // Capability flags + remaining cloud quota (docs/PRICING.md): the
+  // extension renders these, it never decides on its own.
+  const isPro = out.plan === "pro";
+  let cloudCharsRemaining = 0;
+  if (isPro) {
+    try {
+      const [usage] = await db
+        .select()
+        .from(schema.proUsage)
+        .where(
+          and(
+            eq(schema.proUsage.userId, userId),
+            eq(schema.proUsage.period, currentPeriod()),
+          ),
+        )
+        .limit(1);
+      cloudCharsRemaining = Math.max(0, proMonthlyChars() - (usage?.chars ?? 0));
+    } catch {
+      /* table may not exist yet: report 0, never fail */
+    }
+  }
+  const caps = {
+    contextual_translation: isPro && proProviderConfigured(),
+    cloud_voices: false,
+    audio_transcription: false,
+    ai_summary: false,
+    cloud_sync: false,
+  };
+
   return Response.json(
-    { ...out, email, checkedAt: new Date().toISOString() },
+    { ...out, email, caps, cloudCharsRemaining, checkedAt: new Date().toISOString() },
     { headers: CORS },
   );
 }
