@@ -16,15 +16,10 @@ import {
   toTranscriptText,
   toSRT,
 } from "@voxylio/core";
+import { makeT, resolveUiLang, UI_LANGS, UI_LANG_LABELS } from "./i18n.js";
 
 const $ = (id) => document.getElementById(id);
-const t = (key, subs) => {
-  try {
-    return chrome.i18n.getMessage(key, subs) || "";
-  } catch (e) {
-    return "";
-  }
-};
+let t = () => "";
 
 function applyI18n() {
   for (const el of document.querySelectorAll("[data-i18n]")) {
@@ -589,15 +584,36 @@ function initAccount() {
 // ---------------------------------------------------------------- init
 
 async function init() {
+  const raw = await chrome.storage.sync.get(null);
+  const migrated = migrateSettings(raw);
+  settings = migrated.settings;
+  if (migrated.changed) chrome.storage.sync.set(settings);
+  t = makeT(resolveUiLang(settings.uiLang, navigator.language));
   applyI18n();
   try {
     $("version").textContent = "Voxylio v" + chrome.runtime.getManifest().version;
   } catch (e) {}
 
-  const raw = await chrome.storage.sync.get(null);
-  const migrated = migrateSettings(raw);
-  settings = migrated.settings;
-  if (migrated.changed) chrome.storage.sync.set(settings);
+  // Interface-language selector (auto = browser language).
+  const uiSel = $("uiLang");
+  for (const code of UI_LANGS) {
+    const opt = document.createElement("option");
+    opt.value = code;
+    opt.textContent =
+      code === "auto"
+        ? (t("uiLangAuto") || "Langue du navigateur") +
+          " — " +
+          (UI_LANG_LABELS[resolveUiLang("auto", navigator.language)] || "English")
+        : UI_LANG_LABELS[code];
+    uiSel.appendChild(opt);
+  }
+  uiSel.value = settings.uiLang || "auto";
+  uiSel.addEventListener("change", (e) => {
+    chrome.storage.sync.set(validateSettings({ uiLang: e.target.value }));
+    // The whole page re-renders in the new language.
+    setTimeout(() => window.location.reload(), 150);
+  });
+
   $("provider").value = settings.provider;
   renderSites();
 

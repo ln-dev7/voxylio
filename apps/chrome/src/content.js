@@ -19,6 +19,8 @@ import {
   VOICE_PREFIX_ALIASES,
   PREVIEW_SAMPLES,
   fmtTime,
+  domCaptionSiteFor,
+  domCueEnd,
   DEFAULTS as SHARED_DEFAULTS,
   createTranslatorChain,
   journalAppendLine,
@@ -37,6 +39,7 @@ import {
   createDeeplProvider,
   createGoogleV2Provider,
 } from "@voxylio/webext";
+import { makeT, resolveUiLang } from "./i18n.js";
 
 
 (() => {
@@ -125,6 +128,62 @@ import {
     });
   }
 
+  // ------------------------------------------------- DOM captions (sites)
+  // YouTube, Netflix & co never expose textTracks: their captions are
+  // rendered in the page. Watch the player's caption container and feed
+  // whatever appears to the primary controller as synthetic cues.
+  const domSite = domCaptionSiteFor(location.hostname);
+  let domCapContainer = null;
+  let domCapObserver = null;
+  let domLastText = "";
+
+  function domCaptionText() {
+    if (!domCapContainer) return "";
+    const parts = [];
+    for (const el of domCapContainer.querySelectorAll(domSite.segment)) {
+      const s = (el.textContent || "").replace(/\s+/g, " ").trim();
+      if (s) parts.push(s);
+    }
+    return parts.join(" ").trim();
+  }
+
+  function onDomCaptionMutation() {
+    const video = primaryVideo;
+    const ctl = video && controllers.get(video);
+    if (!ctl) return;
+    const text = domCaptionText();
+    if (!text) {
+      // Caption cleared: close the running cue at the playhead.
+      if (domLastText) ctl.closeDomCue(video.currentTime);
+      domLastText = "";
+      return;
+    }
+    if (text === domLastText) return;
+    domLastText = text;
+    ctl.addDomCue(video.currentTime, text);
+  }
+
+  function syncDomCaptions() {
+    if (!domSite) return;
+    if (domCapContainer && !domCapContainer.isConnected) {
+      if (domCapObserver) domCapObserver.disconnect();
+      domCapObserver = null;
+      domCapContainer = null;
+      domLastText = "";
+    }
+    if (domCapContainer) return;
+    const el = document.querySelector(domSite.container);
+    if (!el) return;
+    domCapContainer = el;
+    domCapObserver = new MutationObserver(onDomCaptionMutation);
+    domCapObserver.observe(el, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+    onDomCaptionMutation();
+  }
+
   const controllers = new Map(); // HTMLVideoElement -> controller
 
   // Only ONE video is dubbed at a time: the "primary" — playing, visible
@@ -193,6 +252,11 @@ import {
       for (const c of controllers.values()) c.flushSpeech();
     }
     if (changes.provider || changes.cloudFallback) rebuildChain();
+    if (changes.uiLang) {
+      // Rebuild the floating bar in the new language.
+      uiT = null;
+      destroyOverlay();
+    }
     refreshAll();
   });
 
@@ -495,6 +559,25 @@ import {
       ctl.cues.push({ start, end, text, key });
       ctl.cues.sort((a, b) => a.start - b.start);
     }
+
+    // DOM-harvested captions (YouTube, Netflix…): synthetic cues stamped
+    // at the playhead. The previous DOM cue is closed when replaced so
+    // grouping sees realistic durations.
+    ctl.addDomCue = (start, text) => {
+      const clean = stripTags(text);
+      if (!clean) return;
+      if (ctl.lastDomCue && ctl.lastDomCue.end > start) {
+        ctl.lastDomCue.end = Math.max(ctl.lastDomCue.start + 0.8, start);
+      }
+      addCue(start, domCueEnd(start, clean), clean);
+      ctl.lastDomCue = ctl.cues[ctl.cues.length - 1] || null;
+      ctl.domCues = (ctl.domCues || 0) + 1;
+    };
+    ctl.closeDomCue = (at) => {
+      if (ctl.lastDomCue && ctl.lastDomCue.end > at) {
+        ctl.lastDomCue.end = Math.max(ctl.lastDomCue.start + 0.8, at);
+      }
+    };
 
     // Sentence reconstruction lives in @voxylio/core (buildGroups).
     function rebuildGroups() {
@@ -1570,11 +1653,14 @@ import {
     renderOverlay();
   }
 
-  // chrome.i18n with a French fallback (the overlay builds its markup
-  // once, so labels are resolved at creation time).
+  // Bundled i18n with a French fallback (the overlay builds its markup
+  // once, so labels are resolved at creation time; a UI-language change
+  // tears the overlay down and rebuilds it).
+  var uiT = null;
   function t2(key, fallback) {
     try {
-      return (runtime && chrome.i18n && chrome.i18n.getMessage(key)) || fallback;
+      if (!uiT) uiT = makeT(resolveUiLang(settings.uiLang, navigator.language));
+      return uiT(key) || fallback;
     } catch (e) {
       return fallback;
     }
@@ -1648,6 +1734,7 @@ import {
       }
     }
     primaryVideo = pickPrimary();
+    syncDomCaptions();
     refreshAll();
   }
 
@@ -1801,8 +1888,14 @@ import {
               ? "translate-error"
               : "local-unavailable";
           else state = "ready";
+        } else if (hasSubTracks) {
+          state = "subs-loading";
+        } else if (domSite) {
+          // Supported player (YouTube, Netflix…): captions must be
+          // switched on in the player for Voxylio to read them.
+          state = "enable-subs";
         } else {
-          state = hasSubTracks ? "subs-loading" : "no-subs";
+          state = "no-subs";
         }
       }
       return {

@@ -16,6 +16,7 @@ const suites = [
   ['run-source.js', 'source detection (fr→en) + same-language silence'],
   ['run-roll.js', 'roll-up captions + playbackRate ×1.5'],
   ['run-gate.js', 'account gate: silent signed out, live unlock on link'],
+  ['run-dom.js', 'DOM captions (YouTube-style player, no textTracks)'],
 ];
 let failed = 0;
 for (const [file, label] of suites) {

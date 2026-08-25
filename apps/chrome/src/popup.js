@@ -3,6 +3,7 @@
 // script (packages/core/src/settings.js). All status rendering is DOM
 // building — no innerHTML with dynamic content.
 import { DEFAULTS, LANGUAGES, LOCALES, PREVIEW_SAMPLES } from "@voxylio/core";
+import { makeT, resolveUiLang } from "./i18n.js";
 
 // The full catalog feeds both selects (source keeps its "auto" entry).
 function populateLanguageSelects() {
@@ -19,14 +20,9 @@ function populateLanguageSelects() {
 
 const $ = (id) => document.getElementById(id);
 
-// i18n: message from _locales, French markup text as fallback.
-const t = (key, subs) => {
-  try {
-    return chrome.i18n.getMessage(key, subs) || "";
-  } catch (e) {
-    return "";
-  }
-};
+// i18n: bundled packs (user choice > browser language > English); the
+// French markup text is only a pre-init fallback.
+let t = () => "";
 
 function applyI18n() {
   for (const el of document.querySelectorAll("[data-i18n]")) {
@@ -144,6 +140,9 @@ function statusFragment(resp) {
     case "no-subs":
       add(line(t("statusNoSubs") || "Ce lecteur n’expose pas ses sous-titres — le doublage n’est pas possible sur cette vidéo.", "warn"));
       break;
+    case "enable-subs":
+      add(line(t("statusEnableSubs") || "Active les sous-titres (CC) dans le lecteur : Voxylio les lit en direct sur ce site.", "warn"));
+      break;
     case "no-voice":
       add(line(t("statusNoVoice") || "Aucune voix installée pour cette langue. Sur Mac : Réglages Système → Accessibilité → Contenu énoncé.", "warn"));
       break;
@@ -258,9 +257,10 @@ async function refreshAccount() {
 }
 
 async function init() {
+  settings = await chrome.storage.sync.get(DEFAULTS);
+  t = makeT(resolveUiLang(settings.uiLang, navigator.language));
   applyI18n();
   populateLanguageSelects();
-  settings = await chrome.storage.sync.get(DEFAULTS);
   render(settings);
 
   $("enabled").addEventListener("change", (e) => save({ enabled: e.target.checked }));
@@ -313,6 +313,7 @@ async function init() {
     } catch (e) {}
   });
   $("optionsBtn").addEventListener("click", () => chrome.runtime.openOptionsPage());
+  $("gearBtn").addEventListener("click", () => chrome.runtime.openOptionsPage());
   const openHub = (view) => {
     chrome.tabs.create({ url: chrome.runtime.getURL("app.html#" + view) });
   };
@@ -365,10 +366,12 @@ async function init() {
     await chrome.storage.local.remove(["accountToken", "entitlements"]);
     refreshAccount();
   });
-  // Unlock live when the site relays the token while the popup is open.
+  // Unlock live when the site relays the token while the popup is open;
+  // re-render in place when the UI language changes from the hub.
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === "local" && (changes.accountToken || changes.entitlements))
       refreshAccount();
+    if (area === "sync" && changes.uiLang) window.location.reload();
   });
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
