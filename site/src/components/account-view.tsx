@@ -315,7 +315,24 @@ export function AccountView() {
             <p className="text-xs text-muted-foreground">{session.user.email}</p>
             <button
               type="button"
-              onClick={() => authClient.signOut()}
+              onClick={async () => {
+                // Lock the extension in this browser too: the content
+                // script relays the unlink to the background.
+                try {
+                  window.postMessage(
+                    { type: "voxylio:unlink" },
+                    window.location.origin,
+                  );
+                } catch {
+                  /* no extension present */
+                }
+                try {
+                  await authClient.signOut();
+                } catch {
+                  /* the reload below reflects the real session state */
+                }
+                window.location.assign(`/${locale}/account`);
+              }}
               className="flex cursor-pointer items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               <LogOut className="size-3.5" />

@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { db, schema } from "@/db";
 
@@ -63,6 +63,19 @@ export async function GET(req: Request) {
     .where(eq(schema.entitlement.userId, userId))
     .limit(1);
 
+  // The popup shows which account is linked. Users are managed by Neon
+  // Auth (synced into neon_auth.users_sync); never fail the request over
+  // a missing sync table.
+  let email: string | null = null;
+  try {
+    const r = await db.execute(
+      sql`select email from neon_auth.users_sync where id = ${userId} limit 1`,
+    );
+    email = (r.rows?.[0] as { email?: string } | undefined)?.email ?? null;
+  } catch {
+    /* email stays null */
+  }
+
   // A canceled subscription stays pro until its period actually ends.
   let out = ent
     ? {
@@ -80,7 +93,7 @@ export async function GET(req: Request) {
   }
 
   return Response.json(
-    { ...out, checkedAt: new Date().toISOString() },
+    { ...out, email, checkedAt: new Date().toISOString() },
     { headers: CORS },
   );
 }
