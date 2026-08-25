@@ -1,32 +1,49 @@
 "use client";
 
+import { useTransition } from "react";
 import { useLocale } from "next-intl";
-import { Link, usePathname } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
-import { cn } from "@/lib/utils";
+import { Languages } from "lucide-react";
+import { usePathname, useRouter } from "@/i18n/navigation";
+import { LOCALE_LABELS, routing } from "@/i18n/routing";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-/** FR/EN pill switcher that preserves the current pathname. */
+/** Language Select (shadcn) preserving the current pathname. */
 export function LocaleSwitcher() {
   const locale = useLocale();
   const pathname = usePathname();
+  const router = useRouter();
+  const [, startTransition] = useTransition();
 
   return (
-    <div className="flex items-center rounded-full border border-border p-0.5">
-      {routing.locales.map((l) => (
-        <Link
-          key={l}
-          href={pathname}
-          locale={l}
-          className={cn(
-            "rounded-full px-2.5 py-1 text-xs font-semibold uppercase transition-colors",
-            l === locale
-              ? "bg-secondary text-foreground"
-              : "text-muted-foreground hover:text-foreground"
-          )}
-        >
-          {l}
-        </Link>
-      ))}
-    </div>
+    <Select
+      value={locale}
+      onValueChange={(next) => {
+        startTransition(() => {
+          router.replace(pathname, { locale: next });
+        });
+      }}
+    >
+      <SelectTrigger
+        size="sm"
+        aria-label="Language"
+        className="h-8 gap-1.5 rounded-full border-border bg-transparent px-3 text-xs font-semibold shadow-none"
+      >
+        <Languages className="size-3.5 text-muted-foreground" aria-hidden="true" />
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent align="end">
+        {routing.locales.map((l) => (
+          <SelectItem key={l} value={l} className="text-xs">
+            {LOCALE_LABELS[l] ?? l.toUpperCase()}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

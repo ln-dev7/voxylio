@@ -158,6 +158,12 @@
       "license": "MIT License",
       "issues": "Report an issue",
       "privacy": "Privacy"
+    },
+    "theme": {
+      "label": "Theme",
+      "light": "Light",
+      "system": "System",
+      "dark": "Dark"
     }
   },
   "LocaleSwitcher": {
@@ -253,7 +259,6 @@
     "yearly": "Yearly",
     "forever": "forever",
     "perMonth": "/month",
-    "yearlyNote": "billed €59.99 per year",
     "note": "Secure payment via Polar. VAT handled automatically. Cancel anytime, effective at the end of the period.",
     "free": {
       "name": "Free",
@@ -279,6 +284,7 @@
         "f4": "Priority support",
         "f5": "One account across all your browsers"
       }
-    }
+    },
+    "billedYearly": "billed at €59.99/year"
   }
 }

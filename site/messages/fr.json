@@ -158,6 +158,12 @@
       "license": "Licence MIT",
       "issues": "Signaler un problème",
       "privacy": "Confidentialité"
+    },
+    "theme": {
+      "label": "Thème",
+      "light": "Clair",
+      "system": "Système",
+      "dark": "Sombre"
     }
   },
   "LocaleSwitcher": {
@@ -253,7 +259,6 @@
     "yearly": "Annuel",
     "forever": "pour toujours",
     "perMonth": "/mois",
-    "yearlyNote": "facturé 59,99 € par an",
     "note": "Paiement sécurisé via Polar. TVA gérée automatiquement. Annulable à tout moment, effectif en fin de période.",
     "free": {
       "name": "Gratuit",
@@ -279,6 +284,7 @@
         "f4": "Support prioritaire",
         "f5": "Un même compte sur tous vos navigateurs"
       }
-    }
+    },
+    "billedYearly": "facturé 59,99 €/an"
   }
 }

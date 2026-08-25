@@ -1,0 +1,290 @@
+{
+  "Meta": {
+    "title": "Voxylio — Doblaje de vídeo en tiempo real en tu navegador",
+    "description": "Una extensión de Chrome que dobla en tiempo real cualquier vídeo subtitulado — a más de 65 idiomas. Traducción local, voz sincronizada con la reproducción."
+  },
+  "Header": {
+    "features": "Funciones",
+    "howItWorks": "Cómo funciona",
+    "install": "Instalar",
+    "faq": "FAQ",
+    "github": "GitHub",
+    "openMenu": "Abrir el menú",
+    "closeMenu": "Cerrar el menú",
+    "account": "Cuenta",
+    "pricing": "Precios"
+  },
+  "Hero": {
+    "title": "Mira cualquier vídeo en <accent>tu idioma</accent>",
+    "subtitle": "Voxylio es una extensión de Chrome que dobla vídeos subtitulados en tiempo real. Reconstruye frases completas a partir de los subtítulos, las traduce localmente y las lee sobre el vídeo, en sincronía con la reproducción.",
+    "ctaInstall": "Instalar la extensión",
+    "ctaGithub": "Ver en GitHub",
+    "note": "Funciona con los vídeos cuyo reproductor expone una pista de subtítulos — la mayoría de las plataformas de cursos lo hacen.",
+    "ticks": {
+      "free": "Gratis",
+      "local": "100 % local",
+      "noAccount": "Sin cuenta",
+      "noQuota": "Sin límites"
+    }
+  },
+  "Features": {
+    "title": "Construido como un estudio de doblaje real",
+    "subtitle": "No es un lector robótico de subtítulos. Voxylio reconstruye las frases, mantiene una voz coherente y adapta su ritmo al orador.",
+    "items": {
+      "sentences": {
+        "title": "Doblaje por frases completas",
+        "description": "Los fragmentos de subtítulos se fusionan en frases completas antes de traducir, para que la voz fluya con naturalidad y las traducciones conserven su contexto."
+      },
+      "local": {
+        "title": "Traducción local",
+        "description": "Usa primero la API de traducción integrada de Chrome — gratuita, privada y utilizable sin conexión — con un respaldo en línea cuando no está disponible."
+      },
+      "sync": {
+        "title": "Siempre sincronizado",
+        "description": "La voz sigue el reloj del vídeo: pausa, avanza o repite y la voz responde al instante. Una adaptación suave de la velocidad mantiene inteligibles las frases largas."
+      },
+      "voices": {
+        "title": "Una voz coherente",
+        "description": "Se elige una sola voz por sesión para mantener la coherencia. Elige cualquier voz instalada en tu sistema, incluidas las voces premium de macOS."
+      },
+      "overlay": {
+        "title": "Controles flotantes",
+        "description": "Un controlador arrastrable sobre la página te permite activar el doblaje, cambiar de idioma, ajustar la velocidad y atenuar el audio original sin salir del vídeo."
+      },
+      "languages": {
+        "title": "Más de 65 idiomas",
+        "description": "Dobla cualquier vídeo subtitulado a más de 65 idiomas: francés, español, japonés, árabe, hindi y muchos más. Cambiar de idioma en plena reproducción es instantáneo y nunca mezcla voces."
+      }
+    }
+  },
+  "HowItWorks": {
+    "title": "Cómo funciona",
+    "steps": {
+      "detect": {
+        "title": "Detecta el vídeo",
+        "description": "La extensión encuentra el reproductor en la página — incluso dentro de reproductores con shadow DOM como Mux — y lee su pista de subtítulos."
+      },
+      "translate": {
+        "title": "Traduce por adelantado",
+        "description": "Las próximas frases se traducen antes de la reproducción con el modelo local de Chrome, con caché por idioma."
+      },
+      "speak": {
+        "title": "Habla sobre el vídeo",
+        "description": "Una voz sintetizada lee cada frase en el momento justo mientras el audio original se atenúa automáticamente."
+      }
+    },
+    "tryIt": "Pruébalo — todos los controles de este popup funcionan de verdad"
+  },
+  "Languages": {
+    "list": {
+      "en": "Inglés",
+      "fr": "Francés",
+      "es": "Español",
+      "it": "Italiano",
+      "de": "Alemán",
+      "pt": "Portugués",
+      "ja": "Japonés",
+      "zh": "Chino",
+      "ru": "Ruso",
+      "ar": "Árabe",
+      "hi": "Hindi",
+      "ko": "Coreano",
+      "tr": "Turco",
+      "pl": "Polaco",
+      "uk": "Ucraniano",
+      "nl": "Neerlandés",
+      "vi": "Vietnamita",
+      "sv": "Sueco"
+    },
+    "title": "Más de 65 idiomas, en ambos sentidos",
+    "subtitle": "El idioma de origen se detecta automáticamente — dobla desde cualquier idioma al tuyo."
+  },
+  "Install": {
+    "title": "Instálalo en dos minutos",
+    "subtitle": "Voxylio aún no está en la Chrome Web Store — instálalo como extensión sin empaquetar.",
+    "steps": {
+      "clone": {
+        "title": "Descarga el código",
+        "description": "Clona el repositorio o descárgalo como ZIP y guarda la carpeta de la extensión en un lugar permanente."
+      },
+      "load": {
+        "title": "Cárgalo en Chrome",
+        "description": "Abre chrome://extensions, activa el modo desarrollador, pulsa «Cargar descomprimida» y elige la carpeta de la extensión."
+      },
+      "play": {
+        "title": "Reproduce un vídeo",
+        "description": "Abre cualquier vídeo subtitulado, déjalo reproducirse unos segundos y activa el interruptor en el popup o en la barra flotante."
+      }
+    },
+    "cta": "Consigue Voxylio en GitHub",
+    "storeSoon": "Muy pronto en la Chrome Web Store"
+  },
+  "Faq": {
+    "title": "Preguntas frecuentes",
+    "items": {
+      "sites": {
+        "question": "¿En qué sitios funciona?",
+        "answer": "En cualquier sitio cuyo reproductor exponga una pista de subtítulos: plataformas de cursos, vídeos de documentación, la mayoría de los reproductores HTML5. Si el reproductor dibuja los subtítulos sin pista de texto, el doblaje todavía no es posible."
+      },
+      "cost": {
+        "question": "¿Es realmente gratis?",
+        "answer": "Sí. La traducción se ejecuta en tu dispositivo con la API integrada de Chrome (Chrome 138+) y la voz usa las voces de tu sistema. Sin cuenta, sin clave de API, sin límites."
+      },
+      "voice": {
+        "question": "¿Puedo mejorar la calidad de la voz?",
+        "answer": "Sí: instala voces del sistema de mayor calidad. En macOS: Ajustes del Sistema → Accesibilidad → Contenido hablado → descarga una voz premium para tu idioma y elígela en el popup."
+      },
+      "privacy": {
+        "question": "¿Y la privacidad?",
+        "answer": "Los subtítulos se traducen localmente siempre que el modelo integrado de Chrome esté disponible. Solo cuando no lo está, las frases se envían a un servicio de traducción en línea de respaldo. Nada más sale de tu navegador."
+      },
+      "youtube": {
+        "question": "¿En qué se diferencia del doblaje automático de YouTube?",
+        "answer": "El doblaje de YouTube solo existe en YouTube. Voxylio lleva la misma experiencia — traducción por frases completas, una sola voz, audio original atenuado — a cualquier sitio con subtítulos."
+      }
+    }
+  },
+  "Footer": {
+    "tagline": "Doblaje de vídeo en tiempo real en tu navegador.",
+    "madeBy": "Creado por",
+    "license": "Licencia MIT",
+    "product": "Producto",
+    "resources": "Recursos",
+    "links": {
+      "features": "Funciones",
+      "howItWorks": "Cómo funciona",
+      "install": "Instalar",
+      "faq": "FAQ",
+      "license": "Licencia MIT",
+      "issues": "Informar de un problema",
+      "privacy": "Privacidad"
+    },
+    "theme": {
+      "label": "Tema",
+      "light": "Claro",
+      "system": "Sistema",
+      "dark": "Oscuro"
+    }
+  },
+  "LocaleSwitcher": {
+    "label": "Idioma"
+  },
+  "Popup": {
+    "toggle": "Activar el doblaje",
+    "statusVideo": "1 vídeo detectado",
+    "statusLines": "42 frases listas",
+    "statusOff": "Doblaje en pausa",
+    "statusTranslation": "Traducción: Chrome (local)",
+    "langLabel": "Idioma del doblaje",
+    "voiceLabel": "Voz",
+    "rateLabel": "Velocidad de la voz",
+    "duckLabel": "Audio original",
+    "hint": "Reproduce el vídeo y activa el interruptor: la voz sigue los subtítulos en el idioma elegido. Al 0 %, solo se oye el doblaje."
+  },
+  "Compare": {
+    "title": "Por qué gana el doblaje basado en subtítulos",
+    "subtitle": "Otras herramientas capturan el audio de tu pestaña, ejecutan reconocimiento de voz en la nube y cobran por horas. Voxylio lee los subtítulos oficiales.",
+    "them": "Herramientas de captura de audio",
+    "note": "Comparación con extensiones de doblaje por captura de audio, según sus precios y documentación públicos.",
+    "rows": {
+      "price": {
+        "label": "Precio",
+        "us": "Gratis, horas ilimitadas",
+        "them": "19–129 $/mes, cuotas por hora"
+      },
+      "accuracy": {
+        "label": "Precisión",
+        "us": "Texto oficial de los subtítulos, palabra por palabra",
+        "them": "Reconocimiento de voz aproximado"
+      },
+      "privacy": {
+        "label": "Privacidad",
+        "us": "Traducción local — nada sale de tu navegador",
+        "them": "Tu audio se envía a sus servidores"
+      },
+      "sync": {
+        "label": "Sincronización",
+        "us": "Anclada al reloj del vídeo, resistente a los saltos",
+        "them": "Retraso fijo respecto al audio"
+      },
+      "coverage": {
+        "label": "Cobertura",
+        "us": "Cualquier vídeo con pista de subtítulos",
+        "them": "Cualquier audio, incluso sin subtítulos"
+      }
+    }
+  },
+  "Privacy": {
+    "title": "Política de privacidad",
+    "updated": "Última actualización: 24 de agosto de 2026",
+    "intro": "Voxylio está diseñado para funcionar en tu dispositivo. Esta página describe exactamente qué hace la extensión con los datos — y qué no hace nunca.",
+    "p1Title": "Qué procesa Voxylio",
+    "p1": "Voxylio lee la pista de subtítulos del vídeo que estás viendo para traducirla y leerla en voz alta. Tus ajustes (idiomas, voz, velocidad, volumen) se guardan en el almacenamiento de extensiones de tu navegador, sincronizado por Chrome con tu propio perfil. No se lee, recopila ni almacena nada más.",
+    "p2Title": "Local por defecto",
+    "p2": "La traducción se ejecuta en tu dispositivo con la API de traducción integrada de Chrome siempre que esté disponible. En ese modo, ningún texto sale de tu ordenador. La voz la generan las voces de tu sistema, también localmente.",
+    "p3Title": "El respaldo en línea",
+    "p3": "Cuando el traductor local de Chrome no está disponible, Voxylio puede enviar frases sueltas de los subtítulos a un servicio de traducción en línea para que el doblaje continúe. Son frases de los subtítulos públicos del vídeo — nunca tus datos personales, tu historial de navegación ni la información de tu cuenta. Puedes desactivarlo por completo con el «Modo estrictamente local» del popup; Voxylio esperará entonces al traductor local en lugar de conectarse.",
+    "p4Title": "Lo que Voxylio nunca hace",
+    "p4": "Sin analíticas, sin rastreo, sin anuncios, sin cuenta, sin huella digital. Voxylio no recopila, vende ni comparte ningún dato personal. No guarda historial de lo que ves. El permiso de acceso amplio a los sitios existe únicamente para que la extensión encuentre el reproductor de vídeo y su pista de subtítulos en la página que visitas; nunca se usa para leer nada más.",
+    "p5Title": "Tus datos, tu control",
+    "p5": "El botón «Restablecer» del popup restaura los ajustes por defecto y borra todo lo que la extensión ha guardado. Eliminar la extensión elimina todos sus datos.",
+    "contact": "¿Preguntas? Abre una issue en GitHub o escribe al autor."
+  },
+  "Account": {
+    "title": "Tu cuenta",
+    "signedOutTitle": "Inicia sesión en Voxylio",
+    "signedOutSubtitle": "Una cuenta de Google, nada más. Solo sirve para el plan Pro — todo lo local sigue sin necesitar cuenta.",
+    "signInGoogle": "Continuar con Google",
+    "plan": "Plan",
+    "planFree": "Gratis",
+    "planPro": "Pro",
+    "statusCanceled": "Activo hasta el {date}",
+    "upgrade": "Pásate a Pro — 7,99 €/mes",
+    "manage": "Gestionar la suscripción",
+    "signOut": "Cerrar sesión",
+    "extensionTitle": "Extensión",
+    "extensionHint": "Vincula la extensión de este navegador para desbloquear en ella las funciones Pro.",
+    "extensionConnect": "Vincular la extensión",
+    "extensionLinking": "Vinculando…",
+    "extensionLinked": "Extensión vinculada",
+    "extensionMissing": "Voxylio no está instalado en este navegador.",
+    "extensionError": "No se pudo contactar con la extensión. Abre esta página en Chrome con Voxylio instalado.",
+    "checkoutSuccess": "Pago recibido — tu plan Pro se activa en unos segundos.",
+    "upgradeYearly": "o 59,99 €/año (−37 %)"
+  },
+  "Pricing": {
+    "title": "Un precio simple y honesto",
+    "subtitle": "Todo lo que se ejecuta en tu dispositivo es gratis, para siempre, sin cuenta. Pro financia las funciones que necesitan un servidor.",
+    "monthly": "Mensual",
+    "yearly": "Anual",
+    "forever": "para siempre",
+    "perMonth": "/mes",
+    "billedYearly": "facturado a 59,99 €/año",
+    "note": "Pago seguro con Polar. IVA gestionado automáticamente. Cancela cuando quieras, con efecto al final del período.",
+    "free": {
+      "name": "Gratis",
+      "tagline": "Para todo el mundo, sin cuenta",
+      "cta": "Instalar la extensión",
+      "features": {
+        "f1": "Doblaje en tiempo real ilimitado, 100 % en tu dispositivo",
+        "f2": "Más de 65 idiomas de doblaje, origen autodetectado",
+        "f3": "Subtítulos traducidos sobre el vídeo",
+        "f4": "Nada sale de tu dispositivo — sin cuenta",
+        "f5": "Código abierto (MIT)"
+      }
+    },
+    "pro": {
+      "name": "Pro",
+      "tagline": "Las funciones que necesitan un servidor",
+      "cta": "Pásate a Pro",
+      "badge": "Apoya el proyecto",
+      "features": {
+        "f1": "Traducción contextual en la nube, más fiel (próximamente)",
+        "f2": "Nuevas funciones Pro en cuanto salgan",
+        "f3": "Acceso anticipado a nuevos idiomas y plataformas",
+        "f4": "Soporte prioritario",
+        "f5": "Una misma cuenta en todos tus navegadores"
+      }
+    }
+  }
+}
