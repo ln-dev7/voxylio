@@ -2,10 +2,12 @@
 // Values live in chrome.storage.sync (small, mergeable); provider API
 // keys NEVER live here — they stay in storage.local (see options.js).
 
+import { LANGUAGE_CODES } from "./languages.js";
+
 export const SETTINGS_VERSION = 2;
 
-export const TARGET_LANGS = ["fr", "es", "it", "de", "pt"];
-export const SOURCE_LANGS = ["auto", "en", "fr", "es", "it", "de", "pt"];
+export const TARGET_LANGS = LANGUAGE_CODES;
+export const SOURCE_LANGS = ["auto", ...LANGUAGE_CODES];
 export const PROVIDERS = ["auto", "deepl", "googlev2"];
 
 export const DEFAULTS = Object.freeze({

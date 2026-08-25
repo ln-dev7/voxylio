@@ -19,6 +19,12 @@ export { BoundedMap } from "./cache.js";
 export { computeUtteranceRate, WORDS_PER_SECOND } from "./pacing.js";
 export { pickVoice, LOCALES } from "./voices.js";
 export {
+  LANGUAGES,
+  LANGUAGE_CODES,
+  PRIMARY_LOCALE,
+  VOICE_PREFIX_ALIASES,
+} from "./languages.js";
+export {
   DEFAULTS,
   SETTINGS_VERSION,
   SOURCE_LANGS,
