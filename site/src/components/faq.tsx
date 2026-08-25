@@ -12,7 +12,7 @@ export function Faq() {
   const t = useTranslations("Faq");
 
   return (
-    <section id="faq" className="scroll-mt-16 border-t border-white/[0.06]">
+    <section id="faq" className="scroll-mt-16 border-t border-border">
       <div className="mx-auto w-full max-w-3xl px-4 py-24 sm:px-6">
         <h2 className="text-balance text-center font-display text-3xl font-semibold tracking-tight sm:text-[2.6rem] sm:leading-[1.15]">
           {t("title")}

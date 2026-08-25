@@ -9,7 +9,7 @@ export function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="scroll-mt-16 border-t border-white/[0.06]"
+      className="scroll-mt-16 border-t border-border"
     >
       <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-24 sm:px-6 lg:grid-cols-[1fr_360px]">
         <div>

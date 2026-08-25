@@ -42,7 +42,7 @@ export function Hero() {
               asChild
               size="lg"
               variant="outline"
-              className="h-12 rounded-full bg-white/[0.03] px-7 text-[15px] backdrop-blur-sm"
+              className="h-12 rounded-full bg-card px-7 text-[15px] backdrop-blur-sm"
             >
               <a href={GITHUB_URL} target="_blank" rel="noreferrer">
                 <GitHubIcon className="size-4" />

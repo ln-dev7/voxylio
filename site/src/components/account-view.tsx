@@ -133,7 +133,7 @@ export function AccountView() {
       </h1>
 
       {isPending ? (
-        <div className="mt-8 h-40 animate-pulse rounded-2xl border border-white/[0.06] bg-white/[0.03]" />
+        <div className="mt-8 h-40 animate-pulse rounded-2xl border border-border bg-card" />
       ) : !session ? (
         <div className="mt-6">
           <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
@@ -141,7 +141,7 @@ export function AccountView() {
           </p>
           <Button
             size="lg"
-            className="mt-8 h-12 rounded-full bg-white px-6 text-[15px] font-medium text-black hover:bg-white/90"
+            className="mt-8 h-12 rounded-full border border-border bg-card px-6 text-[15px] font-medium text-foreground shadow-sm hover:bg-accent"
             onClick={() =>
               authClient.signIn.social({
                 provider: "google",
@@ -162,7 +162,7 @@ export function AccountView() {
           )}
 
           {/* Plan */}
-          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6">
+          <div className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
@@ -185,7 +185,7 @@ export function AccountView() {
               {pro ? (
                 <Button
                   variant="outline"
-                  className="rounded-full bg-white/[0.03]"
+                  className="rounded-full bg-card"
                   onClick={() => {
                     window.location.href = "/api/portal";
                   }}
@@ -217,7 +217,7 @@ export function AccountView() {
           </div>
 
           {/* Extension link */}
-          <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6">
+          <div className="rounded-2xl border border-border bg-card p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
@@ -246,7 +246,7 @@ export function AccountView() {
               ) : (
                 <Button
                   variant="outline"
-                  className="rounded-full bg-white/[0.03]"
+                  className="rounded-full bg-card"
                   disabled={ext === "linking"}
                   onClick={linkExtension}
                 >

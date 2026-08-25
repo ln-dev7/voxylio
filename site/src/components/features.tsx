@@ -22,7 +22,7 @@ export function Features() {
   const t = useTranslations("Features");
 
   return (
-    <section id="features" className="scroll-mt-16 border-t border-white/[0.06]">
+    <section id="features" className="scroll-mt-16 border-t border-border">
       <div className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-balance font-display text-3xl font-semibold tracking-tight sm:text-[2.6rem] sm:leading-[1.15]">
@@ -95,7 +95,7 @@ export function Features() {
                 {LANG_CHIPS.map((l) => (
                   <span
                     key={l}
-                    className="grid size-9 place-items-center rounded-full border border-white/[0.08] bg-white/[0.03] text-[11px] font-bold"
+                    className="grid size-9 place-items-center rounded-full border border-border bg-card text-[11px] font-bold"
                   >
                     {l}
                   </span>

@@ -49,7 +49,7 @@ export default async function PrivacyPage({
               </p>
             </section>
           ))}
-          <p className="mt-12 border-t border-white/[0.06] pt-6 text-sm text-muted-foreground">
+          <p className="mt-12 border-t border-border pt-6 text-sm text-muted-foreground">
             {t("contact")}{" "}
             <a
               href={`${GITHUB_URL}/issues`}

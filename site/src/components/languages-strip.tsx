@@ -35,7 +35,7 @@ export function LanguagesStrip() {
   );
 
   return (
-    <section className="border-t border-white/[0.06] py-14">
+    <section className="border-t border-border py-14">
       <div className="mx-auto mb-10 max-w-2xl px-4 text-center sm:px-6">
         <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
           {t("title")}
@@ -50,7 +50,7 @@ export function LanguagesStrip() {
           {pills.map((p) => (
             <span
               key={p.id}
-              className="mx-3 inline-flex shrink-0 items-center gap-2.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-5 py-2.5 text-sm"
+              className="mx-3 inline-flex shrink-0 items-center gap-2.5 rounded-full border border-border bg-card px-5 py-2.5 text-sm"
             >
               <span className="text-muted-foreground">{p.from}</span>
               <ArrowRight

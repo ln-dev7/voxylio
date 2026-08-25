@@ -11,7 +11,7 @@ export function Install() {
   const t = useTranslations("Install");
 
   return (
-    <section id="install" className="scroll-mt-16 border-t border-white/[0.06]">
+    <section id="install" className="scroll-mt-16 border-t border-border">
       <div className="mx-auto w-full max-w-6xl px-4 py-24 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-balance font-display text-3xl font-semibold tracking-tight sm:text-[2.6rem] sm:leading-[1.15]">

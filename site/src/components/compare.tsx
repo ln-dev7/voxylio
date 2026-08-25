@@ -22,12 +22,12 @@ function Mark({ kind }: { kind: "yes" | "no" | "partial" }) {
     );
   if (kind === "partial")
     return (
-      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-white/[0.07]">
+      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-secondary">
         <Minus className="size-3.5 text-muted-foreground" aria-hidden="true" />
       </span>
     );
   return (
-    <span className="grid size-6 shrink-0 place-items-center rounded-full bg-white/[0.05]">
+    <span className="grid size-6 shrink-0 place-items-center rounded-full bg-secondary">
       <X className="size-3.5 text-muted-foreground/70" aria-hidden="true" />
     </span>
   );
@@ -37,7 +37,7 @@ export function Compare() {
   const t = useTranslations("Compare");
 
   return (
-    <section className="border-t border-white/[0.06]">
+    <section className="border-t border-border">
       <div className="mx-auto w-full max-w-5xl px-4 py-24 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-balance font-display text-3xl font-semibold tracking-tight sm:text-[2.6rem] sm:leading-[1.15]">
@@ -50,7 +50,7 @@ export function Compare() {
 
         <div className="mt-12 overflow-hidden rounded-xl border border-border">
           {/* Column headers */}
-          <div className="grid grid-cols-[1.2fr_1fr_1fr] border-b border-border bg-white/[0.02] text-xs font-semibold uppercase tracking-[0.12em] sm:grid-cols-[1.6fr_1fr_1fr] sm:text-[13px] sm:normal-case sm:tracking-normal">
+          <div className="grid grid-cols-[1.2fr_1fr_1fr] border-b border-border bg-card text-xs font-semibold uppercase tracking-[0.12em] sm:grid-cols-[1.6fr_1fr_1fr] sm:text-[13px] sm:normal-case sm:tracking-normal">
             <div className="px-4 py-3.5 text-muted-foreground sm:px-6" />
             <div className="border-l border-border bg-primary/[0.06] px-3 py-3.5 text-primary sm:px-6">
               Voxylio

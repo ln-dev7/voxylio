@@ -23,7 +23,7 @@ export function SiteHeader() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-background/70 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/70 backdrop-blur-xl">
       <div className="relative mx-auto flex h-16 w-full max-w-6xl items-center px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5">
           <Logo />
@@ -33,12 +33,12 @@ export function SiteHeader() {
         </Link>
 
         {/* Desktop nav (lg and up) */}
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-full border border-white/[0.06] bg-white/[0.03] p-1 lg:flex">
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-full border border-border bg-card p-1 lg:flex">
           {nav.map((item) => (
             <Link
               key={item.hash}
               href={{ pathname: "/", hash: item.hash }}
-              className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-white/[0.06] hover:text-foreground"
+              className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             >
               {item.label}
             </Link>
@@ -101,7 +101,7 @@ export function SiteHeader() {
       {open && (
         <div
           id="mobile-menu"
-          className="border-t border-white/[0.06] bg-background/95 backdrop-blur-xl lg:hidden"
+          className="border-t border-border bg-background/95 backdrop-blur-xl lg:hidden"
         >
           <nav className="mx-auto flex w-full max-w-6xl flex-col px-4 py-3 sm:px-6">
             {nav.map((item) => (
@@ -109,7 +109,7 @@ export function SiteHeader() {
                 key={item.hash}
                 href={{ pathname: "/", hash: item.hash }}
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-3 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-white/[0.05] hover:text-foreground"
+                className="rounded-lg px-3 py-3 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               >
                 {item.label}
               </Link>
@@ -117,11 +117,11 @@ export function SiteHeader() {
             <Link
               href="/account"
               onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-3 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-white/[0.05] hover:text-foreground"
+              className="rounded-lg px-3 py-3 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             >
               {t("account")}
             </Link>
-            <div className="mt-2 flex items-center gap-3 border-t border-white/[0.06] px-3 pb-2 pt-4">
+            <div className="mt-2 flex items-center gap-3 border-t border-border px-3 pb-2 pt-4">
               <Button asChild size="sm" className="flex-1 rounded-full">
                 <Link
                   href={{ pathname: "/", hash: "install" }}
