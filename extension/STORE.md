@@ -13,10 +13,10 @@ cd extension && zip -r ../voxylio-extension.zip . -x "README.md" -x "STORE.md"
 
 ## Listing — short description (max 132 chars)
 
-- **EN**: Dub any subtitled video in real time — French, Spanish, Italian,
-  German, Portuguese. Local translation, no account, no quota.
-- **FR** : Doublez toute vidéo sous-titrée en temps réel — français,
-  espagnol, italien, allemand, portugais. Local, sans compte, sans quota.
+- **EN**: Dub any subtitled video in real time — 65+ languages. Local
+  translation, free plan, no quota.
+- **FR** : Doublez toute vidéo sous-titrée en temps réel — plus de 65
+  langues. Traduction locale, plan gratuit, sans quota.
 
 ## Listing — detailed description (EN)
 
@@ -29,7 +29,7 @@ original audio is automatically lowered.
 
 ★ Full-sentence dubbing — fluid voice, translations that keep their context
 ★ Any language pair — source auto-detected, dub into FR / ES / IT / DE / PT
-★ 100% local by default — no account, no API key, no hour quotas
+★ 100% local by default — free plan (Google sign-in), no API key, no hour quotas
 ★ Strict local mode — nothing ever leaves your device
 ★ On-screen bilingual subtitles (original + translation)
 ★ Floating on-page controller — language, speed, original audio volume
@@ -51,7 +51,7 @@ automatiquement baissé.
 
 ★ Doublage par phrases complètes — voix fluide, traductions en contexte
 ★ Plus de 65 langues de doublage — source auto-détectée, toutes les paires
-★ 100 % local par défaut — sans compte, sans clé API, sans quota d'heures
+★ 100 % local par défaut — plan gratuit (connexion Google), sans clé API, sans quota d'heures
 ★ Mode strictement local — rien ne quitte votre appareil
 ★ Sous-titres bilingues à l'écran (original + traduction)
 ★ Contrôleur flottant sur la page — langue, vitesse, volume de l'original
@@ -84,13 +84,17 @@ aloud in sync with playback.
 
 ## Data usage disclosures (Privacy tab)
 
-- Does NOT collect or transmit: personally identifiable information,
-  health, financial, authentication, communications, location, web
-  history, user activity, or website content — with one narrow exception:
-  when the optional online translation fallback is active, individual
-  subtitle sentences (public video captions) are sent to a translation
-  service. Declare under "Website content", scoped to app functionality,
-  not sold, not shared for ads.
+- Collects (since account-gated versions, v1.7+): **authentication
+  information** — after Google sign-in on the website, the extension
+  stores an account token and the plan (free/Pro); the account itself
+  holds only the email address and plan. Declare under "Authentication
+  information", scoped to app functionality, not sold, not shared.
+- Also transmits, only when the optional online translation fallback is
+  active: individual subtitle sentences (public video captions) to a
+  translation service. Declare under "Website content", scoped to app
+  functionality, not sold, not shared for ads.
+- Does NOT collect: health, financial, communications, location, web
+  history, or user activity.
 - Privacy policy URL: **https://voxylio.lndev.me/en/privacy**
 
 ## Assets checklist

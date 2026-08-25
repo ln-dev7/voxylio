@@ -18,7 +18,8 @@ language, the way YouTube auto-dubbing does — but on any site.
 4. A synthesized voice speaks each sentence in sync with playback while the
    original audio is automatically ducked.
 
-No account, no API key, no quota.
+Free plan, unlimited — sign in with Google to unlock dubbing. No API key,
+no card, no quota.
 
 ## Repository layout
 
