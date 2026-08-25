@@ -13,7 +13,7 @@ import CoreAudio
 import Foundation
 
 final class ProcessTap {
-    private let processObjectID: AudioObjectID
+    private let target: AudioAppInfo.Target
     private var tapID = AudioObjectID(kAudioObjectUnknown)
     private var aggregateID = AudioObjectID(kAudioObjectUnknown)
     private var ioProcID: AudioDeviceIOProcID?
@@ -21,15 +21,29 @@ final class ProcessTap {
     private var handler: ((AVAudioPCMBuffer) -> Void)?
     private(set) var buffersDelivered = 0
 
-    init(processObjectID: AudioObjectID) {
-        self.processObjectID = processObjectID
+    init(target: AudioAppInfo.Target) {
+        self.target = target
     }
 
     func start(bufferHandler: @escaping (AVAudioPCMBuffer) -> Void) throws {
         handler = bufferHandler
 
-        // 1. The tap itself — stereo mixdown of the chosen process only.
-        let description = CATapDescription(stereoMixdownOfProcesses: [processObjectID])
+        // 1. The tap itself. Per-app: stereo mixdown of the app AND its
+        //    helper processes (Chrome/Safari play audio in helpers).
+        //    System-wide: everything EXCEPT Voxylio itself, so the
+        //    passthrough + dub can never feed back into the capture.
+        let description: CATapDescription
+        switch target {
+        case .processes(let objects):
+            guard !objects.isEmpty else {
+                throw TapError.osStatus("empty process list", -1)
+            }
+            description = CATapDescription(stereoMixdownOfProcesses: objects)
+        case .systemWide:
+            let own = AudioProcessList.ownProcessObject().map { [$0] } ?? []
+            description = CATapDescription(
+                stereoGlobalTapButExcludeProcesses: own)
+        }
         description.uuid = UUID()
         description.muteBehavior = .mutedWhenTapped
         description.isPrivate = true
@@ -78,16 +92,24 @@ final class ProcessTap {
         err = AudioDeviceCreateIOProcIDWithBlock(&ioProcID, aggregateID, nil) {
             [weak self] _, inInputData, _, _, _ in
             guard let self, let fmt = self.format, let handler = self.handler else { return }
-            let ablPointer = UnsafeMutableAudioBufferListPointer(
+            let abl = UnsafeMutableAudioBufferListPointer(
                 UnsafeMutablePointer(mutating: inInputData))
-            guard ablPointer.count > 0 else { return }
-            let frames = ablPointer[0].mDataByteSize
-                / UInt32(fmt.streamDescription.pointee.mBytesPerFrame)
+            guard abl.count > 0 else { return }
+            let bytesPerFrame = fmt.streamDescription.pointee.mBytesPerFrame
+            guard bytesPerFrame > 0 else { return }
+            let frames = AVAudioFrameCount(abl[0].mDataByteSize / bytesPerFrame)
             guard frames > 0,
-                let pcm = AVAudioPCMBuffer(
-                    pcmFormat: fmt, bufferListNoCopy: inInputData, deallocator: nil)?.copySelf()
+                let pcm = AVAudioPCMBuffer(pcmFormat: fmt, frameCapacity: frames)
             else { return }
-            _ = frames
+            pcm.frameLength = frames
+            // Manual deep copy: IOProc buffers are only valid inside the
+            // callback, and layouts must match exactly.
+            let dst = UnsafeMutableAudioBufferListPointer(pcm.mutableAudioBufferList)
+            for i in 0..<min(abl.count, dst.count) {
+                if let from = abl[i].mData, let to = dst[i].mData {
+                    memcpy(to, from, Int(min(abl[i].mDataByteSize, dst[i].mDataByteSize)))
+                }
+            }
             self.buffersDelivered += 1
             handler(pcm)
         }
@@ -129,32 +151,5 @@ final class ProcessTap {
                 return "\(call) failed (\(code)) — is System Audio Recording allowed for Voxylio?"
             }
         }
-    }
-}
-
-extension AVAudioPCMBuffer {
-    /// Deep copy: buffers handed to an IOProc are only valid inside it.
-    func copySelf() -> AVAudioPCMBuffer? {
-        guard
-            let copy = AVAudioPCMBuffer(
-                pcmFormat: format, frameCapacity: frameLength)
-        else { return nil }
-        copy.frameLength = frameLength
-        let src = audioBufferList.pointee
-        let dst = copy.mutableAudioBufferList.pointee
-        withUnsafePointer(to: src) { s in
-            withUnsafePointer(to: dst) { d in
-                let sList = UnsafeMutableAudioBufferListPointer(
-                    UnsafeMutablePointer(mutating: s))
-                let dList = UnsafeMutableAudioBufferListPointer(
-                    UnsafeMutablePointer(mutating: d))
-                for i in 0..<min(sList.count, dList.count) {
-                    if let from = sList[i].mData, let to = dList[i].mData {
-                        memcpy(to, from, Int(sList[i].mDataByteSize))
-                    }
-                }
-            }
-        }
-        return copy
     }
 }

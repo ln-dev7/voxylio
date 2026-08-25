@@ -32,6 +32,8 @@ final class Orchestrator: ObservableObject {
     @Published private(set) var lastOriginal = ""
     @Published private(set) var lastDubbed = ""
     @Published private(set) var stats = Stats()
+    /// Non-fatal problem surfaced in the UI (e.g. capture delivers no audio).
+    @Published private(set) var warning: String?
 
     // Config (set at start)
     private var sourceLang = "en"
@@ -99,7 +101,7 @@ final class Orchestrator: ObservableObject {
 
         TranslationBridge.shared.setPair(source: sourceLang, target: targetLang)
 
-        let tap = ProcessTap(processObjectID: app.objectID)
+        let tap = ProcessTap(target: app.target)
         let passthrough = PassthroughPlayer()
         self.tap = tap
         self.passthrough = passthrough
@@ -136,12 +138,38 @@ final class Orchestrator: ObservableObject {
             }
         }
 
+        // Watchdog: no buffer after 3 s means the capture is not really
+        // flowing (permission missing, silent target, wrong process).
+        warning = nil
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(3))
+            guard let self, self.generation == gen else { return }
+            if self.stats.buffers == 0 {
+                self.warning =
+                    "Aucun audio capté. Vérifie que la vidéo joue avec du son, "
+                    + "et que Voxylio est autorisé dans Réglages Système → "
+                    + "Confidentialité → Enregistrement de l'écran et audio du système "
+                    + "(puis relance l'app). Sinon, essaie la cible « Tout le système »."
+            } else if self.stats.partials == 0 {
+                Task { @MainActor [weak self] in
+                    try? await Task.sleep(for: .seconds(5))
+                    guard let self, self.generation == gen else { return }
+                    if self.stats.partials == 0 {
+                        self.warning =
+                            "Audio capté mais rien de transcrit — la langue source "
+                            + "correspond-elle à la vidéo ? (reconnaissance \(self.sourceLang))"
+                    }
+                }
+            }
+        }
+
         status = .capturing(appName: app.name)
     }
 
     func stop() {
         generation += 1
         teardown()
+        warning = nil
         status = .idle
     }
 

@@ -155,6 +155,11 @@ struct MenuView: View {
                     .foregroundStyle(.orange)
                     .font(.caption)
             }
+            if let warning = orchestrator.warning {
+                Label(warning, systemImage: "exclamationmark.bubble")
+                    .foregroundStyle(.orange)
+                    .font(.caption2)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(10)
@@ -198,7 +203,7 @@ struct MenuView: View {
     private func refreshApps() {
         apps = AudioProcessList.runningAudioApps()
         if let current = selectedApp,
-            !apps.contains(where: { $0.bundleID == current.bundleID })
+            !apps.contains(where: { $0.id == current.id })
         {
             selectedApp = nil
         }
