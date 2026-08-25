@@ -116,7 +116,7 @@
       },
       "pro": {
         "question": "Was enthält der Pro-Plan?",
-        "answer": "Alles Lokale bleibt gratis und unbegrenzt. Pro finanziert die Funktionen, die einen Server brauchen — allen voran die kontextbewusste Übersetzung: benachbarte Sätze werden zusammen übertragen, damit Pronomen, Ton, Namen und Terminologie stimmen, innerhalb eines großzügigen Monatskontingents. Ist es aufgebraucht, läuft die Synchronisation einfach mit der kostenlosen lokalen Engine weiter — ein Video wird nie unterbrochen. Natürliche neuronale Stimmen, Zusammenfassungen und Geräte-Sync folgen nach und nach."
+        "answer": "Alles Lokale bleibt gratis und unbegrenzt. Pro finanziert die Funktionen, die einen Server brauchen: die kontextbewusste Übersetzung — benachbarte Sätze werden zusammen übertragen, damit Pronomen, Ton, Namen und Terminologie stimmen — und natürliche neuronale Stimmen in 7 Sprachen (Englisch, Spanisch, Deutsch, Französisch, Niederländisch, Italienisch, Japanisch), jeweils mit großzügigem Monatskontingent. Ist ein Kontingent aufgebraucht, oder bei jeder anderen Sprache, läuft die Synchronisation einfach mit der kostenlosen lokalen Engine weiter — ein Video wird nie unterbrochen. Zusammenfassungen und Geräte-Sync folgen nach und nach."
       },
       "voice": {
         "question": "Kann ich die Stimmqualität verbessern?",
@@ -271,8 +271,8 @@
       "cta": "Pro holen",
       "badge": "Projekt unterstützen",
       "features": {
-        "f1": "Kontextbewusste KI-Übersetzung, treffender (bald)",
-        "f2": "Neue Pro-Funktionen, sobald sie erscheinen",
+        "f1": "Kontextbewusste KI-Übersetzung, treffender — großzügiges Monatskontingent",
+        "f2": "Natürliche neuronale Stimmen in 7 Sprachen — sonst übernimmt die lokale Stimme",
         "f3": "Früher Zugang zu neuen Sprachen und Plattformen",
         "f4": "Bevorzugter Support",
         "f5": "Ein Konto für alle deine Browser"

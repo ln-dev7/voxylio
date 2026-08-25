@@ -251,7 +251,7 @@ async function refreshAccount() {
       btn.classList.remove("ghost");
       note.textContent =
         t("accountNoteFree") ||
-        "Débloquez la traduction contextuelle et les fonctions Pro à venir.";
+        "Débloquez la traduction contextuelle et les voix neurales naturelles.";
     }
   } catch (e) {
     // No background answer: same as not linked — the engine is gated on

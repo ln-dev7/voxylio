@@ -116,7 +116,7 @@
       },
       "pro": {
         "question": "Cosa include il piano Pro?",
-        "answer": "Tutto ciò che è locale resta gratis e illimitato. Il Pro finanzia le funzioni che richiedono un server — a cominciare dalla traduzione contestuale: le frasi vicine vengono inviate insieme per mantenere corretti pronomi, tono, nomi e terminologia, entro un generoso volume mensile. Quando si esaurisce, il doppiaggio continua con il motore locale gratuito — un video non viene mai interrotto. Voci neurali naturali, riassunti e sincronizzazione tra dispositivi arriveranno nel tempo."
+        "answer": "Tutto ciò che è locale resta gratis e illimitato. Il Pro finanzia le funzioni che richiedono un server: la traduzione contestuale — le frasi vicine vengono inviate insieme per mantenere corretti pronomi, tono, nomi e terminologia — e le voci neurali naturali in 7 lingue (inglese, spagnolo, tedesco, francese, olandese, italiano, giapponese), ciascuna entro un generoso volume mensile. Quando un volume si esaurisce, o per qualsiasi altra lingua, il doppiaggio continua con il motore locale gratuito — un video non viene mai interrotto. Riassunti e sincronizzazione tra dispositivi arriveranno nel tempo."
       },
       "voice": {
         "question": "Posso migliorare la qualità della voce?",
@@ -271,8 +271,8 @@
       "cta": "Passa a Pro",
       "badge": "Sostieni il progetto",
       "features": {
-        "f1": "Traduzione IA contestuale, più fedele (presto)",
-        "f2": "Nuove funzioni Pro appena disponibili",
+        "f1": "Traduzione IA contestuale, più fedele — generoso volume mensile",
+        "f2": "Voci neurali naturali in 7 lingue — altrove subentra la voce locale",
         "f3": "Accesso anticipato a nuove lingue e piattaforme",
         "f4": "Supporto prioritario",
         "f5": "Un solo account su tutti i tuoi browser"

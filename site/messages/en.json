@@ -116,7 +116,7 @@
       },
       "pro": {
         "question": "What does Pro include?",
-        "answer": "Everything local stays free and unlimited. Pro funds the features that need a server — starting with context-aware translation: nearby sentences are sent together so pronouns, tone, names and terminology stay right, within a generous monthly allowance. When the allowance runs out, dubbing simply continues with the free local engine — a video is never interrupted. Natural neural voices, summaries and cross-device sync will join Pro over time."
+        "answer": "Everything local stays free and unlimited. Pro funds the features that need a server: context-aware translation — nearby sentences are sent together so pronouns, tone, names and terminology stay right — and natural neural voices in 7 languages (English, Spanish, German, French, Dutch, Italian, Japanese), each within a generous monthly allowance. When an allowance runs out, or for any other language, dubbing simply continues with the free local engine — a video is never interrupted. Summaries and cross-device sync will join Pro over time."
       },
       "voice": {
         "question": "Can I improve the voice quality?",
@@ -270,8 +270,8 @@
       "cta": "Go Pro",
       "badge": "Support the project",
       "features": {
-        "f1": "Context-aware AI translation, more faithful (soon)",
-        "f2": "New Pro features as they ship",
+        "f1": "Context-aware AI translation, more faithful — generous monthly allowance",
+        "f2": "Natural neural voices in 7 languages — local voice takes over elsewhere",
         "f3": "Early access to new languages and platforms",
         "f4": "Priority support",
         "f5": "One account across all your browsers"
