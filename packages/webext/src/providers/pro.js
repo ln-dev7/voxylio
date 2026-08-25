@@ -8,6 +8,11 @@
 
 import { runtime } from "../index.js";
 
+// Languages Deepgram Aura-2 can voice today. Anything else keeps the
+// local system voice; Google TTS will widen this later through the same
+// backend endpoint (only the server-side routing will change).
+export const AURA2_LANGS = new Set(["en", "es", "de", "fr", "nl", "it", "ja"]);
+
 export function createProProvider() {
   const translatorFor = (source, target) => ({
     translate: async (text, opts) => {

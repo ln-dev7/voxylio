@@ -36,6 +36,8 @@ test("a failing pro provider falls through to local, dubbing continues", async (
 
 test("proTranslation is a validated boolean, defaulting off", () => {
   assert.equal(DEFAULTS.proTranslation, false);
+  assert.equal(DEFAULTS.proVoice, false);
+  assert.deepEqual(validateSettings({ proVoice: "yes" }), { proVoice: true });
   assert.deepEqual(validateSettings({ proTranslation: 1 }), { proTranslation: true });
   assert.deepEqual(validateSettings({ proTranslation: false }), { proTranslation: false });
 });
