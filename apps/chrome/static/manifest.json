@@ -44,7 +44,7 @@
   },
   "default_locale": "fr",
   "options_ui": {
-    "page": "options.html",
+    "page": "app.html",
     "open_in_tab": true
   }
 }

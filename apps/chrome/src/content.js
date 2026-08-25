@@ -18,6 +18,9 @@ import {
   LANGUAGES,
   DEFAULTS as SHARED_DEFAULTS,
   createTranslatorChain,
+  journalAppendLine,
+  journalUpsert,
+  usageAdd,
 } from "@voxylio/core";
 import {
   storage,
@@ -304,14 +307,101 @@ import {
 
   function pickVoice() {
     loadVoices();
-    const k = settings.targetLang + "|" + settings.voiceName + "|" + voices.length;
+    // Per-language preference first (hub page), then the global choice.
+    const wanted =
+      (settings.voiceByLang && settings.voiceByLang[settings.targetLang]) ||
+      settings.voiceName;
+    const k = settings.targetLang + "|" + wanted + "|" + voices.length;
     if (k === cachedVoiceKey) return cachedVoice;
     cachedVoiceKey = k;
     cachedVoice = pickBestVoice(voices, {
       targetLang: settings.targetLang,
-      voiceName: settings.voiceName,
+      voiceName: wanted,
     });
     return cachedVoice;
+  }
+
+  // ------------------------------------------------------------- journal
+  // Local history + usage stats, rendered by the hub page. Bounded and
+  // throttled (packages/core/src/journal.js); strictly on-device.
+  let journalSession = null;
+  let journalDirty = false;
+  let journalTimer = null;
+  let statsPending = { seconds: 0, lines: 0 };
+
+  function dayKey() {
+    const d = new Date();
+    return (
+      d.getFullYear() +
+      "-" +
+      String(d.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(d.getDate()).padStart(2, "0")
+    );
+  }
+
+  function journalFlushSoon() {
+    if (journalTimer) return;
+    journalTimer = setTimeout(() => {
+      journalTimer = null;
+      if (!journalDirty || !journalSession || !isAlive()) return;
+      journalDirty = false;
+      const session = journalSession;
+      const spent = statsPending;
+      statsPending = { seconds: 0, lines: 0 };
+      try {
+        storage.local.get({ journal: [], usageStats: null }, (data) => {
+          const patch = { journal: journalUpsert(data.journal || [], session) };
+          if (spent.lines > 0 || spent.seconds > 0) {
+            patch.usageStats = usageAdd(
+              data.usageStats,
+              dayKey(),
+              spent.seconds,
+              spent.lines,
+              session.target,
+            );
+          }
+          safeLocalSet(patch);
+        });
+      } catch (e) {}
+    }, 2500);
+  }
+
+  function recordLine(group, text, videoTime) {
+    const target = settings.targetLang;
+    if (!journalSession || journalSession.target !== target) {
+      journalSession = {
+        id:
+          "js_" +
+          Date.now().toString(36) +
+          "_" +
+          Math.random().toString(36).slice(2, 7),
+        host: (location.hostname || "").replace(/^www\./, ""),
+        url: String(location.href || "").slice(0, 300),
+        title: (document.title || location.hostname || "").slice(0, 160),
+        source: settings.sourceLang,
+        target,
+        startedAt: Date.now(),
+        updatedAt: Date.now(),
+        lines: [],
+      };
+    }
+    journalSession = journalAppendLine(journalSession, {
+      t: Math.round(videoTime * 10) / 10,
+      src: group.text,
+      dst: text,
+      at: Date.now(),
+    });
+    journalDirty = true;
+    journalFlushSoon();
+  }
+
+  function recordSpokenSeconds(sec) {
+    if (!journalSession) return;
+    statsPending.seconds += sec;
+    statsPending.lines += 1;
+    journalDirty = true;
+    journalFlushSoon();
   }
 
 
@@ -589,7 +679,10 @@ import {
         playbackRate: video.playbackRate || 1,
       });
 
+      const spokeAt = performance.now();
       u.onend = () => {
+        // Local usage stats: how long the voice actually spoke.
+        recordSpokenSeconds((performance.now() - spokeAt) / 1000);
         if (ctl.currentUtterance === u) ctl.currentUtterance = null;
         drainQueue();
       };
@@ -698,6 +791,8 @@ import {
         return;
       }
       const dur = group.end - group.start;
+      // This line WILL be voiced (now or queued): journal it.
+      recordLine(group, text, group.start);
       if (ctl.currentUtterance) {
         enqueue({ text, dur, start: group.start, end: group.end, id: group.id });
       } else {

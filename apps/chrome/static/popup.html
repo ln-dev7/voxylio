@@ -254,6 +254,26 @@
     }
     .action-btn:hover { background: #242424; color: #ffffff; }
     .action-btn:focus-visible { outline: 2px solid #1ed760; outline-offset: 2px; }
+    .links-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--text-faint);
+    }
+    .links-row button {
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .links-row button:hover { color: var(--accent); }
 
     /* ---- pro banner (top) ---- */
     .pro-banner {
@@ -525,6 +545,12 @@
     <button id="diag" class="action-btn" data-i18n="diag" title="Copie un diagnostic technique à joindre à un signalement">Diagnostic</button>
     <button id="reset" class="action-btn" data-i18n="reset" title="Rétablit tous les réglages par défaut">Réinitialiser</button>
     <button id="optionsBtn" class="action-btn" data-i18n="options" title="Fournisseurs de traduction, clés API, sites désactivés">Options</button>
+  </div>
+
+  <div class="links-row">
+    <button id="historyLink" data-i18n="historyLink">Voir l’historique des doublages</button>
+    <span aria-hidden="true">·</span>
+    <button id="voicesLink" data-i18n="voicesLink">Voix</button>
   </div>
 
   <div class="account-card">

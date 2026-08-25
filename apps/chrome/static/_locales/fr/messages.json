@@ -247,5 +247,116 @@
   },
   "signOut": {
     "message": "Se déconnecter"
+  },
+  "appHistory": {
+    "message": "Historique"
+  },
+  "appVoices": {
+    "message": "Voix"
+  },
+  "appSettings": {
+    "message": "Paramètres"
+  },
+  "appAccount": {
+    "message": "Compte"
+  },
+  "appSearchSessions": {
+    "message": "Rechercher une session…"
+  },
+  "appClearAll": {
+    "message": "Tout effacer"
+  },
+  "appNoSessions": {
+    "message": "Aucune session pour le moment — lance un doublage et sa transcription apparaîtra ici, entièrement en local."
+  },
+  "appDeleteSession": {
+    "message": "Supprimer"
+  },
+  "appBilingual": {
+    "message": "Bilingue"
+  },
+  "appOriginal": {
+    "message": "Original"
+  },
+  "appTranslation": {
+    "message": "Traduction"
+  },
+  "appTimestamps": {
+    "message": "Horodatages"
+  },
+  "appFilterSegments": {
+    "message": "Filtrer les segments…"
+  },
+  "appCopy": {
+    "message": "Copier"
+  },
+  "appCopied": {
+    "message": "Copié ✓"
+  },
+  "appLines": {
+    "message": "répliques"
+  },
+  "appVoicesHint": {
+    "message": "Choisis la voix utilisée pour chaque langue de doublage."
+  },
+  "appCurrentTarget": {
+    "message": "Langue de doublage actuelle"
+  },
+  "appVoiceAuto": {
+    "message": "Automatique"
+  },
+  "appVoiceAutoHint": {
+    "message": "Voxylio choisit la meilleure voix installée."
+  },
+  "appVoiceSet": {
+    "message": "Voix choisie :"
+  },
+  "appUseVoice": {
+    "message": "Utiliser cette voix"
+  },
+  "appVoiceInUse": {
+    "message": "Utilisée"
+  },
+  "appSearchVoice": {
+    "message": "Rechercher une voix…"
+  },
+  "appNoVoices": {
+    "message": "Aucune voix installée pour cette langue. Sur Mac : Réglages Système → Accessibilité → Contenu énoncé → télécharge une voix, puis reviens ici."
+  },
+  "appPreview": {
+    "message": "Écouter un aperçu"
+  },
+  "appLocalVoice": {
+    "message": "locale"
+  },
+  "appDefaultBadge": {
+    "message": "Par défaut"
+  },
+  "appStatsHint": {
+    "message": "Statistiques calculées en local — rien ne quitte ton appareil."
+  },
+  "appMinutesDubbed": {
+    "message": "Minutes doublées"
+  },
+  "appLinesDubbed": {
+    "message": "Phrases doublées"
+  },
+  "appLangsUsed": {
+    "message": "Langues utilisées"
+  },
+  "appLast30": {
+    "message": "30 derniers jours"
+  },
+  "appTopLangs": {
+    "message": "Langues les plus doublées"
+  },
+  "appNoStats": {
+    "message": "Lance un premier doublage pour voir tes statistiques ici."
+  },
+  "historyLink": {
+    "message": "Voir l’historique des doublages"
+  },
+  "voicesLink": {
+    "message": "Voix"
   }
 }
