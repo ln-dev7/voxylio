@@ -72,9 +72,11 @@ export function createTranslatorChain(providers, opts = {}) {
 
   /**
    * Translates through the chain. Resolves { text, providerId, kind };
-   * rejects when every provider failed or was unavailable.
+   * rejects when every provider failed or was unavailable. `opts` is
+   * forwarded to the provider's translate — e.g. { context: { before,
+   * after } } for context-aware providers; others simply ignore it.
    */
-  async function translate(text, source, target) {
+  async function translate(text, source, target, opts) {
     const errors = [];
     for (const p of providers) {
       if (inCooldown(p.id, source, target)) {
@@ -96,7 +98,7 @@ export function createTranslatorChain(providers, opts = {}) {
         continue;
       }
       try {
-        const out = await withTimeout(translator.translate(text), attemptTimeoutMs, TIMEOUT);
+        const out = await withTimeout(translator.translate(text, opts), attemptTimeoutMs, TIMEOUT);
         if (out === TIMEOUT) throw new Error("attempt timed out");
         if (typeof out !== "string" || !out) throw new Error("empty translation");
         recordSuccess(p.id, source, target);

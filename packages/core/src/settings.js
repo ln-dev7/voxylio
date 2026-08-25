@@ -31,6 +31,9 @@ export const DEFAULTS = Object.freeze({
   subtitles: false,
   overlay: true,
   cloudFallback: true,
+  // Pro contextual translation (opt-in; only effective for Pro accounts —
+  // the background and the backend both enforce it).
+  proTranslation: false,
   autoPause: false,
   keepTerms: true,
   // Preferred paid provider when a key is configured ("auto" = none:
@@ -73,6 +76,7 @@ export function validateSettings(patch) {
       case "subtitles":
       case "overlay":
       case "cloudFallback":
+      case "proTranslation":
       case "autoPause":
       case "keepTerms":
         out[k] = Boolean(v);

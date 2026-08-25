@@ -62,3 +62,4 @@ export { createBuiltinProvider } from "./providers/builtin.js";
 export { createGtxProvider } from "./providers/gtx.js";
 export { createDeeplProvider } from "./providers/deepl.js";
 export { createGoogleV2Provider } from "./providers/googlev2.js";
+export { createProProvider } from "./providers/pro.js";
