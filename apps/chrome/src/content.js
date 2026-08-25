@@ -15,6 +15,7 @@ import {
   computeUtteranceRate,
   pickVoice as pickBestVoice,
   LOCALES,
+  LANGUAGES,
   DEFAULTS as SHARED_DEFAULTS,
   createTranslatorChain,
 } from "@voxylio/core";
@@ -892,13 +893,8 @@ import {
 
   function createOverlay() {
     if (overlayHost) return;
-    const OVERLAY_LANGS = [
-      ["fr", "FR"],
-      ["es", "ES"],
-      ["it", "IT"],
-      ["de", "DE"],
-      ["pt", "PT"],
-    ];
+    // Full catalog, compact labels (the floating bar is small).
+    const OVERLAY_LANGS = LANGUAGES.map((l) => [l.code, l.code.toUpperCase()]);
     overlayHost = document.createElement("div");
     overlayHost.style.cssText =
       "all:initial; position:fixed; z-index:2147483647; bottom:24px; right:24px; left:auto; top:auto;";

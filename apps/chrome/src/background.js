@@ -5,13 +5,16 @@
 const memCache = new Map(); // "provider::lang::text" -> translation
 // getLocal(defaults) is declared in the account section below (hoisted).
 
+// Legacy code quirks of the gtx endpoint.
+const GTX_CODE = { he: "iw", zh: "zh-CN" };
+
 // Best-effort unofficial endpoint (no key, no SLA).
 async function translateGtx(text, source, target) {
   const url =
     "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" +
-    encodeURIComponent(source || "auto") +
+    encodeURIComponent(GTX_CODE[source] || source || "auto") +
     "&tl=" +
-    encodeURIComponent(target) +
+    encodeURIComponent(GTX_CODE[target] || target) +
     "&dt=t&q=" +
     encodeURIComponent(text);
 
@@ -26,17 +29,25 @@ async function translateGtx(text, source, target) {
   return out;
 }
 
-// DeepL uses regioned codes for Portuguese.
-const DEEPL_TARGET = { fr: "FR", es: "ES", it: "IT", de: "DE", pt: "PT-PT", en: "EN-US" };
+// DeepL supports a subset of the catalog, with regioned codes for some
+// targets. Unsupported → fail fast so the chain moves to the fallback.
+const DEEPL_TARGET = {
+  ar: "AR", bg: "BG", cs: "CS", da: "DA", de: "DE", el: "EL", en: "EN-US",
+  es: "ES", et: "ET", fi: "FI", fr: "FR", he: "HE", hu: "HU", id: "ID",
+  it: "IT", ja: "JA", ko: "KO", lt: "LT", lv: "LV", nl: "NL", no: "NB",
+  pl: "PL", pt: "PT-PT", ro: "RO", ru: "RU", sk: "SK", sl: "SL", sv: "SV",
+  th: "TH", tr: "TR", uk: "UK", vi: "VI", zh: "ZH-HANS",
+};
 
 async function translateDeepl(text, source, target) {
   const { deeplKey } = await getLocal({ deeplKey: "" });
   if (!deeplKey) throw new Error("no DeepL key");
+  if (!DEEPL_TARGET[target]) throw new Error("DeepL: unsupported target " + target);
   // Free keys end in ":fx" and use the api-free host.
   const host = deeplKey.endsWith(":fx") ? "api-free.deepl.com" : "api.deepl.com";
   const body = {
     text: [text],
-    target_lang: DEEPL_TARGET[target] || target.toUpperCase(),
+    target_lang: DEEPL_TARGET[target],
   };
   if (source && source !== "auto") body.source_lang = source.toUpperCase();
   const res = await fetch(`https://${host}/v2/translate`, {

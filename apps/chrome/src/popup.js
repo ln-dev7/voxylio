@@ -2,7 +2,7 @@
 // The settings schema is shared with the options page and the content
 // script (packages/core/src/settings.js). All status rendering is DOM
 // building — no innerHTML with dynamic content.
-import { DEFAULTS } from "@voxylio/core";
+import { DEFAULTS, LANGUAGES, LOCALES } from "@voxylio/core";
 
 const PREVIEW_SAMPLES = {
   fr: "Bonjour ! Voici la voix de votre doublage.",
@@ -11,7 +11,37 @@ const PREVIEW_SAMPLES = {
   de: "Hallo! Das ist die Stimme deiner Synchronisation.",
   pt: "Olá! Esta é a voz da sua dublagem.",
   en: "Hi! This is your dubbing voice.",
+  nl: "Hallo! Dit is de stem van je nasynchronisatie.",
+  pl: "Cześć! To jest głos twojego dubbingu.",
+  ru: "Привет! Это голос вашего дубляжа.",
+  uk: "Привіт! Це голос вашого дубляжу.",
+  tr: "Merhaba! Bu, dublaj sesiniz.",
+  ar: "مرحباً! هذا صوت الدبلجة.",
+  hi: "नमस्ते! यह आपकी डबिंग की आवाज़ है।",
+  ja: "こんにちは！これがあなたの吹き替えの声です。",
+  ko: "안녕하세요! 이것이 더빙 목소리입니다.",
+  zh: "你好！这是你的配音声音。",
+  vi: "Xin chào! Đây là giọng lồng tiếng của bạn.",
+  th: "สวัสดี! นี่คือเสียงพากย์ของคุณ",
+  id: "Halo! Ini suara sulih suara Anda.",
+  sv: "Hej! Det här är din dubbningsröst.",
+  el: "Γεια σας! Αυτή είναι η φωνή της μεταγλώττισής σας.",
+  ro: "Salut! Aceasta este vocea dublajului tău.",
+  cs: "Ahoj! Tohle je hlas vašeho dabingu.",
 };
+
+// The full catalog feeds both selects (source keeps its "auto" entry).
+function populateLanguageSelects() {
+  const src = $("sourceLang");
+  const dst = $("lang");
+  for (const l of LANGUAGES) {
+    const opt = document.createElement("option");
+    opt.value = l.code;
+    opt.textContent = l.name;
+    src.appendChild(opt);
+    dst.appendChild(opt.cloneNode(true));
+  }
+}
 
 const $ = (id) => document.getElementById(id);
 
@@ -230,6 +260,7 @@ async function refreshAccount() {
 
 async function init() {
   applyI18n();
+  populateLanguageSelects();
   settings = await chrome.storage.sync.get(DEFAULTS);
   render(settings);
 
@@ -254,7 +285,7 @@ async function init() {
       ? voices.find((x) => x.name === wanted)
       : voices.find((x) => (x.lang || "").toLowerCase().startsWith(target));
     if (v) u.voice = v;
-    u.lang = v ? v.lang : target;
+    u.lang = v ? v.lang : LOCALES[target] || target;
     u.rate = Number($("rate").value) || 1;
     s.speak(u);
   });

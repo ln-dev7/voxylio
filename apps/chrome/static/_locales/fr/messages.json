@@ -1,77 +1,233 @@
 {
-  "appName": { "message": "Voxylio — doublage multilingue" },
-  "appDesc": { "message": "Double en temps réel les vidéos sous-titrées : traduction locale, voix synchronisée avec la lecture. FR, ES, IT, DE, PT." },
-
-  "srcLabel": { "message": "Langue de la vidéo" },
-  "detectAuto": { "message": "Détection automatique" },
-  "targetLabel": { "message": "Langue du doublage" },
-  "voiceLabel": { "message": "Voix" },
-  "voiceAuto": { "message": "Automatique" },
-  "rateLabel": { "message": "Vitesse de la voix" },
-  "duckLabel": { "message": "Audio original" },
-  "autoPauseLabel": { "message": "Pause auto si la voix est en retard" },
-  "localOnlyLabel": { "message": "Mode strictement local" },
-  "subtitlesLabel": { "message": "Sous-titres traduits à l’écran" },
-  "overlayLabel": { "message": "Menu flottant sur la page" },
-  "retry": { "message": "Réessayer" },
-  "diag": { "message": "Diagnostic" },
-  "copied": { "message": "Copié ✓" },
-  "reset": { "message": "Réinitialiser" },
-  "options": { "message": "Options" },
-  "hint": { "message": "Lance la vidéo, puis active l’interrupteur : la voix suit les sous-titres dans la langue choisie. À 0 %, seul le doublage est audible." },
-
-  "accountLabel": { "message": "Compte" },
-  "accountNotLinked": { "message": "Non connecté" },
-  "accountFree": { "message": "Gratuit" },
-  "accountPro": { "message": "Pro" },
-  "signIn": { "message": "Se connecter" },
-  "goPro": { "message": "Passer Pro" },
-  "manage": { "message": "Gérer" },
-  "accountNoteNotLinked": { "message": "Le doublage local reste gratuit, illimité et sans compte." },
-  "accountNoteFree": { "message": "Débloquez la traduction contextuelle et les fonctions Pro à venir." },
-  "accountNotePro": { "message": "Merci de soutenir Voxylio." },
-  "accountNoteProCanceled": { "message": "Abonnement actif jusqu’à la fin de la période." },
-
-  "statusSearching": { "message": "Recherche d’une vidéo…" },
-  "statusNoVideo": { "message": "Aucune vidéo détectée sur cette page." },
-  "statusVideosDetected": { "message": "$COUNT$ vidéo(s) détectée(s)", "placeholders": { "count": { "content": "$1" } } },
-  "statusLinesReady": { "message": "$COUNT$ réplique(s) prête(s)", "placeholders": { "count": { "content": "$1" } } },
-  "statusSpeaking": { "message": "voix en cours" },
-  "statusSubsLoading": { "message": "Piste de sous-titres détectée — lance la lecture quelques secondes pour charger les répliques." },
-  "statusNoSubs": { "message": "Ce lecteur n’expose pas ses sous-titres — le doublage n’est pas possible sur cette vidéo." },
-  "statusNoVoice": { "message": "Aucune voix installée pour cette langue. Sur Mac : Réglages Système → Accessibilité → Contenu énoncé." },
-  "statusLocalUnavailable": { "message": "Traduction locale indisponible (mode strict actif). Chrome télécharge peut-être son modèle — réessaie dans un instant." },
-  "statusTranslateError": { "message": "Traduction temporairement indisponible — nouvelle tentative automatique." },
-  "statusSiteDisabled": { "message": "Voxylio est désactivé sur ce site (voir Options)." },
-  "statusNoComm": { "message": "Impossible de communiquer avec la page. Recharge la page (F5) puis rouvre ce panneau." },
-  "translationLocal": { "message": "Traduction : locale (Chrome)" },
-  "translationCloud": { "message": "Traduction : en ligne" },
-  "translationWaiting": { "message": "Traduction : en attente…" },
-
-  "optTitle": { "message": "Options de Voxylio" },
-  "optTranslation": { "message": "Traduction" },
-  "optProviderLabel": { "message": "Fournisseur préféré" },
-  "optProviderAuto": { "message": "Automatique (local, puis secours en ligne)" },
-  "optProviderDeepl": { "message": "DeepL (clé API personnelle)" },
-  "optProviderGoogle": { "message": "Google Cloud Translation (clé API personnelle)" },
-  "optProviderHint": { "message": "La traduction locale de Chrome reste toujours prioritaire. Le secours en ligne sans clé est un service non officiel, sans garantie — une clé DeepL gratuite (500 000 caractères/mois) est plus fiable." },
-  "optDeeplKey": { "message": "Clé API DeepL" },
-  "optGoogleKey": { "message": "Clé API Google Cloud" },
-  "optKeyStored": { "message": "Les clés restent sur cet appareil (storage.local) — jamais synchronisées." },
-  "optCheckKey": { "message": "Vérifier la clé" },
-  "optKeyOk": { "message": "Clé valide — $USED$ / $LIMIT$ caractères utilisés ce mois-ci.", "placeholders": { "used": { "content": "$1" }, "limit": { "content": "$2" } } },
-  "optKeyBad": { "message": "Clé invalide ou quota atteint." },
-  "optSites": { "message": "Sites désactivés" },
-  "optSitesHint": { "message": "Voxylio reste totalement inactif sur ces sites (aucune détection, aucun doublage)." },
-  "optSiteAdd": { "message": "Ajouter" },
-  "optSitePlaceholder": { "message": "ex. youtube.com" },
-  "optSiteRemove": { "message": "Retirer" },
-  "optBackup": { "message": "Sauvegarde des réglages" },
-  "optExport": { "message": "Exporter (JSON)" },
-  "optImport": { "message": "Importer" },
-  "optImported": { "message": "Réglages importés ✓" },
-  "optImportBad": { "message": "Fichier invalide." },
-  "optBackupHint": { "message": "L’export ne contient jamais les clés API." },
-  "optPrivacy": { "message": "Confidentialité" },
-  "optSaved": { "message": "Enregistré ✓" }
+  "appName": {
+    "message": "Voxylio — doublage multilingue"
+  },
+  "appDesc": {
+    "message": "Double en temps réel les vidéos sous-titrées : traduction locale, voix synchronisée avec la lecture. Plus de 65 langues."
+  },
+  "srcLabel": {
+    "message": "Langue de la vidéo"
+  },
+  "detectAuto": {
+    "message": "Détection automatique"
+  },
+  "targetLabel": {
+    "message": "Langue du doublage"
+  },
+  "voiceLabel": {
+    "message": "Voix"
+  },
+  "voiceAuto": {
+    "message": "Automatique"
+  },
+  "rateLabel": {
+    "message": "Vitesse de la voix"
+  },
+  "duckLabel": {
+    "message": "Audio original"
+  },
+  "autoPauseLabel": {
+    "message": "Pause auto si la voix est en retard"
+  },
+  "localOnlyLabel": {
+    "message": "Mode strictement local"
+  },
+  "subtitlesLabel": {
+    "message": "Sous-titres traduits à l’écran"
+  },
+  "overlayLabel": {
+    "message": "Menu flottant sur la page"
+  },
+  "retry": {
+    "message": "Réessayer"
+  },
+  "diag": {
+    "message": "Diagnostic"
+  },
+  "copied": {
+    "message": "Copié ✓"
+  },
+  "reset": {
+    "message": "Réinitialiser"
+  },
+  "options": {
+    "message": "Options"
+  },
+  "hint": {
+    "message": "Lance la vidéo, puis active l’interrupteur : la voix suit les sous-titres dans la langue choisie. À 0 %, seul le doublage est audible."
+  },
+  "accountLabel": {
+    "message": "Compte"
+  },
+  "accountNotLinked": {
+    "message": "Non connecté"
+  },
+  "accountFree": {
+    "message": "Gratuit"
+  },
+  "accountPro": {
+    "message": "Pro"
+  },
+  "signIn": {
+    "message": "Se connecter"
+  },
+  "goPro": {
+    "message": "Passer Pro"
+  },
+  "manage": {
+    "message": "Gérer"
+  },
+  "accountNoteNotLinked": {
+    "message": "Le doublage local reste gratuit, illimité et sans compte."
+  },
+  "accountNoteFree": {
+    "message": "Débloquez la traduction contextuelle et les fonctions Pro à venir."
+  },
+  "accountNotePro": {
+    "message": "Merci de soutenir Voxylio."
+  },
+  "accountNoteProCanceled": {
+    "message": "Abonnement actif jusqu’à la fin de la période."
+  },
+  "statusSearching": {
+    "message": "Recherche d’une vidéo…"
+  },
+  "statusNoVideo": {
+    "message": "Aucune vidéo détectée sur cette page."
+  },
+  "statusVideosDetected": {
+    "message": "$COUNT$ vidéo(s) détectée(s)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusLinesReady": {
+    "message": "$COUNT$ réplique(s) prête(s)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusSpeaking": {
+    "message": "voix en cours"
+  },
+  "statusSubsLoading": {
+    "message": "Piste de sous-titres détectée — lance la lecture quelques secondes pour charger les répliques."
+  },
+  "statusNoSubs": {
+    "message": "Ce lecteur n’expose pas ses sous-titres — le doublage n’est pas possible sur cette vidéo."
+  },
+  "statusNoVoice": {
+    "message": "Aucune voix installée pour cette langue. Sur Mac : Réglages Système → Accessibilité → Contenu énoncé."
+  },
+  "statusLocalUnavailable": {
+    "message": "Traduction locale indisponible (mode strict actif). Chrome télécharge peut-être son modèle — réessaie dans un instant."
+  },
+  "statusTranslateError": {
+    "message": "Traduction temporairement indisponible — nouvelle tentative automatique."
+  },
+  "statusSiteDisabled": {
+    "message": "Voxylio est désactivé sur ce site (voir Options)."
+  },
+  "statusNoComm": {
+    "message": "Impossible de communiquer avec la page. Recharge la page (F5) puis rouvre ce panneau."
+  },
+  "translationLocal": {
+    "message": "Traduction : locale (Chrome)"
+  },
+  "translationCloud": {
+    "message": "Traduction : en ligne"
+  },
+  "translationWaiting": {
+    "message": "Traduction : en attente…"
+  },
+  "optTitle": {
+    "message": "Options de Voxylio"
+  },
+  "optTranslation": {
+    "message": "Traduction"
+  },
+  "optProviderLabel": {
+    "message": "Fournisseur préféré"
+  },
+  "optProviderAuto": {
+    "message": "Automatique (local, puis secours en ligne)"
+  },
+  "optProviderDeepl": {
+    "message": "DeepL (clé API personnelle)"
+  },
+  "optProviderGoogle": {
+    "message": "Google Cloud Translation (clé API personnelle)"
+  },
+  "optProviderHint": {
+    "message": "La traduction locale de Chrome reste toujours prioritaire. Le secours en ligne sans clé est un service non officiel, sans garantie — une clé DeepL gratuite (500 000 caractères/mois) est plus fiable."
+  },
+  "optDeeplKey": {
+    "message": "Clé API DeepL"
+  },
+  "optGoogleKey": {
+    "message": "Clé API Google Cloud"
+  },
+  "optKeyStored": {
+    "message": "Les clés restent sur cet appareil (storage.local) — jamais synchronisées."
+  },
+  "optCheckKey": {
+    "message": "Vérifier la clé"
+  },
+  "optKeyOk": {
+    "message": "Clé valide — $USED$ / $LIMIT$ caractères utilisés ce mois-ci.",
+    "placeholders": {
+      "used": {
+        "content": "$1"
+      },
+      "limit": {
+        "content": "$2"
+      }
+    }
+  },
+  "optKeyBad": {
+    "message": "Clé invalide ou quota atteint."
+  },
+  "optSites": {
+    "message": "Sites désactivés"
+  },
+  "optSitesHint": {
+    "message": "Voxylio reste totalement inactif sur ces sites (aucune détection, aucun doublage)."
+  },
+  "optSiteAdd": {
+    "message": "Ajouter"
+  },
+  "optSitePlaceholder": {
+    "message": "ex. youtube.com"
+  },
+  "optSiteRemove": {
+    "message": "Retirer"
+  },
+  "optBackup": {
+    "message": "Sauvegarde des réglages"
+  },
+  "optExport": {
+    "message": "Exporter (JSON)"
+  },
+  "optImport": {
+    "message": "Importer"
+  },
+  "optImported": {
+    "message": "Réglages importés ✓"
+  },
+  "optImportBad": {
+    "message": "Fichier invalide."
+  },
+  "optBackupHint": {
+    "message": "L’export ne contient jamais les clés API."
+  },
+  "optPrivacy": {
+    "message": "Confidentialité"
+  },
+  "optSaved": {
+    "message": "Enregistré ✓"
+  }
 }

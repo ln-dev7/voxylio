@@ -1,77 +1,233 @@
 {
-  "appName": { "message": "Voxylio — multilingual dubbing" },
-  "appDesc": { "message": "Dubs subtitled videos in real time: local translation, voice synced with playback. FR, ES, IT, DE, PT." },
-
-  "srcLabel": { "message": "Video language" },
-  "detectAuto": { "message": "Auto-detect" },
-  "targetLabel": { "message": "Dubbing language" },
-  "voiceLabel": { "message": "Voice" },
-  "voiceAuto": { "message": "Automatic" },
-  "rateLabel": { "message": "Voice speed" },
-  "duckLabel": { "message": "Original audio" },
-  "autoPauseLabel": { "message": "Auto-pause when the voice falls behind" },
-  "localOnlyLabel": { "message": "Strictly local mode" },
-  "subtitlesLabel": { "message": "Translated subtitles on screen" },
-  "overlayLabel": { "message": "Floating controls on the page" },
-  "retry": { "message": "Retry" },
-  "diag": { "message": "Diagnostics" },
-  "copied": { "message": "Copied ✓" },
-  "reset": { "message": "Reset" },
-  "options": { "message": "Options" },
-  "hint": { "message": "Play the video, then flip the switch: the voice follows the subtitles in your language. At 0%, only the dub is audible." },
-
-  "accountLabel": { "message": "Account" },
-  "accountNotLinked": { "message": "Not signed in" },
-  "accountFree": { "message": "Free" },
-  "accountPro": { "message": "Pro" },
-  "signIn": { "message": "Sign in" },
-  "goPro": { "message": "Go Pro" },
-  "manage": { "message": "Manage" },
-  "accountNoteNotLinked": { "message": "Local dubbing stays free, unlimited and account-free." },
-  "accountNoteFree": { "message": "Unlock context-aware translation and upcoming Pro features." },
-  "accountNotePro": { "message": "Thanks for supporting Voxylio." },
-  "accountNoteProCanceled": { "message": "Subscription active until the end of the period." },
-
-  "statusSearching": { "message": "Looking for a video…" },
-  "statusNoVideo": { "message": "No video detected on this page." },
-  "statusVideosDetected": { "message": "$COUNT$ video(s) detected", "placeholders": { "count": { "content": "$1" } } },
-  "statusLinesReady": { "message": "$COUNT$ line(s) ready", "placeholders": { "count": { "content": "$1" } } },
-  "statusSpeaking": { "message": "speaking" },
-  "statusSubsLoading": { "message": "Subtitle track detected — play for a few seconds to load the lines." },
-  "statusNoSubs": { "message": "This player does not expose its subtitles — dubbing is not possible on this video." },
-  "statusNoVoice": { "message": "No voice installed for this language. On Mac: System Settings → Accessibility → Spoken Content." },
-  "statusLocalUnavailable": { "message": "Local translation unavailable (strict mode on). Chrome may be downloading its model — retry in a moment." },
-  "statusTranslateError": { "message": "Translation temporarily unavailable — retrying automatically." },
-  "statusSiteDisabled": { "message": "Voxylio is disabled on this site (see Options)." },
-  "statusNoComm": { "message": "Cannot reach the page. Reload it (F5) and reopen this panel." },
-  "translationLocal": { "message": "Translation: local (Chrome)" },
-  "translationCloud": { "message": "Translation: online" },
-  "translationWaiting": { "message": "Translation: waiting…" },
-
-  "optTitle": { "message": "Voxylio Options" },
-  "optTranslation": { "message": "Translation" },
-  "optProviderLabel": { "message": "Preferred provider" },
-  "optProviderAuto": { "message": "Automatic (local, then online fallback)" },
-  "optProviderDeepl": { "message": "DeepL (your API key)" },
-  "optProviderGoogle": { "message": "Google Cloud Translation (your API key)" },
-  "optProviderHint": { "message": "Chrome's local translation always comes first. The keyless online fallback is an unofficial, best-effort service — a free DeepL key (500,000 characters/month) is more reliable." },
-  "optDeeplKey": { "message": "DeepL API key" },
-  "optGoogleKey": { "message": "Google Cloud API key" },
-  "optKeyStored": { "message": "Keys stay on this device (storage.local) — never synced." },
-  "optCheckKey": { "message": "Check key" },
-  "optKeyOk": { "message": "Valid key — $USED$ / $LIMIT$ characters used this month.", "placeholders": { "used": { "content": "$1" }, "limit": { "content": "$2" } } },
-  "optKeyBad": { "message": "Invalid key or quota reached." },
-  "optSites": { "message": "Disabled sites" },
-  "optSitesHint": { "message": "Voxylio stays completely inactive on these sites (no detection, no dubbing)." },
-  "optSiteAdd": { "message": "Add" },
-  "optSitePlaceholder": { "message": "e.g. youtube.com" },
-  "optSiteRemove": { "message": "Remove" },
-  "optBackup": { "message": "Settings backup" },
-  "optExport": { "message": "Export (JSON)" },
-  "optImport": { "message": "Import" },
-  "optImported": { "message": "Settings imported ✓" },
-  "optImportBad": { "message": "Invalid file." },
-  "optBackupHint": { "message": "The export never contains API keys." },
-  "optPrivacy": { "message": "Privacy" },
-  "optSaved": { "message": "Saved ✓" }
+  "appName": {
+    "message": "Voxylio — multilingual dubbing"
+  },
+  "appDesc": {
+    "message": "Dubs subtitled videos in real time: local translation, voice synced with playback. 65+ languages."
+  },
+  "srcLabel": {
+    "message": "Video language"
+  },
+  "detectAuto": {
+    "message": "Auto-detect"
+  },
+  "targetLabel": {
+    "message": "Dubbing language"
+  },
+  "voiceLabel": {
+    "message": "Voice"
+  },
+  "voiceAuto": {
+    "message": "Automatic"
+  },
+  "rateLabel": {
+    "message": "Voice speed"
+  },
+  "duckLabel": {
+    "message": "Original audio"
+  },
+  "autoPauseLabel": {
+    "message": "Auto-pause when the voice falls behind"
+  },
+  "localOnlyLabel": {
+    "message": "Strictly local mode"
+  },
+  "subtitlesLabel": {
+    "message": "Translated subtitles on screen"
+  },
+  "overlayLabel": {
+    "message": "Floating controls on the page"
+  },
+  "retry": {
+    "message": "Retry"
+  },
+  "diag": {
+    "message": "Diagnostics"
+  },
+  "copied": {
+    "message": "Copied ✓"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "options": {
+    "message": "Options"
+  },
+  "hint": {
+    "message": "Play the video, then flip the switch: the voice follows the subtitles in your language. At 0%, only the dub is audible."
+  },
+  "accountLabel": {
+    "message": "Account"
+  },
+  "accountNotLinked": {
+    "message": "Not signed in"
+  },
+  "accountFree": {
+    "message": "Free"
+  },
+  "accountPro": {
+    "message": "Pro"
+  },
+  "signIn": {
+    "message": "Sign in"
+  },
+  "goPro": {
+    "message": "Go Pro"
+  },
+  "manage": {
+    "message": "Manage"
+  },
+  "accountNoteNotLinked": {
+    "message": "Local dubbing stays free, unlimited and account-free."
+  },
+  "accountNoteFree": {
+    "message": "Unlock context-aware translation and upcoming Pro features."
+  },
+  "accountNotePro": {
+    "message": "Thanks for supporting Voxylio."
+  },
+  "accountNoteProCanceled": {
+    "message": "Subscription active until the end of the period."
+  },
+  "statusSearching": {
+    "message": "Looking for a video…"
+  },
+  "statusNoVideo": {
+    "message": "No video detected on this page."
+  },
+  "statusVideosDetected": {
+    "message": "$COUNT$ video(s) detected",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusLinesReady": {
+    "message": "$COUNT$ line(s) ready",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusSpeaking": {
+    "message": "speaking"
+  },
+  "statusSubsLoading": {
+    "message": "Subtitle track detected — play for a few seconds to load the lines."
+  },
+  "statusNoSubs": {
+    "message": "This player does not expose its subtitles — dubbing is not possible on this video."
+  },
+  "statusNoVoice": {
+    "message": "No voice installed for this language. On Mac: System Settings → Accessibility → Spoken Content."
+  },
+  "statusLocalUnavailable": {
+    "message": "Local translation unavailable (strict mode on). Chrome may be downloading its model — retry in a moment."
+  },
+  "statusTranslateError": {
+    "message": "Translation temporarily unavailable — retrying automatically."
+  },
+  "statusSiteDisabled": {
+    "message": "Voxylio is disabled on this site (see Options)."
+  },
+  "statusNoComm": {
+    "message": "Cannot reach the page. Reload it (F5) and reopen this panel."
+  },
+  "translationLocal": {
+    "message": "Translation: local (Chrome)"
+  },
+  "translationCloud": {
+    "message": "Translation: online"
+  },
+  "translationWaiting": {
+    "message": "Translation: waiting…"
+  },
+  "optTitle": {
+    "message": "Voxylio Options"
+  },
+  "optTranslation": {
+    "message": "Translation"
+  },
+  "optProviderLabel": {
+    "message": "Preferred provider"
+  },
+  "optProviderAuto": {
+    "message": "Automatic (local, then online fallback)"
+  },
+  "optProviderDeepl": {
+    "message": "DeepL (your API key)"
+  },
+  "optProviderGoogle": {
+    "message": "Google Cloud Translation (your API key)"
+  },
+  "optProviderHint": {
+    "message": "Chrome's local translation always comes first. The keyless online fallback is an unofficial, best-effort service — a free DeepL key (500,000 characters/month) is more reliable."
+  },
+  "optDeeplKey": {
+    "message": "DeepL API key"
+  },
+  "optGoogleKey": {
+    "message": "Google Cloud API key"
+  },
+  "optKeyStored": {
+    "message": "Keys stay on this device (storage.local) — never synced."
+  },
+  "optCheckKey": {
+    "message": "Check key"
+  },
+  "optKeyOk": {
+    "message": "Valid key — $USED$ / $LIMIT$ characters used this month.",
+    "placeholders": {
+      "used": {
+        "content": "$1"
+      },
+      "limit": {
+        "content": "$2"
+      }
+    }
+  },
+  "optKeyBad": {
+    "message": "Invalid key or quota reached."
+  },
+  "optSites": {
+    "message": "Disabled sites"
+  },
+  "optSitesHint": {
+    "message": "Voxylio stays completely inactive on these sites (no detection, no dubbing)."
+  },
+  "optSiteAdd": {
+    "message": "Add"
+  },
+  "optSitePlaceholder": {
+    "message": "e.g. youtube.com"
+  },
+  "optSiteRemove": {
+    "message": "Remove"
+  },
+  "optBackup": {
+    "message": "Settings backup"
+  },
+  "optExport": {
+    "message": "Export (JSON)"
+  },
+  "optImport": {
+    "message": "Import"
+  },
+  "optImported": {
+    "message": "Settings imported ✓"
+  },
+  "optImportBad": {
+    "message": "Invalid file."
+  },
+  "optBackupHint": {
+    "message": "The export never contains API keys."
+  },
+  "optPrivacy": {
+    "message": "Privacy"
+  },
+  "optSaved": {
+    "message": "Saved ✓"
+  }
 }

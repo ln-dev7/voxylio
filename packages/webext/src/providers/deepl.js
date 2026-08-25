@@ -4,6 +4,14 @@
 
 import { runtime } from "../index.js";
 
+// Targets DeepL can serve (mirror of the background's DEEPL_TARGET map):
+// for anything else the provider steps aside without a failure penalty.
+export const DEEPL_TARGETS = new Set([
+  "ar", "bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "he",
+  "hu", "id", "it", "ja", "ko", "lt", "lv", "nl", "no", "pl", "pt", "ro",
+  "ru", "sk", "sl", "sv", "th", "tr", "uk", "vi", "zh",
+]);
+
 export function createDeeplProvider(hasKey) {
   const translatorFor = (source, target) => ({
     translate: async (text) => {
@@ -22,6 +30,10 @@ export function createDeeplProvider(hasKey) {
     id: "deepl",
     kind: "cloud",
     ready: (source, target) =>
-      Promise.resolve(hasKey && hasKey() ? translatorFor(source, target) : null),
+      Promise.resolve(
+        hasKey && hasKey() && DEEPL_TARGETS.has(target)
+          ? translatorFor(source, target)
+          : null,
+      ),
   };
 }
