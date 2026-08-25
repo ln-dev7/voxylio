@@ -403,7 +403,7 @@
   var LOCALES = PRIMARY_LOCALE;
 
   // ../../packages/core/src/settings.js
-  var SETTINGS_VERSION = 2;
+  var SETTINGS_VERSION = 3;
   var SOURCE_LANGS = ["auto", ...LANGUAGE_CODES];
   var DEFAULTS = Object.freeze({
     v: SETTINGS_VERSION,
@@ -411,6 +411,9 @@
     rate: 1.1,
     duck: 12,
     voiceName: "",
+    // Preferred voice per target language ({ fr: "Amélie", … }); falls
+    // back to voiceName, then to the automatic scoring.
+    voiceByLang: {},
     sourceLang: "auto",
     targetLang: "fr",
     subtitles: false,
@@ -514,6 +517,42 @@
       lastError: () => lastError,
       /** Test/diagnostic hook. */
       _pairState: pairState
+    };
+  }
+
+  // ../../packages/core/src/journal.js
+  var JOURNAL_CAPS = Object.freeze({
+    sessions: 40,
+    // most recent kept
+    linesPerSession: 400,
+    days: 60
+    // usage stats horizon
+  });
+  function journalAppendLine(session, line, cap = JOURNAL_CAPS.linesPerSession) {
+    const lines = [...session.lines || [], line];
+    while (lines.length > cap) lines.shift();
+    return { ...session, lines, updatedAt: line.at || session.updatedAt };
+  }
+  function journalUpsert(list, session, cap = JOURNAL_CAPS.sessions) {
+    const rest = (Array.isArray(list) ? list : []).filter((s) => s && s.id !== session.id);
+    const out = [session, ...rest];
+    out.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    return out.slice(0, cap);
+  }
+  function usageAdd(stats, day, seconds, lines, lang, capDays = JOURNAL_CAPS.days) {
+    const s = stats && typeof stats === "object" ? stats : {};
+    const days = { ...s.days || {} };
+    const prev = days[day] || { s: 0, l: 0 };
+    days[day] = { s: prev.s + seconds, l: prev.l + lines };
+    const keys = Object.keys(days).sort();
+    while (keys.length > capDays) delete days[keys.shift()];
+    const langs = { ...s.langs || {} };
+    if (lang) langs[lang] = (langs[lang] || 0) + lines;
+    return {
+      days,
+      langs,
+      totalS: (s.totalS || 0) + seconds,
+      totalL: (s.totalL || 0) + lines
     };
   }
 
@@ -898,14 +937,81 @@
     let cachedVoiceKey = "";
     function pickVoice2() {
       loadVoices();
-      const k = settings.targetLang + "|" + settings.voiceName + "|" + voices.length;
+      const wanted = settings.voiceByLang && settings.voiceByLang[settings.targetLang] || settings.voiceName;
+      const k = settings.targetLang + "|" + wanted + "|" + voices.length;
       if (k === cachedVoiceKey) return cachedVoice;
       cachedVoiceKey = k;
       cachedVoice = pickVoice(voices, {
         targetLang: settings.targetLang,
-        voiceName: settings.voiceName
+        voiceName: wanted
       });
       return cachedVoice;
+    }
+    let journalSession = null;
+    let journalDirty = false;
+    let journalTimer = null;
+    let statsPending = { seconds: 0, lines: 0 };
+    function dayKey() {
+      const d = /* @__PURE__ */ new Date();
+      return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    }
+    function journalFlushSoon() {
+      if (journalTimer) return;
+      journalTimer = setTimeout(() => {
+        journalTimer = null;
+        if (!journalDirty || !journalSession || !isAlive()) return;
+        journalDirty = false;
+        const session = journalSession;
+        const spent = statsPending;
+        statsPending = { seconds: 0, lines: 0 };
+        try {
+          storage.local.get({ journal: [], usageStats: null }, (data) => {
+            const patch = { journal: journalUpsert(data.journal || [], session) };
+            if (spent.lines > 0 || spent.seconds > 0) {
+              patch.usageStats = usageAdd(
+                data.usageStats,
+                dayKey(),
+                spent.seconds,
+                spent.lines,
+                session.target
+              );
+            }
+            safeLocalSet(patch);
+          });
+        } catch (e) {
+        }
+      }, 2500);
+    }
+    function recordLine(group, text, videoTime) {
+      const target = settings.targetLang;
+      if (!journalSession || journalSession.target !== target) {
+        journalSession = {
+          id: "js_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7),
+          host: (location.hostname || "").replace(/^www\./, ""),
+          url: String(location.href || "").slice(0, 300),
+          title: (document.title || location.hostname || "").slice(0, 160),
+          source: settings.sourceLang,
+          target,
+          startedAt: Date.now(),
+          updatedAt: Date.now(),
+          lines: []
+        };
+      }
+      journalSession = journalAppendLine(journalSession, {
+        t: Math.round(videoTime * 10) / 10,
+        src: group.text,
+        dst: text,
+        at: Date.now()
+      });
+      journalDirty = true;
+      journalFlushSoon();
+    }
+    function recordSpokenSeconds(sec) {
+      if (!journalSession) return;
+      statsPending.seconds += sec;
+      statsPending.lines += 1;
+      journalDirty = true;
+      journalFlushSoon();
     }
     function collectVideos() {
       const out = /* @__PURE__ */ new Set();
@@ -1133,7 +1239,9 @@
           baseRate: settings.rate,
           playbackRate: video.playbackRate || 1
         });
+        const spokeAt = performance.now();
         u.onend = () => {
+          recordSpokenSeconds((performance.now() - spokeAt) / 1e3);
           if (ctl.currentUtterance === u) ctl.currentUtterance = null;
           drainQueue();
         };
@@ -1218,6 +1326,7 @@
           return;
         }
         const dur = group.end - group.start;
+        recordLine(group, text, group.start);
         if (ctl.currentUtterance) {
           enqueue({ text, dur, start: group.start, end: group.end, id: group.id });
         } else {

@@ -179,34 +179,6 @@
     vi: "vi-VN",
     zh: "zh-CN"
   };
-
-  // ../../packages/core/src/voices.js
-  var LOCALES = PRIMARY_LOCALE;
-
-  // ../../packages/core/src/settings.js
-  var SETTINGS_VERSION = 2;
-  var SOURCE_LANGS = ["auto", ...LANGUAGE_CODES];
-  var DEFAULTS = Object.freeze({
-    v: SETTINGS_VERSION,
-    enabled: false,
-    rate: 1.1,
-    duck: 12,
-    voiceName: "",
-    sourceLang: "auto",
-    targetLang: "fr",
-    subtitles: false,
-    overlay: true,
-    cloudFallback: true,
-    autoPause: false,
-    keepTerms: true,
-    // Preferred paid provider when a key is configured ("auto" = none:
-    // builtin then best-effort fallback).
-    provider: "auto",
-    // Hostnames where Voxylio must stay completely inactive.
-    disabledSites: []
-  });
-
-  // src/popup.js
   var PREVIEW_SAMPLES = {
     fr: "Bonjour ! Voici la voix de votre doublage.",
     es: "\xA1Hola! Esta es la voz de tu doblaje.",
@@ -232,6 +204,46 @@
     ro: "Salut! Aceasta este vocea dublajului t\u0103u.",
     cs: "Ahoj! Tohle je hlas va\u0161eho dabingu."
   };
+
+  // ../../packages/core/src/voices.js
+  var LOCALES = PRIMARY_LOCALE;
+
+  // ../../packages/core/src/settings.js
+  var SETTINGS_VERSION = 3;
+  var SOURCE_LANGS = ["auto", ...LANGUAGE_CODES];
+  var DEFAULTS = Object.freeze({
+    v: SETTINGS_VERSION,
+    enabled: false,
+    rate: 1.1,
+    duck: 12,
+    voiceName: "",
+    // Preferred voice per target language ({ fr: "Amélie", … }); falls
+    // back to voiceName, then to the automatic scoring.
+    voiceByLang: {},
+    sourceLang: "auto",
+    targetLang: "fr",
+    subtitles: false,
+    overlay: true,
+    cloudFallback: true,
+    autoPause: false,
+    keepTerms: true,
+    // Preferred paid provider when a key is configured ("auto" = none:
+    // builtin then best-effort fallback).
+    provider: "auto",
+    // Hostnames where Voxylio must stay completely inactive.
+    disabledSites: []
+  });
+
+  // ../../packages/core/src/journal.js
+  var JOURNAL_CAPS = Object.freeze({
+    sessions: 40,
+    // most recent kept
+    linesPerSession: 400,
+    days: 60
+    // usage stats horizon
+  });
+
+  // src/popup.js
   function populateLanguageSelects() {
     const src = $("sourceLang");
     const dst = $("lang");
@@ -490,6 +502,11 @@
       }
     });
     $("optionsBtn").addEventListener("click", () => chrome.runtime.openOptionsPage());
+    const openHub = (view) => {
+      chrome.tabs.create({ url: chrome.runtime.getURL("app.html#" + view) });
+    };
+    $("historyLink").addEventListener("click", () => openHub("history"));
+    $("voicesLink").addEventListener("click", () => openHub("voices"));
     $("reset").addEventListener("click", async () => {
       await chrome.storage.sync.set({ ...DEFAULTS });
       await chrome.storage.local.remove("overlayPos");
@@ -505,7 +522,14 @@
       updateFill(e.target);
       saveDebounced({ duck: Number(e.target.value) });
     });
-    $("voice").addEventListener("change", (e) => save({ voiceName: e.target.value }));
+    $("voice").addEventListener("change", (e) => {
+      const lang = $("lang").value || settings.targetLang;
+      const vb = { ...settings.voiceByLang || {} };
+      if (e.target.value) vb[lang] = e.target.value;
+      else delete vb[lang];
+      settings.voiceByLang = vb;
+      save({ voiceName: e.target.value, voiceByLang: vb });
+    });
     $("lang").addEventListener("change", (e) => {
       save({ targetLang: e.target.value, voiceName: "" });
       setTimeout(() => window.location.reload(), 250);

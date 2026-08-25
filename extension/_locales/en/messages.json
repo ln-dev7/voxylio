@@ -247,5 +247,116 @@
   },
   "signOut": {
     "message": "Sign out"
+  },
+  "appHistory": {
+    "message": "History"
+  },
+  "appVoices": {
+    "message": "Voices"
+  },
+  "appSettings": {
+    "message": "Settings"
+  },
+  "appAccount": {
+    "message": "Account"
+  },
+  "appSearchSessions": {
+    "message": "Search sessions…"
+  },
+  "appClearAll": {
+    "message": "Clear all"
+  },
+  "appNoSessions": {
+    "message": "No sessions yet — start dubbing and the transcript will appear here, fully on-device."
+  },
+  "appDeleteSession": {
+    "message": "Delete"
+  },
+  "appBilingual": {
+    "message": "Bilingual"
+  },
+  "appOriginal": {
+    "message": "Original"
+  },
+  "appTranslation": {
+    "message": "Translation"
+  },
+  "appTimestamps": {
+    "message": "Timestamps"
+  },
+  "appFilterSegments": {
+    "message": "Filter segments…"
+  },
+  "appCopy": {
+    "message": "Copy"
+  },
+  "appCopied": {
+    "message": "Copied ✓"
+  },
+  "appLines": {
+    "message": "lines"
+  },
+  "appVoicesHint": {
+    "message": "Pick the voice used for each dubbing language."
+  },
+  "appCurrentTarget": {
+    "message": "Current dubbing language"
+  },
+  "appVoiceAuto": {
+    "message": "Automatic"
+  },
+  "appVoiceAutoHint": {
+    "message": "Voxylio picks the best installed voice."
+  },
+  "appVoiceSet": {
+    "message": "Chosen voice:"
+  },
+  "appUseVoice": {
+    "message": "Use this voice"
+  },
+  "appVoiceInUse": {
+    "message": "In use"
+  },
+  "appSearchVoice": {
+    "message": "Search voices…"
+  },
+  "appNoVoices": {
+    "message": "No voice installed for this language. On Mac: System Settings → Accessibility → Spoken Content → download a voice, then come back."
+  },
+  "appPreview": {
+    "message": "Play a preview"
+  },
+  "appLocalVoice": {
+    "message": "on-device"
+  },
+  "appDefaultBadge": {
+    "message": "Default"
+  },
+  "appStatsHint": {
+    "message": "Stats computed locally — nothing leaves your device."
+  },
+  "appMinutesDubbed": {
+    "message": "Minutes dubbed"
+  },
+  "appLinesDubbed": {
+    "message": "Sentences dubbed"
+  },
+  "appLangsUsed": {
+    "message": "Languages used"
+  },
+  "appLast30": {
+    "message": "Last 30 days"
+  },
+  "appTopLangs": {
+    "message": "Most dubbed languages"
+  },
+  "appNoStats": {
+    "message": "Start your first dub to see your stats here."
+  },
+  "historyLink": {
+    "message": "View dubbing history"
+  },
+  "voicesLink": {
+    "message": "Voices"
   }
 }
