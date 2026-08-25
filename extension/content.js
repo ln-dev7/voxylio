@@ -720,6 +720,44 @@
       }
     }
     recheckAccount();
+    const ACCOUNT_HOSTS = ["voxylio.lndev.me", "localhost", "127.0.0.1"];
+    if (ACCOUNT_HOSTS.includes(location.hostname) && window === window.top) {
+      window.addEventListener("message", (event) => {
+        if (event.source !== window || event.origin !== location.origin) return;
+        const msg = event.data;
+        if (!msg || typeof msg !== "object") return;
+        if (msg.type === "voxylio:link" && typeof msg.token === "string" && msg.token.startsWith("vxt_")) {
+          try {
+            const p = runtime.sendMessage({
+              type: "voxylio:link-relay",
+              token: msg.token
+            });
+            if (p && typeof p.then === "function") {
+              p.then((resp) => {
+                window.postMessage(
+                  {
+                    type: "voxylio:linked",
+                    ok: !!(resp && resp.ok),
+                    plan: resp && resp.plan || "free"
+                  },
+                  location.origin
+                );
+              }).catch(() => {
+              });
+            }
+          } catch (e) {
+          }
+        }
+        if (msg.type === "voxylio:unlink") {
+          try {
+            const p = runtime.sendMessage({ type: "voxylio:unlink-relay" });
+            if (p && typeof p.catch === "function") p.catch(() => {
+            });
+          } catch (e) {
+          }
+        }
+      });
+    }
     const controllers = /* @__PURE__ */ new Map();
     let primaryVideo = null;
     function isEligibleVideo(v) {

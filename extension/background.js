@@ -128,6 +128,19 @@
       refreshEntitlements(!!msg.force).then(sendResponse).catch(() => sendResponse({ plan: "free", status: "none", linked: false }));
       return true;
     }
+    if (msg && msg.type === "voxylio:link-relay" && typeof msg.token === "string" && msg.token.startsWith("vxt_")) {
+      chrome.storage.local.set({ accountToken: msg.token }, () => {
+        refreshEntitlements(true).then((ent) => sendResponse({ ok: true, plan: ent.plan })).catch(() => sendResponse({ ok: true, plan: "free" }));
+      });
+      return true;
+    }
+    if (msg && msg.type === "voxylio:unlink-relay") {
+      chrome.storage.local.remove(
+        ["accountToken", "entitlements"],
+        () => sendResponse({ ok: true })
+      );
+      return true;
+    }
   });
   var SITE_ORIGIN = "https://voxylio.lndev.me";
   var CHECK_MS = 24 * 60 * 60 * 1e3;
