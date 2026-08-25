@@ -220,6 +220,14 @@ async function refreshStatus() {
   }
 }
 
+// The whole popup is gated: signed out, only the sign-in card shows —
+// the dubbing engine itself refuses to start without a linked account.
+function setSignedOut(out) {
+  document.body.classList.toggle("signed-out", out);
+  $("signinCard").hidden = !out;
+  $("mainUi").hidden = out;
+}
+
 async function refreshAccount() {
   const plan = $("accountPlan");
   const btn = $("accountBtn");
@@ -227,16 +235,18 @@ async function refreshAccount() {
   const banner = $("proBanner");
   try {
     const ent = await chrome.runtime.sendMessage({ type: "entitlements" });
-    // The promoted CTA up top: visible for everyone except Pro users.
-    banner.hidden = !!(ent && ent.linked && ent.plan === "pro");
-    if (!ent || !ent.linked) {
+    const linked = !!(ent && ent.linked);
+    setSignedOut(!linked);
+    // The promoted CTA up top: visible for every linked non-Pro user.
+    banner.hidden = !linked || ent.plan === "pro";
+    if (!linked) {
       plan.textContent = t("accountNotLinked") || "Non connecté";
       plan.classList.remove("pro");
       btn.textContent = t("signIn") || "Se connecter";
       btn.classList.remove("ghost");
       note.textContent =
         t("accountNoteNotLinked") ||
-        "Le doublage local reste gratuit, illimité et sans compte.";
+        "Connecte-toi pour activer le doublage — le plan gratuit suffit.";
     } else if (ent.plan === "pro") {
       plan.textContent = t("accountPro") || "Pro";
       plan.classList.add("pro");
@@ -257,8 +267,11 @@ async function refreshAccount() {
         "Débloquez la traduction contextuelle et les fonctions Pro à venir.";
     }
   } catch (e) {
-    plan.textContent = t("accountFree") || "Gratuit";
-    banner.hidden = false;
+    // No background answer: same as not linked — the engine is gated on
+    // the very same call, so the popup and the page always agree.
+    setSignedOut(true);
+    plan.textContent = t("accountNotLinked") || "Non connecté";
+    banner.hidden = true;
   }
 }
 
@@ -341,14 +354,21 @@ async function init() {
     setTimeout(() => window.location.reload(), 250);
   });
 
-  // Account: plan comes from the background's cached entitlements.
-  // Free features never require it; the row only unlocks/reflects Pro.
+  // Account: plan comes from the background's cached entitlements. A
+  // linked account (free plan included) is required to dub — signed out,
+  // the popup collapses to the sign-in card.
   refreshAccount();
   const openAccount = () => {
     chrome.tabs.create({ url: "https://voxylio.lndev.me/fr/account?from=extension" });
   };
   $("accountBtn").addEventListener("click", openAccount);
   $("proBannerBtn").addEventListener("click", openAccount);
+  $("signinBtn").addEventListener("click", openAccount);
+  // Unlock live when the site relays the token while the popup is open.
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "local" && (changes.accountToken || changes.entitlements))
+      refreshAccount();
+  });
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab || !tab.id) return;

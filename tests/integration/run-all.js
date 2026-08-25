@@ -15,6 +15,7 @@ const suites = [
   ['run.js', 'language switch mid-playback (en→fr→es)'],
   ['run-source.js', 'source detection (fr→en) + same-language silence'],
   ['run-roll.js', 'roll-up captions + playbackRate ×1.5'],
+  ['run-gate.js', 'account gate: silent signed out, live unlock on link'],
 ];
 let failed = 0;
 for (const [file, label] of suites) {

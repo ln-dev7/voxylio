@@ -53,6 +53,29 @@ import {
     );
   }
 
+  // ---------------------------------------------------------------- account
+  // Dubbing requires a linked Voxylio account (the free plan is enough).
+  // The background owns the token and caches entitlements: once linked,
+  // the check also succeeds offline, so a bad connection never locks a
+  // signed-in user out mid-video.
+  let accountLinked = false;
+
+  function recheckAccount() {
+    try {
+      const p = runtime.sendMessage({ type: "entitlements" });
+      if (p && typeof p.then === "function") {
+        p.then((ent) => {
+          const linked = !!(ent && ent.linked);
+          if (linked !== accountLinked) {
+            accountLinked = linked;
+            refreshAll();
+          }
+        }).catch(() => {});
+      }
+    } catch (e) {}
+  }
+  recheckAccount();
+
   const controllers = new Map(); // HTMLVideoElement -> controller
 
   // Only ONE video is dubbed at a time: the "primary" — playing, visible
@@ -102,6 +125,8 @@ import {
 
   storage.onChanged.addListener((changes, area) => {
     if (area === "local") {
+      // Link/unlink from the site (any tab) lands in storage.local first.
+      if (changes.accountToken || changes.entitlements) recheckAccount();
       // Provider API keys are stored in storage.local by the options page.
       if (changes.deeplKey) providerKeys.deepl = changes.deeplKey.newValue || "";
       if (changes.googleKey)
@@ -842,8 +867,9 @@ import {
 
     ctl.onSettingsChanged = () => {
       // Dub only the primary video — one voice, one duck, per page.
-      // A hostname on the options page's disabled list stays untouched.
-      if (settings.enabled && !siteDisabled() && video === primaryVideo) {
+      // A hostname on the options page's disabled list stays untouched,
+      // and nothing starts without a linked account (free plan included).
+      if (settings.enabled && accountLinked && !siteDisabled() && video === primaryVideo) {
         start();
         applyDucking();
       } else {
@@ -1158,7 +1184,9 @@ import {
   }
 
   function syncOverlay() {
-    const wanted = settings.overlay && controllers.size > 0;
+    // No overlay without a linked account: a dead power button would only
+    // confuse — the popup carries the sign-in call to action instead.
+    const wanted = settings.overlay && accountLinked && controllers.size > 0;
     if (wanted) createOverlay();
     else destroyOverlay();
     renderOverlay();
@@ -1341,6 +1369,7 @@ import {
         version: manifestVersion(),
         page: location.hostname,
         state,
+        signinRequired: !accountLinked,
         speaking: anySpeaking(),
         translationMode,
         lastTranslateError,

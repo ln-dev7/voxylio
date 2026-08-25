@@ -40,9 +40,12 @@ const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromi
         id: 'test-extension',
         onMessage: { addListener: () => {} },
         getManifest: () => ({ version: 'test' }),
-        // random latency 100-400 ms, like a real translator
-        sendMessage: (msg) => new Promise((res) =>
-          setTimeout(() => res({ ok: true, text: `[fr] ${msg.text}` }), 100 + Math.random() * 300)),
+        // random latency 100-400 ms, like a real translator; the account
+        // is linked (free plan) — dubbing requires one.
+        sendMessage: (msg) => msg && msg.type === 'entitlements'
+          ? Promise.resolve({ plan: 'free', status: 'none', linked: true })
+          : new Promise((res) =>
+              setTimeout(() => res({ ok: true, text: `[fr] ${msg.text}` }), 100 + Math.random() * 300)),
       },
     };
     window.__spoken = [];

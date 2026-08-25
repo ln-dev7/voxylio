@@ -27,7 +27,9 @@ const http = require('http');
         local: { get: (d, cb) => cb(d), set: () => {} }, onChanged: { addListener: l => listeners.push(l) } },
       runtime: { id: 'test-extension', onMessage: { addListener: () => {} },
         // echo the full pair to verify the source is forwarded
-        sendMessage: (msg) => new Promise(res => setTimeout(() => res({ ok: true, text: `[${msg.source}->${msg.target}] ${msg.text}` }), 100)) },
+        sendMessage: (msg) => msg && msg.type === 'entitlements'
+          ? Promise.resolve({ plan: 'free', status: 'none', linked: true })
+          : new Promise(res => setTimeout(() => res({ ok: true, text: `[${msg.source}->${msg.target}] ${msg.text}` }), 100)) },
     };
     window.__spoken = [];
     Object.defineProperty(window, 'SpeechSynthesisUtterance', { value: function (t) { this.text = t; }, configurable: true });

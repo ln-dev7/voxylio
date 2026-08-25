@@ -53,13 +53,16 @@ const http = require('http');
         id: 'test-extension',
         onMessage: { addListener: () => {} },
         // La "traduction" marque la langue cible : détecte tout mélange.
+        // Le compte est lié (plan gratuit) : le doublage exige un compte.
         sendMessage: (msg) =>
-          new Promise((res) =>
-            setTimeout(
-              () => res({ ok: true, text: `[${msg.target}] ${msg.text}` }),
-              120 // latence réseau simulée
-            )
-          ),
+          msg && msg.type === 'entitlements'
+            ? Promise.resolve({ plan: 'free', status: 'none', linked: true })
+            : new Promise((res) =>
+                setTimeout(
+                  () => res({ ok: true, text: `[${msg.target}] ${msg.text}` }),
+                  120 // latence réseau simulée
+                )
+              ),
       },
     };
 
