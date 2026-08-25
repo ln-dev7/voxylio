@@ -9,6 +9,10 @@ export const SETTINGS_VERSION = 3;
 export const TARGET_LANGS = LANGUAGE_CODES;
 export const SOURCE_LANGS = ["auto", ...LANGUAGE_CODES];
 export const PROVIDERS = ["auto", "deepl", "googlev2"];
+// Extension UI languages (mirrors the website's locales).
+export const UI_LANGS = [
+  "auto", "en", "zh-CN", "zh-TW", "ja", "ko", "fr", "de", "es", "it", "pt-BR",
+];
 
 export const DEFAULTS = Object.freeze({
   v: SETTINGS_VERSION,
@@ -32,6 +36,8 @@ export const DEFAULTS = Object.freeze({
   // Preferred paid provider when a key is configured ("auto" = none:
   // builtin then best-effort fallback).
   provider: "auto",
+  // Extension UI language ("auto" = follow the browser, English fallback).
+  uiLang: "auto",
   // Hostnames where Voxylio must stay completely inactive.
   disabledSites: [],
 });
@@ -111,6 +117,9 @@ export function validateSettings(patch) {
         break;
       case "provider":
         out.provider = PROVIDERS.includes(v) ? v : "auto";
+        break;
+      case "uiLang":
+        out.uiLang = UI_LANGS.includes(v) ? v : "auto";
         break;
       case "disabledSites": {
         const list = Array.isArray(v) ? v : [];

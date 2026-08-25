@@ -31,6 +31,7 @@ export {
   SOURCE_LANGS,
   TARGET_LANGS,
   PROVIDERS,
+  UI_LANGS,
   normalizeHost,
   validateSettings,
   migrateSettings,
@@ -41,6 +42,7 @@ export {
   ATTEMPT_TIMEOUT_MS,
   COOLDOWN_MS,
 } from "./translation.js";
+export { DOM_CAPTION_SITES, domCaptionSiteFor, domCueEnd } from "./sites.js";
 export {
   JOURNAL_CAPS,
   journalAppendLine,
