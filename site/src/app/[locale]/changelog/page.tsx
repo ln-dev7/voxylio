@@ -21,13 +21,13 @@ type Tag = "new" | "improved" | "pro";
 const RELEASES: Array<{
   version: string;
   id: "v180" | "v171" | "v170" | "v151";
-  badge?: "latest" | "store" | "review";
+  badges?: Array<"latest" | "store" | "review">;
   items: Array<{ key: string; tag: Tag }>;
 }> = [
   {
     version: "1.8.0",
     id: "v180",
-    badge: "latest",
+    badges: ["latest", "review"],
     items: [
       { key: "trial", tag: "new" },
       { key: "freeSites", tag: "improved" },
@@ -47,7 +47,6 @@ const RELEASES: Array<{
   {
     version: "1.7.0",
     id: "v170",
-    badge: "review",
     items: [
       { key: "account", tag: "new" },
       { key: "hub", tag: "new" },
@@ -62,7 +61,7 @@ const RELEASES: Array<{
   {
     version: "1.5.1",
     id: "v151",
-    badge: "store",
+    badges: ["store"],
     items: [
       { key: "sentences", tag: "new" },
       { key: "languages", tag: "new" },
@@ -110,33 +109,43 @@ export default async function ChangelogPage({
           <ol className="relative mt-16 space-y-16 border-l border-border pl-8 sm:pl-12">
             {RELEASES.map((release) => (
               <li key={release.version} className="relative">
-                {/* timeline dot */}
+                {/* timeline dot — centered on the 1px border line:
+                    line center = -(pl + 0.5px), dot left = center - 6.5px */}
                 <span
                   aria-hidden="true"
-                  className="absolute -left-[37px] top-2 size-[13px] rounded-full border-2 border-primary bg-background shadow-[0_0_18px_rgba(30,215,96,0.55)] sm:-left-[53px]"
+                  className="absolute -left-[39px] top-2 size-[13px] rounded-full border-2 border-primary bg-background shadow-[0_0_18px_rgba(30,215,96,0.55)] sm:-left-[55px]"
                 />
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                   <h2 className="gradient-text font-display text-3xl font-bold tabular-nums tracking-tight">
                     {release.version}
                   </h2>
-                  {release.badge === "latest" ? (
-                    <span className="rounded-full border border-primary/40 bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-primary">
-                      {t("latest")}
-                    </span>
-                  ) : release.badge === "review" ? (
-                    <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-amber-400">
-                      {t("review")}
-                    </span>
-                  ) : release.badge === "store" ? (
-                    <a
-                      href={CHROME_STORE_URL}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="rounded-full border border-border bg-card px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {t("store")}
-                    </a>
-                  ) : null}
+                  {release.badges?.map((badge) =>
+                    badge === "latest" ? (
+                      <span
+                        key={badge}
+                        className="rounded-full border border-primary/40 bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-primary"
+                      >
+                        {t("latest")}
+                      </span>
+                    ) : badge === "review" ? (
+                      <span
+                        key={badge}
+                        className="rounded-full border border-amber-400/40 bg-amber-400/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-amber-400"
+                      >
+                        {t("review")}
+                      </span>
+                    ) : (
+                      <a
+                        key={badge}
+                        href={CHROME_STORE_URL}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="rounded-full border border-border bg-card px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {t("store")}
+                      </a>
+                    ),
+                  )}
                   <span className="text-sm text-muted-foreground/70">
                     {t(`${release.id}.date`)}
                   </span>
