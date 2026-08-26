@@ -12,7 +12,8 @@
     "openMenu": "Abrir o menu",
     "closeMenu": "Fechar o menu",
     "account": "Conta",
-    "pricing": "Preços"
+    "pricing": "Preços",
+    "changelog": "Novidades"
   },
   "Hero": {
     "title": "Assista a qualquer vídeo no <accent>seu idioma</accent>",
@@ -217,6 +218,41 @@
     "p5Title": "Seus dados, seu controle",
     "p5": "O botão «Redefinir» no popup restaura as configurações padrão e apaga tudo o que a extensão guardou. Remover a extensão remove todos os seus dados.",
     "contact": "Dúvidas? Abra uma issue no GitHub ou fale com o autor."
+  },
+  "Changelog": {
+    "title": "Novidades",
+    "subtitle": "Cada versão do Voxylio e o que muda para você.",
+    "latest": "Última versão",
+    "store": "No ar na Chrome Web Store",
+    "tagNew": "Novo",
+    "tagImproved": "Melhorado",
+    "tagPro": "Pro",
+    "v170": {
+      "date": "Agosto de 2026",
+      "summary": "A atualização da conta: entre uma vez, mantenha o plano gratuito para sempre e desbloqueie o Pro quando quiser mais.",
+      "items": {
+        "account": "Conta Voxylio (gratuita, com Google): a dublagem começa com um único login e o seu plano acompanha você.",
+        "hub": "Um centro de configurações completo: histórico de dublagem, exportação de transcrição (.srt), estatísticas locais e uma voz por idioma.",
+        "glossary": "Glossário pessoal: imponha suas traduções ou proteja termos para que nunca sejam traduzidos.",
+        "proTranslate": "Pro — tradução com IA contextual: cenas inteiras traduzidas com coerência — pronomes, tom e terminologia se mantêm de uma fala para a outra.",
+        "proVoice": "Pro — vozes neurais naturais em 7 idiomas, com a voz local assumindo na hora se a nuvem falhar.",
+        "launch": "Um botão Iniciar começa a dublagem sem recarregar a página — e as legendas do player são ativadas para você quando possível.",
+        "sites": "Lê também as legendas na tela: YouTube, Netflix, Prime Video, Disney+ e Twitch, além de todo player com trilha de legendas.",
+        "engine": "Som mais fluido: o áudio original abaixa sob a voz e volta nas pausas, o ritmo se adapta à voz real e traduções passadas são lembradas."
+      }
+    },
+    "v151": {
+      "date": "24 de agosto de 2026",
+      "summary": "Primeira versão pública na Chrome Web Store.",
+      "items": {
+        "sentences": "Dublagem por frases completas: as legendas são remontadas em frases inteiras antes da tradução, para uma voz fluida.",
+        "languages": "Detecção automática do idioma de origem e tradução no dispositivo com a IA integrada do Chrome.",
+        "local": "Local por padrão: legendas, histórico e estatísticas não saem do dispositivo.",
+        "captions": "Legendas bilíngues na tela — original e tradução juntos.",
+        "controller": "Controle flutuante na página: idioma, velocidade e volume do áudio original.",
+        "player": "Acompanha o player em tudo: pausa, avanço, velocidade de reprodução e volume."
+      }
+    }
   },
   "Account": {
     "title": "Sua conta",

@@ -12,7 +12,8 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "account": "Account",
-    "pricing": "Pricing"
+    "pricing": "Pricing",
+    "changelog": "Changelog"
   },
   "Hero": {
     "title": "Watch any video in <accent>your language</accent>",
@@ -217,6 +218,41 @@
     "p5Title": "Your data, your control",
     "p5": "The \"Reset\" button in the popup restores default settings and deletes everything the extension has stored. Removing the extension removes all of its data.",
     "contact": "Questions? Open an issue on GitHub or reach out to the author."
+  },
+  "Changelog": {
+    "title": "Changelog",
+    "subtitle": "Every Voxylio release, and what it changes for you.",
+    "latest": "Latest",
+    "store": "Live on the Chrome Web Store",
+    "tagNew": "New",
+    "tagImproved": "Improved",
+    "tagPro": "Pro",
+    "v170": {
+      "date": "August 2026",
+      "summary": "The account update: sign in once, keep the free plan forever, and unlock Pro when you want more.",
+      "items": {
+        "account": "Voxylio account (free, Google sign-in): dubbing now starts with a single sign-in, and your plan follows you.",
+        "hub": "A full settings hub: dubbing history, transcript export (.srt), local statistics, and a voice per language.",
+        "glossary": "Personal glossary: force your own translations, or protect terms so they are never translated.",
+        "proTranslate": "Pro — contextual AI translation: whole scenes translated coherently, so pronouns, tone and terminology hold from one line to the next.",
+        "proVoice": "Pro — natural neural voices in 7 languages, with the local voice taking over instantly if the cloud ever fails.",
+        "launch": "A Launch button starts dubbing without reloading the page — and the player's captions are switched on for you whenever possible.",
+        "sites": "Reads on-screen captions too: YouTube, Netflix, Prime Video, Disney+ and Twitch, on top of every player exposing a subtitle track.",
+        "engine": "Smoother sound: the original audio ducks under the voice and comes back in pauses, pacing adapts to the actual voice, and past translations are remembered."
+      }
+    },
+    "v151": {
+      "date": "August 24, 2026",
+      "summary": "First public release on the Chrome Web Store.",
+      "items": {
+        "sentences": "Full-sentence dubbing: subtitles are rebuilt into complete sentences before translation, for a fluid voice.",
+        "languages": "Automatic source-language detection and on-device translation with Chrome's built-in AI.",
+        "local": "Local by default: captions, history and statistics never leave the device.",
+        "captions": "Bilingual on-screen captions — the original and the translation together.",
+        "controller": "Floating controller on the page: language, speed and original-audio volume.",
+        "player": "Follows the player everywhere: pause, seek, playback speed and volume."
+      }
+    }
   },
   "Account": {
     "title": "Your account",

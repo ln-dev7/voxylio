@@ -12,7 +12,8 @@
     "openMenu": "開啟選單",
     "closeMenu": "關閉選單",
     "account": "帳戶",
-    "pricing": "價格"
+    "pricing": "價格",
+    "changelog": "更新日誌"
   },
   "Hero": {
     "title": "用<accent>你的語言</accent>觀看任何影片",
@@ -217,6 +218,41 @@
     "p5Title": "你的資料，由你掌控",
     "p5": "彈出視窗中的「重設」按鈕會恢復預設設定並刪除擴充功能儲存的一切。移除擴充功能即移除其全部資料。",
     "contact": "有問題嗎？在 GitHub 開 issue，或聯絡作者。"
+  },
+  "Changelog": {
+    "title": "更新日誌",
+    "subtitle": "Voxylio 的每個版本，以及它為你帶來的改變。",
+    "latest": "最新版本",
+    "store": "已在 Chrome Web Store 上架",
+    "tagNew": "新增",
+    "tagImproved": "改進",
+    "tagPro": "Pro",
+    "v170": {
+      "date": "2026年8月",
+      "summary": "帳號更新：登入一次，免費方案永久保留，想要更多時隨時解鎖 Pro。",
+      "items": {
+        "account": "Voxylio 帳號（免費，Google 登入）：登入一次即可開始配音，方案跟著你走。",
+        "hub": "完整的設定中心：配音歷史、字幕匯出（.srt）、本機統計、依語言選擇聲音。",
+        "glossary": "個人術語表：強制使用你的譯法，或保護術語不被翻譯。",
+        "proTranslate": "Pro — 情境 AI 翻譯：整個場景連貫翻譯，代名詞、語氣與術語在台詞之間保持一致。",
+        "proVoice": "Pro — 7 種語言的自然神經語音，雲端一旦中斷，本機語音立即接手。",
+        "launch": "啟動按鈕不必重新整理頁面即可開始配音 — 可能時還會自動幫你開啟播放器字幕。",
+        "sites": "也能讀取畫面字幕：YouTube、Netflix、Prime Video、Disney+、Twitch — 以及所有具字幕軌的播放器。",
+        "engine": "聲音更順暢：原聲在人聲下方壓低、在停頓時恢復，語速貼合真實聲音，看過的翻譯會被記住。"
+      }
+    },
+    "v151": {
+      "date": "2026年8月24日",
+      "summary": "Chrome Web Store 上的首個公開版本。",
+      "items": {
+        "sentences": "整句配音：先把字幕重組成完整句子再翻譯，聲音更流暢。",
+        "languages": "自動偵測來源語言，用 Chrome 內建 AI 在裝置上翻譯。",
+        "local": "預設本機運行：字幕、歷史與統計不會離開裝置。",
+        "captions": "畫面雙語字幕 — 同時顯示原文與譯文。",
+        "controller": "頁面懸浮控制器：語言、語速、原聲音量。",
+        "player": "全程跟隨播放器：暫停、快轉、倍速、音量。"
+      }
+    }
   },
   "Account": {
     "title": "我的帳戶",

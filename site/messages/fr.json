@@ -12,7 +12,8 @@
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
     "account": "Compte",
-    "pricing": "Tarifs"
+    "pricing": "Tarifs",
+    "changelog": "Nouveautés"
   },
   "Hero": {
     "title": "Suivez n’importe quelle vidéo <accent>dans votre langue</accent>",
@@ -217,6 +218,41 @@
     "p5Title": "Vos données, votre contrôle",
     "p5": "Le bouton « Réinitialiser » du popup rétablit les réglages par défaut et supprime tout ce que l’extension a stocké. Désinstaller l’extension supprime toutes ses données.",
     "contact": "Une question ? Ouvrez une issue sur GitHub ou contactez l’auteur."
+  },
+  "Changelog": {
+    "title": "Nouveautés",
+    "subtitle": "Chaque version de Voxylio, et ce qu'elle change pour vous.",
+    "latest": "Dernière version",
+    "store": "En ligne sur le Chrome Web Store",
+    "tagNew": "Nouveau",
+    "tagImproved": "Amélioré",
+    "tagPro": "Pro",
+    "v170": {
+      "date": "Août 2026",
+      "summary": "La mise à jour du compte : connectez-vous une fois, gardez le plan gratuit pour toujours, et débloquez Pro quand vous en voulez plus.",
+      "items": {
+        "account": "Compte Voxylio (gratuit, connexion Google) : le doublage démarre avec une simple connexion, et votre plan vous suit.",
+        "hub": "Un vrai centre de réglages : historique de doublage, export de transcription (.srt), statistiques locales et une voix par langue.",
+        "glossary": "Glossaire personnel : imposez vos propres traductions, ou protégez des termes pour qu'ils ne soient jamais traduits.",
+        "proTranslate": "Pro — traduction IA contextuelle : des scènes entières traduites avec cohérence — pronoms, ton et terminologie tiennent d'une réplique à l'autre.",
+        "proVoice": "Pro — voix neurales naturelles en 7 langues, la voix locale prenant le relais instantanément si le cloud flanche.",
+        "launch": "Un bouton Lancer démarre le doublage sans recharger la page — et les sous-titres du lecteur s'activent pour vous quand c'est possible.",
+        "sites": "Lit aussi les sous-titres affichés à l'écran : YouTube, Netflix, Prime Video, Disney+ et Twitch, en plus de tout lecteur exposant une piste de sous-titres.",
+        "engine": "Un son plus fluide : l'audio original s'efface sous la voix et revient dans les pauses, le débit s'adapte à la voix réelle, et les traductions passées sont mémorisées."
+      }
+    },
+    "v151": {
+      "date": "24 août 2026",
+      "summary": "Première version publique sur le Chrome Web Store.",
+      "items": {
+        "sentences": "Doublage par phrases complètes : les sous-titres sont recousus en phrases entières avant traduction, pour une voix fluide.",
+        "languages": "Détection automatique de la langue source et traduction sur l'appareil avec l'IA intégrée de Chrome.",
+        "local": "Local par défaut : sous-titres, historique et statistiques ne quittent pas l'appareil.",
+        "captions": "Sous-titres bilingues à l'écran — l'original et la traduction ensemble.",
+        "controller": "Contrôleur flottant sur la page : langue, vitesse et volume de l'audio original.",
+        "player": "Suit le lecteur partout : pause, avance, vitesse de lecture et volume."
+      }
+    }
   },
   "Account": {
     "title": "Votre compte",

@@ -12,7 +12,8 @@
     "openMenu": "Menü öffnen",
     "closeMenu": "Menü schließen",
     "account": "Konto",
-    "pricing": "Preise"
+    "pricing": "Preise",
+    "changelog": "Neuheiten"
   },
   "Hero": {
     "title": "Schau jedes Video in <accent>deiner Sprache</accent>",
@@ -217,6 +218,41 @@
     "p5Title": "Deine Daten, deine Kontrolle",
     "p5": "Der Knopf „Zurücksetzen“ im Popup stellt die Standardeinstellungen wieder her und löscht alles, was die Erweiterung gespeichert hat. Das Entfernen der Erweiterung entfernt alle ihre Daten.",
     "contact": "Fragen? Eröffne ein Issue auf GitHub oder schreib dem Autor."
+  },
+  "Changelog": {
+    "title": "Neuheiten",
+    "subtitle": "Jede Voxylio-Version — und was sie für dich ändert.",
+    "latest": "Neueste Version",
+    "store": "Live im Chrome Web Store",
+    "tagNew": "Neu",
+    "tagImproved": "Verbessert",
+    "tagPro": "Pro",
+    "v170": {
+      "date": "August 2026",
+      "summary": "Das Konto-Update: einmal anmelden, den Gratis-Plan für immer behalten und Pro freischalten, wenn du mehr willst.",
+      "items": {
+        "account": "Voxylio-Konto (kostenlos, Google-Anmeldung): die Synchronisation startet mit einer einzigen Anmeldung, und dein Plan zieht mit.",
+        "hub": "Eine echte Einstellungszentrale: Verlauf, Transkript-Export (.srt), lokale Statistiken und eine Stimme pro Sprache.",
+        "glossary": "Persönliches Glossar: erzwinge eigene Übersetzungen oder schütze Begriffe, damit sie nie übersetzt werden.",
+        "proTranslate": "Pro — kontextuelle KI-Übersetzung: ganze Szenen kohärent übersetzt — Pronomen, Ton und Terminologie bleiben von Zeile zu Zeile stimmig.",
+        "proVoice": "Pro — natürliche neuronale Stimmen in 7 Sprachen; die lokale Stimme übernimmt sofort, falls die Cloud ausfällt.",
+        "launch": "Ein Start-Button beginnt die Synchronisation ohne Neuladen der Seite — und die Untertitel des Players werden, wenn möglich, für dich aktiviert.",
+        "sites": "Liest auch eingeblendete Untertitel: YouTube, Netflix, Prime Video, Disney+ und Twitch — zusätzlich zu jedem Player mit Untertitelspur.",
+        "engine": "Runderer Klang: der Originalton weicht unter der Stimme und kehrt in Pausen zurück, das Tempo passt sich der echten Stimme an, und frühere Übersetzungen werden gemerkt."
+      }
+    },
+    "v151": {
+      "date": "24. August 2026",
+      "summary": "Erste öffentliche Version im Chrome Web Store.",
+      "items": {
+        "sentences": "Synchronisation in ganzen Sätzen: Untertitel werden vor der Übersetzung zu vollständigen Sätzen zusammengesetzt — für eine flüssige Stimme.",
+        "languages": "Automatische Erkennung der Ausgangssprache und Übersetzung auf dem Gerät mit Chromes integrierter KI.",
+        "local": "Standardmäßig lokal: Untertitel, Verlauf und Statistiken verlassen das Gerät nicht.",
+        "captions": "Zweisprachige Untertitel im Bild — Original und Übersetzung zusammen.",
+        "controller": "Schwebender Controller auf der Seite: Sprache, Tempo und Lautstärke des Originaltons.",
+        "player": "Folgt dem Player überallhin: Pause, Springen, Wiedergabetempo und Lautstärke."
+      }
+    }
   },
   "Account": {
     "title": "Dein Konto",

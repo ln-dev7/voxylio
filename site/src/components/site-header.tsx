@@ -17,10 +17,11 @@ export function SiteHeader() {
   // Absolute (locale-aware) hrefs so the anchors work from any page, not
   // only from the home page (e.g. /fr/privacy -> /fr#features).
   const nav = [
-    { hash: "features", label: t("features") },
-    { hash: "pricing", label: t("pricing") },
-    { hash: "how-it-works", label: t("howItWorks") },
-  ];
+    { key: "features", href: { pathname: "/", hash: "features" }, label: t("features") },
+    { key: "pricing", href: { pathname: "/", hash: "pricing" }, label: t("pricing") },
+    { key: "how-it-works", href: { pathname: "/", hash: "how-it-works" }, label: t("howItWorks") },
+    { key: "changelog", href: { pathname: "/changelog" }, label: t("changelog") },
+  ] as const;
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/70 backdrop-blur-xl">
@@ -36,8 +37,8 @@ export function SiteHeader() {
         <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-full border border-border bg-card p-1 lg:flex">
           {nav.map((item) => (
             <Link
-              key={item.hash}
-              href={{ pathname: "/", hash: item.hash }}
+              key={item.key}
+              href={item.href}
               className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             >
               {item.label}
@@ -106,8 +107,8 @@ export function SiteHeader() {
           <nav className="mx-auto flex w-full max-w-6xl flex-col px-4 py-3 sm:px-6">
             {nav.map((item) => (
               <Link
-                key={item.hash}
-                href={{ pathname: "/", hash: item.hash }}
+                key={item.key}
+                href={item.href}
                 onClick={() => setOpen(false)}
                 className="rounded-lg px-3 py-3 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               >
