@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { Check, Download } from "lucide-react";
+import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GitHubIcon } from "@/components/github-icon";
 import { Aurora } from "@/components/aurora";
@@ -33,7 +33,8 @@ export function Hero() {
               className="h-12 rounded-full px-7 text-[15px] shadow-[0_0_40px_rgba(30,215,96,0.25)] transition-shadow hover:shadow-[0_0_60px_rgba(30,215,96,0.4)]"
             >
               <a href={CHROME_STORE_URL} target="_blank" rel="noreferrer">
-                <Download data-slot="icon" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/logos/chrome.svg" alt="" className="size-5" />
                 {t("ctaInstall")}
               </a>
             </Button>

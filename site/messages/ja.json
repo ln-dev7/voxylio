@@ -59,6 +59,7 @@
   },
   "HowItWorks": {
     "title": "仕組み",
+    "intro": "拡張機能を<install>インストール</install>すると、あとはすべて自動で進みます:",
     "steps": {
       "detect": {
         "title": "動画を検出",

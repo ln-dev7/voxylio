@@ -59,6 +59,7 @@
   },
   "HowItWorks": {
     "title": "運作方式",
+    "intro": "<install>安裝</install>擴充功能後，一切自動進行：",
     "steps": {
       "detect": {
         "title": "偵測影片",

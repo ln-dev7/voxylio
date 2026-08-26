@@ -59,6 +59,7 @@
   },
   "HowItWorks": {
     "title": "작동 방식",
+    "intro": "확장 프로그램을 <install>설치</install>하면 모든 것이 자동으로 진행됩니다:",
     "steps": {
       "detect": {
         "title": "영상을 감지",

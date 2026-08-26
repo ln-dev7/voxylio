@@ -59,6 +59,7 @@
   },
   "HowItWorks": {
     "title": "Cómo funciona",
+    "intro": "Una vez <install>instalada</install> la extensión, todo ocurre solo:",
     "steps": {
       "detect": {
         "title": "Detecta el vídeo",

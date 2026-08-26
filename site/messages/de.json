@@ -59,6 +59,7 @@
   },
   "HowItWorks": {
     "title": "So funktioniert's",
+    "intro": "Sobald die Erweiterung <install>installiert</install> ist, läuft alles von selbst:",
     "steps": {
       "detect": {
         "title": "Erkennt das Video",

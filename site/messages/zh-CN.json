@@ -59,6 +59,7 @@
   },
   "HowItWorks": {
     "title": "工作原理",
+    "intro": "<install>安装</install>扩展后，一切自动进行：",
     "steps": {
       "detect": {
         "title": "检测视频",

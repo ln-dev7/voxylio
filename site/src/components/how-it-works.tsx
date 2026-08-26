@@ -16,6 +16,18 @@ export function HowItWorks() {
           <h2 className="text-balance font-display text-3xl font-semibold tracking-tight sm:text-[2.6rem] sm:leading-[1.15]">
             {t("title")}
           </h2>
+          <p className="mt-4 max-w-xl text-pretty leading-relaxed text-muted-foreground">
+            {t.rich("intro", {
+              install: (chunks) => (
+                <a
+                  href="#install"
+                  className="font-medium text-primary underline underline-offset-4 transition-colors hover:text-primary/80"
+                >
+                  {chunks}
+                </a>
+              ),
+            })}
+          </p>
           <ol className="mt-10 space-y-8">
             {STEPS.map((key, i) => (
               <li key={key} className="flex gap-5">

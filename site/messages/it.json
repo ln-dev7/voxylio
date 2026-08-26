@@ -59,6 +59,7 @@
   },
   "HowItWorks": {
     "title": "Come funziona",
+    "intro": "Una volta <install>installata</install> l'estensione, tutto avviene da solo:",
     "steps": {
       "detect": {
         "title": "Rileva il video",
