@@ -17,6 +17,7 @@ const suites = [
   ['run-roll.js', 'roll-up captions + playbackRate ×1.5'],
   ['run-gate.js', 'account gate: silent signed out, live unlock on link'],
   ['run-dom.js', 'DOM captions (YouTube-style player, no textTracks)'],
+  ['run-yt-static.js', 'YouTube static track: lines on cue, no stalls, no forced CC'],
 ];
 let failed = 0;
 for (const [file, label] of suites) {

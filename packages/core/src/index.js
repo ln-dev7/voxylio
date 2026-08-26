@@ -55,6 +55,12 @@ export {
 } from "./translation.js";
 export { DOM_CAPTION_SITES, domCaptionSiteFor, domCueEnd } from "./sites.js";
 export {
+  extractCaptionTracks,
+  pickCaptionTrack,
+  timedtextUrl,
+  parseJson3,
+} from "./yt.js";
+export {
   JOURNAL_CAPS,
   journalAppendLine,
   journalUpsert,

@@ -25,6 +25,10 @@ import {
   fmtTime,
   domCaptionSiteFor,
   domCueEnd,
+  extractCaptionTracks,
+  pickCaptionTrack,
+  timedtextUrl,
+  parseJson3,
   DEFAULTS as SHARED_DEFAULTS,
   createTranslatorChain,
   journalAppendLine,
@@ -254,6 +258,9 @@ import { makeT, resolveUiLang } from "./i18n.js";
     const video = primaryVideo;
     const ctl = video && controllers.get(video);
     if (!ctl) return;
+    // The static track feeds this video: DOM captions would duplicate
+    // every sentence at slightly different times (double speech).
+    if (ctl.ytStatic === "loaded") return;
     const text = domCaptionText();
     if (!text) {
       // Caption cleared: close the running cue at the playhead.
@@ -314,6 +321,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
     const video = primaryVideo;
     const ctl = video && controllers.get(video);
     if (!ctl || ctl.cues.length > 0) return;
+    // YouTube: while the static-track verdict is pending, hold the CC
+    // click — when the track loads, captions never need to flash on
+    // screen at all. "failed"/"none" resolves staticLoaded and the DOM
+    // fallback (with this click) proceeds.
+    if (domSite && domSite.id === "youtube" && ctl.active && !ctl.staticLoaded)
+      return;
     // Standard subtitle tracks exist: harvesting handles them silently —
     // never flash the site's own captions on screen for nothing.
     try {
@@ -930,7 +943,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       const meta = ctl.groupMeta.get(g.id);
       if (!meta) return false;
       const stableFor = Date.now() - meta.changedAt;
-      return stableFor >= (endsSentence(g.text) ? 350 : 650);
+      return stableFor >= (endsSentence(g.text) ? 300 : 500);
     }
 
     function harvestTextTracks() {
@@ -1038,6 +1051,92 @@ import { makeT, resolveUiLang } from "./i18n.js";
         ctl.trackRetryAt = Date.now() + 6000;
       }
     }
+
+    // --- YouTube static track ---------------------------------------------
+    // The watch page lists its caption tracks; fetching one gives every
+    // cue and its exact window UPFRONT. That is what makes the dub flow:
+    // the DOM roll-up path only learns a sentence as it finishes on
+    // screen, so each line used to pay stability-wait + translation
+    // latency as pure silence between phrases. Same-origin fetches, no
+    // extra permission; any failure falls back to the DOM feed.
+
+    function adoptStaticCues(cues, langBase) {
+      const t = video.currentTime;
+      // Did the DOM feed already voice something? Then the sentence at
+      // the playhead was (or is being) spoken: never re-air it.
+      const hadActivity =
+        ctl.spokenIds.size > 0 || !!ctl.currentUtterance || ctl.queue.length > 0;
+      ctl.generation += 1; // in-flight DOM translations die at the gate
+      ctl.queue.length = 0;
+      ctl.cues = [];
+      ctl.cueKeys.clear();
+      ctl.groups = [];
+      ctl.lastCueCount = -1;
+      ctl.groupMeta.clear();
+      ctl.spokenIds.clear();
+      ctl.scheduledIds.clear();
+      ctl.inFlight.clear();
+      ctl.lastDomCue = null;
+      for (const c of cues) addCue(c.start, c.end, c.text);
+      rebuildGroups();
+      for (const g of ctl.groups) {
+        if (g.end <= t + 0.2 || (hadActivity && g.start <= t && t < g.end)) {
+          ctl.spokenIds.add(g.id); // the past is never re-dubbed
+        }
+      }
+      ctl.staticLoaded = true;
+      ctl.ytStatic = "loaded";
+      if (langBase) ctl.trackLang = langBase;
+    }
+
+    async function harvestYouTubeStatic() {
+      if (!domSite || domSite.id !== "youtube") return;
+      if (ctl.staticLoaded || ctl.ytFetching) return;
+      if (ctl.trackRetryAt && Date.now() < ctl.trackRetryAt) return;
+      const mk = ctl.mediaKey; // abort if the video changes mid-fetch
+      ctl.ytFetching = true;
+      try {
+        const pageRes = await fetch(location.href, { credentials: "same-origin" });
+        if (!pageRes.ok) throw new Error("page HTTP " + pageRes.status);
+        const tracks = extractCaptionTracks(await pageRes.text());
+        if (ctl.mediaKey !== mk) return;
+        if (!tracks.length) {
+          // No caption tracks on this video: permanent for this media —
+          // the DOM feed (auto-CC click included) is the only hope left.
+          ctl.staticLoaded = true;
+          ctl.ytStatic = "none";
+          return;
+        }
+        const wanted =
+          settings.sourceLang !== "auto" ? settings.sourceLang : null;
+        const track = pickCaptionTrack(tracks, wanted, settings.targetLang);
+        const res = await fetch(timedtextUrl(track.baseUrl), {
+          credentials: "same-origin",
+        });
+        if (!res.ok) throw new Error("timedtext HTTP " + res.status);
+        const body = await res.text();
+        // An empty body with status 200 is YouTube refusing politely.
+        const cues = body ? parseJson3(JSON.parse(body)) : [];
+        if (!cues.length) throw new Error("empty timedtext");
+        if (ctl.mediaKey !== mk || !isAlive()) return;
+        adoptStaticCues(
+          cues,
+          String(track.languageCode || "").toLowerCase().split("-")[0],
+        );
+      } catch (e) {
+        if (ctl.mediaKey !== mk) return;
+        ctl.trackRetries = (ctl.trackRetries || 0) + 1;
+        if (ctl.trackRetries >= 2) {
+          ctl.staticLoaded = true; // give up: DOM feed takes over
+          ctl.ytStatic = "failed";
+        } else {
+          ctl.trackRetryAt = Date.now() + 4000;
+        }
+      } finally {
+        ctl.ytFetching = false;
+      }
+    }
+    ctl.ytHarvest = harvestYouTubeStatic;
 
     // --- source language --------------------------------------------------
 
@@ -1661,6 +1760,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       // Harvest and pre-translate even while PAUSED: the seconds after a
       // resume used to start from zero (no translations, no cloud audio).
       harvestTextTracks(); // HLS cues keep arriving
+      harvestYouTubeStatic(); // async; no-op outside YouTube / once done
       rebuildGroups();
       pretranslate();
 
@@ -1739,11 +1839,13 @@ import { makeT, resolveUiLang } from "./i18n.js";
       } else if (!current) {
         // A trailing group can become FINAL only after its window has
         // already passed (live feeds stabilize late): catch it within a
-        // short grace instead of silently dropping the sentence.
+        // grace aligned with the "translated too late" drop (end + 4)
+        // instead of silently skipping the sentence — a skipped line IS
+        // a hole in the dub.
         let late = null;
         for (const g of ctl.groups) {
           if (g.start > t) break;
-          if (g.end <= t && t - g.end < 1.5) late = g;
+          if (g.end <= t && t - g.end < 4) late = g;
         }
         if (
           late &&
@@ -2095,6 +2197,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       ctl.detectedSource = null;
       ctl.trackLang = "";
       ctl.staticLoaded = false;
+      ctl.ytStatic = null;
       ctl.trackRetryAt = 0;
       ctl.trackRetries = 0;
       ctl.lastTime = -1;

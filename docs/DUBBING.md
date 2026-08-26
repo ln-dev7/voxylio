@@ -93,6 +93,29 @@ Invariants :
 - **AutoPause honnête** : plus aucun chemin ne laisse la vidéo bloquée
   en pause avec le drapeau effacé.
 
+### Piste statique YouTube (fix « une phrase, silence, une phrase »)
+
+Sur YouTube, le flux DOM (roll-up) ne connaît une phrase qu'au moment où
+elle FINIT de s'écrire à l'écran : chaque ligne payait attente de
+stabilité (300-500 ms) + traduction (0,3-2 s) en silence pur entre deux
+répliques, et la voix courait une phrase derrière l'image. Le moteur
+charge désormais la piste officielle en amont (`packages/core/src/yt.js`) :
+`captionTracks` extrait du HTML de la page watch (scanner à équilibrage
+de crochets, pas de regex paresseuse), choix de piste (langue source >
+manuelle > asr, en évitant la langue cible), `baseUrl&fmt=json3` →
+toutes les répliques et leurs fenêtres exactes d'avance. Résultat :
+pré-traduction (et batch Pro) sur 45 s de lookahead, départ DE CHAQUE
+LIGNE sur son cue (harnais : ≤ 0,13 s de retard, ≤ 1,6 s pour la
+première qui paie le fetch), pas de clic CC forcé — les sous-titres ne
+s'affichent plus à l'écran. Requêtes same-origin (aucune permission en
+plus) ; à l'adoption, le passé et la phrase en cours de voix ne sont
+jamais re-doublés (`adoptStaticCues`). Échec (`pot`, markup changé,
+vidéo sans piste) ⇒ retour au flux DOM inchangé, clic CC compris, après
+2 tentatives espacées de 4 s. Repli DOM lui-même resserré : stabilité
+300/500 ms (au lieu de 350/650) et rattrapage des groupes tardifs
+aligné sur la fenêtre de drop (4 s au lieu de 1,5 s) — une ligne sautée
+est un trou dans le doublage.
+
 ## 3. Prochaines étapes (ordre recommandé)
 
 1. **Pré-décodage cloud** : créer l'élément Audio (preload) dès la
@@ -118,8 +141,8 @@ CORS des médias cross-origin — le duck via video.volume est LA solution).
 
 ```
 pnpm build:chrome
-node --test packages/core/test/*.test.js     # 76 tests
-node tests/integration/run-all.js            # 6 harnais (duck dynamique pinné)
+node --test packages/core/test/*.test.js     # 82 tests
+node tests/integration/run-all.js            # 7 harnais (duck dynamique + départs sur cue pinnés)
 pnpm lint:firefox                            # 0 erreur
 ```
 
