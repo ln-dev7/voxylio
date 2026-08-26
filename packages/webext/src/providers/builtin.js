@@ -7,9 +7,23 @@
 /* global Translator */
 
 const RETRY_MS = 120_000;
+// While the pair's model is still downloading, ready() steps aside after
+// this grace instead of monopolizing the chain's ready-timeout: the first
+// lines go through the online fallback IMMEDIATELY and the local engine
+// takes over on its own once the download completes. Without this, every
+// early line stalled ~2.5 s before the fallback was even tried.
+const PENDING_GRACE_MS = 400;
 
 export function createBuiltinProvider({ onBroken } = {}) {
   const instances = new Map(); // "source->target" -> { p, value, at }
+
+  const graced = (entry) =>
+    entry.value !== undefined
+      ? entry.p
+      : Promise.race([
+          entry.p,
+          new Promise((res) => setTimeout(() => res(null), PENDING_GRACE_MS)),
+        ]);
 
   return {
     id: "builtin",
@@ -22,7 +36,7 @@ export function createBuiltinProvider({ onBroken } = {}) {
       // Reuse: pending (value undefined) or successful (value truthy).
       // A resolved null is retried once RETRY_MS has passed.
       if (cached && (cached.value !== null || Date.now() - cached.at < RETRY_MS))
-        return cached.p;
+        return graced(cached);
       const entry = { value: undefined, at: Date.now(), p: null };
       entry.p = (async () => {
         try {
@@ -48,7 +62,7 @@ export function createBuiltinProvider({ onBroken } = {}) {
         return v;
       });
       instances.set(key, entry);
-      return entry.p;
+      return graced(entry);
     },
   };
 }
