@@ -292,6 +292,16 @@
         "controller": "Controller flottante nella pagina: lingua, velocità e volume dell'audio originale.",
         "player": "Segue il player in tutto: pausa, salti, velocità di riproduzione e volume."
       }
+    },
+    "review": "In revisione",
+    "v171": {
+      "date": "Agosto 2026",
+      "summary": "L'aggiornamento della fluidità: su YouTube il doppiaggio ora legge in anticipo la traccia sottotitoli ufficiale — ogni battuta parte esattamente al momento giusto.",
+      "items": {
+        "flow": "Doppiaggio continuo su YouTube: la traccia ufficiale viene caricata in anticipo, ogni battuta parte sul suo sottotitolo e i sottotitoli non devono più comparire sullo schermo.",
+        "fallback": "Fallback più reattivo su Netflix e altri player: meno silenzio tra le frasi, e le battute in ritardo vengono recuperate invece di essere saltate.",
+        "quota": "Indicatori della quota Pro nel popup, nell'hub e nella tua pagina account — volume rimanente, totali e data di rinnovo."
+      }
     }
   },
   "Account": {

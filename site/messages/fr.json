@@ -292,6 +292,16 @@
         "controller": "Contrôleur flottant sur la page : langue, vitesse et volume de l'audio original.",
         "player": "Suit le lecteur partout : pause, avance, vitesse de lecture et volume."
       }
+    },
+    "review": "En review",
+    "v171": {
+      "date": "Août 2026",
+      "summary": "La mise à jour de la fluidité : sur YouTube, le doublage lit désormais la piste de sous-titres officielle en amont — chaque réplique démarre pile au bon moment.",
+      "items": {
+        "flow": "Doublage continu sur YouTube : la piste officielle est chargée d'avance, chaque réplique démarre sur son sous-titre et les captions n'ont plus besoin de s'afficher à l'écran.",
+        "fallback": "Repli plus réactif sur Netflix et les autres lecteurs : moins de silence entre les phrases, et les répliques tardives sont rattrapées au lieu d'être sautées.",
+        "quota": "Jauges de quota Pro dans le popup, le hub et votre page compte — volume restant, totaux et date de renouvellement."
+      }
     }
   },
   "Account": {

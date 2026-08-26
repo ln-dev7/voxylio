@@ -292,6 +292,16 @@
         "controller": "Schwebender Controller auf der Seite: Sprache, Tempo und Lautstärke des Originaltons.",
         "player": "Folgt dem Player überallhin: Pause, Springen, Wiedergabetempo und Lautstärke."
       }
+    },
+    "review": "In Prüfung",
+    "v171": {
+      "date": "August 2026",
+      "summary": "Das Flüssigkeits-Update: Auf YouTube liest das Dubbing jetzt vorab die offizielle Untertitelspur — jede Zeile startet genau auf ihr Stichwort.",
+      "items": {
+        "flow": "Durchgehendes Dubbing auf YouTube: Die offizielle Spur wird vorab geladen, jede Zeile startet auf ihrem Untertitel, und Untertitel müssen nicht mehr auf dem Bildschirm erscheinen.",
+        "fallback": "Reaktionsschnellerer Fallback auf Netflix und anderen Playern: weniger Stille zwischen Sätzen, späte Zeilen werden aufgeholt statt übersprungen.",
+        "quota": "Pro-Kontingentanzeigen im Popup, im Hub und auf Ihrer Kontoseite — verbleibendes Volumen, Gesamtwerte und Verlängerungsdatum."
+      }
     }
   },
   "Account": {

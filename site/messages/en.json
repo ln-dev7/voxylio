@@ -292,6 +292,16 @@
         "controller": "Floating controller on the page: language, speed and original-audio volume.",
         "player": "Follows the player everywhere: pause, seek, playback speed and volume."
       }
+    },
+    "review": "In review",
+    "v171": {
+      "date": "August 2026",
+      "summary": "The flow update: dubbing on YouTube now reads the official subtitle track ahead of time — every line starts right on cue.",
+      "items": {
+        "flow": "Continuous dubbing on YouTube: the official subtitle track is loaded upfront, each line starts on its cue and captions no longer need to appear on screen.",
+        "fallback": "Snappier fallback on Netflix and other players: less silence between sentences, and late lines are caught instead of skipped.",
+        "quota": "Pro quota meters in the popup, the hub and your account page — remaining volume, totals and renewal date."
+      }
     }
   },
   "Account": {

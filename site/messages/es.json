@@ -292,6 +292,16 @@
         "controller": "Controlador flotante en la página: idioma, velocidad y volumen del audio original.",
         "player": "Sigue al reproductor en todo: pausa, salto, velocidad de reproducción y volumen."
       }
+    },
+    "review": "En revisión",
+    "v171": {
+      "date": "Agosto de 2026",
+      "summary": "La actualización de fluidez: en YouTube, el doblaje ahora lee la pista de subtítulos oficial por adelantado — cada línea empieza justo a tiempo.",
+      "items": {
+        "flow": "Doblaje continuo en YouTube: la pista oficial se carga por adelantado, cada línea empieza en su subtítulo y los subtítulos ya no necesitan aparecer en pantalla.",
+        "fallback": "Respaldo más ágil en Netflix y otros reproductores: menos silencio entre frases, y las líneas tardías se recuperan en lugar de omitirse.",
+        "quota": "Medidores de cuota Pro en el popup, el hub y tu página de cuenta — volumen restante, totales y fecha de renovación."
+      }
     }
   },
   "Account": {

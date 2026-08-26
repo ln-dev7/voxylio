@@ -292,6 +292,16 @@
         "controller": "Controle flutuante na página: idioma, velocidade e volume do áudio original.",
         "player": "Acompanha o player em tudo: pausa, avanço, velocidade de reprodução e volume."
       }
+    },
+    "review": "Em análise",
+    "v171": {
+      "date": "Agosto de 2026",
+      "summary": "A atualização de fluidez: no YouTube, a dublagem agora lê a trilha de legendas oficial com antecedência — cada fala começa na hora certa.",
+      "items": {
+        "flow": "Dublagem contínua no YouTube: a trilha oficial é carregada com antecedência, cada fala começa na sua legenda e as legendas não precisam mais aparecer na tela.",
+        "fallback": "Fallback mais ágil na Netflix e em outros players: menos silêncio entre frases, e falas atrasadas são recuperadas em vez de puladas.",
+        "quota": "Medidores de cota Pro no popup, no hub e na sua página de conta — volume restante, totais e data de renovação."
+      }
     }
   },
   "Account": {
