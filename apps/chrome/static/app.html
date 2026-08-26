@@ -457,6 +457,27 @@
         </div>
 
         <div class="card">
+          <h2 data-i18n="optGlossary">Glossaire</h2>
+          <p class="hint" data-i18n="optGlossaryHint">
+            Un terme par ligne. « terme = traduction » impose cette
+            traduction ; un terme seul est conservé tel quel, jamais
+            traduit. Appliqué avec tous les moteurs, Pro compris.
+          </p>
+          <textarea
+            id="glossaryBox"
+            rows="6"
+            spellcheck="false"
+            data-i18n-placeholder="optGlossaryPlaceholder"
+            placeholder="Voxylio&#10;machine learning = apprentissage machine"
+            style="width:100%;margin-top:10px;resize:vertical;font:inherit;
+                   background:var(--bg-input, rgba(255,255,255,0.04));
+                   color:inherit;border:1px solid var(--border, #333);
+                   border-radius:8px;padding:10px 12px;line-height:1.5"
+          ></textarea>
+          <span class="feedback" id="glossaryFeedback"></span>
+        </div>
+
+        <div class="card">
           <h2 data-i18n="optSites">Sites désactivés</h2>
           <p class="hint" data-i18n="optSitesHint">
             Voxylio restera totalement inactif sur ces sites — aucune

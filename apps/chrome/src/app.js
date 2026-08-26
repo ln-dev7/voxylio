@@ -432,6 +432,33 @@ function initSettings() {
       flash($("deeplFeedback"), t("optKeyBad") || "Clé invalide ou quota atteint.", false);
     }
   });
+  // Glossary editor — plain-text lines, parsed on change:
+  //   "term = translation" forces that translation;
+  //   "term" alone keeps the source form verbatim.
+  const glossaryToText = (list) =>
+    (Array.isArray(list) ? list : [])
+      .map((e) => (e.to ? `${e.from} = ${e.to}` : e.from))
+      .join("\n");
+  $("glossaryBox").value = glossaryToText(settings.glossary);
+  $("glossaryBox").addEventListener("change", (e) => {
+    const entries = e.target.value
+      .split("\n")
+      .map((line) => {
+        const i = line.indexOf("=");
+        const from = (i >= 0 ? line.slice(0, i) : line).trim();
+        const to = i >= 0 ? line.slice(i + 1).trim() : "";
+        return { from, to };
+      })
+      .filter((x) => x.from);
+    const clean = validateSettings({ glossary: entries });
+    chrome.storage.sync.set(clean);
+    flash(
+      $("glossaryFeedback"),
+      t("optGlossaryCount", [String((clean.glossary || []).length)]) ||
+        `${(clean.glossary || []).length} terme(s) actif(s)`,
+      true,
+    );
+  });
   $("siteAdd").addEventListener("click", () => {
     const host = normalizeHost($("siteInput").value);
     if (!host) return;
