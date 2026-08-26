@@ -73,6 +73,7 @@ function render(settings) {
   $("localOnly").checked = !settings.cloudFallback;
   $("proTrans").checked = !!settings.proTranslation;
   $("proVoice").checked = !!settings.proVoice;
+  $("proAudio").checked = !!settings.proAudio;
   $("rate").value = settings.rate;
   $("rateVal").textContent = "×" + Number(settings.rate).toFixed(2);
   $("duck").value = settings.duck;
@@ -200,6 +201,34 @@ function statusFragment(resp) {
         ),
       );
       break;
+    case "audio-live":
+      add(
+        line(
+          "🎙 " +
+            (t("statusAudioLive") ||
+              "Aucun sous-titre : transcription en direct de l'audio — le doublage suit dans quelques secondes."),
+          "ok",
+        ),
+      );
+      break;
+    case "audio-quota":
+      add(
+        line(
+          t("statusAudioQuota") ||
+            "Minutes Premium Audio épuisées pour ce mois — le doublage sans sous-titres reprend au prochain cycle.",
+          "warn",
+        ),
+      );
+      break;
+    case "audio-unavailable":
+      add(
+        line(
+          t("statusAudioUnavailable") ||
+            "Impossible de capturer l'audio de ce lecteur (protection du site) — le doublage sans sous-titres ne peut pas fonctionner ici.",
+          "warn",
+        ),
+      );
+      break;
   }
   // Free account, on a Pro-only site, still inside the 3-day trial:
   // say plainly what unlocks this site today and until when.
@@ -300,22 +329,32 @@ function fmtInt(n) {
 function renderQuota(ent) {
   const box = $("quotaBox");
   const rows = [
-    ["quotaTransVal", "quotaTransFill", "quotaTransBar", ent.cloudCharsRemaining, ent.cloudCharsTotal],
-    ["quotaVoiceVal", "quotaVoiceFill", "quotaVoiceBar", ent.ttsCharsRemaining, ent.ttsCharsTotal],
+    ["quotaTransVal", "quotaTransFill", "quotaTransBar", ent.cloudCharsRemaining, ent.cloudCharsTotal, "chars"],
+    ["quotaVoiceVal", "quotaVoiceFill", "quotaVoiceBar", ent.ttsCharsRemaining, ent.ttsCharsTotal, "chars"],
+    ["quotaAudioVal", "quotaAudioFill", "quotaAudioBar", ent.audioSecondsRemaining, ent.audioSecondsTotal, "minutes"],
   ];
   const has = rows.some(([, , , , total]) => typeof total === "number" && total > 0);
   box.hidden = !has;
   if (!has) return;
-  for (const [valId, fillId, barId, remaining, total] of rows) {
+  // The audio meter only exists when the server reports the feature.
+  const audioOn = typeof ent.audioSecondsTotal === "number" && ent.audioSecondsTotal > 0;
+  $("quotaAudioRow").hidden = !audioOn;
+  $("quotaAudioBar").hidden = !audioOn;
+  for (const [valId, fillId, barId, remaining, total, unit] of rows) {
     const tot = typeof total === "number" ? total : 0;
+    if (tot <= 0) continue;
     const rem = Math.max(0, Math.min(tot, typeof remaining === "number" ? remaining : 0));
     const pct = tot > 0 ? Math.round((rem / tot) * 100) : 0;
-    $(valId).textContent = fmtCompact(rem);
+    $(valId).textContent =
+      unit === "minutes" ? fmtInt(Math.floor(rem / 60)) + " min" : fmtCompact(rem);
     const fill = $(fillId);
     fill.style.width = pct + "%";
     fill.classList.toggle("low", pct > 0 && pct <= 20);
     fill.classList.toggle("out", pct === 0);
-    $(barId).title = fmtInt(rem) + " / " + fmtInt(tot);
+    $(barId).title =
+      unit === "minutes"
+        ? Math.floor(rem / 60) + " / " + Math.floor(tot / 60) + " min"
+        : fmtInt(rem) + " / " + fmtInt(tot);
   }
   const resets = $("quotaResets");
   if (ent.quotaResetsAt) {
@@ -359,6 +398,7 @@ async function refreshAccount() {
     const isPro = linked && ent.plan === "pro";
     $("proTransRow").hidden = !isPro;
     $("proVoiceRow").hidden = !isPro;
+    $("proAudioRow").hidden = !isPro;
     if (isPro) renderQuota(ent);
     else $("quotaBox").hidden = true;
     if (!linked) {
@@ -437,6 +477,7 @@ async function init() {
   $("localOnly").addEventListener("change", (e) => save({ cloudFallback: !e.target.checked }));
   $("proTrans").addEventListener("change", (e) => save({ proTranslation: e.target.checked }));
   $("proVoice").addEventListener("change", (e) => save({ proVoice: e.target.checked }));
+  $("proAudio").addEventListener("change", (e) => save({ proAudio: e.target.checked }));
 
   // Voice preview — spoken from the popup itself (its click counts as
   // the user activation speech synthesis requires)

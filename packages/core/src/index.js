@@ -62,6 +62,12 @@ export {
 } from "./yt.js";
 export { isFreeSite, planGate, trialDaysLeft } from "./plan.js";
 export {
+  AUDIO_SAMPLE_RATE,
+  deepgramLiveUrl,
+  floatTo16BitPCM,
+  transcriptToCue,
+} from "./audio.js";
+export {
   JOURNAL_CAPS,
   journalAppendLine,
   journalUpsert,

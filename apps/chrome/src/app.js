@@ -524,8 +524,9 @@ function fmtInt(n) {
 function renderAcctQuota(ent) {
   const box = $("acctQuota");
   const rows = [
-    ["acctQuotaTransVal", "acctQuotaTransFill", ent && ent.cloudCharsRemaining, ent && ent.cloudCharsTotal],
-    ["acctQuotaVoiceVal", "acctQuotaVoiceFill", ent && ent.ttsCharsRemaining, ent && ent.ttsCharsTotal],
+    ["acctQuotaTransVal", "acctQuotaTransFill", ent && ent.cloudCharsRemaining, ent && ent.cloudCharsTotal, "chars"],
+    ["acctQuotaVoiceVal", "acctQuotaVoiceFill", ent && ent.ttsCharsRemaining, ent && ent.ttsCharsTotal, "chars"],
+    ["acctQuotaAudioVal", "acctQuotaAudioFill", ent && ent.audioSecondsRemaining, ent && ent.audioSecondsTotal, "minutes"],
   ];
   const has =
     !!ent &&
@@ -533,11 +534,17 @@ function renderAcctQuota(ent) {
     rows.some(([, , , total]) => typeof total === "number" && total > 0);
   box.hidden = !has;
   if (!has) return;
-  for (const [valId, fillId, remaining, total] of rows) {
+  const audioOn = !!(ent && typeof ent.audioSecondsTotal === "number" && ent.audioSecondsTotal > 0);
+  $("acctQuotaAudioItem").hidden = !audioOn;
+  for (const [valId, fillId, remaining, total, unit] of rows) {
     const tot = typeof total === "number" ? total : 0;
+    if (tot <= 0) continue;
     const rem = Math.max(0, Math.min(tot, typeof remaining === "number" ? remaining : 0));
     const pct = tot > 0 ? Math.round((rem / tot) * 100) : 0;
-    $(valId).textContent = fmtInt(rem) + " / " + fmtInt(tot);
+    $(valId).textContent =
+      unit === "minutes"
+        ? Math.floor(rem / 60) + " / " + Math.floor(tot / 60) + " min"
+        : fmtInt(rem) + " / " + fmtInt(tot);
     const fill = $(fillId);
     fill.style.width = pct + "%";
     fill.classList.toggle("low", pct > 0 && pct <= 20);

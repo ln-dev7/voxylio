@@ -105,11 +105,11 @@
     "items": {
       "sites": {
         "question": "Su quali siti funziona?",
-        "answer": "Qualsiasi sito il cui player esponga una traccia sottotitoli — più i sottotitoli sullo schermo di YouTube, Netflix, Prime Video, Disney+ e Twitch, che Voxylio legge direttamente dalla pagina. Se sono disattivati, spesso può attivarli per te. Nel piano gratuito il doppiaggio copre YouTube, Netflix, Prime Video, Disney+ e Twitch — la prova di 3 giorni e il Pro sbloccano tutti gli altri siti."
+        "answer": "Qualsiasi sito il cui player esponga una traccia sottotitoli — più i sottotitoli sullo schermo di YouTube, Netflix, Prime Video, Disney+ e Twitch, che Voxylio legge direttamente dalla pagina. Se sono disattivati, spesso può attivarli per te. Nel piano gratuito il doppiaggio copre YouTube, Netflix, Prime Video, Disney+ e Twitch — la prova di {days} giorni e il Pro sbloccano tutti gli altri siti."
       },
       "cost": {
         "question": "È davvero gratis?",
-        "answer": "Sì — su YouTube, Netflix, Prime Video, Disney+ e Twitch il piano gratuito è illimitato: la traduzione gira sul dispositivo con l'API integrata di Chrome (138+) e la voce usa quelle di sistema. Ogni nuovo account parte inoltre con una prova di 3 giorni che sblocca tutti i siti. Senza carta, senza chiave API."
+        "answer": "Sì — su YouTube, Netflix, Prime Video, Disney+ e Twitch il piano gratuito è illimitato: la traduzione gira sul dispositivo con l'API integrata di Chrome (138+) e la voce usa quelle di sistema. Ogni nuovo account parte inoltre con una prova di {days} giorni che sblocca tutti i siti. Senza carta, senza chiave API."
       },
       "account": {
         "question": "Perché serve un account?",
@@ -121,7 +121,7 @@
       },
       "quota": {
         "question": "Cosa succede quando un volume Pro si esaurisce?",
-        "answer": "Il doppiaggio non si ferma mai. Appena un volume è raggiunto, le battute continuano con il motore locale gratuito, e il volume si ricarica al periodo mensile successivo."
+        "answer": "Il doppiaggio non si ferma mai. Appena un volume è raggiunto, le battute continuano con il motore locale gratuito, e il volume si ricarica al periodo mensile successivo. Il doppiaggio senza sottotitoli è l'unica eccezione: senza ripiego locale, esauriti i minuti, va in pausa fino al periodo successivo."
       },
       "glossary": {
         "question": "Posso controllare come vengono tradotti certi termini?",
@@ -148,8 +148,8 @@
         "answer": "Sì per il motore locale: una volta che Chrome ha scaricato il modello di traduzione per la tua coppia, il doppiaggio funziona senza connessione, con le voci di sistema. Il ripiego online e le funzioni Pro la richiedono."
       },
       "trial": {
-        "question": "Come funziona la prova di 3 giorni?",
-        "answer": "Ogni nuovo account parte con 3 giorni completi in cui tutti i siti sono sbloccati — senza carta, nulla viene addebitato automaticamente. Alla fine, mantieni semplicemente il piano gratuito sulle grandi piattaforme; il Pro riporta tutti i siti quando vuoi."
+        "question": "Come funziona la prova di {days} giorni?",
+        "answer": "Ogni nuovo account parte con {days} giorni completi in cui tutti i siti sono sbloccati — senza carta, nulla viene addebitato automaticamente. Alla fine, mantieni semplicemente il piano gratuito sulle grandi piattaforme; il Pro riporta tutti i siti quando vuoi."
       }
     }
   },
@@ -313,7 +313,8 @@
       "items": {
         "trial": "Prova completa di 3 giorni per ogni nuovo account — tutti i siti sbloccati, senza carta",
         "freeSites": "Il piano gratuito si concentra su YouTube, Netflix, Prime Video, Disney+ e Twitch — illimitato, sul dispositivo",
-        "proSites": "Il Pro sblocca tutti i siti supportati dal motore — piattaforme di corsi incluse"
+        "proSites": "Il Pro sblocca tutti i siti supportati dal motore — piattaforme di corsi incluse",
+        "audio": "Pro — doppiaggio senza sottotitoli (beta): quando un video non espone alcun sottotitolo, il suo audio viene trascritto in diretta (minuti di Audio Premium) e doppiato dallo stesso motore"
       }
     }
   },
@@ -343,11 +344,12 @@
     "usageTrans": "Traduzione IA (beta)",
     "usageVoice": "Voce neurale",
     "usageResets": "La quota si azzera il {date}",
-    "usageFallback": "Quando una quota si esaurisce, il motore locale subentra automaticamente — il doppiaggio non si ferma mai."
+    "usageFallback": "Quando una quota si esaurisce, il motore locale subentra automaticamente — il doppiaggio non si ferma mai.",
+    "usageAudio": "Audio Premium (min)"
   },
   "Pricing": {
     "title": "Un prezzo semplice e onesto",
-    "subtitle": "Prova tutto gratis per 3 giorni, su ogni sito. Dopo, il piano gratuito mantiene le grandi piattaforme senza limiti — il Pro sblocca tutti i siti e le funzioni cloud.",
+    "subtitle": "Prova tutto gratis per {days} giorni, su ogni sito. Dopo, il piano gratuito mantiene le grandi piattaforme senza limiti — il Pro sblocca tutti i siti e le funzioni cloud.",
     "monthly": "Mensile",
     "yearly": "Annuale",
     "priceFree": "0 $",
@@ -362,7 +364,7 @@
       "tagline": "Le grandi piattaforme, con un account gratuito",
       "cta": "Installa l'estensione",
       "features": {
-        "f0": "Prova completa di 3 giorni — tutti i siti sbloccati, senza carta",
+        "f0": "Prova completa di {days} giorni — tutti i siti sbloccati, senza carta",
         "f1": "Doppiaggio illimitato sul dispositivo: YouTube, Netflix, Prime Video, Disney+ e Twitch",
         "f2": "Oltre 65 lingue di doppiaggio, origine rilevata automaticamente",
         "f3": "Sottotitoli tradotti direttamente sul video",
@@ -381,14 +383,15 @@
         "f2": "Voci neurali naturali in 7 lingue — altrove subentra la voce locale",
         "f3": "Accesso anticipato a nuove lingue e piattaforme",
         "f4": "Supporto prioritario",
-        "f5": "Un solo account su tutti i tuoi browser"
+        "f5": "Un solo account su tutti i tuoi browser",
+        "f6": "Doppiaggio senza sottotitoli (beta): trascrizione in diretta + doppiaggio quando un video non ha alcun sottotitolo — 60 min/mese"
       },
-      "quota": "Volume mensile: 1.500.000 caratteri di traduzione IA + 100.000 caratteri di voce neurale — poi il motore locale subentra automaticamente."
+      "quota": "Volume mensile: 1.500.000 caratteri di traduzione IA + 100.000 caratteri di voce neurale — poi il motore locale subentra automaticamente. Doppiaggio senza sottotitoli: 60 min di Audio Premium."
     },
     "modal": {
       "trigger": "Come funzionano i prezzi",
       "title": "I prezzi, spiegati",
-      "intro": "Due piani, una prova: ogni nuovo account ha 3 giorni con tutti i siti sbloccati. Poi il gratuito tiene le grandi piattaforme e il Pro apre tutto.",
+      "intro": "Due piani, una prova: ogni nuovo account ha {days} giorni con tutti i siti sbloccati. Poi il gratuito tiene le grandi piattaforme e il Pro apre tutto.",
       "freeTitle": "Gratis — le grandi piattaforme",
       "freeBody": "Doppiaggio illimitato sul dispositivo per YouTube, Netflix, Prime Video, Disney+ e Twitch: traduzione integrata di Chrome, le tue voci di sistema, sottotitoli bilingui, glossario, cronologia e statistiche. Senza carta — basta un accesso Google gratuito.",
       "proTitle": "Pro — tutti i siti + il cloud",

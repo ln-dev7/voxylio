@@ -105,11 +105,11 @@
     "items": {
       "sites": {
         "question": "Em quais sites funciona?",
-        "answer": "Qualquer site cujo player exponha uma trilha de legendas — mais as legendas na tela do YouTube, Netflix, Prime Video, Disney+ e Twitch, que o Voxylio lê direto da página. Se estiverem desligadas, muitas vezes ele consegue ativá-las para você. No plano gratuito, a dublagem cobre YouTube, Netflix, Prime Video, Disney+ e Twitch — o teste de 3 dias e o Pro desbloqueiam todos os outros sites."
+        "answer": "Qualquer site cujo player exponha uma trilha de legendas — mais as legendas na tela do YouTube, Netflix, Prime Video, Disney+ e Twitch, que o Voxylio lê direto da página. Se estiverem desligadas, muitas vezes ele consegue ativá-las para você. No plano gratuito, a dublagem cobre YouTube, Netflix, Prime Video, Disney+ e Twitch — o teste de {days} dias e o Pro desbloqueiam todos os outros sites."
       },
       "cost": {
         "question": "É grátis mesmo?",
-        "answer": "Sim — no YouTube, Netflix, Prime Video, Disney+ e Twitch, o plano gratuito é ilimitado: a tradução roda no dispositivo com a API integrada do Chrome (138+) e a voz usa as do sistema. Cada conta nova também começa com um teste de 3 dias que desbloqueia todos os sites. Sem cartão, sem chave de API."
+        "answer": "Sim — no YouTube, Netflix, Prime Video, Disney+ e Twitch, o plano gratuito é ilimitado: a tradução roda no dispositivo com a API integrada do Chrome (138+) e a voz usa as do sistema. Cada conta nova também começa com um teste de {days} dias que desbloqueia todos os sites. Sem cartão, sem chave de API."
       },
       "account": {
         "question": "Por que preciso de uma conta?",
@@ -121,7 +121,7 @@
       },
       "quota": {
         "question": "O que acontece quando um volume Pro acaba?",
-        "answer": "A dublagem nunca para. Assim que um volume é atingido, as falas continuam com o motor local gratuito, e o volume é recarregado no próximo período mensal."
+        "answer": "A dublagem nunca para. Assim que um volume é atingido, as falas continuam com o motor local gratuito, e o volume é recarregado no próximo período mensal. A dublagem sem legendas é a única exceção: sem fallback local, esgotados os minutos, ela pausa até o próximo período."
       },
       "glossary": {
         "question": "Posso controlar como certos termos são traduzidos?",
@@ -148,8 +148,8 @@
         "answer": "Sim, com o motor local: depois que o Chrome baixa o modelo de tradução do seu par, a dublagem funciona sem conexão, com as vozes do sistema. O recurso online e as funções Pro precisam de conexão."
       },
       "trial": {
-        "question": "Como funciona o teste de 3 dias?",
-        "answer": "Cada conta nova começa com 3 dias completos com todos os sites desbloqueados — sem cartão, nada é cobrado automaticamente. Ao terminar, você simplesmente mantém o plano gratuito nas grandes plataformas; o Pro traz todos os sites de volta quando quiser."
+        "question": "Como funciona o teste de {days} dias?",
+        "answer": "Cada conta nova começa com {days} dias completos com todos os sites desbloqueados — sem cartão, nada é cobrado automaticamente. Ao terminar, você simplesmente mantém o plano gratuito nas grandes plataformas; o Pro traz todos os sites de volta quando quiser."
       }
     }
   },
@@ -313,7 +313,8 @@
       "items": {
         "trial": "Teste completo de 3 dias para cada conta nova — todos os sites desbloqueados, sem cartão",
         "freeSites": "O plano gratuito foca em YouTube, Netflix, Prime Video, Disney+ e Twitch — ilimitado, no dispositivo",
-        "proSites": "O Pro desbloqueia todos os sites suportados pelo motor — plataformas de cursos incluídas"
+        "proSites": "O Pro desbloqueia todos os sites suportados pelo motor — plataformas de cursos incluídas",
+        "audio": "Pro — dublagem sem legendas (beta): quando um vídeo não expõe nenhuma legenda, seu áudio é transcrito ao vivo (minutos de Áudio Premium) e dublado pelo mesmo motor"
       }
     }
   },
@@ -343,11 +344,12 @@
     "usageTrans": "Tradução IA (beta)",
     "usageVoice": "Voz neural",
     "usageResets": "A cota é renovada em {date}",
-    "usageFallback": "Quando uma cota acaba, o motor local assume automaticamente — a dublagem nunca para."
+    "usageFallback": "Quando uma cota acaba, o motor local assume automaticamente — a dublagem nunca para.",
+    "usageAudio": "Áudio Premium (min)"
   },
   "Pricing": {
     "title": "Um preço simples e honesto",
-    "subtitle": "Teste tudo grátis por 3 dias, em todos os sites. Depois, o plano gratuito mantém as grandes plataformas sem limite — o Pro desbloqueia todos os sites e os recursos na nuvem.",
+    "subtitle": "Teste tudo grátis por {days} dias, em todos os sites. Depois, o plano gratuito mantém as grandes plataformas sem limite — o Pro desbloqueia todos os sites e os recursos na nuvem.",
     "monthly": "Mensal",
     "yearly": "Anual",
     "priceFree": "US$ 0",
@@ -362,7 +364,7 @@
       "tagline": "As grandes plataformas, com uma conta gratuita",
       "cta": "Instalar a extensão",
       "features": {
-        "f0": "Teste completo de 3 dias — todos os sites desbloqueados, sem cartão",
+        "f0": "Teste completo de {days} dias — todos os sites desbloqueados, sem cartão",
         "f1": "Dublagem ilimitada no dispositivo: YouTube, Netflix, Prime Video, Disney+ e Twitch",
         "f2": "Mais de 65 idiomas de dublagem, origem autodetectada",
         "f3": "Legendas traduzidas direto no vídeo",
@@ -381,14 +383,15 @@
         "f2": "Vozes neurais naturais em 7 idiomas — a voz local assume nos demais",
         "f3": "Acesso antecipado a novos idiomas e plataformas",
         "f4": "Suporte prioritário",
-        "f5": "Uma só conta em todos os seus navegadores"
+        "f5": "Uma só conta em todos os seus navegadores",
+        "f6": "Dublagem sem legendas (beta): transcrição ao vivo + dublagem quando um vídeo não tem nenhuma legenda — 60 min/mês"
       },
-      "quota": "Volume mensal: 1.500.000 caracteres de tradução IA + 100.000 caracteres de voz neural — depois o motor local assume automaticamente."
+      "quota": "Volume mensal: 1.500.000 caracteres de tradução IA + 100.000 caracteres de voz neural — depois o motor local assume automaticamente. Dublagem sem legendas: 60 min de Áudio Premium."
     },
     "modal": {
       "trigger": "Como funcionam os preços",
       "title": "Os preços, explicados",
-      "intro": "Dois planos, um teste: cada conta nova ganha 3 dias com todos os sites desbloqueados. Depois, o gratuito mantém as grandes plataformas e o Pro abre tudo.",
+      "intro": "Dois planos, um teste: cada conta nova ganha {days} dias com todos os sites desbloqueados. Depois, o gratuito mantém as grandes plataformas e o Pro abre tudo.",
       "freeTitle": "Grátis — as grandes plataformas",
       "freeBody": "Dublagem ilimitada no dispositivo para YouTube, Netflix, Prime Video, Disney+ e Twitch: tradução integrada do Chrome, suas vozes do sistema, legendas bilíngues, glossário, histórico e estatísticas. Sem cartão — basta entrar de graça com o Google.",
       "proTitle": "Pro — todos os sites + a nuvem",

@@ -167,5 +167,11 @@
   "quotaVoice": "神经语音",
   "quotaResets": "{date}重置",
   "statusProSite": "此网站为 Pro 专享。免费版：YouTube、Netflix、Prime Video、Disney+ 和 Twitch。",
-  "statusTrialNote": "完整试用：此网站还可使用 $COUNT$ 天"
+  "statusTrialNote": "完整试用：此网站还可使用 $COUNT$ 天",
+  "proAudioLabel": "无字幕视频 Pro 配音（测试版）",
+  "titleProAudio": "视频完全没有字幕？其音频将被实时转写（每月 60 分钟），然后正常配音。无本地回退：分钟用完后，该功能等待下一周期。",
+  "quotaAudio": "高级音频",
+  "statusAudioLive": "无字幕：正在实时转写音频 — 配音将在几秒后开始。",
+  "statusAudioQuota": "本月高级音频分钟已用完 — 无字幕配音将在下一周期恢复。",
+  "statusAudioUnavailable": "无法捕获此播放器的音频（站点保护）— 无字幕配音在此无法工作。"
 }

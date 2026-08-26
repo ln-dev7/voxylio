@@ -1,4 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
+import { trialDays } from "@/lib/pro";
 import { SiteHeader } from "@/components/site-header";
 import { Hero } from "@/components/hero";
 import { Features } from "@/components/features";
@@ -27,9 +28,9 @@ export default async function HomePage({
         <HowItWorks />
         <LanguagesGrid />
         <Compare />
-        <Pricing />
+        <Pricing days={trialDays()} />
         <Install />
-        <Faq />
+        <Faq days={trialDays()} />
       </main>
       <SiteFooter />
     </div>

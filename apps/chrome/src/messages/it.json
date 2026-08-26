@@ -167,5 +167,11 @@
   "quotaVoice": "Voce neurale",
   "quotaResets": "Si azzera il {date}",
   "statusProSite": "Questo sito è riservato a Pro. Piano gratuito: YouTube, Netflix, Prime Video, Disney+ e Twitch.",
-  "statusTrialNote": "Prova completa: questo sito resta sbloccato ancora $COUNT$ giorno/i"
+  "statusTrialNote": "Prova completa: questo sito resta sbloccato ancora $COUNT$ giorno/i",
+  "proAudioLabel": "Doppiaggio senza sottotitoli Pro (beta)",
+  "titleProAudio": "Video senza alcun sottotitolo? L'audio viene trascritto in diretta (60 min/mese) e poi doppiato normalmente. Nessun ripiego locale: minuti esauriti, la funzione attende il ciclo successivo.",
+  "quotaAudio": "Audio Premium",
+  "statusAudioLive": "Nessun sottotitolo: trascrizione dell'audio in diretta — il doppiaggio arriva tra pochi secondi.",
+  "statusAudioQuota": "Minuti di Audio Premium esauriti per questo mese — il doppiaggio senza sottotitoli riprende al prossimo ciclo.",
+  "statusAudioUnavailable": "Impossibile catturare l'audio di questo player (protezione del sito) — il doppiaggio senza sottotitoli non può funzionare qui."
 }

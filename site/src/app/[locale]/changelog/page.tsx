@@ -32,6 +32,7 @@ const RELEASES: Array<{
       { key: "trial", tag: "new" },
       { key: "freeSites", tag: "improved" },
       { key: "proSites", tag: "pro" },
+      { key: "audio", tag: "pro" },
     ],
   },
   {

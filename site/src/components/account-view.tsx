@@ -15,6 +15,8 @@ type Entitlement = {
   ttsCharsRemaining?: number;
   cloudCharsTotal?: number;
   ttsCharsTotal?: number;
+  audioSecondsRemaining?: number;
+  audioSecondsTotal?: number;
   quotaResetsAt?: string | null;
 };
 
@@ -331,6 +333,14 @@ export function AccountView() {
                   total={ent?.ttsCharsTotal ?? 0}
                   locale={locale}
                 />
+                {(ent?.audioSecondsTotal ?? 0) > 0 && (
+                  <QuotaMeter
+                    label={t("usageAudio")}
+                    remaining={Math.floor((ent?.audioSecondsRemaining ?? 0) / 60)}
+                    total={Math.floor((ent?.audioSecondsTotal ?? 0) / 60)}
+                    locale={locale}
+                  />
+                )}
               </div>
               <p className="mt-5 text-xs leading-relaxed text-muted-foreground">
                 {ent?.quotaResetsAt &&

@@ -32,6 +32,10 @@ import {
   isFreeSite,
   planGate,
   trialDaysLeft,
+  AUDIO_SAMPLE_RATE,
+  deepgramLiveUrl,
+  floatTo16BitPCM,
+  transcriptToCue,
   DEFAULTS as SHARED_DEFAULTS,
   createTranslatorChain,
   journalAppendLine,
@@ -1165,6 +1169,243 @@ import { makeT, resolveUiLang } from "./i18n.js";
     }
     ctl.ytHarvest = harvestYouTubeStatic;
 
+    // --- Premium Audio: no-subtitle dubbing (Pro, beta) -------------------
+    // When a video exposes NO subtitles anywhere (no textTracks, no
+    // <track>, no DOM captions, no YouTube static track), Pro accounts
+    // can dub it anyway: the media element's audio is captured
+    // (captureStream — DRM/CORS-tainted media refuses, that is the
+    // honest limit), streamed as 16 kHz linear16 to Deepgram Nova-3
+    // over a WebSocket authenticated with a short-lived token minted by
+    // OUR backend, and every final transcript becomes an ordinary cue —
+    // grouping, translation, pacing, ducking: same engine as
+    // everywhere else. Minutes are metered server-side; there is NO
+    // local fallback for this feature.
+
+    function audioEligible() {
+      if (!settings.proAudio || accountPlan !== "pro" || !ctl.active) return false;
+      if (video.paused || video.seeking) return false;
+      const st = ctl.audioState;
+      if (st === "starting" || st === "live" || st === "failed" || st === "quota")
+        return false;
+      if (ctl.audioRetryAt && Date.now() < ctl.audioRetryAt) return false;
+      // We already own this video's feed: always resume after a
+      // pause/seek/rate restart — our own cues must not disqualify us.
+      if (ctl.audioFeed) return true;
+      if (ctl.cues.length > 0 || domLastText) return false;
+      if (domSite && domSite.id === "youtube" && !ctl.staticLoaded) return false;
+      if (ctl.ytStatic === "loaded") return false;
+      try {
+        if (
+          Array.from(video.textTracks || []).some(
+            (t) => t.kind === "subtitles" || t.kind === "captions",
+          )
+        )
+          return false;
+      } catch (e) {}
+      try {
+        if (video.querySelector("track")) return false;
+      } catch (e) {}
+      // Give the subtitle harvesters a fair head start.
+      if (!ctl.audioProbeAt) {
+        ctl.audioProbeAt = performance.now();
+        return false;
+      }
+      return performance.now() - ctl.audioProbeAt > 4000;
+    }
+
+    function stopAudioGraph() {
+      try {
+        if (ctl.audioProc) ctl.audioProc.disconnect();
+      } catch (e) {}
+      try {
+        if (ctl.audioSrc) ctl.audioSrc.disconnect();
+      } catch (e) {}
+      try {
+        if (ctl.audioCtx && ctl.audioCtx.state !== "closed") ctl.audioCtx.close();
+      } catch (e) {}
+      ctl.audioProc = null;
+      ctl.audioSrc = null;
+      ctl.audioCtx = null;
+    }
+
+    function reportAudioUsage(final) {
+      const sent = ctl.audioSecSent || 0;
+      const delta = Math.round(sent - (ctl.audioSecReported || 0));
+      if (delta < (final ? 3 : 20)) return;
+      ctl.audioSecReported = sent;
+      try {
+        const p = runtime.sendMessage({ type: "audio-usage", seconds: delta });
+        if (p && typeof p.then === "function") {
+          p.then((r) => {
+            if (!r) return;
+            if (r.quota || (r.ok && r.remainingSeconds === 0)) {
+              stopAudioFeed("quota");
+            } else if (r.ok && typeof r.remainingSeconds === "number") {
+              ctl.audioRemaining = r.remainingSeconds;
+            }
+          }).catch(() => {});
+        }
+      } catch (e) {}
+    }
+
+    function stopAudioFeed(state) {
+      reportAudioUsage(true);
+      if (ctl.audioWs) {
+        try {
+          ctl.audioWs.onclose = null;
+          ctl.audioWs.onerror = null;
+          ctl.audioWs.close();
+        } catch (e) {}
+        ctl.audioWs = null;
+      }
+      stopAudioGraph();
+      if (ctl.audioState === "live" || ctl.audioState === "starting" || state) {
+        ctl.audioState = state || "idle";
+      }
+    }
+    ctl.stopAudioFeed = stopAudioFeed;
+
+    function openAudioSocket(token, protocols, isRetry) {
+      let ws;
+      try {
+        ws = new WebSocket(deepgramLiveUrl(effectiveSource()), protocols);
+      } catch (e) {
+        stopAudioFeed("failed");
+        return;
+      }
+      ws.binaryType = "arraybuffer";
+      let opened = false;
+      ctl.audioWs = ws;
+      ws.onopen = () => {
+        if (ctl.audioWs !== ws) return;
+        opened = true;
+        ctl.audioState = "live";
+        ctl.audioT0 = video.currentTime;
+        ctl.audioRate = video.playbackRate || 1;
+      };
+      ws.onmessage = (ev) => {
+        if (ctl.audioWs !== ws) return;
+        let msg;
+        try {
+          msg = JSON.parse(ev.data);
+        } catch (e) {
+          return;
+        }
+        const cue = transcriptToCue(msg, ctl.audioT0 || 0, ctl.audioRate || 1);
+        if (cue) {
+          ctl.audioFeed = true;
+          addCue(cue.start, cue.end, cue.text);
+        }
+      };
+      ws.onerror = () => {};
+      ws.onclose = () => {
+        if (ctl.audioWs !== ws) return;
+        ctl.audioWs = null;
+        if (!opened && !isRetry) {
+          // Some proxies reject the "bearer" subprotocol: legacy form.
+          openAudioSocket(token, ["token", token], true);
+          return;
+        }
+        stopAudioGraph();
+        if (ctl.audioState === "live" || ctl.audioState === "starting") {
+          // Server hangup (silence timeout, network): retry shortly.
+          ctl.audioState = "idle";
+          ctl.audioRetryAt = Date.now() + 8000;
+        }
+      };
+    }
+
+    async function startAudioFeed() {
+      ctl.audioState = "starting";
+      ctl.audioStarts = (ctl.audioStarts || 0) + 1;
+      if (ctl.audioStarts > 6) {
+        // Restart storm (looping capture/socket failures): stand down.
+        ctl.audioState = "failed";
+        return;
+      }
+      // 1. Capture the element's audio. DRM or CORS-tainted media
+      // throws or yields no track — the honest hard limit.
+      let track = null;
+      try {
+        const cap = video.captureStream || video.mozCaptureStream;
+        const stream = cap ? cap.call(video) : null;
+        track = stream && stream.getAudioTracks ? stream.getAudioTracks()[0] : null;
+      } catch (e) {}
+      if (!track) {
+        ctl.audioState = "failed";
+        return;
+      }
+      // 2. One short-lived Deepgram token per session, minted by our
+      // backend (quota checked there).
+      let grant = null;
+      try {
+        grant = await runtime.sendMessage({ type: "audio-grant" });
+      } catch (e) {}
+      if (!ctl.active || !settings.proAudio) {
+        ctl.audioState = "idle";
+        return;
+      }
+      if (!grant || !grant.ok || !grant.token) {
+        if (grant && grant.quota) {
+          ctl.audioState = "quota";
+        } else {
+          // Transient (network, cooldown): retry later, never a loop.
+          ctl.audioState = "idle";
+          ctl.audioRetryAt = Date.now() + 30000;
+        }
+        return;
+      }
+      if (typeof grant.remainingSeconds === "number")
+        ctl.audioRemaining = grant.remainingSeconds;
+      // 3. Audio graph: element stream → 16 kHz mono PCM chunks. The
+      // processor must reach the destination to run — muted, the page
+      // keeps playing its own audio.
+      try {
+        const ctx = new AudioContext({ sampleRate: AUDIO_SAMPLE_RATE });
+        const src = ctx.createMediaStreamSource(new MediaStream([track]));
+        const proc = ctx.createScriptProcessor(4096, 1, 1);
+        const mute = ctx.createGain();
+        mute.gain.value = 0;
+        src.connect(proc);
+        proc.connect(mute);
+        mute.connect(ctx.destination);
+        ctl.audioCtx = ctx;
+        ctl.audioSrc = src;
+        ctl.audioProc = proc;
+        if (ctx.state === "suspended") {
+          try {
+            await ctx.resume();
+          } catch (e) {}
+        }
+        proc.onaudioprocess = (ev) => {
+          const ws = ctl.audioWs;
+          if (!ws || ws.readyState !== 1) return;
+          const data = ev.inputBuffer.getChannelData(0);
+          try {
+            ws.send(floatTo16BitPCM(data).buffer);
+          } catch (e) {
+            return;
+          }
+          ctl.audioSecSent = (ctl.audioSecSent || 0) + data.length / AUDIO_SAMPLE_RATE;
+          // Hard client stop at the granted allowance (+small slack):
+          // the 30 s heartbeat alone would overrun a nearly-empty meter.
+          if (
+            typeof ctl.audioRemaining === "number" &&
+            ctl.audioSecSent - (ctl.audioSecReported || 0) >= ctl.audioRemaining + 5
+          ) {
+            stopAudioFeed("quota");
+            return;
+          }
+          reportAudioUsage(false);
+        };
+      } catch (e) {
+        stopAudioFeed("failed");
+        return;
+      }
+      // 4. Stream to Deepgram (bearer subprotocol; token fallback).
+      openAudioSocket(grant.token, ["bearer", grant.token]);
+    }
+
     // --- source language --------------------------------------------------
 
     // Effective source: explicit user choice > track metadata > detection
@@ -1788,6 +2029,17 @@ import { makeT, resolveUiLang } from "./i18n.js";
       // resume used to start from zero (no translations, no cloud audio).
       harvestTextTracks(); // HLS cues keep arriving
       harvestYouTubeStatic(); // async; no-op outside YouTube / once done
+      // Premium Audio: engage (throttled) when no subtitle feed exists;
+      // stand down live if the toggle or the plan dropped mid-session.
+      if (
+        (ctl.audioState === "live" || ctl.audioState === "starting") &&
+        (!settings.proAudio || accountPlan !== "pro")
+      ) {
+        stopAudioFeed("idle");
+      } else if ((ctl.audioCheckAt || 0) < Date.now()) {
+        ctl.audioCheckAt = Date.now() + 1000;
+        if (audioEligible()) startAudioFeed();
+      }
       rebuildGroups();
       pretranslate();
 
@@ -2094,6 +2346,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
     // fixed at construction), never silently dropped.
     function onRateChange() {
       const pr = video.playbackRate || 1;
+      // The audio-feed timeline maps stream time × rate: a rate change
+      // mid-session would mistime every later cue. Restart the session
+      // (cheap) with the new rate captured at open.
+      if (ctl.audioState === "live" || ctl.audioState === "starting") {
+        stopAudioFeed("idle");
+      }
       if (ctl.currentUtterance && ctl.currentUtterance.cloud && ctl.cloudAudio) {
         const a = ctl.cloudAudio;
         try {
@@ -2177,7 +2435,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
     // A pause WE triggered to let the voice catch up must not kill the
     // speech it is waiting for.
     function onPauseEvent() {
-      if (!ctl.autoPaused) hardStopSpeech();
+      if (!ctl.autoPaused) {
+        hardStopSpeech();
+        // Streaming silence would only burn the audio quota (and the
+        // provider closes silent sockets anyway): resume restarts it.
+        stopAudioFeed();
+      }
     }
 
     function stop() {
@@ -2195,6 +2458,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       video.removeEventListener("emptied", onMediaEmptied);
       video.removeEventListener("timeupdate", onTimeUpdate);
       hardStopSpeech();
+      stopAudioFeed();
       restoreVolume();
       hideCaption();
     }
@@ -2204,6 +2468,9 @@ import { makeT, resolveUiLang } from "./i18n.js";
     function fullFlush() {
       hardStopSpeech();
       ctl.spokenIds.clear();
+      // A seek breaks the stream→video time mapping: restart the
+      // audio-feed session against the new playhead.
+      stopAudioFeed();
     }
 
     // New media in the same element (SPA navigation, src swap): drop
@@ -2238,6 +2505,17 @@ import { makeT, resolveUiLang } from "./i18n.js";
       }
       ctl.trackListened = null;
       ctl.trackHarvestHandler = null;
+      // Premium Audio: a new medium starts from a clean slate — the
+      // quota state is the only thing that survives (it is monthly).
+      stopAudioFeed();
+      ctl.audioFeed = false;
+      ctl.audioState = ctl.audioState === "quota" ? "quota" : "idle";
+      ctl.audioStarts = 0;
+      ctl.audioSecSent = 0;
+      ctl.audioSecReported = 0;
+      ctl.audioProbeAt = 0;
+      ctl.audioRetryAt = 0;
+      ctl.audioT0 = 0;
       resetPageFeed(); // journal session + DOM caption dedup (module level)
       hideCaption();
     }
@@ -2996,6 +3274,11 @@ import { makeT, resolveUiLang } from "./i18n.js";
         c.staticLoaded = false;
         c.trackRetryAt = 0;
         c.lastCueCount = -1;
+        // Premium Audio: a capture/socket failure gets a fresh chance;
+        // an exhausted quota does not (it is a monthly fact).
+        if (c.audioState === "failed") c.audioState = "idle";
+        c.audioStarts = 0;
+        c.audioRetryAt = 0;
         c.fullFlush();
       }
       builtinBroken = false;
@@ -3053,12 +3336,23 @@ import { makeT, resolveUiLang } from "./i18n.js";
           else state = "ready";
         } else if (hasSubTracks) {
           state = "subs-loading";
-        } else if (domSite) {
-          // Supported player (YouTube, Netflix…): captions must be
-          // switched on in the player for Voxylio to read them.
-          state = "enable-subs";
         } else {
-          state = "no-subs";
+          // No subtitle feed at all: Premium Audio's ground (Pro+opt-in).
+          const pc = primaryVideo && controllers.get(primaryVideo);
+          const audioState = (pc && pc.audioState) || "idle";
+          if (audioState === "live" || audioState === "starting") {
+            state = "audio-live";
+          } else if (audioState === "quota") {
+            state = "audio-quota";
+          } else if (audioState === "failed") {
+            state = "audio-unavailable";
+          } else if (domSite) {
+            // Supported player (YouTube, Netflix…): captions must be
+            // switched on in the player for Voxylio to read them.
+            state = "enable-subs";
+          } else {
+            state = "no-subs";
+          }
         }
       }
       return {

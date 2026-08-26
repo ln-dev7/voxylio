@@ -638,6 +638,14 @@
     </label>
   </div>
 
+  <div class="field overlay-row" style="margin-top: 10px" id="proAudioRow" hidden>
+    <label class="field-label" for="proAudio" style="margin: 0; color: var(--accent)" data-i18n-title="titleProAudio" title="Vidéo sans aucun sous-titre ? L'audio est transcrit en direct (60 min/mois) puis doublé normalement. Sans repli local : minutes épuisées, la fonction attend le prochain cycle." data-i18n="proAudioLabel">Doublage sans sous-titres Pro (bêta)</label>
+    <label class="switch switch-sm" aria-label="Doublage sans sous-titres Pro">
+      <input type="checkbox" id="proAudio" />
+      <span class="slider-toggle" aria-hidden="true"></span>
+    </label>
+  </div>
+
   <div class="field overlay-row" style="margin-top: 10px">
     <label class="field-label" for="subtitles" style="margin: 0" data-i18n="subtitlesLabel">Sous-titres traduits à l’écran</label>
     <label class="switch switch-sm" aria-label="Afficher les sous-titres traduits sur la vidéo">
@@ -689,6 +697,11 @@
         <span class="quota-val" id="quotaVoiceVal"></span>
       </div>
       <div class="quota-bar" id="quotaVoiceBar"><div class="quota-fill" id="quotaVoiceFill"></div></div>
+      <div class="quota-row" id="quotaAudioRow" hidden>
+        <span class="quota-label" data-i18n="quotaAudio">Audio Premium</span>
+        <span class="quota-val" id="quotaAudioVal"></span>
+      </div>
+      <div class="quota-bar" id="quotaAudioBar" hidden><div class="quota-fill" id="quotaAudioFill"></div></div>
       <p class="quota-resets" id="quotaResets"></p>
     </div>
     <button id="signoutBtn" class="account-signout" data-i18n="signOut" hidden>Se déconnecter</button>

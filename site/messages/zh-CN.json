@@ -105,11 +105,11 @@
     "items": {
       "sites": {
         "question": "支持哪些网站？",
-        "answer": "任何播放器提供字幕轨道的网站 — 还有 YouTube、Netflix、Prime Video、Disney+、Twitch 的屏幕字幕，Voxylio 直接从页面读取。如果字幕是关闭的，它通常还能帮你打开。免费版的配音覆盖 YouTube、Netflix、Prime Video、Disney+ 和 Twitch — 3 天试用和 Pro 解锁其余所有网站。"
+        "answer": "任何播放器提供字幕轨道的网站 — 还有 YouTube、Netflix、Prime Video、Disney+、Twitch 的屏幕字幕，Voxylio 直接从页面读取。如果字幕是关闭的，它通常还能帮你打开。免费版的配音覆盖 YouTube、Netflix、Prime Video、Disney+ 和 Twitch — {days} 天试用和 Pro 解锁其余所有网站。"
       },
       "cost": {
         "question": "真的免费吗？",
-        "answer": "是的 — 在 YouTube、Netflix、Prime Video、Disney+ 和 Twitch 上，免费版不限量：翻译通过 Chrome 内置 API（Chrome 138+）在设备上运行，语音使用系统声音。每个新账号还有 3 天试用，期间解锁所有网站。无需银行卡、无需 API 密钥。"
+        "answer": "是的 — 在 YouTube、Netflix、Prime Video、Disney+ 和 Twitch 上，免费版不限量：翻译通过 Chrome 内置 API（Chrome 138+）在设备上运行，语音使用系统声音。每个新账号还有 {days} 天试用，期间解锁所有网站。无需银行卡、无需 API 密钥。"
       },
       "account": {
         "question": "为什么需要账户？",
@@ -121,7 +121,7 @@
       },
       "quota": {
         "question": "Pro 的月度用量用完了会怎样？",
-        "answer": "配音绝不会停。一旦达到用量，后续台词立即由免费本地引擎接手，用量在下一个月度周期重置。"
+        "answer": "配音绝不会停。一旦达到用量，后续台词立即由免费本地引擎接手，用量在下一个月度周期重置。 无字幕配音是唯一的例外：没有本地回退，分钟用完后将暂停至下一周期。"
       },
       "glossary": {
         "question": "我能控制某些词的译法吗？",
@@ -148,8 +148,8 @@
         "answer": "本地引擎可以：Chrome 下载好你语言对的翻译模型后，配音无需联网，使用系统语音。在线回退和 Pro 功能需要联网。"
       },
       "trial": {
-        "question": "3 天试用如何运作？",
-        "answer": "每个新账号都从解锁所有网站的 3 天开始 — 无需银行卡，不会自动扣费。结束后，你在各大平台继续使用免费版；随时可通过 Pro 重新打开所有网站。"
+        "question": "{days} 天试用如何运作？",
+        "answer": "每个新账号都从解锁所有网站的 {days} 天开始 — 无需银行卡，不会自动扣费。结束后，你在各大平台继续使用免费版；随时可通过 Pro 重新打开所有网站。"
       }
     }
   },
@@ -313,7 +313,8 @@
       "items": {
         "trial": "每个新账号享 3 天完整试用 — 解锁所有网站，无需银行卡",
         "freeSites": "免费版聚焦 YouTube、Netflix、Prime Video、Disney+ 和 Twitch — 设备端不限量",
-        "proSites": "Pro 解锁引擎支持的所有网站 — 包括课程平台"
+        "proSites": "Pro 解锁引擎支持的所有网站 — 包括课程平台",
+        "audio": "Pro — 无字幕配音（测试版）：当视频完全没有字幕时，其音频被实时转写（高级音频分钟）并由同一引擎配音"
       }
     }
   },
@@ -343,11 +344,12 @@
     "usageTrans": "AI 翻译（测试版）",
     "usageVoice": "神经语音",
     "usageResets": "额度将于{date}重置",
-    "usageFallback": "额度用完后，本地引擎会自动接管——配音永不中断。"
+    "usageFallback": "额度用完后，本地引擎会自动接管——配音永不中断。",
+    "usageAudio": "高级音频（分钟）"
   },
   "Pricing": {
     "title": "简单而诚实的价格",
-    "subtitle": "3 天内在所有网站免费试用一切。之后，免费版在各大平台保持不限量 — Pro 解锁所有网站及云端功能。",
+    "subtitle": "{days} 天内在所有网站免费试用一切。之后，免费版在各大平台保持不限量 — Pro 解锁所有网站及云端功能。",
     "monthly": "按月",
     "yearly": "按年",
     "priceFree": "$0",
@@ -362,7 +364,7 @@
       "tagline": "各大平台，一个免费账号即可",
       "cta": "安装扩展",
       "features": {
-        "f0": "3 天完整试用 — 解锁所有网站，无需银行卡",
+        "f0": "{days} 天完整试用 — 解锁所有网站，无需银行卡",
         "f1": "设备端不限量配音：YouTube、Netflix、Prime Video、Disney+ 和 Twitch",
         "f2": "65 种以上配音语言，源语言自动检测",
         "f3": "翻译字幕直接显示在视频上",
@@ -381,14 +383,15 @@
         "f2": "7 种语言的自然神经语音 — 其他语言由本地语音接力",
         "f3": "抢先体验新语言与新平台",
         "f4": "优先支持",
-        "f5": "一个账户，通行所有浏览器"
+        "f5": "一个账户，通行所有浏览器",
+        "f6": "无字幕配音（测试版）：视频完全没有字幕时，实时转写 + 配音 — 每月 60 分钟"
       },
-      "quota": "每月用量：AI 翻译 1,500,000 字符 + 神经语音 100,000 字符 — 用完后本地引擎自动接手。"
+      "quota": "每月用量：AI 翻译 1,500,000 字符 + 神经语音 100,000 字符 — 之后本地引擎自动接管。无字幕配音：每月 60 分钟高级音频。"
     },
     "modal": {
       "trigger": "了解定价",
       "title": "定价说明",
-      "intro": "两个方案，一次试用：每个新账号都有 3 天时间使用所有网站。之后，免费版保留各大平台，Pro 打开一切。",
+      "intro": "两个方案，一次试用：每个新账号都有 {days} 天时间使用所有网站。之后，免费版保留各大平台，Pro 打开一切。",
       "freeTitle": "免费 — 各大平台",
       "freeBody": "在 YouTube、Netflix、Prime Video、Disney+ 和 Twitch 上设备端不限量配音：Chrome 内置翻译、系统语音、双语字幕、术语表、历史与统计。无需银行卡 — 免费 Google 登录即可。",
       "proTitle": "Pro — 所有网站 + 云端",

@@ -8,7 +8,9 @@ import {
 
 const ITEMS = ["sites", "cost", "trial", "account", "pro", "quota", "glossary", "voice", "offline", "privacy", "youtube", "cancel"] as const;
 
-export function Faq() {
+// `days` mirrors the server's TRIAL_DAYS so every answer mentioning
+// the trial interpolates the real value.
+export function Faq({ days = 3 }: { days?: number }) {
   const t = useTranslations("Faq");
 
   return (
@@ -21,10 +23,10 @@ export function Faq() {
           {ITEMS.map((key) => (
             <AccordionItem key={key} value={key}>
               <AccordionTrigger className="text-left text-base">
-                {t(`items.${key}.question`)}
+                {t(`items.${key}.question`, { days })}
               </AccordionTrigger>
               <AccordionContent className="leading-relaxed text-muted-foreground">
-                {t(`items.${key}.answer`)}
+                {t(`items.${key}.answer`, { days })}
               </AccordionContent>
             </AccordionItem>
           ))}

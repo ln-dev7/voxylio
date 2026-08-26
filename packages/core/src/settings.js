@@ -36,6 +36,11 @@ export const DEFAULTS = Object.freeze({
   proTranslation: false,
   // Pro neural voice (opt-in, Aura-2 languages; local voice otherwise).
   proVoice: false,
+  // Pro no-subtitle dubbing (opt-in, beta): when a video exposes no
+  // subtitles at all, capture its audio and transcribe it live
+  // (Deepgram Nova-3) — the transcript feeds the normal pipeline.
+  // Metered in minutes server-side; NO local fallback exists for this.
+  proAudio: false,
   autoPause: false,
   keepTerms: true,
   // User glossary: [{ from, to }] — `to` empty keeps the source form
@@ -84,6 +89,7 @@ export function validateSettings(patch) {
       case "cloudFallback":
       case "proTranslation":
       case "proVoice":
+      case "proAudio":
       case "autoPause":
       case "keepTerms":
         out[k] = Boolean(v);

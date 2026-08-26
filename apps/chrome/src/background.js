@@ -237,6 +237,20 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       .catch(() => sendResponse({ plan: "free", status: "none", linked: false }));
     return true;
   }
+  // Premium Audio (beta): the content script never holds our account
+  // token — grants and usage heartbeats go through here.
+  if (msg && msg.type === "audio-grant") {
+    audioApi({ op: "grant" })
+      .then(sendResponse)
+      .catch((e) => sendResponse({ ok: false, error: String(e && e.message) }));
+    return true;
+  }
+  if (msg && msg.type === "audio-usage") {
+    audioApi({ op: "usage", seconds: msg.seconds })
+      .then(sendResponse)
+      .catch((e) => sendResponse({ ok: false, error: String(e && e.message) }));
+    return true;
+  }
   // Relayed by the content script running on the Voxylio site (the page
   // itself cannot know the ID of a load-unpacked copy). Internal messages
   // only ever come from our own extension contexts.
@@ -327,8 +341,12 @@ async function refreshEntitlements(force) {
       cloudCharsTotal: data.cloudCharsTotal ?? null,
       ttsCharsTotal: data.ttsCharsTotal ?? null,
       quotaResetsAt: data.quotaResetsAt || null,
-      // 3-day full trial window; free accounts outside it are limited
-      // to the big platforms (packages/core/src/plan.js).
+      // Premium Audio minutes (no-subtitle dubbing, beta).
+      audioSecondsRemaining: data.audioSecondsRemaining ?? null,
+      audioSecondsTotal: data.audioSecondsTotal ?? null,
+      // Full trial window; free accounts outside it are limited to the
+      // big platforms (packages/core/src/plan.js). Length is set by the
+      // server (TRIAL_DAYS) — the extension never hardcodes it.
       trialEndsAt: data.trialEndsAt || null,
       checkedAt: Date.now(),
     };
@@ -451,6 +469,47 @@ async function translateProBatch(msg) {
 // the content script falls back to the system voice.
 
 let voiceBlockedUntil = 0;
+
+// One authenticated call to /api/pro/audio (grant or usage heartbeat).
+// A refusal cools the feature down HERE so a retry loop in a content
+// script can never hammer the metered backend.
+let audioBlockedUntil = 0;
+
+async function audioApi(payload) {
+  if (Date.now() < audioBlockedUntil)
+    return { ok: false, error: "cooling down" };
+  const { accountToken } = await getLocal({ accountToken: "" });
+  if (!accountToken) {
+    audioBlockedUntil = Date.now() + 60_000;
+    return { ok: false, error: "not signed in" };
+  }
+  const res = await fetch(SITE_ORIGIN + "/api/pro/audio", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + accountToken,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 402 || res.status === 429) {
+    audioBlockedUntil = Date.now() + 10 * 60_000;
+    return { ok: false, quota: true, remainingSeconds: 0 };
+  }
+  if (res.status === 401 || res.status === 403) {
+    audioBlockedUntil = Date.now() + 5 * 60_000;
+    return { ok: false, error: "not entitled" };
+  }
+  if (res.status === 503) {
+    audioBlockedUntil = Date.now() + 5 * 60_000;
+    return { ok: false, error: "provider unavailable" };
+  }
+  if (!res.ok) {
+    audioBlockedUntil = Date.now() + 2 * 60_000;
+    return { ok: false, error: "HTTP " + res.status };
+  }
+  return { ok: true, ...data };
+}
 
 async function speakPro(msg) {
   if (Date.now() < voiceBlockedUntil) throw new Error("voice cooling down");

@@ -105,11 +105,11 @@
     "items": {
       "sites": {
         "question": "Which sites does it work on?",
-        "answer": "Any site whose player exposes a subtitle track — plus the on-screen captions of YouTube, Netflix, Prime Video, Disney+ and Twitch, which Voxylio reads directly from the page. If captions are off, it can often switch them on for you. On the free plan, dubbing covers YouTube, Netflix, Prime Video, Disney+ and Twitch — the 3-day trial and Pro unlock every other site."
+        "answer": "Any site whose player exposes a subtitle track — plus the on-screen captions of YouTube, Netflix, Prime Video, Disney+ and Twitch, which Voxylio reads directly from the page. If captions are off, it can often switch them on for you. On the free plan, dubbing covers YouTube, Netflix, Prime Video, Disney+ and Twitch — the {days}-day trial and Pro unlock every other site."
       },
       "cost": {
         "question": "Is it really free?",
-        "answer": "Yes — on YouTube, Netflix, Prime Video, Disney+ and Twitch, the free plan is unlimited: translation runs on-device with Chrome's built-in API (Chrome 138+) and speech uses your system's voices. Every new account also starts with a 3-day trial that unlocks every site. No card, no API key."
+        "answer": "Yes — on YouTube, Netflix, Prime Video, Disney+ and Twitch, the free plan is unlimited: translation runs on-device with Chrome's built-in API (Chrome 138+) and speech uses your system's voices. Every new account also starts with a {days}-day trial that unlocks every site. No card, no API key."
       },
       "account": {
         "question": "Why do I need an account?",
@@ -121,7 +121,7 @@
       },
       "quota": {
         "question": "What happens when a Pro allowance runs out?",
-        "answer": "Dubbing never stops. The moment an allowance is reached, lines continue with the free local engine, and the allowance resets with the next monthly period."
+        "answer": "Dubbing never stops. The moment an allowance is reached, lines continue with the free local engine, and the allowance resets with the next monthly period. No-subtitle dubbing is the one exception: it has no local fallback, so when its minutes run out it pauses until the next period."
       },
       "glossary": {
         "question": "Can I control how specific terms are translated?",
@@ -148,8 +148,8 @@
         "answer": "Yes for the local engine: once Chrome has downloaded the translation model for your pair, dubbing works without a connection, with your system voices. The online fallback and Pro features need one."
       },
       "trial": {
-        "question": "How does the 3-day trial work?",
-        "answer": "Every new account starts with 3 full days where every site is unlocked — no card, nothing charged automatically. When it ends, you simply keep the free plan on the big platforms; Pro brings back every site whenever you want."
+        "question": "How does the {days}-day trial work?",
+        "answer": "Every new account starts with {days} full days where every site is unlocked — no card, nothing charged automatically. When it ends, you simply keep the free plan on the big platforms; Pro brings back every site whenever you want."
       }
     }
   },
@@ -313,7 +313,8 @@
       "items": {
         "trial": "3-day full trial for every new account — every site unlocked, no card required",
         "freeSites": "The free plan focuses on YouTube, Netflix, Prime Video, Disney+ and Twitch — unlimited, on-device",
-        "proSites": "Pro unlocks every site the engine supports — course platforms included"
+        "proSites": "Pro unlocks every site the engine supports — course platforms included",
+        "audio": "Pro — no-subtitle dubbing (beta): when a video exposes no captions at all, its audio is transcribed live (Premium Audio minutes) and dubbed by the same engine"
       }
     }
   },
@@ -343,11 +344,12 @@
     "usageTrans": "AI translation (beta)",
     "usageVoice": "Neural voice",
     "usageResets": "Quota resets on {date}",
-    "usageFallback": "When a quota runs out, the local engine takes over automatically — dubbing never stops."
+    "usageFallback": "When a quota runs out, the local engine takes over automatically — dubbing never stops.",
+    "usageAudio": "Premium Audio (min)"
   },
   "Pricing": {
     "title": "Simple, honest pricing",
-    "subtitle": "Try everything free for 3 days, on every site. After that, free keeps the big platforms unlimited — Pro unlocks every site plus the cloud features.",
+    "subtitle": "Try everything free for {days} days, on every site. After that, free keeps the big platforms unlimited — Pro unlocks every site plus the cloud features.",
     "monthly": "Monthly",
     "yearly": "Yearly",
     "priceFree": "$0",
@@ -361,7 +363,7 @@
       "tagline": "The big platforms, with a free account",
       "cta": "Install the extension",
       "features": {
-        "f0": "3-day full trial — every site unlocked, no card",
+        "f0": "{days}-day full trial — every site unlocked, no card",
         "f1": "Unlimited on-device dubbing on YouTube, Netflix, Prime Video, Disney+ and Twitch",
         "f2": "65+ dubbing languages, source auto-detected",
         "f3": "Translated subtitles right on the video",
@@ -380,15 +382,16 @@
         "f2": "Natural neural voices in 7 languages — local voice takes over elsewhere",
         "f3": "Early access to new languages and platforms",
         "f4": "Priority support",
-        "f5": "One account across all your browsers"
+        "f5": "One account across all your browsers",
+        "f6": "No-subtitle dubbing (beta): live transcription + dubbing when a video has no captions at all — 60 min/month"
       },
-      "quota": "Monthly allowance: 1,500,000 characters of AI translation + 100,000 characters of neural speech — then the local engine takes over automatically."
+      "quota": "Monthly allowance: 1,500,000 characters of AI translation + 100,000 characters of neural speech — then the local engine takes over automatically. No-subtitle dubbing: 60 min of Premium Audio."
     },
     "billedYearly": "billed at $69.99/year",
     "modal": {
       "trigger": "How pricing works",
       "title": "Pricing, explained",
-      "intro": "Two plans, one trial: every new account gets 3 days with every site unlocked. Then free keeps the big platforms, and Pro opens everything.",
+      "intro": "Two plans, one trial: every new account gets {days} days with every site unlocked. Then free keeps the big platforms, and Pro opens everything.",
       "freeTitle": "Free — the big platforms",
       "freeBody": "Unlimited on-device dubbing on YouTube, Netflix, Prime Video, Disney+ and Twitch: Chrome's built-in translation, your system voices, bilingual captions, glossary, history and stats. No card — a free Google sign-in is all it takes.",
       "proTitle": "Pro — every site + the cloud",

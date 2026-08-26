@@ -167,5 +167,11 @@
   "quotaVoice": "Neural voice",
   "quotaResets": "Resets on {date}",
   "statusProSite": "This site is Pro-only. Free plan: YouTube, Netflix, Prime Video, Disney+ and Twitch.",
-  "statusTrialNote": "Full trial: this site stays unlocked for $COUNT$ more day(s)"
+  "statusTrialNote": "Full trial: this site stays unlocked for $COUNT$ more day(s)",
+  "proAudioLabel": "Pro no-subtitle dubbing (beta)",
+  "titleProAudio": "Video with no subtitles at all? Its audio is transcribed live (60 min/month) then dubbed normally. No local fallback: minutes out, the feature waits for the next cycle.",
+  "quotaAudio": "Premium Audio",
+  "statusAudioLive": "No subtitles: transcribing the audio live — dubbing follows in a few seconds.",
+  "statusAudioQuota": "Premium Audio minutes exhausted for this month — no-subtitle dubbing resumes next cycle.",
+  "statusAudioUnavailable": "This player's audio can't be captured (site protection) — no-subtitle dubbing can't work here."
 }

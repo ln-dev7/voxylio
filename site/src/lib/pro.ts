@@ -26,6 +26,64 @@ export function voiceProviderConfigured(): boolean {
   return !!process.env.DEEPGRAM_API_KEY;
 }
 
+// Full-trial length in days (every site unlocked for new accounts).
+// One env var to change it — trialEndsAt is computed at READ time from
+// trialStartedAt, so changing TRIAL_DAYS applies to everyone at once,
+// running trials included.
+const DEFAULT_TRIAL_DAYS = 3;
+
+export function trialDays(): number {
+  const n = Number(process.env.TRIAL_DAYS);
+  return Number.isFinite(n) && n > 0 ? Math.round(n) : DEFAULT_TRIAL_DAYS;
+}
+
+// Premium Audio (no-subtitle dubbing): minutes of live transcription
+// per month. 60 min at $7.99 is the ceiling the 2026 provider prices
+// support — see the math check in docs/PRICING.md before raising it.
+const DEFAULT_MONTHLY_AUDIO_MIN = 60;
+
+export function proMonthlyAudioSeconds(): number {
+  const n = Number(process.env.PRO_MONTHLY_AUDIO_MIN);
+  return (
+    (Number.isFinite(n) && n > 0 ? Math.round(n) : DEFAULT_MONTHLY_AUDIO_MIN) *
+    60
+  );
+}
+
+export function audioProviderConfigured(): boolean {
+  return !!process.env.DEEPGRAM_API_KEY;
+}
+
+/**
+ * Short-lived Deepgram token for ONE browser WebSocket session. The
+ * API key never leaves this server; the token only needs to survive
+ * the connection handshake (the socket stays open past its expiry).
+ */
+export async function grantDeepgramToken(): Promise<{
+  token: string;
+  expiresIn: number;
+}> {
+  if (!process.env.DEEPGRAM_API_KEY)
+    throw Object.assign(new Error("provider unconfigured"), { code: 503 });
+  const res = await fetch("https://api.deepgram.com/v1/auth/grant", {
+    method: "POST",
+    headers: {
+      Authorization: "Token " + process.env.DEEPGRAM_API_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ttl_seconds: 60 }),
+    signal: AbortSignal.timeout(6000),
+  });
+  if (!res.ok)
+    throw Object.assign(new Error("Deepgram grant HTTP " + res.status), {
+      code: 502,
+    });
+  const data = (await res.json()) as { access_token?: string; expires_in?: number };
+  if (!data.access_token)
+    throw Object.assign(new Error("empty grant"), { code: 502 });
+  return { token: data.access_token, expiresIn: data.expires_in ?? 30 };
+}
+
 // Deepgram Aura-2 voices (featured per language). Google TTS Neural2
 // will widen coverage later behind the same endpoint — only this routing
 // will change, never the extension.

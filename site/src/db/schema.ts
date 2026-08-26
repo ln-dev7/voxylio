@@ -48,6 +48,8 @@ export const proUsage = pgTable(
     period: text("period").notNull(), // "YYYY-MM" (UTC)
     chars: integer("chars").notNull().default(0), // contextual translation
     ttsChars: integer("tts_chars").notNull().default(0), // neural voice
+    // Premium Audio: seconds of live transcription (no-subtitle dubbing)
+    audioSeconds: integer("audio_seconds").notNull().default(0),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
   (t) => [uniqueIndex("pro_usage_user_period_idx").on(t.userId, t.period)],

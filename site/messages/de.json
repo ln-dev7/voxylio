@@ -105,11 +105,11 @@
     "items": {
       "sites": {
         "question": "Auf welchen Seiten funktioniert es?",
-        "answer": "Jede Website, deren Player eine Untertitelspur bereitstellt — plus die eingeblendeten Untertitel von YouTube, Netflix, Prime Video, Disney+ und Twitch, die Voxylio direkt von der Seite liest. Sind sie ausgeschaltet, kann es sie oft für dich aktivieren. Im Gratis-Plan deckt das Dubbing YouTube, Netflix, Prime Video, Disney+ und Twitch ab — der 3-Tage-Test und Pro schalten alle anderen Seiten frei."
+        "answer": "Jede Website, deren Player eine Untertitelspur bereitstellt — plus die eingeblendeten Untertitel von YouTube, Netflix, Prime Video, Disney+ und Twitch, die Voxylio direkt von der Seite liest. Sind sie ausgeschaltet, kann es sie oft für dich aktivieren. Im Gratis-Plan deckt das Dubbing YouTube, Netflix, Prime Video, Disney+ und Twitch ab — der {days}-Tage-Test und Pro schalten alle anderen Seiten frei."
       },
       "cost": {
         "question": "Ist es wirklich kostenlos?",
-        "answer": "Ja — auf YouTube, Netflix, Prime Video, Disney+ und Twitch ist der Gratis-Plan unbegrenzt: Die Übersetzung läuft auf dem Gerät mit Chromes integrierter API (Chrome 138+), die Stimme kommt vom System. Jedes neue Konto startet zudem mit einem 3-Tage-Test, der alle Seiten freischaltet. Keine Karte, kein API-Schlüssel."
+        "answer": "Ja — auf YouTube, Netflix, Prime Video, Disney+ und Twitch ist der Gratis-Plan unbegrenzt: Die Übersetzung läuft auf dem Gerät mit Chromes integrierter API (Chrome 138+), die Stimme kommt vom System. Jedes neue Konto startet zudem mit einem {days}-Tage-Test, der alle Seiten freischaltet. Keine Karte, kein API-Schlüssel."
       },
       "account": {
         "question": "Warum ein Konto?",
@@ -121,7 +121,7 @@
       },
       "quota": {
         "question": "Was passiert, wenn ein Pro-Kontingent aufgebraucht ist?",
-        "answer": "Die Synchronisation stoppt nie. Sobald ein Kontingent erreicht ist, laufen die Zeilen mit der kostenlosen lokalen Engine weiter, und das Kontingent füllt sich zur nächsten Monatsperiode wieder auf."
+        "answer": "Die Synchronisation stoppt nie. Sobald ein Kontingent erreicht ist, laufen die Zeilen mit der kostenlosen lokalen Engine weiter, und das Kontingent füllt sich zur nächsten Monatsperiode wieder auf. Dubbing ohne Untertitel ist die einzige Ausnahme: ohne lokalen Fallback pausiert es bei aufgebrauchten Minuten bis zur nächsten Periode."
       },
       "glossary": {
         "question": "Kann ich steuern, wie bestimmte Begriffe übersetzt werden?",
@@ -148,8 +148,8 @@
         "answer": "Ja, mit der lokalen Engine: Sobald Chrome das Übersetzungsmodell für dein Sprachpaar geladen hat, funktioniert die Synchronisation ohne Verbindung, mit deinen Systemstimmen. Online-Fallback und Pro-Funktionen brauchen eine."
       },
       "trial": {
-        "question": "Wie funktioniert der 3-Tage-Test?",
-        "answer": "Jedes neue Konto startet mit 3 vollen Tagen, in denen jede Seite freigeschaltet ist — ohne Karte, nichts wird automatisch abgebucht. Danach behältst du einfach den Gratis-Plan auf den großen Plattformen; Pro bringt jederzeit alle Seiten zurück."
+        "question": "Wie funktioniert der {days}-Tage-Test?",
+        "answer": "Jedes neue Konto startet mit {days} vollen Tagen, in denen jede Seite freigeschaltet ist — ohne Karte, nichts wird automatisch abgebucht. Danach behältst du einfach den Gratis-Plan auf den großen Plattformen; Pro bringt jederzeit alle Seiten zurück."
       }
     }
   },
@@ -313,7 +313,8 @@
       "items": {
         "trial": "3 Tage Volltest für jedes neue Konto — jede Seite freigeschaltet, keine Karte nötig",
         "freeSites": "Der Gratis-Plan konzentriert sich auf YouTube, Netflix, Prime Video, Disney+ und Twitch — unbegrenzt, auf dem Gerät",
-        "proSites": "Pro schaltet jede von der Engine unterstützte Seite frei — Kursplattformen inklusive"
+        "proSites": "Pro schaltet jede von der Engine unterstützte Seite frei — Kursplattformen inklusive",
+        "audio": "Pro — Dubbing ohne Untertitel (Beta): Hat ein Video gar keine Untertitel, wird sein Ton live transkribiert (Premium-Audio-Minuten) und von derselben Engine synchronisiert"
       }
     }
   },
@@ -343,11 +344,12 @@
     "usageTrans": "KI-Übersetzung (Beta)",
     "usageVoice": "Neuronale Stimme",
     "usageResets": "Kontingent wird am {date} zurückgesetzt",
-    "usageFallback": "Ist ein Kontingent aufgebraucht, übernimmt automatisch die lokale Engine — das Dubbing stoppt nie."
+    "usageFallback": "Ist ein Kontingent aufgebraucht, übernimmt automatisch die lokale Engine — das Dubbing stoppt nie.",
+    "usageAudio": "Premium Audio (Min.)"
   },
   "Pricing": {
     "title": "Ein einfacher, ehrlicher Preis",
-    "subtitle": "Teste 3 Tage lang alles gratis, auf jeder Seite. Danach bleibt Gratis auf den großen Plattformen unbegrenzt — Pro schaltet jede Seite plus die Cloud-Funktionen frei.",
+    "subtitle": "Teste {days} Tage lang alles gratis, auf jeder Seite. Danach bleibt Gratis auf den großen Plattformen unbegrenzt — Pro schaltet jede Seite plus die Cloud-Funktionen frei.",
     "monthly": "Monatlich",
     "yearly": "Jährlich",
     "priceFree": "0 $",
@@ -362,7 +364,7 @@
       "tagline": "Die großen Plattformen, mit einem Gratis-Konto",
       "cta": "Erweiterung installieren",
       "features": {
-        "f0": "3 Tage Volltest — jede Seite freigeschaltet, ohne Karte",
+        "f0": "{days} Tage Volltest — jede Seite freigeschaltet, ohne Karte",
         "f1": "Unbegrenztes Dubbing auf dem Gerät: YouTube, Netflix, Prime Video, Disney+ und Twitch",
         "f2": "Über 65 Zielsprachen, Ausgangssprache automatisch erkannt",
         "f3": "Übersetzte Untertitel direkt auf dem Video",
@@ -381,14 +383,15 @@
         "f2": "Natürliche neuronale Stimmen in 7 Sprachen — sonst übernimmt die lokale Stimme",
         "f3": "Früher Zugang zu neuen Sprachen und Plattformen",
         "f4": "Bevorzugter Support",
-        "f5": "Ein Konto für alle deine Browser"
+        "f5": "Ein Konto für alle deine Browser",
+        "f6": "Dubbing ohne Untertitel (Beta): Live-Transkription + Dubbing, wenn ein Video gar keine Untertitel hat — 60 Min./Monat"
       },
-      "quota": "Monatskontingent: 1.500.000 Zeichen KI-Übersetzung + 100.000 Zeichen neuronale Stimme — danach übernimmt automatisch die lokale Engine."
+      "quota": "Monatliches Volumen: 1.500.000 Zeichen KI-Übersetzung + 100.000 Zeichen neuronale Stimme — danach übernimmt automatisch die lokale Engine. Dubbing ohne Untertitel: 60 Min. Premium Audio."
     },
     "modal": {
       "trigger": "So funktionieren die Preise",
       "title": "Die Preise, erklärt",
-      "intro": "Zwei Pläne, ein Test: Jedes neue Konto bekommt 3 Tage mit allen Seiten freigeschaltet. Danach behält Gratis die großen Plattformen, und Pro öffnet alles.",
+      "intro": "Zwei Pläne, ein Test: Jedes neue Konto bekommt {days} Tage mit allen Seiten freigeschaltet. Danach behält Gratis die großen Plattformen, und Pro öffnet alles.",
       "freeTitle": "Gratis — die großen Plattformen",
       "freeBody": "Unbegrenztes Dubbing auf dem Gerät für YouTube, Netflix, Prime Video, Disney+ und Twitch: Chromes integrierte Übersetzung, deine Systemstimmen, zweisprachige Untertitel, Glossar, Verlauf und Statistiken. Ohne Karte — eine kostenlose Google-Anmeldung genügt.",
       "proTitle": "Pro — jede Seite + die Cloud",

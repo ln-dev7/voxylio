@@ -3,10 +3,13 @@ import { and, eq, sql } from "drizzle-orm";
 import { auth } from "@/lib/auth";
 import { db, schema } from "@/db";
 import {
+  audioProviderConfigured,
   currentPeriod,
+  proMonthlyAudioSeconds,
   proMonthlyChars,
   proMonthlyTtsChars,
   proProviderConfigured,
+  trialDays,
   voiceProviderConfigured,
 } from "@/lib/pro";
 
@@ -90,7 +93,9 @@ export async function GET(req: Request) {
     }
   }
   const trialEndsAt = trialStartedAt
-    ? new Date(trialStartedAt.getTime() + 3 * 24 * 3600 * 1000).toISOString()
+    ? new Date(
+        trialStartedAt.getTime() + trialDays() * 24 * 3600 * 1000,
+      ).toISOString()
     : null;
 
   // The popup shows which account is linked. Users are managed by Neon
@@ -127,6 +132,7 @@ export async function GET(req: Request) {
   const isPro = out.plan === "pro";
   let cloudCharsRemaining = 0;
   let ttsCharsRemaining = 0;
+  let audioSecondsRemaining = 0;
   if (isPro) {
     try {
       const [usage] = await db
@@ -144,6 +150,10 @@ export async function GET(req: Request) {
         0,
         proMonthlyTtsChars() - (usage?.ttsChars ?? 0),
       );
+      audioSecondsRemaining = Math.max(
+        0,
+        proMonthlyAudioSeconds() - (usage?.audioSeconds ?? 0),
+      );
     } catch {
       /* table may not exist yet: report 0, never fail */
     }
@@ -151,7 +161,7 @@ export async function GET(req: Request) {
   const caps = {
     contextual_translation: isPro && proProviderConfigured(),
     cloud_voices: isPro && voiceProviderConfigured(),
-    audio_transcription: false,
+    audio_transcription: isPro && audioProviderConfigured(),
     ai_summary: false,
     cloud_sync: false,
   };
@@ -172,6 +182,8 @@ export async function GET(req: Request) {
       ttsCharsRemaining,
       cloudCharsTotal: isPro ? proMonthlyChars() : 0,
       ttsCharsTotal: isPro ? proMonthlyTtsChars() : 0,
+      audioSecondsRemaining,
+      audioSecondsTotal: isPro && audioProviderConfigured() ? proMonthlyAudioSeconds() : 0,
       quotaResetsAt,
       trialEndsAt,
       checkedAt: new Date().toISOString(),

@@ -21,7 +21,15 @@ import { cn } from "@/lib/utils";
 /** "How pricing works": a small dialog that spells the model out —
  *  local = free forever, Pro = the cloud on top, allowances, fallback,
  *  cancellation. Opened from a discreet button under the section title. */
-function PricingModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+function PricingModal({
+  open,
+  onClose,
+  days,
+}: {
+  open: boolean;
+  onClose: () => void;
+  days: number;
+}) {
   const t = useTranslations("Pricing.modal");
 
   useEffect(() => {
@@ -67,7 +75,7 @@ function PricingModal({ open, onClose }: { open: boolean; onClose: () => void })
               {t("title")}
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {t("intro")}
+              {t("intro", { days })}
             </p>
           </div>
           <Button
@@ -104,14 +112,17 @@ function PricingModal({ open, onClose }: { open: boolean; onClose: () => void })
 type Cadence = "monthly" | "yearly";
 
 const FREE_FEATURES = ["f0", "f1", "f2", "f3", "f4", "f5"] as const;
-const PRO_FEATURES = ["f0", "f1", "f2", "f3", "f4", "f5"] as const;
+const PRO_FEATURES = ["f0", "f1", "f2", "f3", "f4", "f5", "f6"] as const;
 
 /**
  * Two plans, one promise: everything local stays free and account-free.
  * The cadence toggle switches Pro between monthly and yearly billing;
  * the CTA carries the chosen plan to /account, which finishes checkout.
  */
-export function Pricing() {
+// `days` is the server-configured trial length (TRIAL_DAYS): every
+// string mentioning it interpolates {days} so changing the env never
+// leaves stale copy behind.
+export function Pricing({ days = 3 }: { days?: number }) {
   const t = useTranslations("Pricing");
   const [cadence, setCadence] = useState<Cadence>("yearly");
   const [modalOpen, setModalOpen] = useState(false);
@@ -123,7 +134,9 @@ export function Pricing() {
           <h2 className="text-balance font-display text-3xl font-semibold tracking-tight sm:text-4xl">
             {t("title")}
           </h2>
-          <p className="text-pretty text-sm text-muted-foreground">{t("subtitle")}</p>
+          <p className="text-pretty text-sm text-muted-foreground">
+            {t("subtitle", { days })}
+          </p>
 
           <button
             type="button"
@@ -197,6 +210,7 @@ export function Pricing() {
               </Link>
             </Button>
             <ul className="flex flex-col gap-2 border-t border-border pt-5">
+              {/* every feature line gets {days}; only f0 uses it */}
               {FREE_FEATURES.map((k) => (
                 <li key={k} className="flex items-start gap-2 text-sm text-foreground">
                   <Check
@@ -204,7 +218,7 @@ export function Pricing() {
                     strokeWidth={2.5}
                     aria-hidden="true"
                   />
-                  {t(`free.features.${k}`)}
+                  {t(`free.features.${k}`, { days })}
                 </li>
               ))}
             </ul>
@@ -259,7 +273,7 @@ export function Pricing() {
         <p className="mt-8 text-center text-xs text-muted-foreground/70">{t("note")}</p>
       </div>
 
-      <PricingModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <PricingModal open={modalOpen} onClose={() => setModalOpen(false)} days={days} />
     </section>
   );
 }
