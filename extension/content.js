@@ -1,18 +1,73 @@
 // GENERATED FILE — do not edit. Source: apps/chrome/src (pnpm build).
 (() => {
   // ../../packages/core/src/subtitles.js
+  var NAMED_ENTITIES = {
+    nbsp: " ",
+    amp: "&",
+    lt: "<",
+    gt: ">",
+    quot: '"',
+    apos: "'",
+    hellip: "\u2026",
+    ndash: "\u2013",
+    mdash: "\u2014",
+    lsquo: "\u2018",
+    rsquo: "\u2019",
+    ldquo: "\u201C",
+    rdquo: "\u201D",
+    laquo: "\xAB",
+    raquo: "\xBB",
+    shy: "",
+    lrm: "",
+    rlm: "",
+    zwj: "",
+    zwnj: ""
+  };
+  function fromCode(n) {
+    try {
+      return n > 0 && n <= 1114111 ? String.fromCodePoint(n) : " ";
+    } catch (e) {
+      return " ";
+    }
+  }
+  function decodeEntities(s) {
+    return String(s).replace(/&#x([0-9a-f]{1,6});/gi, (_, h) => fromCode(parseInt(h, 16))).replace(/&#(\d{1,7});/g, (_, d) => fromCode(parseInt(d, 10))).replace(/&([a-z]{2,8});/gi, (m, name) => {
+      const key = name.toLowerCase();
+      return key in NAMED_ENTITIES ? NAMED_ENTITIES[key] : m;
+    });
+  }
   function stripTags(s) {
-    return s.replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
+    return decodeEntities(
+      String(s).replace(/<[^>]*>/g, " ").replace(/\{\\[^}]*\}/g, " ")
+      // ASS/SSA overrides ({\an8}, {\i1})
+    ).replace(/\s+/g, " ").trim();
   }
-  var SOUND_CUE_RE = /music|musique|applau|laugh|rire|sigh|soupir|cough|toux|inaudible|silence|bruit|noise|chuckle|cheer/i;
+  var SOUND_CUE_RE = /music|musique|applau|laugh|rire|sigh|soupir|cough|toux|inaudible|silence|bruit|noise|chuckle|cheer|gasp|groan|grunt|scream|whisper|chuchot|sob|sanglot|crying|cries|pleur|singing|chante|humming|fredonn|beep|bip|ringing|sonnerie|\bsonne\b|téléphone|phone rings|footsteps|klaxon|explosion|gunshot|coup de feu|thunder|tonnerre|grésill|static|barking|aboie|growl|speaking|parle en|indistinct|chatter|murmur|narrator|narrateur/i;
   function isSoundCue(inner) {
-    return SOUND_CUE_RE.test(inner) || /^[^a-zà-ÿ]*$/.test(inner);
+    const s = String(inner).trim();
+    if (!new RegExp("\\p{L}", "u").test(s)) return true;
+    if (new RegExp("\\p{Lu}", "u").test(s) && !new RegExp("\\p{Ll}", "u").test(s)) return true;
+    return SOUND_CUE_RE.test(s);
   }
+  var MUSIC_GLYPH = /[♪♫♬♩]/;
   function cleanCaption(s) {
-    return s.replace(/\[[^\]]*\]/g, " ").replace(/\(([^)]*)\)/g, (m, inner) => isSoundCue(inner) ? " " : m).replace(/♪+/g, " ").replace(/^[-–—]\s*/, "").replace(/\s+/g, " ").trim();
+    const raw = String(s);
+    const trimmed = raw.trim();
+    if (MUSIC_GLYPH.test(trimmed.charAt(0)) || /^#\s.*\s#$/.test(trimmed)) return "";
+    return raw.replace(/\[[^\]]*\]/g, " ").replace(/\[[^\]]*$/, " ").replace(/^[^[]*\]/, " ").replace(/\(([^)]*)\)/g, (m, inner) => isSoundCue(inner) ? " " : m).replace(/\(([^)]*)$/, (m, inner) => isSoundCue(inner) ? " " : m).replace(/\s*>>+\s*/g, " ").replace(/(^|\s)([\p{Lu}][\p{Lu}\p{N} .'’-]{1,28}):\s+/gu, "$1").replace(/[♪♫♬♩]+/g, " ").replace(/^\s*[-–—]\s*/, "").replace(/([.!?…])\s+[-–—]\s+/g, "$1 ").replace(/\s+/g, " ").trim();
   }
+  var SENTENCE_END_RE = /[.!?…。！？．؟۔।]["'’»」』）)\]]*$/;
+  var ABBREV_RE = /(?:^|[\s(«"'’-])(dr|mr|mrs|ms|prof|st|sgt|capt|lt|col|gen|mme|mlle|m)\.$/i;
   function endsSentence(s) {
-    return /[.!?…](["')\]])?$/.test(s.trim());
+    const t = String(s).trim();
+    if (!SENTENCE_END_RE.test(t)) return false;
+    const bare = t.replace(/["'’»」』）)\]]+$/, "");
+    if (/\.$/.test(bare) && !/\.\.$/.test(bare) && ABBREV_RE.test(bare)) return false;
+    return true;
+  }
+  function continuesEllipsis(curText, nextText) {
+    if (!/(\.\.\.|…)$/.test(String(curText).trim())) return false;
+    return new RegExp("^(\\.\\.\\.|\u2026)?\\s*\\p{Ll}", "u").test(String(nextText).trim());
   }
   function parseTimestamp(ts) {
     const m = ts.trim().match(/^(?:(\d+):)?(\d{1,2}):(\d{1,2})[.,](\d{1,3})$/);
@@ -108,8 +163,8 @@
     let cur = null;
     for (const c of cues) {
       const txt = cleanCaption(c.text);
-      if (!txt) continue;
-      if (cur && (endsSentence(cur.text) || c.start - cur.end > MAX_GAP || cur.text.length > MAX_LEN)) {
+      if (!txt || !new RegExp("\\p{L}", "u").test(txt)) continue;
+      if (cur && (endsSentence(cur.text) && !continuesEllipsis(cur.text, txt) || c.start - cur.end > MAX_GAP || cur.text.length > MAX_LEN)) {
         groups.push(cur);
         cur = null;
       }
@@ -123,9 +178,14 @@
       }
     }
     if (cur) groups.push(cur);
+    const used = /* @__PURE__ */ new Map();
     for (let i = 0; i < groups.length; i++) {
       const g = groups[i];
-      g.id = "g" + Math.round(g.start * 100);
+      let id = "g" + Math.round(g.start * 100);
+      const n = used.get(id) || 0;
+      used.set(id, n + 1);
+      if (n > 0) id += "_" + n;
+      g.id = id;
       g.version = textHash(g.text);
       g.final = i < groups.length - 1;
       g.key = g.id + ":" + g.version;
@@ -157,19 +217,46 @@
     "context window",
     "agent"
   ];
+  var escapeRe = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   var TERM_RE = new RegExp(
-    "\\b(" + PROTECTED_TERMS.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join(
-      "|"
-    ) + ")\\b",
+    "\\b(" + PROTECTED_TERMS.map(escapeRe).join("|") + ")\\b",
     "gi"
   );
-  function protectTerms(text) {
+  function compileGlossary(entries) {
+    const list = [];
+    for (const e of Array.isArray(entries) ? entries : []) {
+      const from = e && typeof e.from === "string" ? e.from.trim() : "";
+      if (!from) continue;
+      const to = e && typeof e.to === "string" ? e.to.trim() : "";
+      list.push({ from, to });
+    }
+    if (!list.length) return null;
+    list.sort((a, b) => b.from.length - a.from.length);
+    const re = new RegExp(
+      "(?<![\\p{L}\\p{N}])(" + list.map((t) => escapeRe(t.from)).join("|") + ")(?![\\p{L}\\p{N}])",
+      "giu"
+    );
+    const map = new Map(list.map((t) => [t.from.toLowerCase(), t.to]));
+    return { re, map };
+  }
+  function protectTerms(text, opts = {}) {
+    const { builtin = true, glossary = null } = opts;
     const found = [];
-    const protectedText = text.replace(TERM_RE, (m) => {
-      found.push(m);
-      return `\u27E6${found.length - 1}\u27E7`;
-    });
-    return { protectedText, found };
+    let out = String(text);
+    if (glossary) {
+      out = out.replace(glossary.re, (m) => {
+        const to = glossary.map.get(m.toLowerCase());
+        found.push(to || m);
+        return `\u27E6${found.length - 1}\u27E7`;
+      });
+    }
+    if (builtin) {
+      out = out.replace(TERM_RE, (m) => {
+        found.push(m);
+        return `\u27E6${found.length - 1}\u27E7`;
+      });
+    }
+    return { protectedText: out, found };
   }
   function restoreTerms(text, found) {
     const seen = (text.match(/⟦\s*\d+\s*⟧/g) || []).length;
@@ -201,22 +288,26 @@
 
   // ../../packages/core/src/pacing.js
   var WORDS_PER_SECOND = 2.6;
+  var SPACELESS_RE = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uac00-\ud7af\u0e00-\u0e7f]/;
   function computeUtteranceRate({
     text,
     cueDur,
     baseRate,
     playbackRate = 1
   }) {
-    const words = text.split(/\s+/).length;
+    const s = String(text || "").trim();
+    const base = Number.isFinite(baseRate) && baseRate > 0 ? baseRate : 1;
+    const words = SPACELESS_RE.test(s) ? Math.max(1, Math.round(s.replace(/\s+/g, "").length / 2.5)) : s.split(/\s+/).filter(Boolean).length;
     const estimated = words / WORDS_PER_SECOND;
-    let rate = baseRate;
+    let rate = base;
     if (cueDur > 0.5) {
-      const ratio = estimated / baseRate / cueDur;
+      const ratio = estimated / base / cueDur;
       if (ratio > 1.15) {
-        rate = Math.min(baseRate * ratio, baseRate * 1.25, 1.45);
+        rate = Math.min(base * ratio, base * 1.25, 1.45);
       }
     }
-    return Math.min(rate * (playbackRate || 1), 3);
+    const pr = Number.isFinite(playbackRate) && playbackRate > 0 ? playbackRate : 1;
+    return Math.min(rate * pr, 3);
   }
 
   // ../../packages/core/src/languages.js
@@ -429,7 +520,22 @@
 
   // ../../packages/core/src/settings.js
   var SETTINGS_VERSION = 3;
+  var TARGET_LANGS = LANGUAGE_CODES;
   var SOURCE_LANGS = ["auto", ...LANGUAGE_CODES];
+  var PROVIDERS = ["auto", "deepl", "googlev2"];
+  var UI_LANGS = [
+    "auto",
+    "en",
+    "zh-CN",
+    "zh-TW",
+    "ja",
+    "ko",
+    "fr",
+    "de",
+    "es",
+    "it",
+    "pt-BR"
+  ];
   var DEFAULTS = Object.freeze({
     v: SETTINGS_VERSION,
     enabled: false,
@@ -454,6 +560,10 @@
     proVoice: false,
     autoPause: false,
     keepTerms: true,
+    // User glossary: [{ from, to }] — `to` empty keeps the source form
+    // verbatim, `to` set forces that exact target form. Applied through
+    // the placeholder mechanism, so it works with every provider.
+    glossary: [],
     // Preferred paid provider when a key is configured ("auto" = none:
     // builtin then best-effort fallback).
     provider: "auto",
@@ -462,6 +572,107 @@
     // Hostnames where Voxylio must stay completely inactive.
     disabledSites: []
   });
+  var clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
+  function normalizeHost(input) {
+    let s = String(input || "").trim().toLowerCase();
+    if (!s) return "";
+    try {
+      if (s.includes("/") || s.includes(":")) s = new URL(s.includes("://") ? s : "https://" + s).hostname;
+    } catch {
+    }
+    s = s.replace(/^www\./, "");
+    return /^[a-z0-9.-]+$/.test(s) ? s : "";
+  }
+  function validateSettings(patch) {
+    const out = {};
+    if (!patch || typeof patch !== "object") return out;
+    for (const [k, v] of Object.entries(patch)) {
+      switch (k) {
+        case "v":
+          out.v = Number(v) || SETTINGS_VERSION;
+          break;
+        case "enabled":
+        case "subtitles":
+        case "overlay":
+        case "cloudFallback":
+        case "proTranslation":
+        case "proVoice":
+        case "autoPause":
+        case "keepTerms":
+          out[k] = Boolean(v);
+          break;
+        case "rate":
+          out.rate = clamp(Number(v) || DEFAULTS.rate, 0.8, 1.6);
+          break;
+        case "duck":
+          out.duck = clamp(Math.round(Number(v) || 0), 0, 60);
+          break;
+        case "voiceVolume": {
+          const n = Number(v);
+          out.voiceVolume = clamp(
+            Number.isFinite(n) ? Math.round(n) : DEFAULTS.voiceVolume,
+            0,
+            100
+          );
+          break;
+        }
+        case "captionSize":
+          out.captionSize = clamp(Math.round(Number(v) || DEFAULTS.captionSize), 14, 34);
+          break;
+        case "voiceName":
+          out.voiceName = typeof v === "string" ? v.slice(0, 200) : "";
+          break;
+        case "voiceByLang": {
+          const map = {};
+          if (v && typeof v === "object" && !Array.isArray(v)) {
+            for (const [lang, name] of Object.entries(v)) {
+              if (TARGET_LANGS.includes(lang) && typeof name === "string" && name)
+                map[lang] = name.slice(0, 200);
+            }
+          }
+          out.voiceByLang = map;
+          break;
+        }
+        case "sourceLang":
+          out.sourceLang = SOURCE_LANGS.includes(v) ? v : DEFAULTS.sourceLang;
+          break;
+        case "targetLang":
+          out.targetLang = TARGET_LANGS.includes(v) ? v : DEFAULTS.targetLang;
+          break;
+        case "provider":
+          out.provider = PROVIDERS.includes(v) ? v : "auto";
+          break;
+        case "uiLang":
+          out.uiLang = UI_LANGS.includes(v) ? v : "auto";
+          break;
+        case "glossary": {
+          const list = Array.isArray(v) ? v : [];
+          const entries = [];
+          const seen = /* @__PURE__ */ new Set();
+          for (const e of list) {
+            if (entries.length >= 50) break;
+            if (!e || typeof e !== "object") continue;
+            const from = typeof e.from === "string" ? e.from.trim().slice(0, 40) : "";
+            const to = typeof e.to === "string" ? e.to.trim().slice(0, 60) : "";
+            const dedup = from.toLowerCase();
+            if (!from || seen.has(dedup)) continue;
+            seen.add(dedup);
+            entries.push({ from, to });
+          }
+          out.glossary = entries;
+          break;
+        }
+        case "disabledSites": {
+          const list = Array.isArray(v) ? v : [];
+          out.disabledSites = [...new Set(list.map(normalizeHost).filter(Boolean))].slice(0, 200);
+          break;
+        }
+        default:
+          break;
+      }
+    }
+    return out;
+  }
 
   // ../../packages/core/src/translation.js
   var READY_TIMEOUT_MS = 2500;
@@ -483,24 +694,38 @@
       attemptTimeoutMs = ATTEMPT_TIMEOUT_MS,
       cooldownMs = COOLDOWN_MS,
       failuresBeforeCooldown = FAILURES_BEFORE_COOLDOWN,
-      now = () => Date.now()
+      now = () => Date.now(),
+      pairState = /* @__PURE__ */ new Map()
+      // "providerId:source->target" -> { failures, readyMisses, coolUntil }
     } = opts;
-    const pairState = /* @__PURE__ */ new Map();
     let lastKind = "none";
     let lastProviderId = "";
     let lastError = "";
     const stateKey = (id, source, target) => `${id}:${source}->${target}`;
+    function getState(key) {
+      return pairState.get(key) ?? { failures: 0, readyMisses: 0, coolUntil: 0 };
+    }
     function inCooldown(id, source, target) {
       const s = pairState.get(stateKey(id, source, target));
       return !!s && s.coolUntil > now();
     }
     function recordFailure(id, source, target) {
       const key = stateKey(id, source, target);
-      const s = pairState.get(key) ?? { failures: 0, coolUntil: 0 };
+      const s = getState(key);
       s.failures += 1;
       if (s.failures >= failuresBeforeCooldown) {
         s.coolUntil = now() + cooldownMs;
         s.failures = 0;
+      }
+      pairState.set(key, s);
+    }
+    function recordReadyMiss(id, source, target) {
+      const key = stateKey(id, source, target);
+      const s = getState(key);
+      s.readyMisses += 1;
+      if (s.readyMisses >= 2) {
+        s.coolUntil = now() + cooldownMs;
+        s.readyMisses = 0;
       }
       pairState.set(key, s);
     }
@@ -516,10 +741,15 @@
         }
         let translator = null;
         try {
-          translator = await withTimeout(p.ready(source, target), readyTimeoutMs, null);
+          translator = await withTimeout(p.ready(source, target), readyTimeoutMs, TIMEOUT);
         } catch (e) {
           recordFailure(p.id, source, target);
           errors.push(`${p.id}: ${e && e.message}`);
+          continue;
+        }
+        if (translator === TIMEOUT) {
+          recordReadyMiss(p.id, source, target);
+          errors.push(`${p.id}: not ready`);
           continue;
         }
         if (!translator) {
@@ -527,14 +757,23 @@
           continue;
         }
         try {
-          const out = await withTimeout(translator.translate(text, opts2), attemptTimeoutMs, TIMEOUT);
+          let out = await withTimeout(translator.translate(text, opts2), attemptTimeoutMs, TIMEOUT);
           if (out === TIMEOUT) throw new Error("attempt timed out");
-          if (typeof out !== "string" || !out) throw new Error("empty translation");
+          let detected;
+          if (out && typeof out === "object") {
+            detected = typeof out.detected === "string" ? out.detected : void 0;
+            out = out.text;
+          }
+          if (typeof out !== "string") throw new Error("bad translation");
+          if (!out.trim()) {
+            errors.push(`${p.id}: empty`);
+            continue;
+          }
           recordSuccess(p.id, source, target);
           lastKind = p.kind;
           lastProviderId = p.id;
           lastError = "";
-          return { text: out, providerId: p.id, kind: p.kind };
+          return { text: out, providerId: p.id, kind: p.kind, detected };
         } catch (e) {
           recordFailure(p.id, source, target);
           errors.push(`${p.id}: ${e && e.message || "failed"}`);
@@ -645,6 +884,7 @@
   }
 
   // ../../packages/webext/src/providers/builtin.js
+  var RETRY_MS = 12e4;
   function createBuiltinProvider({ onBroken } = {}) {
     const instances = /* @__PURE__ */ new Map();
     return {
@@ -653,31 +893,35 @@
       ready(source, target) {
         if (!source || source === "auto") return Promise.resolve(null);
         const key = source + "->" + target;
-        if (!instances.has(key)) {
-          instances.set(
-            key,
-            (async () => {
-              try {
-                if (typeof Translator === "undefined")
-                  throw new Error("no Translator API");
-                const avail = await Translator.availability({
-                  sourceLanguage: source,
-                  targetLanguage: target
-                });
-                if (avail === "unavailable") throw new Error("pair unavailable");
-                const t = await Translator.create({
-                  sourceLanguage: source,
-                  targetLanguage: target
-                });
-                return { translate: (text) => t.translate(text) };
-              } catch (e) {
-                if (onBroken) onBroken(e);
-                return null;
-              }
-            })()
-          );
-        }
-        return instances.get(key);
+        const cached = instances.get(key);
+        if (cached && (cached.value !== null || Date.now() - cached.at < RETRY_MS))
+          return cached.p;
+        const entry = { value: void 0, at: Date.now(), p: null };
+        entry.p = (async () => {
+          try {
+            if (typeof Translator === "undefined")
+              throw new Error("no Translator API");
+            const avail = await Translator.availability({
+              sourceLanguage: source,
+              targetLanguage: target
+            });
+            if (avail === "unavailable") throw new Error("pair unavailable");
+            const t = await Translator.create({
+              sourceLanguage: source,
+              targetLanguage: target
+            });
+            return { translate: (text) => t.translate(text) };
+          } catch (e) {
+            if (onBroken) onBroken(e, key);
+            return null;
+          }
+        })().then((v) => {
+          entry.value = v;
+          entry.at = Date.now();
+          return v;
+        });
+        instances.set(key, entry);
+        return entry.p;
       }
     };
   }
@@ -693,7 +937,8 @@
           source: source || "auto",
           target
         });
-        if (resp && resp.ok) return resp.text;
+        if (resp && resp.ok)
+          return { text: resp.text, detected: resp.detected || "" };
         throw new Error(resp && resp.error || "gtx failed");
       }
     });
@@ -742,15 +987,24 @@
   ]);
   function createDeeplProvider(hasKey) {
     const translatorFor = (source, target) => ({
-      translate: async (text) => {
+      translate: async (text, opts) => {
+        const ctx = opts && opts.context || {};
         const resp = await runtime.sendMessage({
           type: "translate",
           provider: "deepl",
           text,
           source: source || "auto",
-          target
+          target,
+          // DeepL's `context` parameter: disambiguation only, free of
+          // charge (characters in context are not billed) — BYO-key users
+          // get the same context-awareness as the Pro path.
+          context: [
+            ...Array.isArray(ctx.before) ? ctx.before.slice(-3) : [],
+            ...Array.isArray(ctx.after) ? ctx.after.slice(0, 2) : []
+          ].join(" ").slice(0, 1500)
         });
-        if (resp && resp.ok) return resp.text;
+        if (resp && resp.ok)
+          return { text: resp.text, detected: resp.detected || "" };
         throw new Error(resp && resp.error || "deepl failed");
       }
     });
@@ -774,7 +1028,8 @@
           source: source || "auto",
           target
         });
-        if (resp && resp.ok) return resp.text;
+        if (resp && resp.ok)
+          return { text: resp.text, detected: resp.detected || "" };
         throw new Error(resp && resp.error || "googlev2 failed");
       }
     });
@@ -788,6 +1043,7 @@
   // ../../packages/webext/src/providers/pro.js
   var AURA2_LANGS = /* @__PURE__ */ new Set(["en", "es", "de", "fr", "nl", "it", "ja"]);
   function createProProvider() {
+    let blockedUntil = 0;
     const translatorFor = (source, target) => ({
       translate: async (text, opts) => {
         const ctx = opts && opts.context || {};
@@ -797,16 +1053,20 @@
           before: Array.isArray(ctx.before) ? ctx.before.slice(-4) : [],
           after: Array.isArray(ctx.after) ? ctx.after.slice(0, 2) : [],
           source: source || "auto",
-          target
+          target,
+          secs: opts && opts.secs > 0 ? Math.min(60, opts.secs) : 0
         });
         if (resp && resp.ok) return resp.text;
+        blockedUntil = Date.now() + 2e4;
         throw new Error(resp && resp.error || "pro translate failed");
       }
     });
     return {
       id: "pro",
       kind: "pro",
-      ready: (source, target) => Promise.resolve(translatorFor(source, target))
+      ready: (source, target) => Promise.resolve(
+        Date.now() < blockedUntil ? null : translatorFor(source, target)
+      )
     };
   }
 
@@ -901,6 +1161,10 @@
     optDeeplKey: "DeepL API key",
     optGoogleKey: "Google Cloud API key",
     optKeyStored: "Keys stay on this device (storage.local) \u2014 never synced.",
+    optGlossary: "Glossary",
+    optGlossaryHint: "One term per line. \u201Cterm = translation\u201D forces that translation; a term alone is kept as-is, never translated. Applied with every engine, Pro included.",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = machine learning",
+    optGlossaryCount: "$COUNT$ active term(s)",
     optCheckKey: "Check key",
     optKeyOk: "Valid key \u2014 $USED$ / $LIMIT$ characters used this month.",
     optKeyBad: "Invalid key or quota reached.",
@@ -1052,6 +1316,10 @@
     optDeeplKey: "Cl\xE9 API DeepL",
     optGoogleKey: "Cl\xE9 API Google Cloud",
     optKeyStored: "Les cl\xE9s restent sur cet appareil (storage.local) \u2014 jamais synchronis\xE9es.",
+    optGlossary: "Glossaire",
+    optGlossaryHint: "Un terme par ligne. \xAB terme = traduction \xBB impose cette traduction ; un terme seul est conserv\xE9 tel quel, jamais traduit. Appliqu\xE9 avec tous les moteurs, Pro compris.",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = apprentissage machine",
+    optGlossaryCount: "$COUNT$ terme(s) actif(s)",
     optCheckKey: "V\xE9rifier la cl\xE9",
     optKeyOk: "Cl\xE9 valide \u2014 $USED$ / $LIMIT$ caract\xE8res utilis\xE9s ce mois-ci.",
     optKeyBad: "Cl\xE9 invalide ou quota atteint.",
@@ -1204,6 +1472,10 @@
     optDeeplKey: "Clave API de DeepL",
     optGoogleKey: "Clave API de Google Cloud",
     optKeyStored: "Las claves se quedan en este dispositivo \u2014 nunca se sincronizan.",
+    optGlossary: "Glosario",
+    optGlossaryHint: "Un t\xE9rmino por l\xEDnea. \xABt\xE9rmino = traducci\xF3n\xBB impone esa traducci\xF3n; un t\xE9rmino solo se conserva tal cual, nunca se traduce. Se aplica con todos los motores, Pro incluido.",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = aprendizaje autom\xE1tico",
+    optGlossaryCount: "$COUNT$ t\xE9rmino(s) activo(s)",
     optCheckKey: "Comprobar clave",
     optKeyOk: "Clave v\xE1lida \u2014 $USED$ / $LIMIT$ caracteres usados este mes.",
     optKeyBad: "Clave inv\xE1lida o cuota alcanzada.",
@@ -1355,6 +1627,10 @@
     optDeeplKey: "DeepL-API-Schl\xFCssel",
     optGoogleKey: "Google-Cloud-API-Schl\xFCssel",
     optKeyStored: "Schl\xFCssel bleiben auf diesem Ger\xE4t \u2014 nie synchronisiert.",
+    optGlossary: "Glossar",
+    optGlossaryHint: "Ein Begriff pro Zeile. \u201EBegriff = \xDCbersetzung\u201C erzwingt diese \xDCbersetzung; ein Begriff allein bleibt unver\xE4ndert und wird nie \xFCbersetzt. Gilt f\xFCr alle Engines, auch Pro.",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = maschinelles Lernen",
+    optGlossaryCount: "$COUNT$ aktive(r) Begriff(e)",
     optCheckKey: "Schl\xFCssel pr\xFCfen",
     optKeyOk: "G\xFCltiger Schl\xFCssel \u2014 $USED$ / $LIMIT$ Zeichen diesen Monat verbraucht.",
     optKeyBad: "Ung\xFCltiger Schl\xFCssel oder Kontingent erreicht.",
@@ -1506,6 +1782,10 @@
     optDeeplKey: "Chiave API DeepL",
     optGoogleKey: "Chiave API Google Cloud",
     optKeyStored: "Le chiavi restano su questo dispositivo \u2014 mai sincronizzate.",
+    optGlossary: "Glossario",
+    optGlossaryHint: "Un termine per riga. \xABtermine = traduzione\xBB impone quella traduzione; un termine da solo resta invariato, mai tradotto. Vale con tutti i motori, Pro incluso.",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = apprendimento automatico",
+    optGlossaryCount: "$COUNT$ termine/i attivo/i",
     optCheckKey: "Verifica chiave",
     optKeyOk: "Chiave valida \u2014 $USED$ / $LIMIT$ caratteri usati questo mese.",
     optKeyBad: "Chiave non valida o quota raggiunta.",
@@ -1657,6 +1937,10 @@
     optDeeplKey: "DeepL API\u30AD\u30FC",
     optGoogleKey: "Google Cloud API\u30AD\u30FC",
     optKeyStored: "\u30AD\u30FC\u306F\u3053\u306E\u7AEF\u672B\u306B\u4FDD\u5B58\u3055\u308C\u3001\u540C\u671F\u3055\u308C\u308B\u3053\u3068\u306F\u3042\u308A\u307E\u305B\u3093\u3002",
+    optGlossary: "\u7528\u8A9E\u96C6",
+    optGlossaryHint: "1\u884C\u306B1\u8A9E\u3002\u300C\u7528\u8A9E = \u8A33\u8A9E\u300D\u3067\u305D\u306E\u8A33\u8A9E\u3092\u5F37\u5236\u3001\u7528\u8A9E\u306E\u307F\u66F8\u304F\u3068\u305D\u306E\u307E\u307E\u7DAD\u6301\u3055\u308C\u3001\u7FFB\u8A33\u3055\u308C\u307E\u305B\u3093\u3002Pro \u3092\u542B\u3080\u3059\u3079\u3066\u306E\u30A8\u30F3\u30B8\u30F3\u306B\u9069\u7528\u3055\u308C\u307E\u3059\u3002",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = \u6A5F\u68B0\u5B66\u7FD2",
+    optGlossaryCount: "\u6709\u52B9\u306A\u7528\u8A9E: $COUNT$",
     optCheckKey: "\u30AD\u30FC\u3092\u78BA\u8A8D",
     optKeyOk: "\u6709\u52B9\u306A\u30AD\u30FC \u2014 \u4ECA\u6708 $USED$ / $LIMIT$ \u6587\u5B57\u4F7F\u7528\u3002",
     optKeyBad: "\u30AD\u30FC\u304C\u7121\u52B9\u304B\u3001\u4E0A\u9650\u306B\u9054\u3057\u3066\u3044\u307E\u3059\u3002",
@@ -1808,6 +2092,10 @@
     optDeeplKey: "DeepL API \uD0A4",
     optGoogleKey: "Google Cloud API \uD0A4",
     optKeyStored: "\uD0A4\uB294 \uC774 \uAE30\uAE30\uC5D0\uB9CC \uC800\uC7A5\uB418\uBA70 \uB3D9\uAE30\uD654\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.",
+    optGlossary: "\uC6A9\uC5B4\uC9D1",
+    optGlossaryHint: "\uD55C \uC904\uC5D0 \uD55C \uC6A9\uC5B4. \u201C\uC6A9\uC5B4 = \uBC88\uC5ED\u201D\uC740 \uD574\uB2F9 \uBC88\uC5ED\uC744 \uAC15\uC81C\uD558\uACE0, \uC6A9\uC5B4\uB9CC \uC4F0\uBA74 \uBC88\uC5ED\uB418\uC9C0 \uC54A\uACE0 \uADF8\uB300\uB85C \uC720\uC9C0\uB429\uB2C8\uB2E4. Pro\uB97C \uD3EC\uD568\uD55C \uBAA8\uB4E0 \uC5D4\uC9C4\uC5D0 \uC801\uC6A9\uB429\uB2C8\uB2E4.",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = \uBA38\uC2E0\uB7EC\uB2DD",
+    optGlossaryCount: "\uD65C\uC131 \uC6A9\uC5B4: $COUNT$",
     optCheckKey: "\uD0A4 \uD655\uC778",
     optKeyOk: "\uC720\uD6A8\uD55C \uD0A4 \u2014 \uC774\uBC88 \uB2EC $USED$ / $LIMIT$\uC790 \uC0AC\uC6A9.",
     optKeyBad: "\uD0A4\uAC00 \uC798\uBABB\uB418\uC5C8\uAC70\uB098 \uD55C\uB3C4\uC5D0 \uB3C4\uB2EC\uD588\uC2B5\uB2C8\uB2E4.",
@@ -1959,6 +2247,10 @@
     optDeeplKey: "DeepL API \u5BC6\u94A5",
     optGoogleKey: "Google Cloud API \u5BC6\u94A5",
     optKeyStored: "\u5BC6\u94A5\u53EA\u4FDD\u5B58\u5728\u6B64\u8BBE\u5907\u4E0A \u2014 \u7EDD\u4E0D\u540C\u6B65\u3002",
+    optGlossary: "\u672F\u8BED\u8868",
+    optGlossaryHint: "\u6BCF\u884C\u4E00\u4E2A\u8BCD\u6761\u3002\u201C\u8BCD\u6761 = \u8BD1\u6587\u201D\u5F3A\u5236\u4F7F\u7528\u8BE5\u8BD1\u6587\uFF1B\u4EC5\u5199\u8BCD\u6761\u5219\u4FDD\u6301\u539F\u6837\u3001\u4E0D\u88AB\u7FFB\u8BD1\u3002\u9002\u7528\u4E8E\u6240\u6709\u5F15\u64CE\uFF0C\u5305\u62EC Pro\u3002",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = \u673A\u5668\u5B66\u4E60",
+    optGlossaryCount: "\u751F\u6548\u8BCD\u6761\uFF1A$COUNT$",
     optCheckKey: "\u68C0\u67E5\u5BC6\u94A5",
     optKeyOk: "\u5BC6\u94A5\u6709\u6548 \u2014 \u672C\u6708\u5DF2\u7528 $USED$ / $LIMIT$ \u5B57\u7B26\u3002",
     optKeyBad: "\u5BC6\u94A5\u65E0\u6548\u6216\u5DF2\u8FBE\u9650\u989D\u3002",
@@ -2110,6 +2402,10 @@
     optDeeplKey: "DeepL API \u91D1\u9470",
     optGoogleKey: "Google Cloud API \u91D1\u9470",
     optKeyStored: "\u91D1\u9470\u53EA\u4FDD\u5B58\u5728\u6B64\u88DD\u7F6E\u4E0A \u2014 \u7D55\u4E0D\u540C\u6B65\u3002",
+    optGlossary: "\u8853\u8A9E\u8868",
+    optGlossaryHint: "\u6BCF\u884C\u4E00\u500B\u8A5E\u689D\u3002\u300C\u8A5E\u689D = \u8B6F\u6587\u300D\u5F37\u5236\u4F7F\u7528\u8A72\u8B6F\u6587\uFF1B\u50C5\u5BEB\u8A5E\u689D\u5247\u4FDD\u6301\u539F\u6A23\u3001\u4E0D\u88AB\u7FFB\u8B6F\u3002\u9069\u7528\u65BC\u6240\u6709\u5F15\u64CE\uFF0C\u5305\u62EC Pro\u3002",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = \u6A5F\u5668\u5B78\u7FD2",
+    optGlossaryCount: "\u751F\u6548\u8A5E\u689D\uFF1A$COUNT$",
     optCheckKey: "\u6AA2\u67E5\u91D1\u9470",
     optKeyOk: "\u91D1\u9470\u6709\u6548 \u2014 \u672C\u6708\u5DF2\u7528 $USED$ / $LIMIT$ \u5B57\u5143\u3002",
     optKeyBad: "\u91D1\u9470\u7121\u6548\u6216\u5DF2\u9054\u984D\u5EA6\u3002",
@@ -2261,6 +2557,10 @@
     optDeeplKey: "Chave de API do DeepL",
     optGoogleKey: "Chave de API do Google Cloud",
     optKeyStored: "As chaves ficam neste dispositivo \u2014 nunca sincronizadas.",
+    optGlossary: "Gloss\xE1rio",
+    optGlossaryHint: "Um termo por linha. \u201Ctermo = tradu\xE7\xE3o\u201D imp\xF5e essa tradu\xE7\xE3o; um termo sozinho \xE9 mantido como est\xE1, nunca traduzido. Vale com todos os motores, incluindo o Pro.",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = aprendizado de m\xE1quina",
+    optGlossaryCount: "$COUNT$ termo(s) ativo(s)",
     optCheckKey: "Verificar chave",
     optKeyOk: "Chave v\xE1lida \u2014 $USED$ / $LIMIT$ caracteres usados este m\xEAs.",
     optKeyBad: "Chave inv\xE1lida ou cota atingida.",
@@ -2401,6 +2701,48 @@
     window.__voxylioInjected = true;
     const DEFAULTS2 = { ...DEFAULTS };
     const settings = { ...DEFAULTS2 };
+    let glossaryMatcher = null;
+    function rebuildGlossary() {
+      glossaryMatcher = compileGlossary(settings.glossary);
+    }
+    const PERSIST_MAX = 600;
+    const persistCache = /* @__PURE__ */ new Map();
+    let persistTimer = null;
+    function pKey(source, target, text) {
+      const mode = settings.proTranslation ? "p" : "s";
+      return mode + "|" + source + ">" + target + "|" + textHash(text) + ":" + text.length;
+    }
+    function loadPersistCache() {
+      try {
+        storage.local.get({ vxTransCache: null }, (r) => {
+          const rows = r && Array.isArray(r.vxTransCache) ? r.vxTransCache : [];
+          for (const row of rows) {
+            if (row && typeof row[0] === "string" && typeof row[1] === "string")
+              persistCache.set(row[0], { v: row[1], at: Number(row[2]) || 0 });
+          }
+        });
+      } catch (e) {
+      }
+    }
+    function persistPut(key, text) {
+      persistCache.set(key, { v: text, at: Date.now() });
+      if (persistCache.size > PERSIST_MAX) {
+        const rows = [...persistCache.entries()].sort((a, b) => b[1].at - a[1].at);
+        persistCache.clear();
+        for (const [k, v] of rows.slice(0, Math.floor(PERSIST_MAX * 0.75)))
+          persistCache.set(k, v);
+      }
+      if (persistTimer) return;
+      persistTimer = setTimeout(() => {
+        persistTimer = null;
+        try {
+          safeLocalSet({
+            vxTransCache: [...persistCache.entries()].map(([k, e]) => [k, e.v, e.at])
+          });
+        } catch (e) {
+        }
+      }, 4e3);
+    }
     function siteDisabled() {
       const host = (location.hostname || "").replace(/^www\./, "").toLowerCase();
       return Array.isArray(settings.disabledSites) && settings.disabledSites.includes(host);
@@ -2608,7 +2950,9 @@
       refreshAll();
     }
     storage.sync.get(DEFAULTS2, (s) => {
-      Object.assign(settings, s);
+      Object.assign(settings, DEFAULTS2, validateSettings(s));
+      rebuildGlossary();
+      loadPersistCache();
       refreshAll();
     });
     storage.onChanged.addListener((changes, area) => {
@@ -2621,13 +2965,17 @@
         return;
       }
       if (area !== "sync") return;
+      const patch = {};
       for (const [k, v] of Object.entries(changes)) {
-        if (k in settings) settings[k] = v.newValue;
+        if (!(k in DEFAULTS2)) continue;
+        patch[k] = v.newValue === void 0 ? DEFAULTS2[k] : v.newValue;
       }
+      Object.assign(settings, validateSettings(patch));
       if (changes.targetLang || changes.sourceLang) {
         for (const c of controllers.values()) c.flushSpeech();
       }
-      if (changes.provider || changes.cloudFallback || changes.proTranslation)
+      if (changes.glossary) rebuildGlossary();
+      if (changes.provider || changes.cloudFallback || changes.proTranslation || changes.keepTerms || changes.glossary)
         rebuildChain();
       if (changes.uiLang) {
         uiT = null;
@@ -2644,15 +2992,24 @@
     let pendingCount = 0;
     let translationMode = "none";
     let lastTranslateError = "";
+    let proBatchBroken = false;
+    let providerDetectedSource = "";
+    let chainEpoch = 0;
+    function cacheKey(source, target, text) {
+      return chainEpoch + "|" + source + "->" + target + "::" + text;
+    }
     const builtinProvider = createBuiltinProvider({
-      onBroken: () => {
-        builtinBroken = true;
+      onBroken: (e, pairKey) => {
+        if (!pairKey || pairKey.endsWith("->" + settings.targetLang))
+          builtinBroken = true;
       }
     });
     const providerKeys = { deepl: "", googlev2: "" };
     const proProvider = createProProvider();
+    const chainPairState = /* @__PURE__ */ new Map();
     let chain = createTranslatorChain([builtinProvider]);
     function rebuildChain() {
+      chainEpoch++;
       const list = [];
       if (settings.proTranslation) list.push(proProvider);
       list.push(builtinProvider);
@@ -2663,7 +3020,7 @@
           list.push(createGoogleV2Provider(() => providerKeys.googlev2));
         list.push(createGtxProvider());
       }
-      chain = createTranslatorChain(list);
+      chain = createTranslatorChain(list, { pairState: chainPairState });
     }
     rebuildChain();
     try {
@@ -2674,35 +3031,61 @@
       });
     } catch (e) {
     }
-    async function translateOnce(text, source, target, opts) {
+    async function translateOnce(text, source, target, opts, fromPrefetch) {
       try {
         const res = await chain.translate(text, source, target, opts);
         translationMode = res.kind === "pro" ? "pro" : res.kind === "local" ? "local" : "cloud";
         lastTranslateError = "";
+        if (res.detected && !providerDetectedSource)
+          providerDetectedSource = res.detected.toLowerCase().split("-")[0];
         return res.text;
       } catch (e) {
-        translationMode = "none";
-        lastTranslateError = settings.cloudFallback ? e && e.message || "translate failed" : "local-only";
+        if (!fromPrefetch) {
+          translationMode = "none";
+          lastTranslateError = settings.cloudFallback ? e && e.message || "translate failed" : "local-only";
+        }
         throw e;
       }
     }
-    function translate(text, source, context) {
+    function translate(text, source, context, meta) {
       const target = settings.targetLang;
-      const key = source + "->" + target + "::" + text;
+      const key = cacheKey(source, target, text);
       if (cache.has(key)) return cache.get(key);
-      const opts = context ? { context } : void 0;
+      const pk = pKey(source, target, text);
+      const persisted = persistCache.get(pk);
+      if (persisted) {
+        persisted.at = Date.now();
+        const hit = Promise.resolve(persisted.v);
+        cache.set(key, hit);
+        return hit;
+      }
+      const fromPrefetch = !!(meta && meta.prefetch);
+      const opts = {};
+      if (context) opts.context = context;
+      if (meta && meta.secs > 0) opts.secs = meta.secs;
       const p = (async () => {
         pendingCount++;
         try {
-          if (settings.keepTerms) {
-            const { protectedText, found } = protectTerms(text);
+          const gl = glossaryMatcher;
+          const useBuiltinTerms = !!settings.keepTerms;
+          if (gl || useBuiltinTerms) {
+            const { protectedText, found } = protectTerms(text, {
+              builtin: useBuiltinTerms,
+              glossary: gl
+            });
             if (found.length > 0) {
-              const raw = await translateOnce(protectedText, source, target, opts);
+              const raw = await translateOnce(protectedText, source, target, opts, fromPrefetch);
               const { restored, ok } = restoreTerms(raw, found);
-              if (ok) return restored;
+              const out2 = ok ? restored : restored.replace(/[⟦⟧]/g, " ").replace(/\s+/g, " ").trim();
+              if (out2) {
+                persistPut(pk, out2);
+                return out2;
+              }
             }
           }
-          return await translateOnce(text, source, target, opts);
+          const out = await translateOnce(text, source, target, opts, fromPrefetch);
+          persistPut(pk, out);
+          return out;
         } finally {
           pendingCount--;
         }
@@ -2872,17 +3255,23 @@
         const last = ctl.cues[ctl.cues.length - 1];
         const merged = mergeRollup(last, start2, end, text);
         if (merged) {
-          if (merged.grew) {
-            last.text = merged.text;
-            ctl.lastCueCount = -1;
-          }
+          if (merged.grew || merged.end !== last.end) ctl.lastCueCount = -1;
+          if (merged.grew) last.text = merged.text;
           last.end = merged.end;
           ctl.cueKeys.add(key);
           return;
         }
         ctl.cueKeys.add(key);
-        ctl.cues.push({ start: start2, end, text, key });
-        ctl.cues.sort((a, b) => a.start - b.start);
+        const cue = { start: start2, end, text, key };
+        let lo = 0;
+        let hi = ctl.cues.length;
+        while (lo < hi) {
+          const mid = lo + hi >> 1;
+          if (ctl.cues[mid].start <= start2) lo = mid + 1;
+          else hi = mid;
+        }
+        if (lo === ctl.cues.length) ctl.cues.push(cue);
+        else ctl.cues.splice(lo, 0, cue);
       }
       ctl.addDomCue = (start2, text) => {
         const clean = stripTags(text);
@@ -2903,8 +3292,11 @@
         const idx = ctl.groups.findIndex((g) => g.id === groupId);
         if (idx < 0) return void 0;
         return {
-          before: ctl.groups.slice(Math.max(0, idx - 3), idx).map((g) => g.text),
-          after: ctl.groups.slice(idx + 1, idx + 3).map((g) => g.text)
+          // 4 matches what the backend accepts (clampList(before, 4)).
+          before: ctl.groups.slice(Math.max(0, idx - 4), idx).map((g) => g.text),
+          // Drafts are still growing on live feeds: half a sentence fed as
+          // "upcoming context" misleads more than it helps.
+          after: ctl.groups.slice(idx + 1, idx + 3).filter((g) => g.final).map((g) => g.text)
         };
       }
       function rebuildGroups() {
@@ -2931,17 +3323,33 @@
           (t) => t.kind === "subtitles" || t.kind === "captions"
         );
         const wanted = settings.sourceLang;
-        const score = (t) => {
-          let s = 0;
-          const lang = (t.language || "").toLowerCase();
-          const label = (t.label || "").toLowerCase();
-          if (wanted !== "auto" && lang.startsWith(wanted)) s += 4;
-          if (wanted === "auto" && lang.startsWith("en")) s += 2;
-          if (label.includes("english") || label.includes("anglais")) s += 1;
-          return s;
-        };
-        tracks.sort((a, b) => score(b) - score(a));
-        const track = tracks[0];
+        let track = null;
+        if (ctl.trackListened && tracks.includes(ctl.trackListened)) {
+          track = ctl.trackListened;
+        } else {
+          const score = (t) => {
+            let s = 0;
+            const lang = (t.language || "").toLowerCase();
+            const label = (t.label || "").toLowerCase();
+            if (wanted !== "auto" && lang.startsWith(wanted)) s += 4;
+            if (wanted === "auto" && lang.startsWith("en")) s += 2;
+            if (label.includes("english") || label.includes("anglais")) s += 1;
+            return s;
+          };
+          tracks.sort((a, b) => score(b) - score(a));
+          track = tracks[0];
+          if (track && ctl.trackListened && ctl.trackListened !== track) {
+            ctl.cues = [];
+            ctl.cueKeys.clear();
+            ctl.groups = [];
+            ctl.lastCueCount = -1;
+            ctl.groupMeta.clear();
+            ctl.spokenIds.clear();
+            ctl.scheduledIds.clear();
+            ctl.inFlight.clear();
+            ctl.generation += 1;
+          }
+        }
         if (!track) return;
         ctl.trackLang = (track.language || "").toLowerCase().split("-")[0];
         if (track.mode === "disabled") track.mode = "hidden";
@@ -2984,8 +3392,10 @@
           const cues = parseVTT(await res.text());
           for (const c of cues) addCue(c.start, c.end, c.text);
           ctl.trackRetryAt = 0;
+          ctl.trackRetries = 0;
         } catch (e) {
-          ctl.staticLoaded = false;
+          ctl.trackRetries = (ctl.trackRetries || 0) + 1;
+          ctl.staticLoaded = ctl.trackRetries >= 4;
           ctl.trackRetryAt = Date.now() + 6e3;
         }
       }
@@ -2994,6 +3404,7 @@
         if (ctl.trackLang) return ctl.trackLang;
         if (ctl.detectedSource) return ctl.detectedSource;
         maybeDetectSource();
+        if (providerDetectedSource) return providerDetectedSource;
         return "auto";
       }
       async function maybeDetectSource() {
@@ -3001,9 +3412,18 @@
         ctl.detecting = true;
         try {
           if (typeof LanguageDetector === "undefined") return;
-          const sample = ctl.cues.slice(0, 5).map((c) => c.text).join(" ");
+          const parts = [];
+          let total = 0;
+          for (const c of ctl.cues.slice(0, 25)) {
+            const t = cleanCaption(c.text);
+            if (!t) continue;
+            parts.push(t);
+            total += t.length;
+            if (total >= 220) break;
+          }
+          if (total < 40) return;
           const detector = await LanguageDetector.create();
-          const results = await detector.detect(sample);
+          const results = await detector.detect(parts.join(" "));
           const best = results && results[0];
           if (best && best.confidence > 0.5) {
             ctl.detectedSource = (best.detectedLanguage || "").split("-")[0];
@@ -3017,23 +3437,113 @@
         if (!ctl.active) return;
         const t = video.currentTime;
         const upcoming = ctl.groups.filter(
-          (g) => g.end >= t && g.start <= t + 90 && isFinalGroup(g)
+          (g) => g.end >= t && g.start <= t + 45 && isFinalGroup(g)
         );
         const source = effectiveSource();
         if (source !== "auto" && source === settings.targetLang) return;
-        let launched = 0;
+        const target = settings.targetLang;
+        const pending = [];
         for (const g of upcoming) {
-          const key = source + "->" + settings.targetLang + "::" + g.text;
-          if (!cache.has(key)) {
-            translate(g.text, source, groupContext(g.id)).then((txt) => {
-              if (cloudVoiceActive() && g.start - video.currentTime < 25)
-                getCloudAudio(txt);
+          const key = cacheKey(source, target, g.text);
+          if (cache.has(key) || ctl.spokenIds.has(g.id)) continue;
+          const persisted = persistCache.get(pKey(source, target, g.text));
+          if (persisted) {
+            persisted.at = Date.now();
+            cache.set(key, Promise.resolve(persisted.v));
+            continue;
+          }
+          pending.push(g);
+        }
+        if (settings.proTranslation && pending.length >= 2 && pendingCount < 6 && proBatchTranslate(pending, source)) {
+        } else {
+          let launched = 0;
+          for (const g of pending) {
+            if (launched >= 3 || pendingCount >= 6) break;
+            translate(g.text, source, groupContext(g.id), {
+              prefetch: true,
+              secs: g.end - g.start
             }).catch(() => {
             });
             launched++;
-            if (launched >= 8 || pendingCount > 10) break;
           }
         }
+        if (cloudVoiceActive()) {
+          for (const g of upcoming) {
+            if (g.start - t >= 20 || g.end < t || ctl.spokenIds.has(g.id)) continue;
+            const hit = cache.get(cacheKey(source, target, g.text));
+            if (hit) hit.then((txt) => getCloudAudio(txt)).catch(() => {
+            });
+          }
+        }
+      }
+      function proBatchTranslate(groups, source) {
+        if (proBatchBroken) return false;
+        const target = settings.targetLang;
+        const batch = groups.slice(0, 6);
+        const entries = batch.map((g) => {
+          const gl = glossaryMatcher;
+          const prot = protectTerms(g.text, {
+            builtin: !!settings.keepTerms,
+            glossary: gl
+          });
+          let resolve;
+          let reject;
+          const promise = new Promise((res, rej) => {
+            resolve = res;
+            reject = rej;
+          });
+          promise.catch(() => {
+          });
+          return { g, prot, promise, resolve, reject };
+        });
+        for (const e of entries) {
+          const key = cacheKey(source, target, e.g.text);
+          e.promise.catch(() => cache.delete(key));
+          cache.set(key, e.promise);
+        }
+        const first = ctl.groups.findIndex((g) => g.id === batch[0].id);
+        const before = first > 0 ? ctl.groups.slice(Math.max(0, first - 3), first).map((g) => g.text) : [];
+        pendingCount += entries.length;
+        runtime.sendMessage({
+          type: "translate-pro-batch",
+          lines: entries.map((e, i) => ({
+            id: String(i),
+            text: e.prot.protectedText,
+            secs: Math.max(0, Math.round((e.g.end - e.g.start) * 10) / 10)
+          })),
+          before,
+          source,
+          target
+        }).then((resp) => {
+          if (!resp || !resp.ok || !Array.isArray(resp.items))
+            throw new Error(resp && resp.error || "batch failed");
+          const byId = new Map(resp.items.map((it) => [String(it.id), it.text]));
+          for (let i = 0; i < entries.length; i++) {
+            const e = entries[i];
+            const raw = byId.get(String(i));
+            if (typeof raw !== "string" || !raw.trim()) {
+              e.reject(new Error("missing line"));
+              continue;
+            }
+            const { restored, ok } = restoreTerms(raw, e.prot.found);
+            const out = ok ? restored : restored.replace(/[⟦⟧]/g, " ").replace(/\s+/g, " ").trim();
+            if (!out) {
+              e.reject(new Error("empty line"));
+              continue;
+            }
+            translationMode = "pro";
+            lastTranslateError = "";
+            persistPut(pKey(source, target, e.g.text), out);
+            e.resolve(out);
+          }
+        }).catch((err) => {
+          const m = String(err && err.message || err || "");
+          if (/unsupported/.test(m)) proBatchBroken = true;
+          for (const e of entries) e.reject(err);
+        }).finally(() => {
+          pendingCount -= entries.length;
+        });
+        return true;
       }
       function speak(text, cueDur, id) {
         if (id) {
@@ -3042,19 +3552,22 @@
           ctl.inFlight.delete(id);
         }
         if (cloudVoiceActive()) {
-          speakCloud(text, cueDur);
+          speakCloud(text, cueDur, id);
           return;
         }
-        speakLocal(text, cueDur);
+        speakLocal(text, cueDur, id);
       }
-      async function speakCloud(text, cueDur) {
+      async function speakCloud(text, cueDur, id) {
         const token = { cloud: true, at: performance.now() };
         ctl.currentUtterance = token;
         const url = await getCloudAudio(text);
-        if (ctl.currentUtterance !== token) return;
+        if (ctl.currentUtterance !== token) {
+          if (id) ctl.spokenIds.delete(id);
+          return;
+        }
         if (!url) {
           ctl.currentUtterance = null;
-          speakLocal(text, cueDur);
+          speakLocal(text, cueDur, id);
           return;
         }
         const a = new Audio(url);
@@ -3082,11 +3595,11 @@
           if (ctl.cloudAudio === a) ctl.cloudAudio = null;
           if (ctl.currentUtterance === token) {
             ctl.currentUtterance = null;
-            speakLocal(text, cueDur);
+            speakLocal(text, cueDur, id);
           }
         }
       }
-      function speakLocal(text, cueDur) {
+      function speakLocal(text, cueDur, id) {
         const u = new SpeechSynthesisUtterance(text);
         const v = pickVoice2();
         if (v) u.voice = v;
@@ -3111,6 +3624,7 @@
           speechSynthesis.speak(u);
         } catch (e) {
           ctl.currentUtterance = null;
+          if (id) ctl.spokenIds.delete(id);
         }
       }
       function drainQueue() {
@@ -3121,12 +3635,19 @@
         }
         if (ctl.currentUtterance || ctl.queue.length === 0) return;
         if (video.paused && !ctl.autoPaused || video.seeking) {
+          for (const q2 of ctl.queue) {
+            if (q2.id) ctl.scheduledIds.delete(q2.id);
+          }
           ctl.queue.length = 0;
           return;
         }
         const t = video.currentTime;
         while (ctl.queue.length > 0 && ctl.queue[0].end + 4 < t && !ctl.autoPaused) {
-          ctl.queue.shift();
+          const stale = ctl.queue.shift();
+          if (stale && stale.id) {
+            ctl.spokenIds.add(stale.id);
+            ctl.scheduledIds.delete(stale.id);
+          }
         }
         const q = ctl.queue.shift();
         if (!q) return;
@@ -3139,7 +3660,11 @@
             ctl.autoPaused = true;
             video.pause();
           } else if (!ctl.autoPaused) {
-            ctl.queue.shift();
+            const dropped = ctl.queue.shift();
+            if (dropped && dropped.id) {
+              ctl.spokenIds.add(dropped.id);
+              ctl.scheduledIds.delete(dropped.id);
+            }
           }
         }
         drainQueue();
@@ -3154,7 +3679,9 @@
         if (!entry || entry.version !== group.version) {
           entry = {
             version: group.version,
-            promise: translate(group.text, source, groupContext(group.id))
+            promise: translate(group.text, source, groupContext(group.id), {
+              secs: group.end - group.start
+            })
           };
           ctl.inFlight.set(group.id, entry);
         }
@@ -3275,6 +3802,15 @@
               ctl.scheduledIds.delete(g.id);
               ctl.inFlight.delete(g.id);
               ctl.groupMeta.delete(g.id);
+            }
+          }
+          if (ctl.cues.length > 1200) {
+            let cut = 0;
+            while (cut < ctl.cues.length && ctl.cues[cut].end < t - 300) cut++;
+            if (cut > 0) {
+              for (const c of ctl.cues.slice(0, cut)) ctl.cueKeys.delete(c.key);
+              ctl.cues.splice(0, cut);
+              ctl.lastCueCount = -1;
             }
           }
         }
@@ -4009,6 +4545,8 @@
         }
         builtinBroken = false;
         lastTranslateError = "";
+        proBatchBroken = false;
+        providerDetectedSource = "";
         scanDirty = true;
         scan();
         sendResponse({ ok: true });

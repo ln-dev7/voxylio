@@ -24,10 +24,9 @@
     "context window",
     "agent"
   ];
+  var escapeRe = (t2) => t2.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   var TERM_RE = new RegExp(
-    "\\b(" + PROTECTED_TERMS.map((t2) => t2.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join(
-      "|"
-    ) + ")\\b",
+    "\\b(" + PROTECTED_TERMS.map(escapeRe).join("|") + ")\\b",
     "gi"
   );
 
@@ -235,6 +234,10 @@
     proVoice: false,
     autoPause: false,
     keepTerms: true,
+    // User glossary: [{ from, to }] — `to` empty keeps the source form
+    // verbatim, `to` set forces that exact target form. Applied through
+    // the placeholder mechanism, so it works with every provider.
+    glossary: [],
     // Preferred paid provider when a key is configured ("auto" = none:
     // builtin then best-effort fallback).
     provider: "auto",
@@ -310,6 +313,10 @@
     optDeeplKey: "DeepL API key",
     optGoogleKey: "Google Cloud API key",
     optKeyStored: "Keys stay on this device (storage.local) \u2014 never synced.",
+    optGlossary: "Glossary",
+    optGlossaryHint: "One term per line. \u201Cterm = translation\u201D forces that translation; a term alone is kept as-is, never translated. Applied with every engine, Pro included.",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = machine learning",
+    optGlossaryCount: "$COUNT$ active term(s)",
     optCheckKey: "Check key",
     optKeyOk: "Valid key \u2014 $USED$ / $LIMIT$ characters used this month.",
     optKeyBad: "Invalid key or quota reached.",
@@ -461,6 +468,10 @@
     optDeeplKey: "Cl\xE9 API DeepL",
     optGoogleKey: "Cl\xE9 API Google Cloud",
     optKeyStored: "Les cl\xE9s restent sur cet appareil (storage.local) \u2014 jamais synchronis\xE9es.",
+    optGlossary: "Glossaire",
+    optGlossaryHint: "Un terme par ligne. \xAB terme = traduction \xBB impose cette traduction ; un terme seul est conserv\xE9 tel quel, jamais traduit. Appliqu\xE9 avec tous les moteurs, Pro compris.",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = apprentissage machine",
+    optGlossaryCount: "$COUNT$ terme(s) actif(s)",
     optCheckKey: "V\xE9rifier la cl\xE9",
     optKeyOk: "Cl\xE9 valide \u2014 $USED$ / $LIMIT$ caract\xE8res utilis\xE9s ce mois-ci.",
     optKeyBad: "Cl\xE9 invalide ou quota atteint.",
@@ -613,6 +624,10 @@
     optDeeplKey: "Clave API de DeepL",
     optGoogleKey: "Clave API de Google Cloud",
     optKeyStored: "Las claves se quedan en este dispositivo \u2014 nunca se sincronizan.",
+    optGlossary: "Glosario",
+    optGlossaryHint: "Un t\xE9rmino por l\xEDnea. \xABt\xE9rmino = traducci\xF3n\xBB impone esa traducci\xF3n; un t\xE9rmino solo se conserva tal cual, nunca se traduce. Se aplica con todos los motores, Pro incluido.",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = aprendizaje autom\xE1tico",
+    optGlossaryCount: "$COUNT$ t\xE9rmino(s) activo(s)",
     optCheckKey: "Comprobar clave",
     optKeyOk: "Clave v\xE1lida \u2014 $USED$ / $LIMIT$ caracteres usados este mes.",
     optKeyBad: "Clave inv\xE1lida o cuota alcanzada.",
@@ -764,6 +779,10 @@
     optDeeplKey: "DeepL-API-Schl\xFCssel",
     optGoogleKey: "Google-Cloud-API-Schl\xFCssel",
     optKeyStored: "Schl\xFCssel bleiben auf diesem Ger\xE4t \u2014 nie synchronisiert.",
+    optGlossary: "Glossar",
+    optGlossaryHint: "Ein Begriff pro Zeile. \u201EBegriff = \xDCbersetzung\u201C erzwingt diese \xDCbersetzung; ein Begriff allein bleibt unver\xE4ndert und wird nie \xFCbersetzt. Gilt f\xFCr alle Engines, auch Pro.",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = maschinelles Lernen",
+    optGlossaryCount: "$COUNT$ aktive(r) Begriff(e)",
     optCheckKey: "Schl\xFCssel pr\xFCfen",
     optKeyOk: "G\xFCltiger Schl\xFCssel \u2014 $USED$ / $LIMIT$ Zeichen diesen Monat verbraucht.",
     optKeyBad: "Ung\xFCltiger Schl\xFCssel oder Kontingent erreicht.",
@@ -915,6 +934,10 @@
     optDeeplKey: "Chiave API DeepL",
     optGoogleKey: "Chiave API Google Cloud",
     optKeyStored: "Le chiavi restano su questo dispositivo \u2014 mai sincronizzate.",
+    optGlossary: "Glossario",
+    optGlossaryHint: "Un termine per riga. \xABtermine = traduzione\xBB impone quella traduzione; un termine da solo resta invariato, mai tradotto. Vale con tutti i motori, Pro incluso.",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = apprendimento automatico",
+    optGlossaryCount: "$COUNT$ termine/i attivo/i",
     optCheckKey: "Verifica chiave",
     optKeyOk: "Chiave valida \u2014 $USED$ / $LIMIT$ caratteri usati questo mese.",
     optKeyBad: "Chiave non valida o quota raggiunta.",
@@ -1066,6 +1089,10 @@
     optDeeplKey: "DeepL API\u30AD\u30FC",
     optGoogleKey: "Google Cloud API\u30AD\u30FC",
     optKeyStored: "\u30AD\u30FC\u306F\u3053\u306E\u7AEF\u672B\u306B\u4FDD\u5B58\u3055\u308C\u3001\u540C\u671F\u3055\u308C\u308B\u3053\u3068\u306F\u3042\u308A\u307E\u305B\u3093\u3002",
+    optGlossary: "\u7528\u8A9E\u96C6",
+    optGlossaryHint: "1\u884C\u306B1\u8A9E\u3002\u300C\u7528\u8A9E = \u8A33\u8A9E\u300D\u3067\u305D\u306E\u8A33\u8A9E\u3092\u5F37\u5236\u3001\u7528\u8A9E\u306E\u307F\u66F8\u304F\u3068\u305D\u306E\u307E\u307E\u7DAD\u6301\u3055\u308C\u3001\u7FFB\u8A33\u3055\u308C\u307E\u305B\u3093\u3002Pro \u3092\u542B\u3080\u3059\u3079\u3066\u306E\u30A8\u30F3\u30B8\u30F3\u306B\u9069\u7528\u3055\u308C\u307E\u3059\u3002",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = \u6A5F\u68B0\u5B66\u7FD2",
+    optGlossaryCount: "\u6709\u52B9\u306A\u7528\u8A9E: $COUNT$",
     optCheckKey: "\u30AD\u30FC\u3092\u78BA\u8A8D",
     optKeyOk: "\u6709\u52B9\u306A\u30AD\u30FC \u2014 \u4ECA\u6708 $USED$ / $LIMIT$ \u6587\u5B57\u4F7F\u7528\u3002",
     optKeyBad: "\u30AD\u30FC\u304C\u7121\u52B9\u304B\u3001\u4E0A\u9650\u306B\u9054\u3057\u3066\u3044\u307E\u3059\u3002",
@@ -1217,6 +1244,10 @@
     optDeeplKey: "DeepL API \uD0A4",
     optGoogleKey: "Google Cloud API \uD0A4",
     optKeyStored: "\uD0A4\uB294 \uC774 \uAE30\uAE30\uC5D0\uB9CC \uC800\uC7A5\uB418\uBA70 \uB3D9\uAE30\uD654\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.",
+    optGlossary: "\uC6A9\uC5B4\uC9D1",
+    optGlossaryHint: "\uD55C \uC904\uC5D0 \uD55C \uC6A9\uC5B4. \u201C\uC6A9\uC5B4 = \uBC88\uC5ED\u201D\uC740 \uD574\uB2F9 \uBC88\uC5ED\uC744 \uAC15\uC81C\uD558\uACE0, \uC6A9\uC5B4\uB9CC \uC4F0\uBA74 \uBC88\uC5ED\uB418\uC9C0 \uC54A\uACE0 \uADF8\uB300\uB85C \uC720\uC9C0\uB429\uB2C8\uB2E4. Pro\uB97C \uD3EC\uD568\uD55C \uBAA8\uB4E0 \uC5D4\uC9C4\uC5D0 \uC801\uC6A9\uB429\uB2C8\uB2E4.",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = \uBA38\uC2E0\uB7EC\uB2DD",
+    optGlossaryCount: "\uD65C\uC131 \uC6A9\uC5B4: $COUNT$",
     optCheckKey: "\uD0A4 \uD655\uC778",
     optKeyOk: "\uC720\uD6A8\uD55C \uD0A4 \u2014 \uC774\uBC88 \uB2EC $USED$ / $LIMIT$\uC790 \uC0AC\uC6A9.",
     optKeyBad: "\uD0A4\uAC00 \uC798\uBABB\uB418\uC5C8\uAC70\uB098 \uD55C\uB3C4\uC5D0 \uB3C4\uB2EC\uD588\uC2B5\uB2C8\uB2E4.",
@@ -1368,6 +1399,10 @@
     optDeeplKey: "DeepL API \u5BC6\u94A5",
     optGoogleKey: "Google Cloud API \u5BC6\u94A5",
     optKeyStored: "\u5BC6\u94A5\u53EA\u4FDD\u5B58\u5728\u6B64\u8BBE\u5907\u4E0A \u2014 \u7EDD\u4E0D\u540C\u6B65\u3002",
+    optGlossary: "\u672F\u8BED\u8868",
+    optGlossaryHint: "\u6BCF\u884C\u4E00\u4E2A\u8BCD\u6761\u3002\u201C\u8BCD\u6761 = \u8BD1\u6587\u201D\u5F3A\u5236\u4F7F\u7528\u8BE5\u8BD1\u6587\uFF1B\u4EC5\u5199\u8BCD\u6761\u5219\u4FDD\u6301\u539F\u6837\u3001\u4E0D\u88AB\u7FFB\u8BD1\u3002\u9002\u7528\u4E8E\u6240\u6709\u5F15\u64CE\uFF0C\u5305\u62EC Pro\u3002",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = \u673A\u5668\u5B66\u4E60",
+    optGlossaryCount: "\u751F\u6548\u8BCD\u6761\uFF1A$COUNT$",
     optCheckKey: "\u68C0\u67E5\u5BC6\u94A5",
     optKeyOk: "\u5BC6\u94A5\u6709\u6548 \u2014 \u672C\u6708\u5DF2\u7528 $USED$ / $LIMIT$ \u5B57\u7B26\u3002",
     optKeyBad: "\u5BC6\u94A5\u65E0\u6548\u6216\u5DF2\u8FBE\u9650\u989D\u3002",
@@ -1519,6 +1554,10 @@
     optDeeplKey: "DeepL API \u91D1\u9470",
     optGoogleKey: "Google Cloud API \u91D1\u9470",
     optKeyStored: "\u91D1\u9470\u53EA\u4FDD\u5B58\u5728\u6B64\u88DD\u7F6E\u4E0A \u2014 \u7D55\u4E0D\u540C\u6B65\u3002",
+    optGlossary: "\u8853\u8A9E\u8868",
+    optGlossaryHint: "\u6BCF\u884C\u4E00\u500B\u8A5E\u689D\u3002\u300C\u8A5E\u689D = \u8B6F\u6587\u300D\u5F37\u5236\u4F7F\u7528\u8A72\u8B6F\u6587\uFF1B\u50C5\u5BEB\u8A5E\u689D\u5247\u4FDD\u6301\u539F\u6A23\u3001\u4E0D\u88AB\u7FFB\u8B6F\u3002\u9069\u7528\u65BC\u6240\u6709\u5F15\u64CE\uFF0C\u5305\u62EC Pro\u3002",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = \u6A5F\u5668\u5B78\u7FD2",
+    optGlossaryCount: "\u751F\u6548\u8A5E\u689D\uFF1A$COUNT$",
     optCheckKey: "\u6AA2\u67E5\u91D1\u9470",
     optKeyOk: "\u91D1\u9470\u6709\u6548 \u2014 \u672C\u6708\u5DF2\u7528 $USED$ / $LIMIT$ \u5B57\u5143\u3002",
     optKeyBad: "\u91D1\u9470\u7121\u6548\u6216\u5DF2\u9054\u984D\u5EA6\u3002",
@@ -1670,6 +1709,10 @@
     optDeeplKey: "Chave de API do DeepL",
     optGoogleKey: "Chave de API do Google Cloud",
     optKeyStored: "As chaves ficam neste dispositivo \u2014 nunca sincronizadas.",
+    optGlossary: "Gloss\xE1rio",
+    optGlossaryHint: "Um termo por linha. \u201Ctermo = tradu\xE7\xE3o\u201D imp\xF5e essa tradu\xE7\xE3o; um termo sozinho \xE9 mantido como est\xE1, nunca traduzido. Vale com todos os motores, incluindo o Pro.",
+    optGlossaryPlaceholder: "Voxylio\nmachine learning = aprendizado de m\xE1quina",
+    optGlossaryCount: "$COUNT$ termo(s) ativo(s)",
     optCheckKey: "Verificar chave",
     optKeyOk: "Chave v\xE1lida \u2014 $USED$ / $LIMIT$ caracteres usados este m\xEAs.",
     optKeyBad: "Chave inv\xE1lida ou cota atingida.",
