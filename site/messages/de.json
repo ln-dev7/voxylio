@@ -12,8 +12,7 @@
     "openMenu": "Menü öffnen",
     "closeMenu": "Menü schließen",
     "account": "Konto",
-    "pricing": "Preise",
-    "changelog": "Neuheiten"
+    "pricing": "Preise"
   },
   "Hero": {
     "title": "Schau jedes Video in <accent>deiner Sprache</accent>",
@@ -78,7 +77,9 @@
   },
   "Languages": {
     "title": "<count></count> Sprachen, in beide Richtungen",
-    "subtitle": "Die Ausgangssprache wird automatisch erkannt — synchronisiere aus jeder Sprache in deine."
+    "subtitle": "Die Ausgangssprache wird automatisch erkannt — synchronisiere aus jeder Sprache in deine.",
+    "showAll": "Alle {count} Sprachen anzeigen",
+    "showLess": "Weniger anzeigen"
   },
   "Install": {
     "title": "In zwei Minuten installiert",
@@ -97,15 +98,14 @@
         "description": "Öffne ein Video mit Untertiteln und drücke „Dubbing starten“ — Voxylio spricht es in deiner Sprache."
       }
     },
-    "ctaStore": "Zu Chrome hinzufügen",
-    "cta": "Voxylio auf GitHub holen"
+    "ctaStore": "Zu Chrome hinzufügen"
   },
   "Faq": {
     "title": "Häufige Fragen",
     "items": {
       "sites": {
         "question": "Auf welchen Seiten funktioniert es?",
-        "answer": "Auf jeder Seite, deren Player eine Untertitelspur bereitstellt — Kursplattformen, Doku-Videos, die meisten HTML5-Player. Zeichnet der Player Untertitel ohne Textspur, ist Dubbing noch nicht möglich."
+        "answer": "Jede Website, deren Player eine Untertitelspur bereitstellt — plus die eingeblendeten Untertitel von YouTube, Netflix, Prime Video, Disney+ und Twitch, die Voxylio direkt von der Seite liest. Sind sie ausgeschaltet, kann es sie oft für dich aktivieren."
       },
       "cost": {
         "question": "Ist es wirklich kostenlos?",
@@ -119,6 +119,14 @@
         "question": "Was enthält der Pro-Plan?",
         "answer": "Alles Lokale bleibt gratis und unbegrenzt. Pro finanziert die Funktionen, die einen Server brauchen: die kontextbewusste Übersetzung — benachbarte Sätze werden zusammen übertragen, damit Pronomen, Ton, Namen und Terminologie stimmen — und natürliche neuronale Stimmen in 7 Sprachen (Englisch, Spanisch, Deutsch, Französisch, Niederländisch, Italienisch, Japanisch), jeweils mit großzügigem Monatskontingent. Ist ein Kontingent aufgebraucht, oder bei jeder anderen Sprache, läuft die Synchronisation einfach mit der kostenlosen lokalen Engine weiter — ein Video wird nie unterbrochen. Zusammenfassungen und Geräte-Sync folgen nach und nach."
       },
+      "quota": {
+        "question": "Was passiert, wenn ein Pro-Kontingent aufgebraucht ist?",
+        "answer": "Die Synchronisation stoppt nie. Sobald ein Kontingent erreicht ist, laufen die Zeilen mit der kostenlosen lokalen Engine weiter, und das Kontingent füllt sich zur nächsten Monatsperiode wieder auf."
+      },
+      "glossary": {
+        "question": "Kann ich steuern, wie bestimmte Begriffe übersetzt werden?",
+        "answer": "Ja — das Glossar in der Einstellungszentrale der Erweiterung. „Begriff = Übersetzung“ erzwingt deine Formulierung überall, und ein Begriff allein wird nie übersetzt (Namen, Marken, Fachwörter). Es gilt für alle Engines, auch Pro."
+      },
       "voice": {
         "question": "Kann ich die Stimmqualität verbessern?",
         "answer": "Ja — installiere hochwertigere Systemstimmen. Auf macOS: Systemeinstellungen → Bedienungshilfen → Gesprochene Inhalte → lade eine Premium-Stimme für deine Sprache herunter und wähle sie im Popup."
@@ -130,6 +138,14 @@
       "youtube": {
         "question": "Was unterscheidet das vom Auto-Dubbing von YouTube?",
         "answer": "YouTubes Dubbing gibt es nur auf YouTube. Voxylio bringt dieselbe Erfahrung — ganze Sätze, eine Stimme, leiser gestelltes Original — auf jede Seite mit Untertiteln."
+      },
+      "cancel": {
+        "question": "Wie kündige oder verwalte ich mein Abo?",
+        "answer": "Über deine Kontoseite, mit zwei Klicks, jederzeit. Pro bleibt bis zum Ende des bezahlten Zeitraums aktiv, danach wird der Plan einfach wieder kostenlos — Einstellungen und Verlauf bleiben erhalten."
+      },
+      "offline": {
+        "question": "Funktioniert es offline?",
+        "answer": "Ja, mit der lokalen Engine: Sobald Chrome das Übersetzungsmodell für dein Sprachpaar geladen hat, funktioniert die Synchronisation ohne Verbindung, mit deinen Systemstimmen. Online-Fallback und Pro-Funktionen brauchen eine."
       }
     }
   },
@@ -146,7 +162,9 @@
       "faq": "FAQ",
       "license": "MIT-Lizenz",
       "issues": "Problem melden",
-      "privacy": "Datenschutz"
+      "privacy": "Datenschutz",
+      "changelog": "Neuheiten",
+      "terms": "Nutzungsbedingungen"
     },
     "theme": {
       "label": "Design",
@@ -188,7 +206,7 @@
       },
       "privacy": {
         "label": "Datenschutz",
-        "us": "Lokale Übersetzung — nichts verlässt deinen Browser",
+        "us": "Standardmäßig lokal — dein Audio wird nie aufgenommen",
         "them": "Dein Audio wird an fremde Server gestreamt"
       },
       "sync": {
@@ -198,7 +216,7 @@
       },
       "coverage": {
         "label": "Abdeckung",
-        "us": "Jedes Video mit Untertitelspur",
+        "us": "Untertitelspuren + eingeblendete Untertitel (YouTube, Netflix…)",
         "them": "Jedes Audio, auch ohne Untertitel"
       }
     }
@@ -208,16 +226,38 @@
     "updated": "Zuletzt aktualisiert: 26. August 2026",
     "intro": "Voxylio ist dafür gebaut, auf deinem Gerät zu arbeiten. Diese Seite beschreibt genau, was die Erweiterung mit Daten tut — und was sie niemals tut.",
     "p1Title": "Was Voxylio verarbeitet",
-    "p1": "Voxylio liest die Untertitelspur des Videos, das du gerade ansiehst, um sie zu übersetzen und vorzulesen. Deine Einstellungen (Sprachen, Stimme, Tempo, Lautstärke) liegen im Erweiterungsspeicher deines Browsers, von Chrome mit deinem eigenen Profil synchronisiert. Nichts anderes wird gelesen, gesammelt oder gespeichert. Wenn du ein Konto anlegst, speichert Voxylio zusätzlich deine E-Mail-Adresse und deinen Plan — mehr nicht.",
+    "p1": "Voxylio liest die Untertitel des Videos, das du gerade ansiehst — die Spur des Players oder die eingeblendeten Untertitel — um sie zu übersetzen und laut vorzulesen. Deine Einstellungen (Sprachen, Stimmen, Tempo, Lautstärke, Glossar) liegen im Erweiterungsspeicher deines Browsers, von Chrome in deinem eigenen Profil synchronisiert; auch dein Synchronisations-Verlauf und seine Statistiken bleiben in diesem lokalen Speicher und werden nie übertragen. Wenn du ein Konto erstellst, speichert Voxylio zusätzlich deine E-Mail-Adresse und deinen Plan — mehr nicht.",
     "p2Title": "Lokal als Standard",
     "p2": "Die Übersetzung läuft auf deinem Gerät mit Chromes integrierter Übersetzungs-API, wann immer sie verfügbar ist. In diesem Modus verlässt kein Text deinen Rechner. Die Sprache erzeugen die Stimmen deines Systems, ebenfalls lokal.",
     "p3Title": "Der Online-Fallback",
     "p3": "Wenn Chromes lokaler Übersetzer nicht verfügbar ist, kann Voxylio einzelne Untertitelsätze an einen Online-Übersetzungsdienst schicken, damit das Dubbing weiterläuft. Das sind Sätze aus den öffentlichen Untertiteln des Videos — niemals deine persönlichen Daten, dein Browserverlauf oder Kontoinformationen. Mit dem „Streng lokalen Modus“ im Popup lässt sich das vollständig abschalten; Voxylio wartet dann auf den lokalen Übersetzer, statt online zu gehen. Pro-Funktionen senden, wenn du sie aktivierst, dieselben Untertitelsätze an die Voxylio-API, die sie von einem KI-Anbieter übersetzen oder sprechen lässt — gleiche Regel: nur der Untertiteltext des Videos, nie deine persönlichen Daten oder dein Verlauf.",
     "p4Title": "Was Voxylio niemals tut",
-    "p4": "Keine Analytics, kein Tracking, keine Werbung, kein Fingerprinting. Dein Konto enthält nur deine E-Mail-Adresse und deinen Plan — Voxylio verkauft oder teilt keine persönlichen Daten und führt keine Historie darüber, was du ansiehst. Die weitreichende Website-Berechtigung dient nur dazu, den Videoplayer und seine Untertitelspur auf der besuchten Seite zu finden; sie wird nie genutzt, um etwas anderes zu lesen.",
+    "p4": "Keine Analytics, kein Tracking, keine Werbung, kein Fingerprinting. Dein Konto enthält nur deine E-Mail-Adresse und deinen Plan — Voxylio verkauft und teilt keine persönlichen Daten und führt auf seinen Servern kein Verzeichnis dessen, was du ansiehst: der Verlauf im Hub lebt nur auf deinem Gerät. Die weitreichende Seitenberechtigung dient ausschließlich dazu, den Videoplayer und seine Untertitel auf der besuchten Seite zu finden; sie wird nie genutzt, um irgendetwas anderes zu lesen.",
     "p5Title": "Deine Daten, deine Kontrolle",
     "p5": "Der Knopf „Zurücksetzen“ im Popup stellt die Standardeinstellungen wieder her und löscht alles, was die Erweiterung gespeichert hat. Das Entfernen der Erweiterung entfernt alle ihre Daten.",
     "contact": "Fragen? Eröffne ein Issue auf GitHub oder schreib dem Autor."
+  },
+  "Terms": {
+    "title": "Nutzungsbedingungen",
+    "updated": "Zuletzt aktualisiert: 26. August 2026",
+    "intro": "Diese Bedingungen regeln deine Nutzung von Voxylio — der Erweiterung, der Website und des Voxylio-Kontos. Mit der Nutzung von Voxylio stimmst du ihnen zu.",
+    "s1Title": "Der Dienst",
+    "s1": "Voxylio synchronisiert untertitelte Videos in Echtzeit, in deinem Browser. Kostenlose Funktionen laufen auf deinem Gerät; Pro-Funktionen werden von unseren Servern innerhalb monatlicher Kontingente bereitgestellt.",
+    "s2Title": "Dein Konto",
+    "s2": "Die Synchronisation erfordert ein kostenloses Konto (Google-Anmeldung). Du bist für die Aktivität deines Kontos verantwortlich und kannst die Erweiterung jederzeit auf der Kontoseite trennen oder das Konto löschen.",
+    "s3Title": "Gratis-Plan",
+    "s3": "Lokale Funktionen sind kostenlos und unbegrenzt. Das Produkt entwickelt sich weiter, aber was auf deinem Gerät läuft, wird nicht gemessen und erfordert kein Zahlungsmittel.",
+    "s4Title": "Pro-Abo",
+    "s4": "Pro wird monatlich oder jährlich über unseren Zahlungspartner Polar abgerechnet, der als Merchant of Record auftritt. Du kannst jederzeit kündigen: Pro bleibt bis zum Ende des bezahlten Zeitraums aktiv, danach wird der Plan wieder kostenlos. Monatskontingente erneuern sich pro Periode; ungenutztes Volumen wird nicht übertragen.",
+    "s5Title": "Faire Nutzung",
+    "s5": "Die Kontingente sind für persönliches, menschliches Ansehen ausgelegt. Automatisierte Anfragen, Scraping, Weiterverkauf des Zugangs oder Kontoteilung über normale persönliche Nutzung hinaus können nach Möglichkeit nach Vorankündigung zur Sperrung führen.",
+    "s6Title": "Drittseiten",
+    "s6": "Voxylio liest Untertitel in deinem eigenen Browser, auf Seiten, die du selbst besuchst. Für die Einhaltung der Bedingungen dieser Seiten bleibst du verantwortlich. Voxylio ist weder mit YouTube noch mit Netflix noch mit einer anderen Plattform verbunden, auf der es funktioniert.",
+    "s7Title": "Keine Gewährleistung",
+    "s7": "Voxylio wird „wie besehen“ ohne Gewährleistung bereitgestellt. Player-Änderungen, Browser-Updates oder Ausfälle von Anbietern können Funktionen beeinträchtigen. Soweit gesetzlich zulässig, ist unsere Haftung auf die in den letzten 12 Monaten gezahlten Beträge begrenzt.",
+    "s8Title": "Änderungen dieser Bedingungen",
+    "s8": "Wir können diese Bedingungen aktualisieren; wesentliche Änderungen werden auf dieser Seite mit neuem Datum angekündigt. Die weitere Nutzung von Voxylio nach einer Änderung gilt als Zustimmung.",
+    "contact": "Fragen? Eröffne ein Issue auf GitHub oder kontaktiere den Autor."
   },
   "Changelog": {
     "title": "Neuheiten",
@@ -313,6 +353,22 @@
         "f4": "Bevorzugter Support",
         "f5": "Ein Konto für alle deine Browser"
       }
+    },
+    "modal": {
+      "trigger": "So funktionieren die Preise",
+      "title": "Die Preise, erklärt",
+      "intro": "Zwei Pläne, ein Versprechen: Was auf deinem Gerät läuft, ist kostenlos und unbegrenzt — Pro finanziert, was einen Server braucht.",
+      "freeTitle": "Kostenlos — lokal und unbegrenzt",
+      "freeBody": "Übersetzung auf dem Gerät (Chromes integrierte KI), deine Systemstimmen, zweisprachige Untertitel, Glossar, Verlauf und Statistiken: kein Kontingent, keine Karte. Eine kostenlose Google-Anmeldung ist die einzige Voraussetzung.",
+      "proTitle": "Pro — die Cloud obendrauf",
+      "proBody": "Kontextuelle KI-Übersetzung (ganze Szenen bleiben kohärent) und natürliche neuronale Stimmen in 7 Sprachen. 7,99 $/Monat oder 69,99 $/Jahr (−27 %).",
+      "meterTitle": "Ein großzügiges Monatskontingent",
+      "meterBody": "Pro schöpft aus einem monatlichen Volumen an KI-Übersetzung und neuronaler Sprache, ausgelegt auf intensives tägliches Schauen. Nur die übersetzte Zeile zählt — nie der mitgeschickte Kontext.",
+      "fallbackTitle": "Nie unterbrochen",
+      "fallbackBody": "Kontingent erreicht oder eine Sprache noch ohne neuronale Stimme? Die nächste Zeile läuft sofort mit der kostenlosen lokalen Engine weiter. Ein Video wird nie abgeschnitten.",
+      "cancelTitle": "Jederzeit kündbar",
+      "cancelBody": "Verwalte oder kündige über deine Kontoseite. Pro bleibt bis zum Ende des bezahlten Zeitraums aktiv — danach behältst du den vollen Gratis-Plan.",
+      "close": "Schließen"
     }
   }
 }

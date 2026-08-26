@@ -20,7 +20,6 @@ export function SiteHeader() {
     { key: "features", href: { pathname: "/", hash: "features" }, label: t("features") },
     { key: "pricing", href: { pathname: "/", hash: "pricing" }, label: t("pricing") },
     { key: "how-it-works", href: { pathname: "/", hash: "how-it-works" }, label: t("howItWorks") },
-    { key: "changelog", href: { pathname: "/changelog" }, label: t("changelog") },
   ] as const;
 
   return (

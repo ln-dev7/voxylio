@@ -16,5 +16,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
         ),
       },
     }));
-  return [...localized(""), ...localized("/changelog")];
+  return [
+    ...localized(""),
+    ...localized("/changelog"),
+    ...localized("/privacy"),
+    ...localized("/terms"),
+  ];
 }

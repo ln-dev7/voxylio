@@ -12,8 +12,7 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "account": "Account",
-    "pricing": "Pricing",
-    "changelog": "Changelog"
+    "pricing": "Pricing"
   },
   "Hero": {
     "title": "Watch any video in <accent>your language</accent>",
@@ -78,7 +77,9 @@
   },
   "Languages": {
     "title": "<count></count> languages, in both directions",
-    "subtitle": "The source language is auto-detected — dub from any language into yours."
+    "subtitle": "The source language is auto-detected — dub from any language into yours.",
+    "showAll": "Show all {count} languages",
+    "showLess": "Show less"
   },
   "Install": {
     "title": "Install in two minutes",
@@ -97,15 +98,14 @@
         "description": "Open any subtitled video and press “Start dubbing” — Voxylio speaks it in your language."
       }
     },
-    "ctaStore": "Add to Chrome",
-    "cta": "Get Voxylio on GitHub"
+    "ctaStore": "Add to Chrome"
   },
   "Faq": {
     "title": "Frequently asked questions",
     "items": {
       "sites": {
         "question": "Which sites does it work on?",
-        "answer": "Any site whose player exposes a subtitle or caption track — course platforms, documentation videos, most custom HTML5 players. If the player draws captions without a text track, dubbing is not possible yet."
+        "answer": "Any site whose player exposes a subtitle track — plus the on-screen captions of YouTube, Netflix, Prime Video, Disney+ and Twitch, which Voxylio reads directly from the page. If captions are off, it can often switch them on for you."
       },
       "cost": {
         "question": "Is it really free?",
@@ -119,6 +119,14 @@
         "question": "What does Pro include?",
         "answer": "Everything local stays free and unlimited. Pro funds the features that need a server: context-aware translation — nearby sentences are sent together so pronouns, tone, names and terminology stay right — and natural neural voices in 7 languages (English, Spanish, German, French, Dutch, Italian, Japanese), each within a generous monthly allowance. When an allowance runs out, or for any other language, dubbing simply continues with the free local engine — a video is never interrupted. Summaries and cross-device sync will join Pro over time."
       },
+      "quota": {
+        "question": "What happens when a Pro allowance runs out?",
+        "answer": "Dubbing never stops. The moment an allowance is reached, lines continue with the free local engine, and the allowance resets with the next monthly period."
+      },
+      "glossary": {
+        "question": "Can I control how specific terms are translated?",
+        "answer": "Yes — open the glossary in the extension's settings hub. “term = translation” forces your wording everywhere, and a term alone is never translated (names, brands, technical words). It applies to every engine, Pro included."
+      },
       "voice": {
         "question": "Can I improve the voice quality?",
         "answer": "Yes — install higher-quality system voices. On macOS: System Settings → Accessibility → Spoken Content → download a premium voice for your language, then pick it in the popup."
@@ -130,6 +138,14 @@
       "youtube": {
         "question": "How is this different from YouTube auto-dubbing?",
         "answer": "YouTube's dubbing only exists on YouTube. Voxylio brings the same experience — full-sentence translation, one voice, ducked original audio — to any site with subtitles."
+      },
+      "cancel": {
+        "question": "How do I cancel or manage my subscription?",
+        "answer": "From your account page, in two clicks, anytime. Pro stays active until the end of the period you paid for, then the plan simply returns to free — your settings and history stay."
+      },
+      "offline": {
+        "question": "Does it work offline?",
+        "answer": "Yes for the local engine: once Chrome has downloaded the translation model for your pair, dubbing works without a connection, with your system voices. The online fallback and Pro features need one."
       }
     }
   },
@@ -146,7 +162,9 @@
       "faq": "FAQ",
       "license": "MIT License",
       "issues": "Report an issue",
-      "privacy": "Privacy"
+      "privacy": "Privacy",
+      "changelog": "Changelog",
+      "terms": "Terms"
     },
     "theme": {
       "label": "Theme",
@@ -188,7 +206,7 @@
       },
       "privacy": {
         "label": "Privacy",
-        "us": "Local translation — nothing leaves your browser",
+        "us": "Local by default — your audio is never captured",
         "them": "Your audio is streamed to their servers"
       },
       "sync": {
@@ -198,7 +216,7 @@
       },
       "coverage": {
         "label": "Coverage",
-        "us": "Any video with a subtitle track",
+        "us": "Subtitle tracks + on-screen captions (YouTube, Netflix…)",
         "them": "Any audio, even without subtitles"
       }
     }
@@ -208,16 +226,38 @@
     "updated": "Last updated: August 26, 2026",
     "intro": "Voxylio is designed to work on your device. This page describes exactly what the extension does with data — and what it never does.",
     "p1Title": "What Voxylio processes",
-    "p1": "Voxylio reads the subtitle track of the video you are watching in order to translate it and speak it aloud. Your settings (languages, voice, speed, volume) are stored in your browser's extension storage, synced by Chrome to your own profile. Nothing else is read, collected or stored. If you create an account, Voxylio additionally stores your email address and your plan — nothing more.",
+    "p1": "Voxylio reads the subtitles of the video you are watching — the player's track or the captions shown on screen — to translate them and speak them aloud. Your settings (languages, voices, speed, volume, glossary) live in your browser's extension storage, synced by Chrome on your own profile; your dubbing history and statistics stay in that local storage too, and are never transmitted. If you create an account, Voxylio additionally stores your email address and your plan — nothing more.",
     "p2Title": "Local by default",
     "p2": "Translation runs on your device with Chrome's built-in translation API whenever it is available. In that mode, no text ever leaves your computer. Speech is generated by your system's voices, also locally.",
     "p3Title": "The online fallback",
     "p3": "When Chrome's local translator is unavailable, Voxylio can send individual subtitle sentences to an online translation service to keep the dubbing going. These are sentences from the video's public subtitles — never your personal data, browsing history or account information. You can disable this entirely with \"Strict local mode\" in the popup; Voxylio will then wait for the local translator instead of going online. Pro features, if you enable them, send those same subtitle sentences to the Voxylio API, which has them translated or voiced by an AI provider — same rule: only the video's subtitle text, never your personal data or browsing history.",
     "p4Title": "What Voxylio never does",
-    "p4": "No analytics, no tracking, no ads, no fingerprinting. Your account holds your email address and your plan, nothing else — Voxylio does not sell or share any personal data and keeps no history of what you watch. The broad site access permission exists only so the extension can find the video player and its subtitle track on the page you are visiting; it is never used to read anything else.",
+    "p4": "No analytics, no tracking, no ads, no fingerprinting. Your account holds only your email address and your plan — Voxylio sells or shares no personal data, and keeps no record of what you watch on its servers: the dubbing history in the hub lives on your device only. The broad site permission is used solely to find the video player and its subtitles on the page you visit; it is never used to read anything else.",
     "p5Title": "Your data, your control",
     "p5": "The \"Reset\" button in the popup restores default settings and deletes everything the extension has stored. Removing the extension removes all of its data.",
     "contact": "Questions? Open an issue on GitHub or reach out to the author."
+  },
+  "Terms": {
+    "title": "Terms of Service",
+    "updated": "Last updated: August 26, 2026",
+    "intro": "These terms govern your use of Voxylio — the browser extension, the website and the Voxylio account. By using Voxylio, you agree to them.",
+    "s1Title": "The service",
+    "s1": "Voxylio dubs subtitled videos in real time, in your browser. Free features run on your device; Pro features are provided from our servers within monthly allowances.",
+    "s2Title": "Your account",
+    "s2": "Dubbing requires a free account (Google sign-in). You are responsible for the activity under your account, and you can unlink the extension or delete the account at any time from the account page.",
+    "s3Title": "Free plan",
+    "s3": "Local features are free and unlimited. The product evolves over time, but what runs on your device is not metered and requires no payment method.",
+    "s4Title": "Pro subscription",
+    "s4": "Pro is billed monthly or yearly by our payment partner Polar, acting as merchant of record. You can cancel anytime: Pro stays active until the end of the paid period, then the plan returns to free. Monthly allowances renew each period; unused volume does not carry over.",
+    "s5Title": "Fair use",
+    "s5": "Allowances are sized for personal, human viewing. Automating requests, scraping, reselling access or sharing an account beyond normal personal use may lead to suspension, after notice where possible.",
+    "s6Title": "Third-party sites",
+    "s6": "Voxylio reads subtitles inside your own browser, on sites you choose to visit. You remain responsible for complying with those sites' own terms. Voxylio is not affiliated with YouTube, Netflix or any platform it works on.",
+    "s7Title": "No warranty",
+    "s7": "Voxylio is provided “as is”, without warranty. Player changes, browser updates or provider outages can degrade features. To the extent permitted by law, our liability is limited to the amounts you paid in the last 12 months.",
+    "s8Title": "Changes to these terms",
+    "s8": "We may update these terms; significant changes are announced on this page with a new date above. Continuing to use Voxylio after a change means you accept it.",
+    "contact": "Questions? Open an issue on GitHub or contact the author."
   },
   "Changelog": {
     "title": "Changelog",
@@ -313,6 +353,22 @@
         "f5": "One account across all your browsers"
       }
     },
-    "billedYearly": "billed at $69.99/year"
+    "billedYearly": "billed at $69.99/year",
+    "modal": {
+      "trigger": "How pricing works",
+      "title": "Pricing, explained",
+      "intro": "Two plans, one promise: whatever runs on your device is free and unlimited — Pro funds what needs a server.",
+      "freeTitle": "Free — local and unlimited",
+      "freeBody": "On-device translation (Chrome's built-in AI), your system voices, bilingual captions, glossary, history and stats: no quota, no card. A free Google sign-in is the only requirement.",
+      "proTitle": "Pro — the cloud on top",
+      "proBody": "Context-aware AI translation (whole scenes stay coherent) and natural neural voices in 7 languages. $7.99/month or $69.99/year (−27%).",
+      "meterTitle": "A generous monthly allowance",
+      "meterBody": "Pro draws from a monthly volume of AI translation and neural speech sized for heavy, daily watching. Only the line being translated counts — never the context sent around it.",
+      "fallbackTitle": "Never interrupted",
+      "fallbackBody": "Allowance reached, or a language without a neural voice yet? The very next line continues with the free local engine. A video is never cut.",
+      "cancelTitle": "Cancel anytime",
+      "cancelBody": "Manage or cancel from your account page. Pro stays active until the end of the paid period — then you keep the full free plan.",
+      "close": "Close"
+    }
   }
 }

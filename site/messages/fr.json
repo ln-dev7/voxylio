@@ -12,8 +12,7 @@
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
     "account": "Compte",
-    "pricing": "Tarifs",
-    "changelog": "Nouveautés"
+    "pricing": "Tarifs"
   },
   "Hero": {
     "title": "Suivez n’importe quelle vidéo <accent>dans votre langue</accent>",
@@ -78,7 +77,9 @@
   },
   "Languages": {
     "title": "<count></count> langues, dans les deux sens",
-    "subtitle": "La langue source est détectée automatiquement — doublez de n'importe quelle langue vers la vôtre."
+    "subtitle": "La langue source est détectée automatiquement — doublez de n'importe quelle langue vers la vôtre.",
+    "showAll": "Afficher les {count} langues",
+    "showLess": "Afficher moins"
   },
   "Install": {
     "title": "Installée en deux minutes",
@@ -97,15 +98,14 @@
         "description": "Ouvrez une vidéo sous-titrée et appuyez sur « Lancer le doublage » — Voxylio la parle dans votre langue."
       }
     },
-    "ctaStore": "Ajouter à Chrome",
-    "cta": "Récupérer Voxylio sur GitHub"
+    "ctaStore": "Ajouter à Chrome"
   },
   "Faq": {
     "title": "Questions fréquentes",
     "items": {
       "sites": {
         "question": "Sur quels sites ça fonctionne ?",
-        "answer": "Tout site dont le lecteur expose une piste de sous-titres — plateformes de cours, vidéos de documentation, la plupart des lecteurs HTML5. Si le lecteur affiche ses sous-titres sans piste texte, le doublage n’est pas encore possible."
+        "answer": "Tout site dont le lecteur expose une piste de sous-titres — plus les sous-titres affichés de YouTube, Netflix, Prime Video, Disney+ et Twitch, que Voxylio lit directement sur la page. S'ils sont désactivés, il peut souvent les activer pour vous."
       },
       "cost": {
         "question": "C’est vraiment gratuit ?",
@@ -119,6 +119,14 @@
         "question": "Que comprend le plan Pro ?",
         "answer": "Tout ce qui est local reste gratuit et illimité. Le Pro finance les fonctions qui demandent un serveur : la traduction contextuelle — les phrases voisines sont envoyées ensemble pour garder pronoms, ton, noms propres et terminologie justes — et les voix neurales naturelles en 7 langues (anglais, espagnol, allemand, français, néerlandais, italien, japonais), chacune dans la limite d'un volume mensuel généreux. Quand un volume est épuisé, ou pour toute autre langue, le doublage continue simplement avec le moteur local gratuit — une vidéo n'est jamais interrompue. Les résumés et la synchronisation entre appareils rejoindront le Pro au fil du temps."
       },
+      "quota": {
+        "question": "Que se passe-t-il quand un volume Pro est épuisé ?",
+        "answer": "Le doublage ne s'arrête jamais. Dès qu'un volume est atteint, les répliques continuent avec le moteur local gratuit, et le volume se recharge à la période mensuelle suivante."
+      },
+      "glossary": {
+        "question": "Puis-je contrôler la traduction de certains termes ?",
+        "answer": "Oui — le glossaire, dans le centre de réglages de l'extension. « terme = traduction » impose votre formulation partout, et un terme seul n'est jamais traduit (noms, marques, mots techniques). Il s'applique à tous les moteurs, Pro compris."
+      },
       "voice": {
         "question": "Comment améliorer la qualité de la voix ?",
         "answer": "Installez de meilleures voix système. Sur macOS : Réglages Système → Accessibilité → Contenu énoncé → téléchargez une voix premium pour votre langue, puis choisissez-la dans le popup."
@@ -130,6 +138,14 @@
       "youtube": {
         "question": "Quelle différence avec le doublage automatique de YouTube ?",
         "answer": "Le doublage de YouTube n’existe que sur YouTube. Voxylio apporte la même expérience — traduction par phrases, voix unique, audio original baissé — à n’importe quel site sous-titré."
+      },
+      "cancel": {
+        "question": "Comment annuler ou gérer mon abonnement ?",
+        "answer": "Depuis votre page de compte, en deux clics, à tout moment. Pro reste actif jusqu'à la fin de la période payée, puis le plan redevient simplement gratuit — vos réglages et votre historique restent."
+      },
+      "offline": {
+        "question": "Ça fonctionne hors ligne ?",
+        "answer": "Oui pour le moteur local : une fois le modèle de traduction téléchargé par Chrome pour votre paire, le doublage fonctionne sans connexion, avec vos voix système. Le repli en ligne et les fonctions Pro en ont besoin."
       }
     }
   },
@@ -146,7 +162,9 @@
       "faq": "FAQ",
       "license": "Licence MIT",
       "issues": "Signaler un problème",
-      "privacy": "Confidentialité"
+      "privacy": "Confidentialité",
+      "changelog": "Nouveautés",
+      "terms": "Conditions"
     },
     "theme": {
       "label": "Thème",
@@ -188,7 +206,7 @@
       },
       "privacy": {
         "label": "Vie privée",
-        "us": "Traduction locale — rien ne quitte votre navigateur",
+        "us": "Local par défaut — votre audio n'est jamais capturé",
         "them": "Votre audio est envoyé sur leurs serveurs"
       },
       "sync": {
@@ -198,7 +216,7 @@
       },
       "coverage": {
         "label": "Couverture",
-        "us": "Toute vidéo avec piste de sous-titres",
+        "us": "Pistes de sous-titres + sous-titres affichés (YouTube, Netflix…)",
         "them": "Tout audio, même sans sous-titres"
       }
     }
@@ -208,16 +226,38 @@
     "updated": "Dernière mise à jour : 26 août 2026",
     "intro": "Voxylio est conçu pour fonctionner sur votre appareil. Cette page décrit exactement ce que l’extension fait des données — et ce qu’elle ne fait jamais.",
     "p1Title": "Ce que Voxylio traite",
-    "p1": "Voxylio lit la piste de sous-titres de la vidéo que vous regardez afin de la traduire et de la lire à voix haute. Vos réglages (langues, voix, vitesse, volume) sont conservés dans le stockage d’extension de votre navigateur, synchronisé par Chrome sur votre propre profil. Rien d’autre n’est lu, collecté ou conservé. Si vous créez un compte, Voxylio conserve en plus votre adresse e-mail et votre plan — rien de plus.",
+    "p1": "Voxylio lit les sous-titres de la vidéo que vous regardez — la piste du lecteur ou les sous-titres affichés à l'écran — pour les traduire et les lire à voix haute. Vos réglages (langues, voix, vitesse, volume, glossaire) sont conservés dans le stockage d'extension de votre navigateur, synchronisé par Chrome sur votre propre profil ; votre historique de doublage et ses statistiques restent eux aussi dans ce stockage local, et ne sont jamais transmis. Si vous créez un compte, Voxylio conserve en plus votre adresse e-mail et votre plan — rien de plus.",
     "p2Title": "Local par défaut",
     "p2": "La traduction s’exécute sur votre appareil avec l’API de traduction intégrée de Chrome dès qu’elle est disponible. Dans ce mode, aucun texte ne quitte votre ordinateur. La voix est générée par les voix de votre système, localement aussi.",
     "p3Title": "Le fallback en ligne",
     "p3": "Quand le traducteur local de Chrome est indisponible, Voxylio peut envoyer des phrases de sous-titres, une par une, à un service de traduction en ligne pour maintenir le doublage. Ce sont des phrases des sous-titres publics de la vidéo — jamais vos données personnelles, votre historique ou vos informations de compte. Vous pouvez désactiver ce mécanisme avec le « Mode strictement local » du popup ; Voxylio attendra alors le traducteur local au lieu de passer en ligne. Les fonctions Pro, si vous les activez, envoient ces mêmes phrases de sous-titres à l'API Voxylio, qui les fait traduire ou lire par un fournisseur d'IA — même règle : uniquement le texte des sous-titres de la vidéo, jamais vos données personnelles ni votre historique.",
     "p4Title": "Ce que Voxylio ne fait jamais",
-    "p4": "Pas d'analytics, pas de tracking, pas de publicité, pas de fingerprinting. Votre compte ne contient que votre adresse e-mail et votre plan — Voxylio ne vend ni ne partage aucune donnée personnelle et ne garde aucun historique de ce que vous regardez. La permission d'accès étendue aux sites sert uniquement à trouver le lecteur vidéo et sa piste de sous-titres sur la page visitée ; elle ne sert jamais à lire quoi que ce soit d'autre.",
+    "p4": "Pas d'analytics, pas de tracking, pas de publicité, pas de fingerprinting. Votre compte ne contient que votre adresse e-mail et votre plan — Voxylio ne vend ni ne partage aucune donnée personnelle, et ne conserve sur ses serveurs aucune trace de ce que vous regardez : l'historique de doublage du hub vit uniquement sur votre appareil. La permission d'accès étendue aux sites sert uniquement à trouver le lecteur vidéo et ses sous-titres sur la page visitée ; elle ne sert jamais à lire quoi que ce soit d'autre.",
     "p5Title": "Vos données, votre contrôle",
     "p5": "Le bouton « Réinitialiser » du popup rétablit les réglages par défaut et supprime tout ce que l’extension a stocké. Désinstaller l’extension supprime toutes ses données.",
     "contact": "Une question ? Ouvrez une issue sur GitHub ou contactez l’auteur."
+  },
+  "Terms": {
+    "title": "Conditions d'utilisation",
+    "updated": "Dernière mise à jour : 26 août 2026",
+    "intro": "Ces conditions encadrent votre utilisation de Voxylio — l'extension, le site et le compte Voxylio. En utilisant Voxylio, vous les acceptez.",
+    "s1Title": "Le service",
+    "s1": "Voxylio double en temps réel les vidéos sous-titrées, dans votre navigateur. Les fonctions gratuites s'exécutent sur votre appareil ; les fonctions Pro sont fournies depuis nos serveurs, dans la limite de volumes mensuels.",
+    "s2Title": "Votre compte",
+    "s2": "Le doublage nécessite un compte gratuit (connexion Google). Vous êtes responsable de l'activité de votre compte, et vous pouvez délier l'extension ou supprimer le compte à tout moment depuis la page de compte.",
+    "s3Title": "Plan gratuit",
+    "s3": "Les fonctions locales sont gratuites et illimitées. Le produit évolue, mais ce qui s'exécute sur votre appareil n'est pas mesuré et n'exige aucun moyen de paiement.",
+    "s4Title": "Abonnement Pro",
+    "s4": "Pro est facturé mensuellement ou annuellement par notre partenaire de paiement Polar, qui agit comme marchand officiel. Vous pouvez annuler à tout moment : Pro reste actif jusqu'à la fin de la période payée, puis le plan redevient gratuit. Les volumes mensuels se renouvellent à chaque période ; le volume non utilisé n'est pas reporté.",
+    "s5Title": "Usage raisonnable",
+    "s5": "Les volumes sont dimensionnés pour un visionnage personnel et humain. Automatiser des requêtes, extraire massivement, revendre l'accès ou partager un compte au-delà d'un usage personnel normal peut entraîner une suspension, après notification quand c'est possible.",
+    "s6Title": "Sites tiers",
+    "s6": "Voxylio lit les sous-titres dans votre propre navigateur, sur les sites que vous choisissez de visiter. Vous restez responsable du respect des conditions de ces sites. Voxylio n'est affilié ni à YouTube, ni à Netflix, ni à aucune plateforme sur laquelle il fonctionne.",
+    "s7Title": "Absence de garantie",
+    "s7": "Voxylio est fourni « tel quel », sans garantie. Un changement de lecteur, une mise à jour du navigateur ou une panne de fournisseur peuvent dégrader des fonctions. Dans la limite permise par la loi, notre responsabilité est limitée aux montants payés au cours des 12 derniers mois.",
+    "s8Title": "Évolution des conditions",
+    "s8": "Ces conditions peuvent évoluer ; les changements notables sont annoncés sur cette page avec une nouvelle date ci-dessus. Continuer à utiliser Voxylio après un changement vaut acceptation.",
+    "contact": "Une question ? Ouvrez une issue sur GitHub ou contactez l'auteur."
   },
   "Changelog": {
     "title": "Nouveautés",
@@ -313,6 +353,22 @@
         "f5": "Un même compte sur tous vos navigateurs"
       }
     },
-    "billedYearly": "facturé 69,99 $/an"
+    "billedYearly": "facturé 69,99 $/an",
+    "modal": {
+      "trigger": "Comprendre les tarifs",
+      "title": "Les tarifs, expliqués",
+      "intro": "Deux plans, une promesse : ce qui tourne sur votre appareil est gratuit et illimité — Pro finance ce qui demande un serveur.",
+      "freeTitle": "Gratuit — local et illimité",
+      "freeBody": "Traduction sur l'appareil (IA intégrée de Chrome), vos voix système, sous-titres bilingues, glossaire, historique et statistiques : sans quota, sans carte. Une connexion Google gratuite est la seule condition.",
+      "proTitle": "Pro — le cloud en plus",
+      "proBody": "Traduction IA contextuelle (des scènes entières cohérentes) et voix neurales naturelles en 7 langues. 7,99 $/mois ou 69,99 $/an (−27 %).",
+      "meterTitle": "Un volume mensuel généreux",
+      "meterBody": "Pro puise dans un volume mensuel de traduction IA et de voix neurale dimensionné pour un visionnage quotidien intensif. Seule la réplique traduite compte — jamais le contexte envoyé autour.",
+      "fallbackTitle": "Jamais interrompu",
+      "fallbackBody": "Volume atteint, ou langue sans voix neurale ? La réplique suivante continue avec le moteur local gratuit. Une vidéo n'est jamais coupée.",
+      "cancelTitle": "Annulable à tout moment",
+      "cancelBody": "Gérez ou annulez depuis votre page de compte. Pro reste actif jusqu'à la fin de la période payée — puis vous gardez le plan gratuit complet.",
+      "close": "Fermer"
+    }
   }
 }

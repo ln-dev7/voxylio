@@ -1,9 +1,8 @@
 import { useTranslations } from "next-intl";
 import { Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { GitHubIcon } from "@/components/github-icon";
 import { SpotlightCard } from "@/components/spotlight-card";
-import { CHROME_STORE_URL, GITHUB_URL } from "@/lib/constants";
+import { CHROME_STORE_URL } from "@/lib/constants";
 
 const STEPS = ["store", "signin", "play"] as const;
 
@@ -38,7 +37,7 @@ export function Install() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+        <div className="mt-12 flex justify-center">
           <Button
             asChild
             size="lg"
@@ -47,17 +46,6 @@ export function Install() {
             <a href={CHROME_STORE_URL} target="_blank" rel="noreferrer">
               <Store className="size-4" aria-hidden="true" />
               {t("ctaStore")}
-            </a>
-          </Button>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className="h-12 rounded-full bg-card px-7 text-[15px] backdrop-blur-sm"
-          >
-            <a href={GITHUB_URL} target="_blank" rel="noreferrer">
-              <GitHubIcon className="size-4" />
-              {t("cta")}
             </a>
           </Button>
         </div>

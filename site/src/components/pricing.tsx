@@ -1,11 +1,105 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ArrowRight, Check, Download } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Check,
+  CircleHelp,
+  Cloud,
+  Download,
+  Gauge,
+  ShieldCheck,
+  Sparkles,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+
+/** "How pricing works": a small dialog that spells the model out —
+ *  local = free forever, Pro = the cloud on top, allowances, fallback,
+ *  cancellation. Opened from a discreet button under the section title. */
+function PricingModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const t = useTranslations("Pricing.modal");
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  const sections = [
+    { icon: BadgeCheck, title: t("freeTitle"), body: t("freeBody") },
+    { icon: Sparkles, title: t("proTitle"), body: t("proBody") },
+    { icon: Gauge, title: t("meterTitle"), body: t("meterBody") },
+    { icon: ShieldCheck, title: t("fallbackTitle"), body: t("fallbackBody") },
+    { icon: Cloud, title: t("cancelTitle"), body: t("cancelBody") },
+  ] as const;
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-label={t("title")}
+    >
+      <button
+        type="button"
+        aria-label={t("close")}
+        onClick={onClose}
+        className="absolute inset-0 cursor-default bg-black/60 backdrop-blur-sm"
+      />
+      <div className="relative max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-border bg-background p-6 shadow-2xl sm:p-8">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h3 className="font-display text-xl font-semibold tracking-tight">
+              {t("title")}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              {t("intro")}
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="shrink-0 rounded-full"
+            onClick={onClose}
+            aria-label={t("close")}
+          >
+            <X className="size-4" />
+          </Button>
+        </div>
+        <div className="mt-6 space-y-5">
+          {sections.map(({ icon: Icon, title, body }) => (
+            <div key={title} className="flex gap-3.5">
+              <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg bg-primary/12 text-primary">
+                <Icon className="size-4" aria-hidden="true" />
+              </span>
+              <div>
+                <h4 className="text-sm font-semibold">{title}</h4>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  {body}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 type Cadence = "monthly" | "yearly";
 
@@ -20,6 +114,7 @@ const PRO_FEATURES = ["f1", "f2", "f3", "f4", "f5"] as const;
 export function Pricing() {
   const t = useTranslations("Pricing");
   const [cadence, setCadence] = useState<Cadence>("yearly");
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <section id="pricing" className="py-20 sm:py-28">
@@ -29,6 +124,15 @@ export function Pricing() {
             {t("title")}
           </h2>
           <p className="text-pretty text-sm text-muted-foreground">{t("subtitle")}</p>
+
+          <button
+            type="button"
+            onClick={() => setModalOpen(true)}
+            className="inline-flex cursor-pointer items-center gap-1.5 text-xs font-medium text-primary underline-offset-4 transition-colors hover:underline"
+          >
+            <CircleHelp className="size-3.5" aria-hidden="true" />
+            {t("modal.trigger")}
+          </button>
 
           {/* Billing cadence */}
           <div className="inline-flex items-center rounded-full border border-border bg-muted/40 p-0.5">
@@ -142,6 +246,8 @@ export function Pricing() {
 
         <p className="mt-8 text-center text-xs text-muted-foreground/70">{t("note")}</p>
       </div>
+
+      <PricingModal open={modalOpen} onClose={() => setModalOpen(false)} />
     </section>
   );
 }

@@ -75,6 +75,14 @@ export function SiteFooter() {
                   </a>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/changelog"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t("links.changelog")}
+                </Link>
+              </li>
             </ul>
           </nav>
           <nav aria-label={t("resources")}>
@@ -100,6 +108,14 @@ export function SiteFooter() {
                   className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {t("links.privacy")}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/terms"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t("links.terms")}
                 </Link>
               </li>
             </ul>
