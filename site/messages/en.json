@@ -17,7 +17,7 @@
   "Hero": {
     "title": "Watch any video in <accent>your language</accent>",
     "subtitle": "Voxylio is a Chrome extension that dubs subtitled videos in real time. It rebuilds full sentences from the captions, translates them locally, and speaks over the video — in sync with playback.",
-    "ctaInstall": "Install the extension",
+    "ctaInstall": "Add to Chrome",
     "ctaGithub": "View on GitHub",
     "note": "Works on videos whose player exposes a subtitle track — most course platforms do.",
     "ticks": {
@@ -81,23 +81,23 @@
   },
   "Install": {
     "title": "Install in two minutes",
-    "subtitle": "Voxylio is not on the Chrome Web Store yet — install it as an unpacked extension.",
+    "subtitle": "Now on the Chrome Web Store — one click to install, updates arrive on their own.",
     "steps": {
-      "clone": {
-        "title": "Get the code",
-        "description": "Clone the repository or download it as a ZIP, then keep the extension folder somewhere permanent."
+      "store": {
+        "title": "Add it to Chrome",
+        "description": "One click from the Chrome Web Store — no developer mode, nothing to configure."
       },
-      "load": {
-        "title": "Load it in Chrome",
-        "description": "Open chrome://extensions, enable Developer mode, click “Load unpacked” and select the extension folder."
+      "signin": {
+        "title": "Sign in with Google",
+        "description": "Open the popup and sign in — the free account unlocks dubbing. No card needed."
       },
       "play": {
         "title": "Play a video",
-        "description": "Open any subtitled video, sign in with Google from the popup, then flip the switch."
+        "description": "Open any subtitled video and press “Start dubbing” — Voxylio speaks it in your language."
       }
     },
-    "cta": "Get Voxylio on GitHub",
-    "storeSoon": "Coming soon to the Chrome Web Store"
+    "ctaStore": "Add to Chrome",
+    "cta": "Get Voxylio on GitHub"
   },
   "Faq": {
     "title": "Frequently asked questions",

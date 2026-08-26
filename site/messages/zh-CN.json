@@ -17,7 +17,7 @@
   "Hero": {
     "title": "用<accent>你的语言</accent>观看任何视频",
     "subtitle": "Voxylio 是一款实时为带字幕视频配音的 Chrome 扩展。它从字幕中重建完整句子，在本地完成翻译，并与播放同步地在视频上朗读出来。",
-    "ctaInstall": "安装扩展",
+    "ctaInstall": "添加到 Chrome",
     "ctaGithub": "在 GitHub 查看",
     "note": "适用于播放器公开字幕轨道的视频 — 大多数课程平台都支持。",
     "ticks": {
@@ -81,23 +81,23 @@
   },
   "Install": {
     "title": "两分钟完成安装",
-    "subtitle": "Voxylio 尚未上架 Chrome 应用商店 — 请以「加载已解压的扩展程序」方式安装。",
+    "subtitle": "已上架 Chrome Web Store — 一键安装，更新自动送达。",
     "steps": {
-      "clone": {
-        "title": "获取代码",
-        "description": "克隆仓库或下载 ZIP，然后把扩展文件夹放到一个固定位置。"
+      "store": {
+        "title": "添加到 Chrome",
+        "description": "在 Chrome Web Store 一键完成 — 无需开发者模式，无需任何配置。"
       },
-      "load": {
-        "title": "加载到 Chrome",
-        "description": "打开 chrome://extensions，启用开发者模式，点击「加载已解压的扩展程序」并选择扩展文件夹。"
+      "signin": {
+        "title": "使用 Google 登录",
+        "description": "打开弹窗并登录 — 免费账号即可启用配音，无需绑卡。"
       },
       "play": {
         "title": "播放视频",
-        "description": "打开任意带字幕的视频，在弹窗中用 Google 登录，然后打开开关。"
+        "description": "打开任意带字幕的视频，点击“开始配音” — Voxylio 用你的语言说给你听。"
       }
     },
-    "cta": "在 GitHub 获取 Voxylio",
-    "storeSoon": "即将上架 Chrome 应用商店"
+    "ctaStore": "添加到 Chrome",
+    "cta": "在 GitHub 获取 Voxylio"
   },
   "Faq": {
     "title": "常见问题",

@@ -17,7 +17,7 @@
   "Hero": {
     "title": "どんな動画も<accent>あなたの言語</accent>で",
     "subtitle": "Voxylioは、字幕付き動画をリアルタイムで吹き替えるChrome拡張機能です。字幕から完全な文を組み立て、ローカルで翻訳し、再生に同期して動画の上から読み上げます。",
-    "ctaInstall": "拡張機能をインストール",
+    "ctaInstall": "Chrome に追加",
     "ctaGithub": "GitHubで見る",
     "note": "プレイヤーが字幕トラックを公開している動画で動作します — ほとんどの学習プラットフォームが対応しています。",
     "ticks": {
@@ -81,23 +81,23 @@
   },
   "Install": {
     "title": "2分でインストール",
-    "subtitle": "VoxylioはまだChromeウェブストアにありません — パッケージ化されていない拡張機能として読み込んでください。",
+    "subtitle": "Chrome Web Store で公開中 — ワンクリックでインストール、更新は自動で届きます。",
     "steps": {
-      "clone": {
-        "title": "コードを入手",
-        "description": "リポジトリをクローンするかZIPでダウンロードし、拡張機能フォルダを恒久的な場所に置きます。"
+      "store": {
+        "title": "Chrome に追加する",
+        "description": "Chrome Web Store からワンクリック — デベロッパーモードも設定も不要です。"
       },
-      "load": {
-        "title": "Chromeに読み込む",
-        "description": "chrome://extensions を開き、デベロッパーモードを有効にして「パッケージ化されていない拡張機能を読み込む」を押し、フォルダを選択します。"
+      "signin": {
+        "title": "Google でログイン",
+        "description": "ポップアップを開いてログイン — 無料アカウントで吹き替えが有効になります。カード登録は不要です。"
       },
       "play": {
         "title": "動画を再生",
-        "description": "字幕付きの動画を開き、ポップアップから Google でサインインして、スイッチをオンにします。"
+        "description": "字幕付きの動画を開いて「吹き替えを開始」を押すだけ — Voxylio があなたの言語で話します。"
       }
     },
-    "cta": "GitHubでVoxylioを入手",
-    "storeSoon": "Chromeウェブストアに近日公開"
+    "ctaStore": "Chrome に追加",
+    "cta": "GitHubでVoxylioを入手"
   },
   "Faq": {
     "title": "よくある質問",

@@ -17,7 +17,7 @@
   "Hero": {
     "title": "Schau jedes Video in <accent>deiner Sprache</accent>",
     "subtitle": "Voxylio ist eine Chrome-Erweiterung, die untertitelte Videos in Echtzeit synchronisiert. Sie baut aus den Untertiteln vollständige Sätze, übersetzt sie lokal und spricht sie über das Video — synchron zur Wiedergabe.",
-    "ctaInstall": "Erweiterung installieren",
+    "ctaInstall": "Zu Chrome hinzufügen",
     "ctaGithub": "Auf GitHub ansehen",
     "note": "Funktioniert bei Videos, deren Player eine Untertitelspur bereitstellt — die meisten Kursplattformen tun das.",
     "ticks": {
@@ -81,23 +81,23 @@
   },
   "Install": {
     "title": "In zwei Minuten installiert",
-    "subtitle": "Voxylio ist noch nicht im Chrome Web Store — installiere es als entpackte Erweiterung.",
+    "subtitle": "Jetzt im Chrome Web Store — ein Klick zur Installation, Updates kommen von selbst.",
     "steps": {
-      "clone": {
-        "title": "Code holen",
-        "description": "Klone das Repository oder lade es als ZIP herunter und lege den Erweiterungsordner an einen dauerhaften Ort."
+      "store": {
+        "title": "Füge sie zu Chrome hinzu",
+        "description": "Ein Klick im Chrome Web Store — kein Entwicklermodus, nichts zu konfigurieren."
       },
-      "load": {
-        "title": "In Chrome laden",
-        "description": "Öffne chrome://extensions, aktiviere den Entwicklermodus, klicke auf „Entpackte Erweiterung laden“ und wähle den Ordner."
+      "signin": {
+        "title": "Melde dich mit Google an",
+        "description": "Öffne das Popup und melde dich an — das kostenlose Konto schaltet die Synchronisation frei. Ohne Kreditkarte."
       },
       "play": {
         "title": "Video abspielen",
-        "description": "Öffne ein untertiteltes Video, melde dich im Popup mit Google an und leg den Schalter um."
+        "description": "Öffne ein Video mit Untertiteln und drücke „Dubbing starten“ — Voxylio spricht es in deiner Sprache."
       }
     },
-    "cta": "Voxylio auf GitHub holen",
-    "storeSoon": "Bald im Chrome Web Store"
+    "ctaStore": "Zu Chrome hinzufügen",
+    "cta": "Voxylio auf GitHub holen"
   },
   "Faq": {
     "title": "Häufige Fragen",

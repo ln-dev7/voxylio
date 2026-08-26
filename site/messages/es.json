@@ -17,7 +17,7 @@
   "Hero": {
     "title": "Mira cualquier vídeo en <accent>tu idioma</accent>",
     "subtitle": "Voxylio es una extensión de Chrome que dobla vídeos subtitulados en tiempo real. Reconstruye frases completas a partir de los subtítulos, las traduce localmente y las lee sobre el vídeo, en sincronía con la reproducción.",
-    "ctaInstall": "Instalar la extensión",
+    "ctaInstall": "Añadir a Chrome",
     "ctaGithub": "Ver en GitHub",
     "note": "Funciona con los vídeos cuyo reproductor expone una pista de subtítulos — la mayoría de las plataformas de cursos lo hacen.",
     "ticks": {
@@ -81,23 +81,23 @@
   },
   "Install": {
     "title": "Instálalo en dos minutos",
-    "subtitle": "Voxylio aún no está en la Chrome Web Store — instálalo como extensión sin empaquetar.",
+    "subtitle": "Ya en la Chrome Web Store — un clic para instalarla y las actualizaciones llegan solas.",
     "steps": {
-      "clone": {
-        "title": "Descarga el código",
-        "description": "Clona el repositorio o descárgalo como ZIP y guarda la carpeta de la extensión en un lugar permanente."
+      "store": {
+        "title": "Añádela a Chrome",
+        "description": "Un clic desde la Chrome Web Store — sin modo desarrollador, nada que configurar."
       },
-      "load": {
-        "title": "Cárgalo en Chrome",
-        "description": "Abre chrome://extensions, activa el modo desarrollador, pulsa «Cargar descomprimida» y elige la carpeta de la extensión."
+      "signin": {
+        "title": "Inicia sesión con Google",
+        "description": "Abre el popup e inicia sesión — la cuenta gratuita activa el doblaje. Sin tarjeta."
       },
       "play": {
         "title": "Reproduce un vídeo",
-        "description": "Abre cualquier vídeo subtitulado, inicia sesión con Google desde el popup y activa el interruptor."
+        "description": "Abre un vídeo subtitulado y pulsa «Iniciar el doblaje» — Voxylio lo habla en tu idioma."
       }
     },
-    "cta": "Consigue Voxylio en GitHub",
-    "storeSoon": "Muy pronto en la Chrome Web Store"
+    "ctaStore": "Añadir a Chrome",
+    "cta": "Consigue Voxylio en GitHub"
   },
   "Faq": {
     "title": "Preguntas frecuentes",

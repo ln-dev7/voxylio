@@ -17,7 +17,7 @@
   "Hero": {
     "title": "어떤 영상이든 <accent>내 언어로</accent>",
     "subtitle": "Voxylio는 자막 있는 영상을 실시간으로 더빙하는 Chrome 확장 프로그램입니다. 자막에서 완전한 문장을 재구성하고, 로컬에서 번역한 뒤, 재생에 맞춰 영상 위로 읽어 줍니다.",
-    "ctaInstall": "확장 프로그램 설치",
+    "ctaInstall": "Chrome에 추가",
     "ctaGithub": "GitHub에서 보기",
     "note": "플레이어가 자막 트랙을 제공하는 영상에서 작동합니다 — 대부분의 강의 플랫폼이 해당됩니다.",
     "ticks": {
@@ -81,23 +81,23 @@
   },
   "Install": {
     "title": "2분이면 설치 완료",
-    "subtitle": "Voxylio는 아직 Chrome 웹 스토어에 없습니다 — 압축해제된 확장 프로그램으로 설치하세요.",
+    "subtitle": "Chrome Web Store에 공개되었습니다 — 클릭 한 번으로 설치되고 업데이트는 자동으로 도착합니다.",
     "steps": {
-      "clone": {
-        "title": "코드 받기",
-        "description": "저장소를 클론하거나 ZIP으로 내려받고, 확장 프로그램 폴더를 영구적인 위치에 두세요."
+      "store": {
+        "title": "Chrome에 추가하세요",
+        "description": "Chrome Web Store에서 클릭 한 번 — 개발자 모드도 설정도 필요 없습니다."
       },
-      "load": {
-        "title": "Chrome에 로드",
-        "description": "chrome://extensions 를 열고 개발자 모드를 켠 뒤 「압축해제된 확장 프로그램을 로드합니다」를 눌러 폴더를 선택하세요."
+      "signin": {
+        "title": "Google로 로그인",
+        "description": "팝업을 열고 로그인하세요 — 무료 계정으로 더빙이 활성화됩니다. 카드 등록은 필요 없습니다."
       },
       "play": {
         "title": "영상 재생",
-        "description": "자막 있는 영상을 열고, 팝업에서 Google로 로그인한 뒤 스위치를 켜세요."
+        "description": "자막 있는 영상을 열고 ‘더빙 시작’을 누르세요 — Voxylio가 당신의 언어로 말해줍니다."
       }
     },
-    "cta": "GitHub에서 Voxylio 받기",
-    "storeSoon": "곧 Chrome 웹 스토어에 출시"
+    "ctaStore": "Chrome에 추가",
+    "cta": "GitHub에서 Voxylio 받기"
   },
   "Faq": {
     "title": "자주 묻는 질문",

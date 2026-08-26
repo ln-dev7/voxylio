@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { GitHubIcon } from "@/components/github-icon";
 import { Aurora } from "@/components/aurora";
 import { DubDemo } from "@/components/dub-demo";
-import { Link } from "@/i18n/navigation";
-import { GITHUB_URL } from "@/lib/constants";
+import { CHROME_STORE_URL, GITHUB_URL } from "@/lib/constants";
 
 export function Hero() {
   const t = useTranslations("Hero");
@@ -33,10 +32,10 @@ export function Hero() {
               size="lg"
               className="h-12 rounded-full px-7 text-[15px] shadow-[0_0_40px_rgba(30,215,96,0.25)] transition-shadow hover:shadow-[0_0_60px_rgba(30,215,96,0.4)]"
             >
-              <Link href={{ pathname: "/", hash: "install" }}>
+              <a href={CHROME_STORE_URL} target="_blank" rel="noreferrer">
                 <Download data-slot="icon" />
                 {t("ctaInstall")}
-              </Link>
+              </a>
             </Button>
             <Button
               asChild

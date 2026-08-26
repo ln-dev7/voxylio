@@ -17,7 +17,7 @@
   "Hero": {
     "title": "Assista a qualquer vídeo no <accent>seu idioma</accent>",
     "subtitle": "O Voxylio é uma extensão Chrome que dubla vídeos legendados em tempo real. Ele reconstrói frases completas a partir das legendas, traduz localmente e fala por cima do vídeo — em sincronia com a reprodução.",
-    "ctaInstall": "Instalar a extensão",
+    "ctaInstall": "Adicionar ao Chrome",
     "ctaGithub": "Ver no GitHub",
     "note": "Funciona com vídeos cujo player expõe uma trilha de legendas — a maioria das plataformas de cursos expõe.",
     "ticks": {
@@ -81,23 +81,23 @@
   },
   "Install": {
     "title": "Instale em dois minutos",
-    "subtitle": "O Voxylio ainda não está na Chrome Web Store — instale-o como extensão sem compactação.",
+    "subtitle": "Já na Chrome Web Store — um clique para instalar e as atualizações chegam sozinhas.",
     "steps": {
-      "clone": {
-        "title": "Baixe o código",
-        "description": "Clone o repositório ou baixe como ZIP e guarde a pasta da extensão em um local permanente."
+      "store": {
+        "title": "Adicione ao Chrome",
+        "description": "Um clique na Chrome Web Store — sem modo de desenvolvedor, nada para configurar."
       },
-      "load": {
-        "title": "Carregue no Chrome",
-        "description": "Abra chrome://extensions, ative o modo do desenvolvedor, clique em «Carregar sem compactação» e escolha a pasta da extensão."
+      "signin": {
+        "title": "Entre com o Google",
+        "description": "Abra o popup e entre — a conta gratuita ativa a dublagem. Sem cartão."
       },
       "play": {
         "title": "Reproduza um vídeo",
-        "description": "Abra um vídeo legendado, entre com o Google pelo popup e ative o interruptor."
+        "description": "Abra um vídeo legendado e toque em “Iniciar dublagem” — o Voxylio fala no seu idioma."
       }
     },
-    "cta": "Baixar o Voxylio no GitHub",
-    "storeSoon": "Em breve na Chrome Web Store"
+    "ctaStore": "Adicionar ao Chrome",
+    "cta": "Baixar o Voxylio no GitHub"
   },
   "Faq": {
     "title": "Perguntas frequentes",

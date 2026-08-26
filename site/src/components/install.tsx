@@ -3,9 +3,9 @@ import { Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GitHubIcon } from "@/components/github-icon";
 import { SpotlightCard } from "@/components/spotlight-card";
-import { GITHUB_URL } from "@/lib/constants";
+import { CHROME_STORE_URL, GITHUB_URL } from "@/lib/constants";
 
-const STEPS = ["clone", "load", "play"] as const;
+const STEPS = ["store", "signin", "play"] as const;
 
 export function Install() {
   const t = useTranslations("Install");
@@ -38,21 +38,28 @@ export function Install() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col items-center gap-4">
+        <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Button
             asChild
             size="lg"
             className="h-12 rounded-full px-7 text-[15px] shadow-[0_0_40px_rgba(30,215,96,0.25)] transition-shadow hover:shadow-[0_0_60px_rgba(30,215,96,0.4)]"
+          >
+            <a href={CHROME_STORE_URL} target="_blank" rel="noreferrer">
+              <Store className="size-4" aria-hidden="true" />
+              {t("ctaStore")}
+            </a>
+          </Button>
+          <Button
+            asChild
+            size="lg"
+            variant="outline"
+            className="h-12 rounded-full bg-card px-7 text-[15px] backdrop-blur-sm"
           >
             <a href={GITHUB_URL} target="_blank" rel="noreferrer">
               <GitHubIcon className="size-4" />
               {t("cta")}
             </a>
           </Button>
-          <p className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Store className="size-3.5" aria-hidden="true" />
-            {t("storeSoon")}
-          </p>
         </div>
       </div>
     </section>
