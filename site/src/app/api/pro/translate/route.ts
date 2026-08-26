@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { and, eq, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
+import { readEntitlementSafe } from "@/lib/entitlement";
 import {
   batchContextualTranslate,
   contextualTranslate,
@@ -50,11 +51,7 @@ export async function POST(req: Request) {
   const userId = tok.userId;
 
   // Pro plan required (a canceled subscription counts until period end).
-  const [ent] = await db
-    .select()
-    .from(schema.entitlement)
-    .where(eq(schema.entitlement.userId, userId))
-    .limit(1);
+  const ent = await readEntitlementSafe(userId);
   const proUntil = ent?.currentPeriodEnd ? ent.currentPeriodEnd.getTime() : null;
   const isPro =
     ent?.plan === "pro" && (proUntil === null || proUntil > Date.now());
@@ -119,7 +116,7 @@ export async function POST(req: Request) {
   const period = currentPeriod();
   const cap = proMonthlyChars();
   const [usage] = await db
-    .select()
+    .select({ chars: schema.proUsage.chars })
     .from(schema.proUsage)
     .where(
       and(

@@ -12,6 +12,7 @@ import {
   trialDays,
   voiceProviderConfigured,
 } from "@/lib/pro";
+import { readEntitlementSafe } from "@/lib/entitlement";
 
 export const dynamic = "force-dynamic";
 
@@ -67,11 +68,10 @@ export async function GET(req: Request) {
     userId = session.user.id;
   }
 
-  const [ent] = await db
-    .select()
-    .from(schema.entitlement)
-    .where(eq(schema.entitlement.userId, userId))
-    .limit(1);
+  // Drift-safe read: a schema column not yet migrated must never 500
+  // the gate (a fresh install has no cache to save it — the paying
+  // user would render as "free").
+  const ent = await readEntitlementSafe(userId);
 
   // First authenticated sighting starts the 3-day full trial (every
   // site unlocked). Never touches plan/status of an existing row, and
@@ -136,7 +136,10 @@ export async function GET(req: Request) {
   if (isPro) {
     try {
       const [usage] = await db
-        .select()
+        .select({
+          chars: schema.proUsage.chars,
+          ttsChars: schema.proUsage.ttsChars,
+        })
         .from(schema.proUsage)
         .where(
           and(
@@ -150,10 +153,26 @@ export async function GET(req: Request) {
         0,
         proMonthlyTtsChars() - (usage?.ttsChars ?? 0),
       );
-      audioSecondsRemaining = Math.max(
-        0,
-        proMonthlyAudioSeconds() - (usage?.audioSeconds ?? 0),
-      );
+      // audio_seconds may not be migrated yet: guarded separately so
+      // the two long-shipped meters never depend on the newest column.
+      try {
+        const [au] = await db
+          .select({ audioSeconds: schema.proUsage.audioSeconds })
+          .from(schema.proUsage)
+          .where(
+            and(
+              eq(schema.proUsage.userId, userId),
+              eq(schema.proUsage.period, currentPeriod()),
+            ),
+          )
+          .limit(1);
+        audioSecondsRemaining = Math.max(
+          0,
+          proMonthlyAudioSeconds() - (au?.audioSeconds ?? 0),
+        );
+      } catch {
+        audioSecondsRemaining = 0;
+      }
     } catch {
       /* table may not exist yet: report 0, never fail */
     }

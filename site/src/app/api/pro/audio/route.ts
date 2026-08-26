@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { and, eq, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
+import { readEntitlementSafe } from "@/lib/entitlement";
 import {
   audioProviderConfigured,
   currentPeriod,
@@ -46,11 +47,7 @@ export async function POST(req: Request) {
   if (!tok || tok.revokedAt) return err(401, "invalid_token");
   const userId = tok.userId;
 
-  const [ent] = await db
-    .select()
-    .from(schema.entitlement)
-    .where(eq(schema.entitlement.userId, userId))
-    .limit(1);
+  const ent = await readEntitlementSafe(userId);
   const proUntil = ent?.currentPeriodEnd ? ent.currentPeriodEnd.getTime() : null;
   const isPro =
     ent?.plan === "pro" && (proUntil === null || proUntil > Date.now());
@@ -66,17 +63,24 @@ export async function POST(req: Request) {
 
   const period = currentPeriod();
   const cap = proMonthlyAudioSeconds();
-  const [usage] = await db
-    .select()
-    .from(schema.proUsage)
-    .where(
-      and(
-        eq(schema.proUsage.userId, userId),
-        eq(schema.proUsage.period, period),
-      ),
-    )
-    .limit(1);
-  const used = usage?.audioSeconds ?? 0;
+  // This feature cannot exist without its column: before `pnpm db:push`
+  // adds audio_seconds, refuse cleanly (the extension stands down).
+  let used = 0;
+  try {
+    const [usage] = await db
+      .select({ audioSeconds: schema.proUsage.audioSeconds })
+      .from(schema.proUsage)
+      .where(
+        and(
+          eq(schema.proUsage.userId, userId),
+          eq(schema.proUsage.period, period),
+        ),
+      )
+      .limit(1);
+    used = usage?.audioSeconds ?? 0;
+  } catch {
+    return err(503, "provider_unavailable");
+  }
 
   if (body.op === "grant") {
     if (used >= cap) return err(429, "quota_exhausted");
