@@ -753,6 +753,15 @@ import { makeT, resolveUiLang } from "./i18n.js";
     journalFlushSoon();
   }
 
+  // SPA navigation (YouTube & co reuse the SAME <video> element across
+  // watch pages): the page-level feed state must restart with the new
+  // media, or the journal keeps writing into the previous video's
+  // session and the DOM-caption dedup swallows the first line.
+  function resetPageFeed() {
+    domLastText = "";
+    journalSession = null;
+  }
+
 
   // -------------------------------------------------------- DOM utilities
 
@@ -819,6 +828,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       active: false, // dubbing actually running on this video
       pollTimer: null,
       lastTime: -1,
+      mediaKey: "", // URL+src identity of the media being dubbed
     };
 
     // --- subtitle harvesting ----------------------------------------------
@@ -1213,7 +1223,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
         })
         .catch((err) => {
           const m = String((err && err.message) || err || "");
-          if (/unsupported/.test(m)) proBatchBroken = true;
+          if (/batch unsupported/.test(m)) proBatchBroken = true;
           for (const e of entries) e.reject(err);
         })
         .finally(() => {
@@ -1631,6 +1641,15 @@ import { makeT, resolveUiLang } from "./i18n.js";
         return;
       }
       if (!ctl.active) return;
+      // SPA navigation: the page URL or the media source changed under
+      // the SAME <video> element (YouTube's default way of moving to the
+      // next video). Everything derived from the previous media — cues,
+      // groups, spoken registries, journal session — must restart, or
+      // the old video's lines are re-spoken over the new one.
+      const mediaKey =
+        location.href.split("#")[0] + "|" + (video.currentSrc || "");
+      if (ctl.mediaKey && ctl.mediaKey !== mediaKey) resetForNewMedia();
+      ctl.mediaKey = mediaKey;
       const t = video.currentTime;
 
       // Seek/backward jump: restart cleanly
@@ -2010,6 +2029,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       video.addEventListener("volumechange", onVolumeChange);
       video.addEventListener("waiting", onBuffering);
       video.addEventListener("playing", onPlayingAgain);
+      video.addEventListener("emptied", onMediaEmptied);
       // Background tabs clamp setInterval to ~1s: timeupdate (~4 Hz,
       // unclamped) keeps line starts on time there.
       video.addEventListener("timeupdate", onTimeUpdate);
@@ -2043,6 +2063,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       video.removeEventListener("volumechange", onVolumeChange);
       video.removeEventListener("waiting", onBuffering);
       video.removeEventListener("playing", onPlayingAgain);
+      video.removeEventListener("emptied", onMediaEmptied);
       video.removeEventListener("timeupdate", onTimeUpdate);
       hardStopSpeech();
       restoreVolume();
@@ -2054,6 +2075,48 @@ import { makeT, resolveUiLang } from "./i18n.js";
     function fullFlush() {
       hardStopSpeech();
       ctl.spokenIds.clear();
+    }
+
+    // New media in the same element (SPA navigation, src swap): drop
+    // every cue-derived structure and let the new video be harvested
+    // from scratch. The translation cache is language-pair keyed and
+    // survives — only identity state resets.
+    function resetForNewMedia() {
+      hardStopSpeech();
+      ctl.cues = [];
+      ctl.cueKeys.clear();
+      ctl.groups = [];
+      ctl.lastCueCount = -1;
+      ctl.groupMeta.clear();
+      ctl.spokenIds.clear();
+      ctl.scheduledIds.clear();
+      ctl.inFlight.clear();
+      ctl.lastDomCue = null;
+      ctl.detectedSource = null;
+      ctl.trackLang = "";
+      ctl.staticLoaded = false;
+      ctl.trackRetryAt = 0;
+      ctl.trackRetries = 0;
+      ctl.lastTime = -1;
+      if (ctl.trackListened && ctl.trackHarvestHandler) {
+        try {
+          ctl.trackListened.removeEventListener(
+            "cuechange",
+            ctl.trackHarvestHandler
+          );
+        } catch (e) {}
+      }
+      ctl.trackListened = null;
+      ctl.trackHarvestHandler = null;
+      resetPageFeed(); // journal session + DOM caption dedup (module level)
+      hideCaption();
+    }
+
+    // 'emptied' fires when the media element is reset (load()/src swap)
+    // even when the URL does not change.
+    function onMediaEmptied() {
+      ctl.mediaKey = "";
+      resetForNewMedia();
     }
 
     ctl.onSettingsChanged = () => {

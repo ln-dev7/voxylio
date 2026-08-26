@@ -68,6 +68,7 @@ const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromi
     const v = document.getElementById('v');
     // The test video has no media: fake an advancing clock like a player.
     let t = 0;
+    window.__setT = (x) => { t = x; }; // SPA-navigation phase resets it
     Object.defineProperty(v, 'currentTime', { get: () => t, configurable: true });
     Object.defineProperty(v, 'paused', { get: () => false, configurable: true });
     Object.defineProperty(v, 'seeking', { get: () => false, configurable: true });
@@ -105,6 +106,29 @@ const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromi
   });
 
   await page.waitForTimeout(10500);
+
+  // ── SPA navigation (the YouTube way): same <video> element, new URL,
+  // playhead back to 0, a brand-new caption feed. The controller must
+  // reset — the FIRST video's lines must never be re-spoken over the
+  // second one.
+  await page.evaluate(() => {
+    history.pushState({}, '', '/voxtest2');
+    window.__setT(0);
+    const box = document.querySelector('.ytp-caption-window-container');
+    const show = (txt) => {
+      box.replaceChildren();
+      if (txt) {
+        const seg = document.createElement('span');
+        seg.className = 'ytp-caption-segment';
+        seg.textContent = txt;
+        box.appendChild(seg);
+      }
+    };
+    setTimeout(() => show('The second video begins now.'), 900);
+    setTimeout(() => show(''), 3600);
+  });
+  await page.waitForTimeout(6000);
+
   const result = await page.evaluate(() => ({ spoken: window.__spoken, ccClicked: window.__ccClicked }));
   await browser.close();
 
@@ -114,15 +138,21 @@ const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromi
 
   const fails = [];
   if (!result.ccClicked) fails.push('extension did not auto-enable the captions');
-  if (result.spoken.length < 2) fails.push('expected both sentences to be dubbed');
+  if (result.spoken.length < 3) fails.push('expected both sentences plus the post-navigation one');
   if (!result.spoken.every((s) => s.startsWith('[fr]'))) fails.push('untranslated speech');
   const first = result.spoken.filter((s) => s.includes('accelerated'));
   if (first.length !== 1) fails.push(`roll-up caption spoken ${first.length} times (want exactly 1, full sentence)`);
   if (first[0] && !first[0].includes('coding course')) fails.push('spoke a draft instead of the final roll-up text');
+  // SPA reset: nothing from video 1 may replay after navigation…
+  const playground = result.spoken.filter((s) => s.includes('playground'));
+  if (playground.length !== 1) fails.push(`video-1 line spoken ${playground.length} times after SPA navigation (want 1)`);
+  // …and the new video's line is dubbed exactly once.
+  const second = result.spoken.filter((s) => s.includes('second video'));
+  if (second.length !== 1) fails.push(`post-navigation line spoken ${second.length} times (want exactly 1)`);
 
   if (fails.length) {
     console.error('\nFAIL:\n - ' + fails.join('\n - '));
     process.exit(1);
   }
-  console.log('\nOK: DOM captions harvested, roll-up spoken once, fully translated.');
+  console.log('\nOK: DOM captions harvested, roll-up spoken once, SPA navigation resets cleanly.');
 })();
