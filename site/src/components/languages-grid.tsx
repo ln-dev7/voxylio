@@ -37,8 +37,6 @@ const PAIRS = [
   ["es", "de"],
   ["ar", "fr"],
   ["hi", "en"],
-  ["ko", "es"],
-  ["ru", "de"],
 ] as const;
 
 /** ReactBits "CountUp": the number climbs when it enters the viewport. */
