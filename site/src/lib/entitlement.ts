@@ -17,6 +17,48 @@ export type SafeEntitlement = {
   trialStartedAt: Date | null;
 };
 
+// Where the auth user's email lives depends on the Neon Auth
+// generation: legacy exposed `neon_auth.users_sync`, managed Neon Auth
+// (@neondatabase/auth) uses better-auth tables. Try the known layouts
+// in order and REMEMBER the first that answers — one probe per boot,
+// then a single indexed query per request. All failures degrade to
+// null (the popup simply shows no email), never to an error.
+const EMAIL_TABLES = [
+  'neon_auth."user"',
+  "neon_auth.users_sync",
+  "neon_auth.users",
+  'public."user"',
+] as const;
+let emailTable: string | null | undefined;
+
+export async function lookupUserEmail(userId: string): Promise<string | null> {
+  const tryOne = async (table: string) => {
+    const r = await db.execute(
+      sql.raw(`select email from ${table} where id = `).append(sql`${userId} limit 1`),
+    );
+    return (r.rows?.[0] as { email?: string } | undefined)?.email ?? null;
+  };
+  if (emailTable === null) return null; // probed before: nothing exists
+  if (emailTable) {
+    try {
+      return await tryOne(emailTable);
+    } catch {
+      emailTable = undefined; // layout changed under us: re-probe
+    }
+  }
+  for (const table of EMAIL_TABLES) {
+    try {
+      const email = await tryOne(table);
+      emailTable = table;
+      return email;
+    } catch {
+      /* table absent: next candidate */
+    }
+  }
+  emailTable = null;
+  return null;
+}
+
 export async function readEntitlementSafe(
   userId: string,
 ): Promise<SafeEntitlement | null> {

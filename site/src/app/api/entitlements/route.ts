@@ -12,7 +12,7 @@ import {
   trialDays,
   voiceProviderConfigured,
 } from "@/lib/pro";
-import { readEntitlementSafe } from "@/lib/entitlement";
+import { lookupUserEmail, readEntitlementSafe } from "@/lib/entitlement";
 
 export const dynamic = "force-dynamic";
 
@@ -98,18 +98,10 @@ export async function GET(req: Request) {
       ).toISOString()
     : null;
 
-  // The popup shows which account is linked. Users are managed by Neon
-  // Auth (synced into neon_auth.users_sync); never fail the request over
-  // a missing sync table.
-  let email: string | null = null;
-  try {
-    const r = await db.execute(
-      sql`select email from neon_auth.users_sync where id = ${userId} limit 1`,
-    );
-    email = (r.rows?.[0] as { email?: string } | undefined)?.email ?? null;
-  } catch {
-    /* email stays null */
-  }
+  // The popup shows which account is linked. The auth user table's
+  // name depends on the Neon Auth generation — lookupUserEmail probes
+  // the known layouts and remembers the right one; never fails.
+  const email = await lookupUserEmail(userId);
 
   // A canceled subscription stays pro until its period actually ends.
   let out = ent
