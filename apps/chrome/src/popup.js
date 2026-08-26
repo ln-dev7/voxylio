@@ -340,21 +340,26 @@ function renderQuota(ent) {
   const audioOn = typeof ent.audioSecondsTotal === "number" && ent.audioSecondsTotal > 0;
   $("quotaAudioRow").hidden = !audioOn;
   $("quotaAudioBar").hidden = !audioOn;
+  // CONSUMED display (owner choice): the bar starts empty and fills as
+  // the month is used — green, amber past 80 %, red when exhausted.
   for (const [valId, fillId, barId, remaining, total, unit] of rows) {
     const tot = typeof total === "number" ? total : 0;
     if (tot <= 0) continue;
     const rem = Math.max(0, Math.min(tot, typeof remaining === "number" ? remaining : 0));
-    const pct = tot > 0 ? Math.round((rem / tot) * 100) : 0;
+    const used = Math.max(0, tot - rem);
+    const pct = tot > 0 ? Math.round((used / tot) * 100) : 0;
     $(valId).textContent =
-      unit === "minutes" ? fmtInt(Math.floor(rem / 60)) + " min" : fmtCompact(rem);
+      unit === "minutes"
+        ? fmtInt(Math.floor(used / 60)) + " / " + Math.floor(tot / 60) + " min"
+        : fmtCompact(used) + " / " + fmtCompact(tot);
     const fill = $(fillId);
-    fill.style.width = pct + "%";
-    fill.classList.toggle("low", pct > 0 && pct <= 20);
-    fill.classList.toggle("out", pct === 0);
+    fill.style.width = Math.min(100, pct) + "%";
+    fill.classList.toggle("low", pct >= 80 && pct < 100);
+    fill.classList.toggle("out", pct >= 100);
     $(barId).title =
       unit === "minutes"
-        ? Math.floor(rem / 60) + " / " + Math.floor(tot / 60) + " min"
-        : fmtInt(rem) + " / " + fmtInt(tot);
+        ? Math.floor(used / 60) + " / " + Math.floor(tot / 60) + " min"
+        : fmtInt(used) + " / " + fmtInt(tot);
   }
   const resets = $("quotaResets");
   if (ent.quotaResetsAt) {

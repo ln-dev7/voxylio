@@ -598,7 +598,7 @@ ${text}
     titleOptions: "Translation providers, API keys, disabled sites",
     titleAccount: "Manage your Voxylio account on the site",
     optKeepTerms: "Keep technical terms in English (commit, build, prompt\u2026)",
-    quotaTitle: "Pro quota left",
+    quotaTitle: "Pro usage this month",
     quotaTrans: "AI translation (beta)",
     quotaVoice: "Neural voice",
     quotaResets: "Resets on {date}",
@@ -777,7 +777,7 @@ ${text}
     titleOptions: "Fournisseurs de traduction, cl\xE9s API, sites d\xE9sactiv\xE9s",
     titleAccount: "G\xE9rer votre compte Voxylio sur le site",
     optKeepTerms: "Pr\xE9server les termes techniques en anglais (commit, build, prompt\u2026)",
-    quotaTitle: "Quota Pro restant",
+    quotaTitle: "Utilisation Pro du mois",
     quotaTrans: "Traduction IA (b\xEAta)",
     quotaVoice: "Voix neurale",
     quotaResets: "Se r\xE9initialise le {date}",
@@ -956,7 +956,7 @@ ${text}
     titleOptions: "Proveedores de traducci\xF3n, claves API, sitios desactivados",
     titleAccount: "Gestionar tu cuenta Voxylio en el sitio",
     optKeepTerms: "Conservar los t\xE9rminos t\xE9cnicos en ingl\xE9s (commit, build, prompt\u2026)",
-    quotaTitle: "Cuota Pro restante",
+    quotaTitle: "Uso Pro del mes",
     quotaTrans: "Traducci\xF3n IA (beta)",
     quotaVoice: "Voz neuronal",
     quotaResets: "Se restablece el {date}",
@@ -1135,7 +1135,7 @@ ${text}
     titleOptions: "\xDCbersetzungsanbieter, API-Schl\xFCssel, deaktivierte Seiten",
     titleAccount: "Dein Voxylio-Konto auf der Website verwalten",
     optKeepTerms: "Technische Begriffe auf Englisch lassen (commit, build, prompt\u2026)",
-    quotaTitle: "Verbleibendes Pro-Kontingent",
+    quotaTitle: "Pro-Nutzung diesen Monat",
     quotaTrans: "KI-\xDCbersetzung (Beta)",
     quotaVoice: "Neuronale Stimme",
     quotaResets: "Wird am {date} zur\xFCckgesetzt",
@@ -1314,7 +1314,7 @@ ${text}
     titleOptions: "Fornitori di traduzione, chiavi API, siti disattivati",
     titleAccount: "Gestisci il tuo account Voxylio sul sito",
     optKeepTerms: "Mantieni i termini tecnici in inglese (commit, build, prompt\u2026)",
-    quotaTitle: "Quota Pro residua",
+    quotaTitle: "Utilizzo Pro del mese",
     quotaTrans: "Traduzione IA (beta)",
     quotaVoice: "Voce neurale",
     quotaResets: "Si azzera il {date}",
@@ -1493,7 +1493,7 @@ ${text}
     titleOptions: "\u7FFB\u8A33\u30D7\u30ED\u30D0\u30A4\u30C0\u30FC\u3001API \u30AD\u30FC\u3001\u7121\u52B9\u5316\u30B5\u30A4\u30C8",
     titleAccount: "\u30B5\u30A4\u30C8\u3067 Voxylio \u30A2\u30AB\u30A6\u30F3\u30C8\u3092\u7BA1\u7406",
     optKeepTerms: "\u6280\u8853\u7528\u8A9E\u3092\u82F1\u8A9E\u306E\u307E\u307E\u6B8B\u3059\uFF08commit\u3001build\u3001prompt\u2026\uFF09",
-    quotaTitle: "Pro\u6B8B\u91CF",
+    quotaTitle: "\u4ECA\u6708\u306EPro\u4F7F\u7528\u72B6\u6CC1",
     quotaTrans: "AI\u7FFB\u8A33\uFF08\u30D9\u30FC\u30BF\u7248\uFF09",
     quotaVoice: "\u30CB\u30E5\u30FC\u30E9\u30EB\u97F3\u58F0",
     quotaResets: "{date}\u306B\u30EA\u30BB\u30C3\u30C8",
@@ -1672,7 +1672,7 @@ ${text}
     titleOptions: "\uBC88\uC5ED \uC81C\uACF5\uC790, API \uD0A4, \uBE44\uD65C\uC131\uD654\uD55C \uC0AC\uC774\uD2B8",
     titleAccount: "\uC0AC\uC774\uD2B8\uC5D0\uC11C Voxylio \uACC4\uC815 \uAD00\uB9AC",
     optKeepTerms: "\uAE30\uC220 \uC6A9\uC5B4\uB97C \uC601\uC5B4\uB85C \uC720\uC9C0(commit, build, prompt\u2026)",
-    quotaTitle: "\uB0A8\uC740 Pro \uD55C\uB3C4",
+    quotaTitle: "\uC774\uBC88 \uB2EC Pro \uC0AC\uC6A9\uB7C9",
     quotaTrans: "AI \uBC88\uC5ED (\uBCA0\uD0C0)",
     quotaVoice: "\uC2E0\uACBD\uB9DD \uC74C\uC131",
     quotaResets: "{date}\uC5D0 \uCD08\uAE30\uD654",
@@ -1851,7 +1851,7 @@ ${text}
     titleOptions: "\u7FFB\u8BD1\u670D\u52A1\u5546\u3001API \u5BC6\u94A5\u3001\u5DF2\u505C\u7528\u7F51\u7AD9",
     titleAccount: "\u5728\u7F51\u7AD9\u4E0A\u7BA1\u7406\u4F60\u7684 Voxylio \u8D26\u53F7",
     optKeepTerms: "\u4FDD\u7559\u82F1\u6587\u6280\u672F\u672F\u8BED\uFF08commit\u3001build\u3001prompt\u2026\uFF09",
-    quotaTitle: "\u5269\u4F59 Pro \u989D\u5EA6",
+    quotaTitle: "\u672C\u6708 Pro \u7528\u91CF",
     quotaTrans: "AI \u7FFB\u8BD1\uFF08\u6D4B\u8BD5\u7248\uFF09",
     quotaVoice: "\u795E\u7ECF\u8BED\u97F3",
     quotaResets: "{date}\u91CD\u7F6E",
@@ -2030,7 +2030,7 @@ ${text}
     titleOptions: "\u7FFB\u8B6F\u670D\u52D9\u5546\u3001API \u91D1\u9470\u3001\u5DF2\u505C\u7528\u7DB2\u7AD9",
     titleAccount: "\u5728\u7DB2\u7AD9\u4E0A\u7BA1\u7406\u4F60\u7684 Voxylio \u5E33\u865F",
     optKeepTerms: "\u4FDD\u7559\u82F1\u6587\u6280\u8853\u8853\u8A9E\uFF08commit\u3001build\u3001prompt\u2026\uFF09",
-    quotaTitle: "\u5269\u9918 Pro \u984D\u5EA6",
+    quotaTitle: "\u672C\u6708 Pro \u7528\u91CF",
     quotaTrans: "AI \u7FFB\u8B6F\uFF08\u6E2C\u8A66\u7248\uFF09",
     quotaVoice: "\u795E\u7D93\u8A9E\u97F3",
     quotaResets: "{date}\u91CD\u7F6E",
@@ -2209,7 +2209,7 @@ ${text}
     titleOptions: "Provedores de tradu\xE7\xE3o, chaves de API, sites desativados",
     titleAccount: "Gerenciar sua conta Voxylio no site",
     optKeepTerms: "Manter termos t\xE9cnicos em ingl\xEAs (commit, build, prompt\u2026)",
-    quotaTitle: "Cota Pro restante",
+    quotaTitle: "Uso Pro do m\xEAs",
     quotaTrans: "Tradu\xE7\xE3o IA (beta)",
     quotaVoice: "Voz neural",
     quotaResets: "Renovada em {date}",
@@ -2732,12 +2732,13 @@ ${text}
       const tot = typeof total === "number" ? total : 0;
       if (tot <= 0) continue;
       const rem = Math.max(0, Math.min(tot, typeof remaining === "number" ? remaining : 0));
-      const pct = tot > 0 ? Math.round(rem / tot * 100) : 0;
-      $(valId).textContent = unit === "minutes" ? Math.floor(rem / 60) + " / " + Math.floor(tot / 60) + " min" : fmtInt(rem) + " / " + fmtInt(tot);
+      const used = Math.max(0, tot - rem);
+      const pct = tot > 0 ? Math.round(used / tot * 100) : 0;
+      $(valId).textContent = unit === "minutes" ? Math.floor(used / 60) + " / " + Math.floor(tot / 60) + " min" : fmtInt(used) + " / " + fmtInt(tot);
       const fill = $(fillId);
-      fill.style.width = pct + "%";
-      fill.classList.toggle("low", pct > 0 && pct <= 20);
-      fill.classList.toggle("out", pct === 0);
+      fill.style.width = Math.min(100, pct) + "%";
+      fill.classList.toggle("low", pct >= 80 && pct < 100);
+      fill.classList.toggle("out", pct >= 100);
     }
     const resets = $("acctQuotaResets");
     if (ent.quotaResetsAt) {

@@ -340,7 +340,7 @@
     "extensionError": "Die Erweiterung ist nicht erreichbar. Öffne diese Seite in Chrome mit installiertem Voxylio.",
     "checkoutSuccess": "Zahlung erhalten — dein Pro-Plan wird in wenigen Sekunden aktiviert.",
     "upgradeYearly": "oder 69,99 $/Jahr (−27 %)",
-    "usageTitle": "Verbleibendes Pro-Kontingent diesen Monat",
+    "usageTitle": "Pro-Nutzung diesen Monat",
     "usageTrans": "KI-Übersetzung (Beta)",
     "usageVoice": "Neuronale Stimme",
     "usageResets": "Kontingent wird am {date} zurückgesetzt",

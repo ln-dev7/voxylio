@@ -162,7 +162,7 @@
   "titleOptions": "번역 제공자, API 키, 비활성화한 사이트",
   "titleAccount": "사이트에서 Voxylio 계정 관리",
   "optKeepTerms": "기술 용어를 영어로 유지(commit, build, prompt…)",
-  "quotaTitle": "남은 Pro 한도",
+  "quotaTitle": "이번 달 Pro 사용량",
   "quotaTrans": "AI 번역 (베타)",
   "quotaVoice": "신경망 음성",
   "quotaResets": "{date}에 초기화",

@@ -162,7 +162,7 @@
   "titleOptions": "Provedores de tradução, chaves de API, sites desativados",
   "titleAccount": "Gerenciar sua conta Voxylio no site",
   "optKeepTerms": "Manter termos técnicos em inglês (commit, build, prompt…)",
-  "quotaTitle": "Cota Pro restante",
+  "quotaTitle": "Uso Pro do mês",
   "quotaTrans": "Tradução IA (beta)",
   "quotaVoice": "Voz neural",
   "quotaResets": "Renovada em {date}",

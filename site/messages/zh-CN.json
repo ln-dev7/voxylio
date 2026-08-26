@@ -340,7 +340,7 @@
     "extensionError": "无法连接扩展。请在已安装 Voxylio 的 Chrome 中打开本页。",
     "checkoutSuccess": "已收到付款 — 你的 Pro 计划将在几秒内激活。",
     "upgradeYearly": "或 $69.99/年（−27%）",
-    "usageTitle": "本月剩余 Pro 额度",
+    "usageTitle": "本月 Pro 用量",
     "usageTrans": "AI 翻译（测试版）",
     "usageVoice": "神经语音",
     "usageResets": "额度将于{date}重置",

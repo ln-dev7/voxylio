@@ -20,7 +20,9 @@ type Entitlement = {
   quotaResetsAt?: string | null;
 };
 
-/** One labeled meter: remaining / total characters, green → amber → red. */
+/** One labeled meter: CONSUMED / total — the bar starts empty and
+ *  fills as the month is used (billing-dashboard style, owner choice).
+ *  Green while comfortable, amber past 80 %, red when exhausted. */
 function QuotaMeter({
   label,
   remaining,
@@ -33,14 +35,15 @@ function QuotaMeter({
   locale: string;
 }) {
   const rem = Math.max(0, Math.min(total, remaining));
-  const pct = total > 0 ? Math.round((rem / total) * 100) : 0;
+  const used = Math.max(0, total - rem);
+  const pct = total > 0 ? Math.round((used / total) * 100) : 0;
   const fmt = new Intl.NumberFormat(locale);
   return (
     <div>
       <div className="flex items-baseline justify-between gap-3 text-sm">
         <span className="text-muted-foreground">{label}</span>
         <span className="font-medium tabular-nums text-foreground">
-          {fmt.format(rem)}{" "}
+          {fmt.format(used)}{" "}
           <span className="font-normal text-muted-foreground">
             / {fmt.format(total)}
           </span>
@@ -50,9 +53,9 @@ function QuotaMeter({
         <div
           className={cn(
             "h-full rounded-full transition-[width] duration-300",
-            pct === 0 ? "bg-red-500" : pct <= 20 ? "bg-amber-500" : "bg-primary",
+            pct >= 100 ? "bg-red-500" : pct >= 80 ? "bg-amber-500" : "bg-primary",
           )}
-          style={{ width: `${pct}%` }}
+          style={{ width: `${Math.min(100, pct)}%` }}
         />
       </div>
     </div>

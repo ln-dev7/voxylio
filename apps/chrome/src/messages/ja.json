@@ -162,7 +162,7 @@
   "titleOptions": "翻訳プロバイダー、API キー、無効化サイト",
   "titleAccount": "サイトで Voxylio アカウントを管理",
   "optKeepTerms": "技術用語を英語のまま残す（commit、build、prompt…）",
-  "quotaTitle": "Pro残量",
+  "quotaTitle": "今月のPro使用状況",
   "quotaTrans": "AI翻訳（ベータ版）",
   "quotaVoice": "ニューラル音声",
   "quotaResets": "{date}にリセット",
