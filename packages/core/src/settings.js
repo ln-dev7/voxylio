@@ -38,6 +38,10 @@ export const DEFAULTS = Object.freeze({
   proVoice: false,
   autoPause: false,
   keepTerms: true,
+  // User glossary: [{ from, to }] — `to` empty keeps the source form
+  // verbatim, `to` set forces that exact target form. Applied through
+  // the placeholder mechanism, so it works with every provider.
+  glossary: [],
   // Preferred paid provider when a key is configured ("auto" = none:
   // builtin then best-effort fallback).
   provider: "auto",
@@ -128,6 +132,24 @@ export function validateSettings(patch) {
       case "uiLang":
         out.uiLang = UI_LANGS.includes(v) ? v : "auto";
         break;
+      case "glossary": {
+        const list = Array.isArray(v) ? v : [];
+        const entries = [];
+        const seen = new Set();
+        for (const e of list) {
+          if (entries.length >= 50) break;
+          if (!e || typeof e !== "object") continue;
+          const from =
+            typeof e.from === "string" ? e.from.trim().slice(0, 40) : "";
+          const to = typeof e.to === "string" ? e.to.trim().slice(0, 60) : "";
+          const dedup = from.toLowerCase();
+          if (!from || seen.has(dedup)) continue;
+          seen.add(dedup);
+          entries.push({ from, to });
+        }
+        out.glossary = entries;
+        break;
+      }
       case "disabledSites": {
         const list = Array.isArray(v) ? v : [];
         out.disabledSites = [...new Set(list.map(normalizeHost).filter(Boolean))].slice(0, 200);

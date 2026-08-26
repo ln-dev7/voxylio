@@ -1,8 +1,10 @@
 export {
   stripTags,
+  decodeEntities,
   isSoundCue,
   cleanCaption,
   endsSentence,
+  continuesEllipsis,
   parseTimestamp,
   parseVTT,
 } from "./subtitles.js";
@@ -14,7 +16,12 @@ export {
   GROUP_MAX_LEN,
   GROUP_MAX_GAP,
 } from "./grouping.js";
-export { PROTECTED_TERMS, protectTerms, restoreTerms } from "./glossary.js";
+export {
+  PROTECTED_TERMS,
+  protectTerms,
+  restoreTerms,
+  compileGlossary,
+} from "./glossary.js";
 export { BoundedMap } from "./cache.js";
 export { computeUtteranceRate, WORDS_PER_SECOND } from "./pacing.js";
 export { pickVoice, LOCALES } from "./voices.js";
