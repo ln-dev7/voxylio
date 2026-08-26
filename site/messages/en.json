@@ -83,11 +83,11 @@
   },
   "Install": {
     "title": "Install in two minutes",
-    "subtitle": "Now on the Chrome Web Store — one click to install, updates arrive on their own.",
+    "subtitle": "Pick your browser — one click to install, and updates arrive on their own.",
     "steps": {
       "store": {
-        "title": "Add it to Chrome",
-        "description": "One click from the Chrome Web Store — no developer mode, nothing to configure."
+        "title": "Add it to your browser",
+        "description": "One click from your browser's store — no developer mode, nothing to configure."
       },
       "signin": {
         "title": "Sign in with Google",
@@ -98,7 +98,8 @@
         "description": "Open any subtitled video and press “Start dubbing” — Voxylio speaks it in your language."
       }
     },
-    "ctaStore": "Add to Chrome"
+    "addTo": "Add to {browser}",
+    "soon": "Coming soon"
   },
   "Faq": {
     "title": "Frequently asked questions",

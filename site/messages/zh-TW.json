@@ -83,11 +83,11 @@
   },
   "Install": {
     "title": "兩分鐘完成安裝",
-    "subtitle": "已在 Chrome Web Store 上架 — 一鍵安裝，更新自動送達。",
+    "subtitle": "選擇你的瀏覽器 — 一鍵安裝，更新自動送達。",
     "steps": {
       "store": {
-        "title": "加到 Chrome",
-        "description": "在 Chrome Web Store 一鍵完成 — 不需開發人員模式，也不需任何設定。"
+        "title": "加到瀏覽器",
+        "description": "在瀏覽器商店一鍵安裝 — 不需開發者模式，也不需任何設定。"
       },
       "signin": {
         "title": "使用 Google 登入",
@@ -98,7 +98,8 @@
         "description": "打開任一部有字幕的影片，點擊「開始配音」 — Voxylio 用你的語言說給你聽。"
       }
     },
-    "ctaStore": "加到 Chrome"
+    "addTo": "加到 {browser}",
+    "soon": "即將推出"
   },
   "Faq": {
     "title": "常見問題",

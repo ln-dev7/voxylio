@@ -83,11 +83,11 @@
   },
   "Install": {
     "title": "Installée en deux minutes",
-    "subtitle": "Disponible sur le Chrome Web Store — un clic pour l’installer, les mises à jour arrivent toutes seules.",
+    "subtitle": "Choisissez votre navigateur — un clic pour l'installer, les mises à jour arrivent toutes seules.",
     "steps": {
       "store": {
-        "title": "Ajoutez-la à Chrome",
-        "description": "Un clic depuis le Chrome Web Store — pas de mode développeur, rien à configurer."
+        "title": "Ajoutez-la à votre navigateur",
+        "description": "Un clic depuis la boutique de votre navigateur — pas de mode développeur, rien à configurer."
       },
       "signin": {
         "title": "Connectez-vous avec Google",
@@ -98,7 +98,8 @@
         "description": "Ouvrez une vidéo sous-titrée et appuyez sur « Lancer le doublage » — Voxylio la parle dans votre langue."
       }
     },
-    "ctaStore": "Ajouter à Chrome"
+    "addTo": "Ajouter à {browser}",
+    "soon": "Bientôt disponible"
   },
   "Faq": {
     "title": "Questions fréquentes",

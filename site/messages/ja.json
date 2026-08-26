@@ -83,11 +83,11 @@
   },
   "Install": {
     "title": "2分でインストール",
-    "subtitle": "Chrome Web Store で公開中 — ワンクリックでインストール、更新は自動で届きます。",
+    "subtitle": "ブラウザを選ぶだけ — ワンクリックでインストール、更新は自動で届きます。",
     "steps": {
       "store": {
-        "title": "Chrome に追加する",
-        "description": "Chrome Web Store からワンクリック — デベロッパーモードも設定も不要です。"
+        "title": "ブラウザに追加する",
+        "description": "ブラウザのストアからワンクリック — 開発者モードも設定も不要です。"
       },
       "signin": {
         "title": "Google でログイン",
@@ -98,7 +98,8 @@
         "description": "字幕付きの動画を開いて「吹き替えを開始」を押すだけ — Voxylio があなたの言語で話します。"
       }
     },
-    "ctaStore": "Chrome に追加"
+    "addTo": "{browser} に追加",
+    "soon": "近日公開"
   },
   "Faq": {
     "title": "よくある質問",
