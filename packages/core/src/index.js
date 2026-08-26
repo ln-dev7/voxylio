@@ -23,7 +23,11 @@ export {
   compileGlossary,
 } from "./glossary.js";
 export { BoundedMap } from "./cache.js";
-export { computeUtteranceRate, WORDS_PER_SECOND } from "./pacing.js";
+export {
+  computeUtteranceRate,
+  estimateWords,
+  WORDS_PER_SECOND,
+} from "./pacing.js";
 export { pickVoice, LOCALES } from "./voices.js";
 export {
   LANGUAGES,
