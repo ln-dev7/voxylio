@@ -510,6 +510,58 @@ const openAccount = () => {
   });
 };
 
+function fmtInt(n) {
+  try {
+    return new Intl.NumberFormat(uiLangResolved).format(n);
+  } catch (e) {
+    return String(n);
+  }
+}
+
+// The account card's quota block: remaining / total characters for the
+// two metered Pro features, plus the reset date. Hidden unless the
+// server reported totals (Pro plan with the cloud actually configured).
+function renderAcctQuota(ent) {
+  const box = $("acctQuota");
+  const rows = [
+    ["acctQuotaTransVal", "acctQuotaTransFill", ent && ent.cloudCharsRemaining, ent && ent.cloudCharsTotal],
+    ["acctQuotaVoiceVal", "acctQuotaVoiceFill", ent && ent.ttsCharsRemaining, ent && ent.ttsCharsTotal],
+  ];
+  const has =
+    !!ent &&
+    ent.plan === "pro" &&
+    rows.some(([, , , total]) => typeof total === "number" && total > 0);
+  box.hidden = !has;
+  if (!has) return;
+  for (const [valId, fillId, remaining, total] of rows) {
+    const tot = typeof total === "number" ? total : 0;
+    const rem = Math.max(0, Math.min(tot, typeof remaining === "number" ? remaining : 0));
+    const pct = tot > 0 ? Math.round((rem / tot) * 100) : 0;
+    $(valId).textContent = fmtInt(rem) + " / " + fmtInt(tot);
+    const fill = $(fillId);
+    fill.style.width = pct + "%";
+    fill.classList.toggle("low", pct > 0 && pct <= 20);
+    fill.classList.toggle("out", pct === 0);
+  }
+  const resets = $("acctQuotaResets");
+  if (ent.quotaResetsAt) {
+    try {
+      const date = new Date(ent.quotaResetsAt).toLocaleDateString(uiLangResolved, {
+        day: "numeric",
+        month: "long",
+      });
+      resets.textContent = (t("quotaResets") || "Se réinitialise le {date}").replace(
+        "{date}",
+        date,
+      );
+    } catch (e) {
+      resets.textContent = "";
+    }
+  } else {
+    resets.textContent = "";
+  }
+}
+
 async function renderAccount() {
   const plan = $("acctPlan");
   const cta = $("acctCta");
@@ -519,6 +571,7 @@ async function renderAccount() {
     const linked = !!(ent && ent.linked);
     $("acctEmail").textContent = (linked && ent.email) || "";
     signout.hidden = !linked;
+    renderAcctQuota(linked ? ent : null);
     if (!linked) {
       plan.textContent = t("accountNotLinked") || "Non connecté";
       plan.classList.remove("pro");
@@ -536,6 +589,7 @@ async function renderAccount() {
     plan.textContent = t("accountNotLinked") || "Non connecté";
     signout.hidden = true;
     cta.textContent = t("signIn") || "Se connecter";
+    $("acctQuota").hidden = true;
   }
   renderStats();
 }

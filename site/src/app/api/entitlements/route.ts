@@ -133,6 +133,13 @@ export async function GET(req: Request) {
     cloud_sync: false,
   };
 
+  // First day of the next period (UTC): the popup, hub and account page
+  // all render "resets on <date>" from this rather than guessing.
+  const now = new Date();
+  const quotaResetsAt = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1),
+  ).toISOString();
+
   return Response.json(
     {
       ...out,
@@ -140,6 +147,9 @@ export async function GET(req: Request) {
       caps,
       cloudCharsRemaining,
       ttsCharsRemaining,
+      cloudCharsTotal: isPro ? proMonthlyChars() : 0,
+      ttsCharsTotal: isPro ? proMonthlyTtsChars() : 0,
+      quotaResetsAt,
       checkedAt: new Date().toISOString(),
     },
     { headers: CORS },

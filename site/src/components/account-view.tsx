@@ -2,15 +2,60 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Check, LogOut, Puzzle, Sparkles } from "lucide-react";
+import { Check, Gauge, LogOut, Puzzle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
 
 type Entitlement = {
   plan: string;
   status: string;
   currentPeriodEnd: string | null;
+  cloudCharsRemaining?: number;
+  ttsCharsRemaining?: number;
+  cloudCharsTotal?: number;
+  ttsCharsTotal?: number;
+  quotaResetsAt?: string | null;
 };
+
+/** One labeled meter: remaining / total characters, green → amber → red. */
+function QuotaMeter({
+  label,
+  remaining,
+  total,
+  locale,
+}: {
+  label: string;
+  remaining: number;
+  total: number;
+  locale: string;
+}) {
+  const rem = Math.max(0, Math.min(total, remaining));
+  const pct = total > 0 ? Math.round((rem / total) * 100) : 0;
+  const fmt = new Intl.NumberFormat(locale);
+  return (
+    <div>
+      <div className="flex items-baseline justify-between gap-3 text-sm">
+        <span className="text-muted-foreground">{label}</span>
+        <span className="font-medium tabular-nums text-foreground">
+          {fmt.format(rem)}{" "}
+          <span className="font-normal text-muted-foreground">
+            / {fmt.format(total)}
+          </span>
+        </span>
+      </div>
+      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
+        <div
+          className={cn(
+            "h-full rounded-full transition-[width] duration-300",
+            pct === 0 ? "bg-red-500" : pct <= 20 ? "bg-amber-500" : "bg-primary",
+          )}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  );
+}
 
 type ChromeRuntime = {
   runtime?: {
@@ -265,6 +310,40 @@ export function AccountView() {
               )}
             </div>
           </div>
+
+          {/* Pro cloud usage: remaining monthly characters, per meter */}
+          {pro && ((ent?.cloudCharsTotal ?? 0) > 0 || (ent?.ttsCharsTotal ?? 0) > 0) && (
+            <div className="rounded-2xl border border-border bg-card p-6">
+              <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                <Gauge className="size-3.5" />
+                {t("usageTitle")}
+              </p>
+              <div className="mt-5 space-y-5">
+                <QuotaMeter
+                  label={t("usageTrans")}
+                  remaining={ent?.cloudCharsRemaining ?? 0}
+                  total={ent?.cloudCharsTotal ?? 0}
+                  locale={locale}
+                />
+                <QuotaMeter
+                  label={t("usageVoice")}
+                  remaining={ent?.ttsCharsRemaining ?? 0}
+                  total={ent?.ttsCharsTotal ?? 0}
+                  locale={locale}
+                />
+              </div>
+              <p className="mt-5 text-xs leading-relaxed text-muted-foreground">
+                {ent?.quotaResetsAt &&
+                  t("usageResets", {
+                    date: new Date(ent.quotaResetsAt).toLocaleDateString(locale, {
+                      day: "numeric",
+                      month: "long",
+                    }),
+                  }) + " — "}
+                {t("usageFallback")}
+              </p>
+            </div>
+          )}
 
           {/* Extension link */}
           <div className="rounded-2xl border border-border bg-card p-6">

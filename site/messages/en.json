@@ -315,7 +315,12 @@
     "extensionMissing": "Voxylio isn't installed in this browser.",
     "extensionError": "Couldn't reach the extension. Open this page in Chrome with Voxylio installed.",
     "checkoutSuccess": "Payment received — your Pro plan activates in a few seconds.",
-    "upgradeYearly": "or $69.99/yr (−27%)"
+    "upgradeYearly": "or $69.99/yr (−27%)",
+    "usageTitle": "This month's Pro usage",
+    "usageTrans": "AI translation",
+    "usageVoice": "Neural voice",
+    "usageResets": "Quota resets on {date}",
+    "usageFallback": "When a quota runs out, the local engine takes over automatically — dubbing never stops."
   },
   "Pricing": {
     "title": "Simple, honest pricing",

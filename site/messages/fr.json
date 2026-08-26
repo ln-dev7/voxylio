@@ -315,7 +315,12 @@
     "extensionMissing": "Voxylio n'est pas installée dans ce navigateur.",
     "extensionError": "Impossible de contacter l'extension. Ouvrez cette page dans Chrome avec Voxylio installée.",
     "checkoutSuccess": "Paiement reçu — votre plan Pro s'active dans quelques secondes.",
-    "upgradeYearly": "ou 69,99 $/an (−27 %)"
+    "upgradeYearly": "ou 69,99 $/an (−27 %)",
+    "usageTitle": "Utilisation Pro du mois",
+    "usageTrans": "Traduction IA",
+    "usageVoice": "Voix neurale",
+    "usageResets": "Quota renouvelé le {date}",
+    "usageFallback": "Quand un quota est épuisé, le moteur local prend le relais automatiquement — le doublage ne s'arrête jamais."
   },
   "Pricing": {
     "title": "Un prix simple et honnête",

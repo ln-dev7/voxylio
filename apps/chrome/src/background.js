@@ -269,6 +269,9 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 
 const SITE_ORIGIN = "https://voxylio.lndev.me";
 const CHECK_MS = 24 * 60 * 60 * 1000;
+// Pro accounts refresh far more often: the popup and hub show the live
+// cloud quota, and a day-old meter would look broken.
+const PRO_CHECK_MS = 15 * 60 * 1000;
 const GRACE_MS = 72 * 60 * 60 * 1000;
 
 function clearProFlags() {
@@ -296,7 +299,8 @@ async function refreshEntitlements(force) {
 
   const cached = entitlements || null;
   const age = cached ? Date.now() - (cached.checkedAt || 0) : Infinity;
-  if (cached && !force && age < CHECK_MS) return { ...cached, linked: true };
+  const ttl = cached && cached.plan === "pro" ? PRO_CHECK_MS : CHECK_MS;
+  if (cached && !force && age < ttl) return { ...cached, linked: true };
 
   try {
     const res = await fetch(SITE_ORIGIN + "/api/entitlements", {
@@ -316,6 +320,13 @@ async function refreshEntitlements(force) {
       status: data.status || "none",
       currentPeriodEnd: data.currentPeriodEnd || null,
       email: data.email || null,
+      // Cloud quota, rendered by the popup and the hub (docs/PRICING.md):
+      // remaining/total characters this period, and when it resets.
+      cloudCharsRemaining: data.cloudCharsRemaining ?? null,
+      ttsCharsRemaining: data.ttsCharsRemaining ?? null,
+      cloudCharsTotal: data.cloudCharsTotal ?? null,
+      ttsCharsTotal: data.ttsCharsTotal ?? null,
+      quotaResetsAt: data.quotaResetsAt || null,
       checkedAt: Date.now(),
     };
     chrome.storage.local.set({ entitlements: ent });

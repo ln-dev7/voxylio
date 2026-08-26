@@ -315,7 +315,12 @@
     "extensionMissing": "O Voxylio não está instalado neste navegador.",
     "extensionError": "Não foi possível contatar a extensão. Abra esta página no Chrome com o Voxylio instalado.",
     "checkoutSuccess": "Pagamento recebido — seu plano Pro será ativado em segundos.",
-    "upgradeYearly": "ou US$ 69,99/ano (−27%)"
+    "upgradeYearly": "ou US$ 69,99/ano (−27%)",
+    "usageTitle": "Uso Pro deste mês",
+    "usageTrans": "Tradução IA",
+    "usageVoice": "Voz neural",
+    "usageResets": "A cota é renovada em {date}",
+    "usageFallback": "Quando uma cota acaba, o motor local assume automaticamente — a dublagem nunca para."
   },
   "Pricing": {
     "title": "Um preço simples e honesto",

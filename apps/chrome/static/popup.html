@@ -424,6 +424,53 @@
     .account-signout:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     .account-signout[hidden] { display: none; }
 
+    /* ---- Pro cloud quota meters (Pro accounts only) ---- */
+    .quota { margin-top: 12px; }
+    .quota[hidden] { display: none; }
+    .quota-title {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .quota-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 7px;
+    }
+    .quota-label { font-size: 11px; color: var(--text-muted); }
+    .quota-val {
+      font-size: 11px;
+      color: var(--text-faint);
+      font-variant-numeric: tabular-nums;
+    }
+    .quota-bar {
+      margin-top: 4px;
+      height: 4px;
+      border-radius: 9999px;
+      background: var(--surface-2);
+      overflow: hidden;
+    }
+    .quota-fill {
+      height: 100%;
+      border-radius: 9999px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+    .quota-fill.low { background: #f5a623; }
+    .quota-fill.out { background: #e5484d; }
+    .quota-resets {
+      margin: 8px 0 0;
+      font-size: 10px;
+      color: var(--text-faint);
+    }
+    .quota-resets:empty { display: none; }
+
     /* ---- sign-in gate ---- */
     .signin-card {
       background: var(--surface);
@@ -630,6 +677,20 @@
       <button id="accountBtn" class="account-cta" data-i18n-title="titleAccount" title="Gérer votre compte Voxylio sur le site">Se connecter</button>
     </div>
     <p class="account-note" id="accountNote">Connecte-toi pour activer le doublage.</p>
+    <div class="quota" id="quotaBox" hidden>
+      <span class="quota-title" data-i18n="quotaTitle">Quota Pro du mois</span>
+      <div class="quota-row">
+        <span class="quota-label" data-i18n="quotaTrans">Traduction IA</span>
+        <span class="quota-val" id="quotaTransVal"></span>
+      </div>
+      <div class="quota-bar" id="quotaTransBar"><div class="quota-fill" id="quotaTransFill"></div></div>
+      <div class="quota-row">
+        <span class="quota-label" data-i18n="quotaVoice">Voix neurale</span>
+        <span class="quota-val" id="quotaVoiceVal"></span>
+      </div>
+      <div class="quota-bar" id="quotaVoiceBar"><div class="quota-fill" id="quotaVoiceFill"></div></div>
+      <p class="quota-resets" id="quotaResets"></p>
+    </div>
     <button id="signoutBtn" class="account-signout" data-i18n="signOut" hidden>Se déconnecter</button>
   </div>
 

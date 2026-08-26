@@ -249,6 +249,67 @@ function setSignedOut(out) {
   $("mainUi").hidden = out;
 }
 
+function fmtCompact(n) {
+  try {
+    return new Intl.NumberFormat(uiLangResolved, {
+      notation: "compact",
+      maximumFractionDigits: 1,
+    }).format(n);
+  } catch (e) {
+    return String(n);
+  }
+}
+
+function fmtInt(n) {
+  try {
+    return new Intl.NumberFormat(uiLangResolved).format(n);
+  } catch (e) {
+    return String(n);
+  }
+}
+
+// Two thin meters under the account card: remaining AI-translation and
+// neural-voice characters this period. Only rendered when the server
+// reported totals — a Pro plan with no configured provider shows nothing.
+function renderQuota(ent) {
+  const box = $("quotaBox");
+  const rows = [
+    ["quotaTransVal", "quotaTransFill", "quotaTransBar", ent.cloudCharsRemaining, ent.cloudCharsTotal],
+    ["quotaVoiceVal", "quotaVoiceFill", "quotaVoiceBar", ent.ttsCharsRemaining, ent.ttsCharsTotal],
+  ];
+  const has = rows.some(([, , , , total]) => typeof total === "number" && total > 0);
+  box.hidden = !has;
+  if (!has) return;
+  for (const [valId, fillId, barId, remaining, total] of rows) {
+    const tot = typeof total === "number" ? total : 0;
+    const rem = Math.max(0, Math.min(tot, typeof remaining === "number" ? remaining : 0));
+    const pct = tot > 0 ? Math.round((rem / tot) * 100) : 0;
+    $(valId).textContent = fmtCompact(rem);
+    const fill = $(fillId);
+    fill.style.width = pct + "%";
+    fill.classList.toggle("low", pct > 0 && pct <= 20);
+    fill.classList.toggle("out", pct === 0);
+    $(barId).title = fmtInt(rem) + " / " + fmtInt(tot);
+  }
+  const resets = $("quotaResets");
+  if (ent.quotaResetsAt) {
+    try {
+      const date = new Date(ent.quotaResetsAt).toLocaleDateString(uiLangResolved, {
+        day: "numeric",
+        month: "long",
+      });
+      resets.textContent = (t("quotaResets") || "Se réinitialise le {date}").replace(
+        "{date}",
+        date,
+      );
+    } catch (e) {
+      resets.textContent = "";
+    }
+  } else {
+    resets.textContent = "";
+  }
+}
+
 async function refreshAccount() {
   const plan = $("accountPlan");
   const btn = $("accountBtn");
@@ -272,6 +333,8 @@ async function refreshAccount() {
     const isPro = linked && ent.plan === "pro";
     $("proTransRow").hidden = !isPro;
     $("proVoiceRow").hidden = !isPro;
+    if (isPro) renderQuota(ent);
+    else $("quotaBox").hidden = true;
     if (!linked) {
       plan.textContent = t("accountNotLinked") || "Non connecté";
       plan.classList.remove("pro");
@@ -309,6 +372,7 @@ async function refreshAccount() {
     banner.hidden = true;
     email.hidden = true;
     signout.hidden = true;
+    $("quotaBox").hidden = true;
   }
 }
 

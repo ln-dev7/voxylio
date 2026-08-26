@@ -315,7 +315,12 @@
     "extensionMissing": "此浏览器未安装 Voxylio。",
     "extensionError": "无法连接扩展。请在已安装 Voxylio 的 Chrome 中打开本页。",
     "checkoutSuccess": "已收到付款 — 你的 Pro 计划将在几秒内激活。",
-    "upgradeYearly": "或 $69.99/年（−27%）"
+    "upgradeYearly": "或 $69.99/年（−27%）",
+    "usageTitle": "本月 Pro 用量",
+    "usageTrans": "AI 翻译",
+    "usageVoice": "神经语音",
+    "usageResets": "额度将于{date}重置",
+    "usageFallback": "额度用完后，本地引擎会自动接管——配音永不中断。"
   },
   "Pricing": {
     "title": "简单而诚实的价格",
