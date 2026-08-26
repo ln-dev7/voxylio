@@ -156,7 +156,7 @@
   "Footer": {
     "tagline": "브라우저에서 실시간 영상 더빙.",
     "madeBy": "제작",
-    "license": "MIT 라이선스",
+    "license": "FSL 라이선스",
     "product": "제품",
     "resources": "리소스",
     "links": {
@@ -164,7 +164,7 @@
       "howItWorks": "작동 방식",
       "install": "설치",
       "faq": "FAQ",
-      "license": "MIT 라이선스",
+      "license": "FSL 라이선스",
       "issues": "문제 신고",
       "privacy": "개인정보",
       "changelog": "업데이트",
@@ -369,7 +369,7 @@
         "f2": "65개 이상의 더빙 언어, 원어 자동 감지",
         "f3": "번역된 자막을 영상 위에 표시",
         "f4": "시청 내용은 절대 기기 밖으로 나가지 않습니다",
-        "f5": "오픈 소스 (MIT)"
+        "f5": "소스 코드 공개(FSL) — 각 버전은 2년 후 MIT로 전환"
       }
     },
     "pro": {

@@ -16,8 +16,8 @@ the adoption engine — its marginal cost is ~zero and it is what makes
 users experience the product's value. SUPERSEDED IN PART (2026-08-26):
 "never restrict what costs us nothing" no longer holds — free is scoped
 to YouTube, Netflix, Prime Video, Disney+ and Twitch after a 3-day full
-trial; the convenience of the packaged product is the paid surface, the
-MIT code remains the escape hatch. See « Owner update » below.
+trial; the convenience of the packaged product is the paid surface, and
+the public FSL source remains the personal-use escape hatch (every release converts to MIT after 2 years). See « Owner update » below.
 
 ## Owner overrides (differ from the advisory notes this is based on)
 
@@ -134,6 +134,24 @@ Honesty note for the copy, when it ships: no-subtitle dubbing has NO
 local fallback — minutes out means the feature pauses until reset
 (unlike every text feature, which falls back to the local engine).
 
+## License (owner decision, 2026-08-26)
+
+Relicensed from MIT to **FSL-1.1-MIT** (Functional Source License,
+Sentry's): personal use, education, research and internal use stay
+free; **selling the Software or offering a competing product/service
+is barred**; each release automatically becomes MIT two years after
+its publication. Rationale: block "take the code and sell it" while
+keeping the clone-it-for-yourself promise the free plan strategy leans
+on. Applies FORWARD only — everything published under MIT before this
+date remains MIT for whoever forked it. The owner is the sole author,
+so no contributor consent was needed; if external contributions are
+ever accepted, add a CLA to preserve the right to relicense. Wording
+rule: say « code source public / source-available (FSL) », NEVER
+« open source » (FSL is not OSI-approved). Swept on 2026-08-26:
+LICENSE, root package.json, pricing card f5 ×10, footer label ×10.
+Trademark note added to the LICENSE Notice. AMO listing: pick
+« Custom License » and paste the FSL text.
+
 ## Owner update (2026-08-26) — repositioning in progress
 
 Three decisions taken in conversation, recorded here so the copy and
@@ -148,7 +166,7 @@ the code never drift from them:
    decision, and requires sweeping the exact same list.
 2. **The free plan is tightened — mechanism CHOSEN (2026-08-26,
    shipped in v1.8.0).** Rationale: the packaged product (store build,
-   account, updates) is the convenience; the code is MIT — whoever
+   account, updates) is the convenience; the source is public under FSL-1.1-MIT (free for personal use, resale and competing use barred, MIT after 2 years) — whoever
    refuses to pay can clone and run it locally. The split:
    - **3-day full trial** for every account, every site unlocked.
      Starts at the FIRST authenticated `/api/entitlements` call after

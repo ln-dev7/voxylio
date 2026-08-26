@@ -156,7 +156,7 @@
   "Footer": {
     "tagline": "Real-time video dubbing in your browser.",
     "madeBy": "Built by",
-    "license": "MIT License",
+    "license": "FSL License",
     "product": "Product",
     "resources": "Resources",
     "links": {
@@ -164,7 +164,7 @@
       "howItWorks": "How it works",
       "install": "Install",
       "faq": "FAQ",
-      "license": "MIT License",
+      "license": "FSL License",
       "issues": "Report an issue",
       "privacy": "Privacy",
       "changelog": "Changelog",
@@ -368,7 +368,7 @@
         "f2": "65+ dubbing languages, source auto-detected",
         "f3": "Translated subtitles right on the video",
         "f4": "What you watch never leaves your device",
-        "f5": "Open source (MIT)"
+        "f5": "Source-available (FSL) — every release becomes MIT after 2 years"
       }
     },
     "pro": {

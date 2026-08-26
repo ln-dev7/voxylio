@@ -156,7 +156,7 @@
   "Footer": {
     "tagline": "Video-Dubbing in Echtzeit, direkt im Browser.",
     "madeBy": "Entwickelt von",
-    "license": "MIT-Lizenz",
+    "license": "FSL-Lizenz",
     "product": "Produkt",
     "resources": "Ressourcen",
     "links": {
@@ -164,7 +164,7 @@
       "howItWorks": "So funktioniert's",
       "install": "Installieren",
       "faq": "FAQ",
-      "license": "MIT-Lizenz",
+      "license": "FSL-Lizenz",
       "issues": "Problem melden",
       "privacy": "Datenschutz",
       "changelog": "Neuheiten",
@@ -369,7 +369,7 @@
         "f2": "Über 65 Zielsprachen, Ausgangssprache automatisch erkannt",
         "f3": "Übersetzte Untertitel direkt auf dem Video",
         "f4": "Was du ansiehst, verlässt nie dein Gerät",
-        "f5": "Open Source (MIT)"
+        "f5": "Einsehbarer Quellcode (FSL) — jede Version wird nach 2 Jahren MIT"
       }
     },
     "pro": {

@@ -156,7 +156,7 @@
   "Footer": {
     "tagline": "在瀏覽器中即時影片配音。",
     "madeBy": "開發者",
-    "license": "MIT 授權",
+    "license": "FSL 授權",
     "product": "產品",
     "resources": "資源",
     "links": {
@@ -164,7 +164,7 @@
       "howItWorks": "運作方式",
       "install": "安裝",
       "faq": "常見問題",
-      "license": "MIT 授權",
+      "license": "FSL 授權",
       "issues": "回報問題",
       "privacy": "隱私權",
       "changelog": "更新日誌",
@@ -369,7 +369,7 @@
         "f2": "超過 65 種配音語言，來源語言自動偵測",
         "f3": "翻譯字幕直接顯示在影片上",
         "f4": "你觀看的內容絕不離開你的裝置",
-        "f5": "開放原始碼（MIT）"
+        "f5": "源代碼公開（FSL）— 每個版本 2 年後轉為 MIT"
       }
     },
     "pro": {

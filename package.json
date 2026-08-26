@@ -2,6 +2,7 @@
   "name": "voxylio",
   "private": true,
   "packageManager": "pnpm@10.28.0",
+  "license": "FSL-1.1-MIT",
   "scripts": {
     "build": "pnpm --filter @voxylio/chrome build && pnpm --filter site build",
     "build:chrome": "pnpm --filter @voxylio/chrome build",

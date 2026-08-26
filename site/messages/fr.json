@@ -156,7 +156,7 @@
   "Footer": {
     "tagline": "Doublage vidéo en temps réel dans votre navigateur.",
     "madeBy": "Créé par",
-    "license": "Licence MIT",
+    "license": "Licence FSL",
     "product": "Produit",
     "resources": "Ressources",
     "links": {
@@ -164,7 +164,7 @@
       "howItWorks": "Fonctionnement",
       "install": "Installation",
       "faq": "FAQ",
-      "license": "Licence MIT",
+      "license": "Licence FSL",
       "issues": "Signaler un problème",
       "privacy": "Confidentialité",
       "changelog": "Nouveautés",
@@ -368,7 +368,7 @@
         "f2": "Plus de 65 langues de doublage, langue source auto-détectée",
         "f3": "Sous-titres traduits affichés sur la vidéo",
         "f4": "Ce que vous regardez ne quitte jamais votre appareil",
-        "f5": "Open source (MIT)"
+        "f5": "Code source public (FSL) — chaque version devient MIT après 2 ans"
       }
     },
     "pro": {

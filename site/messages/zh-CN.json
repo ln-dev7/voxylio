@@ -156,7 +156,7 @@
   "Footer": {
     "tagline": "在浏览器中实时视频配音。",
     "madeBy": "开发者",
-    "license": "MIT 许可证",
+    "license": "FSL 许可证",
     "product": "产品",
     "resources": "资源",
     "links": {
@@ -164,7 +164,7 @@
       "howItWorks": "工作原理",
       "install": "安装",
       "faq": "常见问题",
-      "license": "MIT 许可证",
+      "license": "FSL 许可证",
       "issues": "报告问题",
       "privacy": "隐私",
       "changelog": "更新日志",
@@ -369,7 +369,7 @@
         "f2": "65 种以上配音语言，源语言自动检测",
         "f3": "翻译字幕直接显示在视频上",
         "f4": "你观看的内容绝不离开你的设备",
-        "f5": "开源（MIT）"
+        "f5": "源代码公开（FSL）— 每个版本 2 年后转为 MIT"
       }
     },
     "pro": {
