@@ -357,8 +357,9 @@ sous-titres aux fonctions Pro, contrôle utilisateur.
 ## Checklist de soumission (rappel)
 
 1. Package → importer `dist-store/voxylio-chrome-<version>.zip`.
-2. Fiche → remplacer la description (ci-dessus) ; captures à jour si
-   l'UI a changé (popup 400px, hub, bouton Lancer).
+2. Fiche → description (ci-dessus) + visuels depuis `store-assets/`
+   (tuile 440×280, marquée 1400×560, capture 1280×800 — PNG 24 bits
+   sans alpha) ; captures réelles à jour si l'UI a changé.
 3. Confidentialité → « Informations d'authentification » déclarées ;
    justifications : `storage` (réglages + historique local),
    `scripting` (injection à la demande via le bouton Lancer), accès aux
