@@ -2,31 +2,87 @@
 // the service worker to avoid page CORS/CSP issues, and so user-supplied
 // API keys (storage.local) never reach page context.
 
-const memCache = new Map(); // "provider::lang::text" -> translation
+const memCache = new Map(); // "provider::lang::text" -> Promise<{text, detected}>
+const MEM_CACHE_MAX = 4000;
 // getLocal(defaults) is declared in the account section below (hoisted).
+
+// Minimal entity decode: Google v2 re-escapes apostrophes ("&#39;") even
+// with format:"text" — without this the voice reads the escape out loud.
+function decodeBasicEntities(s) {
+  return String(s)
+    .replace(/&#x([0-9a-f]{1,6});/gi, (_, h) => {
+      const n = parseInt(h, 16);
+      return n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : " ";
+    })
+    .replace(/&#(\d{1,7});/g, (_, d) => {
+      const n = parseInt(d, 10);
+      return n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : " ";
+    })
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&nbsp;/g, " ");
+}
 
 // Legacy code quirks of the gtx endpoint.
 const GTX_CODE = { he: "iw", zh: "zh-CN" };
 
-// Best-effort unofficial endpoint (no key, no SLA).
+// Best-effort unofficial endpoint (no key, no SLA). When the primary
+// endpoint is rate-limited (HTTP 429 "unusual traffic"), the older
+// clients5 variant is tried once — the two are limited independently.
+// Resilience only: request volume is bounded by the content script.
 async function translateGtx(text, source, target) {
-  const url =
-    "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" +
-    encodeURIComponent(GTX_CODE[source] || source || "auto") +
-    "&tl=" +
-    encodeURIComponent(GTX_CODE[target] || target) +
-    "&dt=t&q=" +
-    encodeURIComponent(text);
-
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("HTTP " + res.status);
-  const data = await res.json();
-  // data[0] = list of segments [translated, original, ...]
-  const out = (data && data[0] ? data[0] : [])
-    .map((seg) => (seg && seg[0]) || "")
-    .join("");
-  if (!out) throw new Error("empty translation");
-  return out;
+  const sl = GTX_CODE[source] || source || "auto";
+  const tl = GTX_CODE[target] || target;
+  try {
+    const url =
+      "https://translate.googleapis.com/translate_a/single?client=gtx&sl=" +
+      encodeURIComponent(sl) +
+      "&tl=" +
+      encodeURIComponent(tl) +
+      "&dt=t&q=" +
+      encodeURIComponent(text);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    // data[0] = list of segments [translated, original, ...]; data[2] =
+    // the detected source language.
+    const out = (data && data[0] ? data[0] : [])
+      .map((seg) => (seg && seg[0]) || "")
+      .join("");
+    if (!out) throw new Error("empty translation");
+    return { text: out, detected: (data && data[2]) || "" };
+  } catch (primaryError) {
+    try {
+      const alt =
+        "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=" +
+        encodeURIComponent(sl) +
+        "&tl=" +
+        encodeURIComponent(tl) +
+        "&q=" +
+        encodeURIComponent(text);
+      const res = await fetch(alt);
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      // Shapes seen in the wild: ["txt"], [["txt","src"]], {sentences:[…]}
+      let out = "";
+      let detected = "";
+      if (Array.isArray(data)) {
+        const first = data[0];
+        if (typeof first === "string") out = first;
+        else if (Array.isArray(first)) {
+          out = typeof first[0] === "string" ? first[0] : "";
+          detected = typeof first[1] === "string" ? first[1] : "";
+        }
+      }
+      if (!out) throw new Error("empty translation");
+      return { text: out, detected };
+    } catch (e) {
+      throw primaryError;
+    }
+  }
 }
 
 // DeepL supports a subset of the catalog, with regioned codes for some
@@ -39,7 +95,15 @@ const DEEPL_TARGET = {
   th: "TH", tr: "TR", uk: "UK", vi: "VI", zh: "ZH-HANS",
 };
 
-async function translateDeepl(text, source, target) {
+// Source codes DeepL accepts (regionless). Anything else is OMITTED so
+// DeepL auto-detects instead of rejecting the request with a 400.
+const DEEPL_SOURCE = new Set([
+  "ar", "bg", "cs", "da", "de", "el", "en", "es", "et", "fi", "fr", "he",
+  "hu", "id", "it", "ja", "ko", "lt", "lv", "nb", "nl", "no", "pl", "pt",
+  "ro", "ru", "sk", "sl", "sv", "th", "tr", "uk", "vi", "zh",
+]);
+
+async function translateDeepl(text, source, target, context) {
   const { deeplKey } = await getLocal({ deeplKey: "" });
   if (!deeplKey) throw new Error("no DeepL key");
   if (!DEEPL_TARGET[target]) throw new Error("DeepL: unsupported target " + target);
@@ -49,7 +113,11 @@ async function translateDeepl(text, source, target) {
     text: [text],
     target_lang: DEEPL_TARGET[target],
   };
-  if (source && source !== "auto") body.source_lang = source.toUpperCase();
+  // Neighbouring sentences: disambiguation only, never billed.
+  if (typeof context === "string" && context.trim())
+    body.context = context.slice(0, 1500);
+  if (source && source !== "auto" && DEEPL_SOURCE.has(source))
+    body.source_lang = (source === "no" ? "nb" : source).toUpperCase();
   const res = await fetch(`https://${host}/v2/translate`, {
     method: "POST",
     headers: {
@@ -61,9 +129,13 @@ async function translateDeepl(text, source, target) {
   if (res.status === 456) throw new Error("DeepL quota exceeded");
   if (!res.ok) throw new Error("DeepL HTTP " + res.status);
   const data = await res.json();
-  const out = data && data.translations && data.translations[0] && data.translations[0].text;
+  const tr = data && data.translations && data.translations[0];
+  const out = tr && tr.text;
   if (!out) throw new Error("empty translation");
-  return out;
+  return {
+    text: out,
+    detected: ((tr && tr.detected_source_language) || "").toLowerCase(),
+  };
 }
 
 async function translateGoogleV2(text, source, target) {
@@ -82,14 +154,14 @@ async function translateGoogleV2(text, source, target) {
   );
   if (!res.ok) throw new Error("Google HTTP " + res.status);
   const data = await res.json();
-  const out =
-    data &&
-    data.data &&
-    data.data.translations &&
-    data.data.translations[0] &&
-    data.data.translations[0].translatedText;
+  const tr =
+    data && data.data && data.data.translations && data.data.translations[0];
+  const out = tr && tr.translatedText;
   if (!out) throw new Error("empty translation");
-  return out;
+  return {
+    text: decodeBasicEntities(out),
+    detected: ((tr && tr.detectedSourceLanguage) || "").toLowerCase(),
+  };
 }
 
 const PROVIDERS = {
@@ -98,20 +170,30 @@ const PROVIDERS = {
   googlev2: translateGoogleV2,
 };
 
-async function translateFallback(text, source, target, provider) {
+async function translateFallback(text, source, target, provider, context) {
+  if (!target) throw new Error("no target language");
   const fn = PROVIDERS[provider] || translateGtx;
   const key = (provider || "gtx") + "::" + source + "->" + target + "::" + text;
+  // The cache stores the in-flight PROMISE: concurrent identical requests
+  // join it instead of stampeding the endpoint. Failures self-evict.
   if (memCache.has(key)) return memCache.get(key);
-  const out = await fn(text, source, target);
-  if (memCache.size > 5000) memCache.clear();
-  memCache.set(key, out);
-  return out;
+  const p = fn(text, source, target, context);
+  if (memCache.size >= MEM_CACHE_MAX) {
+    let n = 0;
+    for (const k of memCache.keys()) {
+      memCache.delete(k);
+      if (++n >= MEM_CACHE_MAX / 2) break;
+    }
+  }
+  memCache.set(key, p);
+  p.catch(() => memCache.delete(key));
+  return p;
 }
 
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg && msg.type === "translate") {
-    translateFallback(msg.text, msg.source || "auto", msg.target || "fr", msg.provider)
-      .then((t) => sendResponse({ ok: true, text: t }))
+    translateFallback(msg.text, msg.source || "auto", msg.target, msg.provider, msg.context)
+      .then((r) => sendResponse({ ok: true, text: r.text, detected: r.detected || "" }))
       .catch((e) => sendResponse({ ok: false, error: String(e) }));
     return true; // asynchronous response
   }
@@ -134,6 +216,12 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg && msg.type === "translate-pro") {
     translatePro(msg)
       .then((text) => sendResponse({ ok: true, text }))
+      .catch((e) => sendResponse({ ok: false, error: String(e && e.message) }));
+    return true;
+  }
+  if (msg && msg.type === "translate-pro-batch") {
+    translateProBatch(msg)
+      .then((items) => sendResponse({ ok: true, items }))
       .catch((e) => sendResponse({ ok: false, error: String(e && e.message) }));
     return true;
   }
@@ -235,45 +323,96 @@ async function refreshEntitlements(force) {
 
 let proBlockedUntil = 0;
 
-async function translatePro(msg) {
+// Maps a refused status to a local stand-down, so the metered backend is
+// never hammered per line. EVERY non-OK cools down — an unlisted 4xx/5xx
+// used to retry on each line.
+function proRefusal(status) {
+  if (status === 402 || status === 429) {
+    proBlockedUntil = Date.now() + 10 * 60_000;
+    return new Error("quota exhausted");
+  }
+  if (status === 401 || status === 403) {
+    proBlockedUntil = Date.now() + 5 * 60_000;
+    return new Error("not entitled");
+  }
+  if (status === 503) {
+    proBlockedUntil = Date.now() + 5 * 60_000;
+    return new Error("provider unconfigured");
+  }
+  if (status === 422) {
+    // Unsupported pair — the user may switch target soon: medium block.
+    proBlockedUntil = Date.now() + 5 * 60_000;
+    return new Error("unsupported pair");
+  }
+  proBlockedUntil = Date.now() + 2 * 60_000;
+  return new Error("HTTP " + status);
+}
+
+async function proFetch(path, payload) {
   if (Date.now() < proBlockedUntil) throw new Error("pro cooling down");
   const { accountToken } = await getLocal({ accountToken: "" });
   if (!accountToken) {
     proBlockedUntil = Date.now() + 60_000;
     throw new Error("not signed in");
   }
-  const res = await fetch(SITE_ORIGIN + "/api/pro/translate", {
+  const res = await fetch(SITE_ORIGIN + path, {
     method: "POST",
     headers: {
       Authorization: "Bearer " + accountToken,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      text: String(msg.text || "").slice(0, 1200),
-      before: (msg.before || []).slice(-4).map((s) => String(s).slice(0, 300)),
-      after: (msg.after || []).slice(0, 2).map((s) => String(s).slice(0, 300)),
-      source: msg.source || "auto",
-      target: msg.target,
-    }),
+    body: JSON.stringify(payload),
   });
-  if (res.status === 402 || res.status === 429) {
-    // Quota exhausted: stand down for a while — dubbing continues locally.
-    proBlockedUntil = Date.now() + 10 * 60_000;
-    throw new Error("quota exhausted");
-  }
-  if (res.status === 401 || res.status === 403) {
-    proBlockedUntil = Date.now() + 5 * 60_000;
-    throw new Error("not entitled");
-  }
-  if (res.status === 503) {
-    proBlockedUntil = Date.now() + 5 * 60_000;
-    throw new Error("provider unconfigured");
-  }
-  if (!res.ok) throw new Error("HTTP " + res.status);
-  const data = await res.json();
+  if (!res.ok) throw proRefusal(res.status);
+  return res.json();
+}
+
+async function translatePro(msg) {
+  const data = await proFetch("/api/pro/translate", {
+    text: String(msg.text || "").slice(0, 1200),
+    before: (msg.before || []).slice(-4).map((s) => String(s).slice(0, 300)),
+    after: (msg.after || []).slice(0, 2).map((s) => String(s).slice(0, 300)),
+    source: msg.source || "auto",
+    target: msg.target,
+    secs: msg.secs > 0 ? Math.min(60, Number(msg.secs)) : undefined,
+  });
   if (!data || typeof data.text !== "string" || !data.text)
     throw new Error("empty translation");
   return data.text;
+}
+
+// Several upcoming lines in ONE metered call. A backend that does not
+// support batching answers 400 with error "batch_unsupported": surfaced
+// verbatim so the content script stops batching for the page.
+async function translateProBatch(msg) {
+  const lines = (Array.isArray(msg.lines) ? msg.lines : [])
+    .slice(0, 8)
+    .map((l) => ({
+      id: String(l && l.id),
+      text: String((l && l.text) || "").slice(0, 600),
+      secs: l && l.secs > 0 ? Math.min(60, Number(l.secs)) : undefined,
+    }))
+    .filter((l) => l.text.trim());
+  if (!lines.length) throw new Error("empty batch");
+  let data;
+  try {
+    data = await proFetch("/api/pro/translate", {
+      lines,
+      before: (msg.before || []).slice(-3).map((s) => String(s).slice(0, 300)),
+      source: msg.source || "auto",
+      target: msg.target,
+    });
+  } catch (e) {
+    // A 400 (bad_request) from an older backend means "no batch here":
+    // don't let the generic cooldown block per-line Pro translation.
+    if (e && /HTTP 400/.test(String(e.message))) {
+      proBlockedUntil = 0;
+      throw new Error("batch unsupported");
+    }
+    throw e;
+  }
+  if (!data || !Array.isArray(data.items)) throw new Error("bad batch reply");
+  return data.items;
 }
 
 // Pro neural voice relay — same shape as translatePro: backend holds the

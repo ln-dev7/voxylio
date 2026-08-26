@@ -14,6 +14,11 @@ import { runtime } from "../index.js";
 export const AURA2_LANGS = new Set(["en", "es", "de", "fr", "nl", "it", "ja"]);
 
 export function createProProvider() {
+  // While the background reports a refusal, skip the provider entirely
+  // for a short while: not even the message round-trip is worth paying
+  // per line when the answer is known to be "no".
+  let blockedUntil = 0;
+
   const translatorFor = (source, target) => ({
     translate: async (text, opts) => {
       const ctx = (opts && opts.context) || {};
@@ -24,14 +29,19 @@ export function createProProvider() {
         after: Array.isArray(ctx.after) ? ctx.after.slice(0, 2) : [],
         source: source || "auto",
         target,
+        secs: opts && opts.secs > 0 ? Math.min(60, opts.secs) : 0,
       });
       if (resp && resp.ok) return resp.text;
+      blockedUntil = Date.now() + 20_000;
       throw new Error((resp && resp.error) || "pro translate failed");
     },
   });
   return {
     id: "pro",
     kind: "pro",
-    ready: (source, target) => Promise.resolve(translatorFor(source, target)),
+    ready: (source, target) =>
+      Promise.resolve(
+        Date.now() < blockedUntil ? null : translatorFor(source, target),
+      ),
   };
 }

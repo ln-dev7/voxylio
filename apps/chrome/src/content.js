@@ -12,6 +12,9 @@ import {
   stripTags,
   protectTerms,
   restoreTerms,
+  compileGlossary,
+  textHash,
+  validateSettings,
   computeUtteranceRate,
   pickVoice as pickBestVoice,
   LOCALES,
@@ -54,6 +57,60 @@ import { makeT, resolveUiLang } from "./i18n.js";
   // selection and the per-site disable list.
   const DEFAULTS = { ...SHARED_DEFAULTS };
   const settings = { ...DEFAULTS };
+
+  // The user glossary, compiled once per change (never per line). Lives
+  // up here because the settings loader below may run synchronously.
+  let glossaryMatcher = null;
+  function rebuildGlossary() {
+    glossaryMatcher = compileGlossary(settings.glossary);
+  }
+
+  // ------------------------------------------------- persistent cache
+  // Survives reloads and re-watches (chrome.storage.local): re-opening
+  // yesterday's video must not re-spend the Pro quota on identical lines.
+  // Keyed by a hash, mode-prefixed (pro results never serve std mode and
+  // vice versa), bounded LRU, writes debounced.
+  const PERSIST_MAX = 600;
+  const persistCache = new Map(); // pKey -> { v: text, at: ms }
+  let persistTimer = null;
+
+  function pKey(source, target, text) {
+    const mode = settings.proTranslation ? "p" : "s";
+    return mode + "|" + source + ">" + target + "|" + textHash(text) + ":" + text.length;
+  }
+
+  function loadPersistCache() {
+    try {
+      storage.local.get({ vxTransCache: null }, (r) => {
+        const rows = r && Array.isArray(r.vxTransCache) ? r.vxTransCache : [];
+        for (const row of rows) {
+          if (row && typeof row[0] === "string" && typeof row[1] === "string")
+            persistCache.set(row[0], { v: row[1], at: Number(row[2]) || 0 });
+        }
+      });
+    } catch (e) {
+      /* storage stub (tests): memory-only */
+    }
+  }
+
+  function persistPut(key, text) {
+    persistCache.set(key, { v: text, at: Date.now() });
+    if (persistCache.size > PERSIST_MAX) {
+      const rows = [...persistCache.entries()].sort((a, b) => b[1].at - a[1].at);
+      persistCache.clear();
+      for (const [k, v] of rows.slice(0, Math.floor(PERSIST_MAX * 0.75)))
+        persistCache.set(k, v);
+    }
+    if (persistTimer) return;
+    persistTimer = setTimeout(() => {
+      persistTimer = null;
+      try {
+        safeLocalSet({
+          vxTransCache: [...persistCache.entries()].map(([k, e]) => [k, e.v, e.at]),
+        });
+      } catch (e) {}
+    }, 4000);
+  }
 
   // Voxylio can be switched off per hostname from the options page.
   function siteDisabled() {
@@ -332,7 +389,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
   }
 
   storage.sync.get(DEFAULTS, (s) => {
-    Object.assign(settings, s);
+    // Everything from storage goes through the validator: a corrupt or
+    // partial value must never become NaN in a rate computation or a
+    // throw in video.volume.
+    Object.assign(settings, DEFAULTS, validateSettings(s));
+    rebuildGlossary();
+    loadPersistCache();
     refreshAll();
   });
 
@@ -348,15 +410,27 @@ import { makeT, resolveUiLang } from "./i18n.js";
       return;
     }
     if (area !== "sync") return;
+    // A removed key arrives with newValue === undefined: fall back to the
+    // default instead of poisoning the settings object.
+    const patch = {};
     for (const [k, v] of Object.entries(changes)) {
-      if (k in settings) settings[k] = v.newValue;
+      if (!(k in DEFAULTS)) continue;
+      patch[k] = v.newValue === undefined ? DEFAULTS[k] : v.newValue;
     }
+    Object.assign(settings, validateSettings(patch));
     // Language change (source or target): cut the current voice and queue
     // immediately — no line from the previous pair may ever be heard.
     if (changes.targetLang || changes.sourceLang) {
       for (const c of controllers.values()) c.flushSpeech();
     }
-    if (changes.provider || changes.cloudFallback || changes.proTranslation)
+    if (changes.glossary) rebuildGlossary();
+    if (
+      changes.provider ||
+      changes.cloudFallback ||
+      changes.proTranslation ||
+      changes.keepTerms ||
+      changes.glossary
+    )
       rebuildChain();
     if (changes.uiLang) {
       // Rebuild the floating bar in the new language.
@@ -373,12 +447,28 @@ import { makeT, resolveUiLang } from "./i18n.js";
 
   // ------------------------------------------------------------ translation
 
-  const cache = new BoundedMap(3000); // "source->target::text" -> Promise<string>
+  const cache = new BoundedMap(3000); // cacheKey() -> Promise<string>
   let builtinBroken = false; // surfaced in the popup status
   let pendingCount = 0;
   // What actually translated the last lines: "local" | "cloud" | "none".
   let translationMode = "none";
   let lastTranslateError = "";
+  // Batch endpoint said "unsupported" (older backend / non-Gemini
+  // provider): stop trying for this page, the per-line path covers it.
+  let proBatchBroken = false;
+  // Source language reported back by an online provider (gtx/DeepL/Google
+  // all detect it). Last-resort input to effectiveSource(): it is what
+  // finally lets us STOP dubbing a video already in the target language
+  // when no track metadata and no local detector exist.
+  let providerDetectedSource = "";
+
+  // The chain epoch is part of the cache key: switching provider, toggling
+  // Pro or editing the glossary must re-translate — a cached gtx line
+  // silently serving a Pro user was the old failure mode.
+  let chainEpoch = 0;
+  function cacheKey(source, target, text) {
+    return chainEpoch + "|" + source + "->" + target + "::" + text;
+  }
 
   // Provider chain (packages/core/src/translation.js): ordering, ready
   // timeout (never block a line on a model download), attempt timeout and
@@ -386,15 +476,23 @@ import { makeT, resolveUiLang } from "./i18n.js";
   // platform adapters. The builtin provider is a singleton so its per-pair
   // translator instances survive chain rebuilds.
   const builtinProvider = createBuiltinProvider({
-    onBroken: () => {
-      builtinBroken = true;
+    onBroken: (e, pairKey) => {
+      // Per-pair honesty: only flag the popup when the CURRENT target's
+      // pair broke — one exotic unavailable pair must not report the
+      // whole local translator as down.
+      if (!pairKey || pairKey.endsWith("->" + settings.targetLang))
+        builtinBroken = true;
     },
   });
   const providerKeys = { deepl: "", googlev2: "" };
   const proProvider = createProProvider();
+  // Cooldowns survive chain rebuilds: a settings toggle must not un-cool
+  // a provider that is known to be down.
+  const chainPairState = new Map();
   let chain = createTranslatorChain([builtinProvider]);
 
   function rebuildChain() {
+    chainEpoch++;
     const list = [];
     // Pro contextual translation first (opt-in): background + backend
     // enforce the plan and the quota; any refusal falls through to the
@@ -408,7 +506,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
         list.push(createGoogleV2Provider(() => providerKeys.googlev2));
       list.push(createGtxProvider());
     }
-    chain = createTranslatorChain(list);
+    chain = createTranslatorChain(list, { pairState: chainPairState });
   }
   rebuildChain();
   try {
@@ -421,45 +519,76 @@ import { makeT, resolveUiLang } from "./i18n.js";
     /* no local storage (test stub): chain stays builtin+gtx */
   }
 
-  // One translation attempt (optionally with protected technical terms).
-  async function translateOnce(text, source, target, opts) {
+  // One translation attempt through the chain. A failing PREFETCH far
+  // ahead must never flip the popup to "error" while the line actually
+  // being spoken succeeded — only foreground failures update the status.
+  async function translateOnce(text, source, target, opts, fromPrefetch) {
     try {
       const res = await chain.translate(text, source, target, opts);
       translationMode =
         res.kind === "pro" ? "pro" : res.kind === "local" ? "local" : "cloud";
       lastTranslateError = "";
+      if (res.detected && !providerDetectedSource)
+        providerDetectedSource = res.detected.toLowerCase().split("-")[0];
       return res.text;
     } catch (e) {
-      translationMode = "none";
-      lastTranslateError = settings.cloudFallback
-        ? (e && e.message) || "translate failed"
-        : "local-only";
+      if (!fromPrefetch) {
+        translationMode = "none";
+        lastTranslateError = settings.cloudFallback
+          ? (e && e.message) || "translate failed"
+          : "local-only";
+      }
       throw e;
     }
   }
 
-  function translate(text, source, context) {
+  function translate(text, source, context, meta) {
     // The language pair is frozen when the request is made: the whole
     // pipeline (translator, fallback, cache key) uses these values, even if
     // the user switches languages mid-translation.
     const target = settings.targetLang;
-    const key = source + "->" + target + "::" + text;
+    const key = cacheKey(source, target, text);
     if (cache.has(key)) return cache.get(key);
-    const opts = context ? { context } : undefined;
+    // Reload / re-watch: identical lines come from the persistent cache
+    // instead of re-spending provider calls (and the Pro quota).
+    const pk = pKey(source, target, text);
+    const persisted = persistCache.get(pk);
+    if (persisted) {
+      persisted.at = Date.now();
+      const hit = Promise.resolve(persisted.v);
+      cache.set(key, hit);
+      return hit;
+    }
+    const fromPrefetch = !!(meta && meta.prefetch);
+    const opts = {};
+    if (context) opts.context = context;
+    if (meta && meta.secs > 0) opts.secs = meta.secs;
     const p = (async () => {
       pendingCount++;
       try {
-        // Protect technical terms; if the placeholders do not survive the
-        // engine, silently retry once without protection.
-        if (settings.keepTerms) {
-          const { protectedText, found } = protectTerms(text);
+        // Shield glossary + technical terms with placeholders. When the
+        // engine mangles them we REPAIR the output (strip stray glyphs)
+        // rather than paying a second full provider call for the line.
+        const gl = glossaryMatcher;
+        const useBuiltinTerms = !!settings.keepTerms;
+        if (gl || useBuiltinTerms) {
+          const { protectedText, found } = protectTerms(text, {
+            builtin: useBuiltinTerms,
+            glossary: gl,
+          });
           if (found.length > 0) {
-            const raw = await translateOnce(protectedText, source, target, opts);
+            const raw = await translateOnce(protectedText, source, target, opts, fromPrefetch);
             const { restored, ok } = restoreTerms(raw, found);
-            if (ok) return restored;
+            const out = ok ? restored : restored.replace(/[⟦⟧]/g, " ").replace(/\s+/g, " ").trim();
+            if (out) {
+              persistPut(pk, out);
+              return out;
+            }
           }
         }
-        return await translateOnce(text, source, target, opts);
+        const out = await translateOnce(text, source, target, opts, fromPrefetch);
+        persistPut(pk, out);
+        return out;
       } finally {
         pendingCount--;
       }
@@ -661,17 +790,27 @@ import { makeT, resolveUiLang } from "./i18n.js";
       const last = ctl.cues[ctl.cues.length - 1];
       const merged = mergeRollup(last, start, end, text);
       if (merged) {
-        if (merged.grew) {
-          last.text = merged.text;
-          ctl.lastCueCount = -1; // groups must be rebuilt
-        }
+        // Text growth AND end-time movement both invalidate the groups:
+        // stale ends feed the "line too late" checks downstream.
+        if (merged.grew || merged.end !== last.end) ctl.lastCueCount = -1;
+        if (merged.grew) last.text = merged.text;
         last.end = merged.end;
         ctl.cueKeys.add(key);
         return;
       }
       ctl.cueKeys.add(key);
-      ctl.cues.push({ start, end, text, key });
-      ctl.cues.sort((a, b) => a.start - b.start);
+      // Ordered insert (binary): a full sort per cue was O(n² log n) over
+      // the first harvest of a long VTT.
+      const cue = { start, end, text, key };
+      let lo = 0;
+      let hi = ctl.cues.length;
+      while (lo < hi) {
+        const mid = (lo + hi) >> 1;
+        if (ctl.cues[mid].start <= start) lo = mid + 1;
+        else hi = mid;
+      }
+      if (lo === ctl.cues.length) ctl.cues.push(cue);
+      else ctl.cues.splice(lo, 0, cue);
     }
 
     // DOM-harvested captions (YouTube, Netflix…): synthetic cues stamped
@@ -699,8 +838,14 @@ import { makeT, resolveUiLang } from "./i18n.js";
       const idx = ctl.groups.findIndex((g) => g.id === groupId);
       if (idx < 0) return undefined;
       return {
-        before: ctl.groups.slice(Math.max(0, idx - 3), idx).map((g) => g.text),
-        after: ctl.groups.slice(idx + 1, idx + 3).map((g) => g.text),
+        // 4 matches what the backend accepts (clampList(before, 4)).
+        before: ctl.groups.slice(Math.max(0, idx - 4), idx).map((g) => g.text),
+        // Drafts are still growing on live feeds: half a sentence fed as
+        // "upcoming context" misleads more than it helps.
+        after: ctl.groups
+          .slice(idx + 1, idx + 3)
+          .filter((g) => g.final)
+          .map((g) => g.text),
       };
     }
 
@@ -736,19 +881,41 @@ import { makeT, resolveUiLang } from "./i18n.js";
         (t) => t.kind === "subtitles" || t.kind === "captions"
       );
       const wanted = settings.sourceLang; // "auto" or an explicit source
-      const score = (t) => {
-        let s = 0;
-        const lang = (t.language || "").toLowerCase();
-        const label = (t.label || "").toLowerCase();
-        // Explicit source choice wins; otherwise slight bias toward English,
-        // the most common source for course content.
-        if (wanted !== "auto" && lang.startsWith(wanted)) s += 4;
-        if (wanted === "auto" && lang.startsWith("en")) s += 2;
-        if (label.includes("english") || label.includes("anglais")) s += 1;
-        return s;
-      };
-      tracks.sort((a, b) => score(b) - score(a));
-      const track = tracks[0];
+      // STICKY choice: once a track is being harvested, keep it as long as
+      // it exists. Re-arbitrating every tick used to switch tracks when a
+      // higher-scoring one appeared later (HLS), silently mixing two
+      // languages into one cue list.
+      let track = null;
+      if (ctl.trackListened && tracks.includes(ctl.trackListened)) {
+        track = ctl.trackListened;
+      } else {
+        const score = (t) => {
+          let s = 0;
+          const lang = (t.language || "").toLowerCase();
+          const label = (t.label || "").toLowerCase();
+          // Explicit source choice wins; otherwise slight bias toward
+          // English, the most common source for course content.
+          if (wanted !== "auto" && lang.startsWith(wanted)) s += 4;
+          if (wanted === "auto" && lang.startsWith("en")) s += 2;
+          if (label.includes("english") || label.includes("anglais")) s += 1;
+          return s;
+        };
+        tracks.sort((a, b) => score(b) - score(a));
+        track = tracks[0];
+        // The harvested track changed (previous one was removed): the old
+        // cue list is another language's — restart clean.
+        if (track && ctl.trackListened && ctl.trackListened !== track) {
+          ctl.cues = [];
+          ctl.cueKeys.clear();
+          ctl.groups = [];
+          ctl.lastCueCount = -1;
+          ctl.groupMeta.clear();
+          ctl.spokenIds.clear();
+          ctl.scheduledIds.clear();
+          ctl.inFlight.clear();
+          ctl.generation += 1;
+        }
+      }
       if (!track) return;
       ctl.trackLang = (track.language || "").toLowerCase().split("-")[0];
 
@@ -805,9 +972,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
         const cues = parseVTT(await res.text());
         for (const c of cues) addCue(c.start, c.end, c.text);
         ctl.trackRetryAt = 0;
+        ctl.trackRetries = 0;
       } catch (e) {
-        // Retry in 6 s
-        ctl.staticLoaded = false;
+        // Retry in 6 s — but a cross-origin refusal never heals on its
+        // own: give up after a few attempts (the popup Retry resets it).
+        ctl.trackRetries = (ctl.trackRetries || 0) + 1;
+        ctl.staticLoaded = ctl.trackRetries >= 4;
         ctl.trackRetryAt = Date.now() + 6000;
       }
     }
@@ -821,6 +991,10 @@ import { makeT, resolveUiLang } from "./i18n.js";
       if (ctl.trackLang) return ctl.trackLang;
       if (ctl.detectedSource) return ctl.detectedSource;
       maybeDetectSource();
+      // Last resort: what an online provider reported back while
+      // translating. It closes the "auto→auto" hole where a video already
+      // in the target language would be dubbed over itself forever.
+      if (providerDetectedSource) return providerDetectedSource;
       return "auto";
     }
 
@@ -829,12 +1003,21 @@ import { makeT, resolveUiLang } from "./i18n.js";
       ctl.detecting = true;
       try {
         if (typeof LanguageDetector === "undefined") return;
-        const sample = ctl.cues
-          .slice(0, 5)
-          .map((c) => c.text)
-          .join(" ");
+        // Sample CLEANED speech, skipping the first cues — typically
+        // "[MUSIC]", a title card, a logo sting — and wait until there is
+        // enough real text to judge from.
+        const parts = [];
+        let total = 0;
+        for (const c of ctl.cues.slice(0, 25)) {
+          const t = cleanCaption(c.text);
+          if (!t) continue;
+          parts.push(t);
+          total += t.length;
+          if (total >= 220) break;
+        }
+        if (total < 40) return; // retried once more cues arrive
         const detector = await LanguageDetector.create();
-        const results = await detector.detect(sample);
+        const results = await detector.detect(parts.join(" "));
         const best = results && results[0];
         if (best && best.confidence > 0.5) {
           ctl.detectedSource = (best.detectedLanguage || "").split("-")[0];
@@ -851,28 +1034,144 @@ import { makeT, resolveUiLang } from "./i18n.js";
     function pretranslate() {
       if (!ctl.active) return;
       const t = video.currentTime;
-      // Translate sentences in the [t, t+90s] window, max ~8 in flight
+      // Look 45 s ahead (was 90: half of that window was routinely paid
+      // for and never reached after a seek or a closed tab).
       const upcoming = ctl.groups.filter(
-        (g) => g.end >= t && g.start <= t + 90 && isFinalGroup(g)
+        (g) => g.end >= t && g.start <= t + 45 && isFinalGroup(g)
       );
       const source = effectiveSource();
       if (source !== "auto" && source === settings.targetLang) return;
-      let launched = 0;
+      const target = settings.targetLang;
+      const pending = [];
       for (const g of upcoming) {
-        const key = source + "->" + settings.targetLang + "::" + g.text;
-        if (!cache.has(key)) {
-          translate(g.text, source, groupContext(g.id))
-            .then((txt) => {
-              // Pre-generate the neural voice shortly before its moment,
-              // never the whole window: skipped lines must cost nothing.
-              if (cloudVoiceActive() && g.start - video.currentTime < 25)
-                getCloudAudio(txt);
-            })
-            .catch(() => {});
+        const key = cacheKey(source, target, g.text);
+        if (cache.has(key) || ctl.spokenIds.has(g.id)) continue;
+        const persisted = persistCache.get(pKey(source, target, g.text));
+        if (persisted) {
+          persisted.at = Date.now();
+          cache.set(key, Promise.resolve(persisted.v));
+          continue;
+        }
+        pending.push(g);
+      }
+      // Pro path: translate upcoming lines in ONE metered call — cheaper,
+      // faster, and the model sees the scene as a whole (coherent
+      // pronouns, register, terminology). Any failure falls back to the
+      // per-line path on the next tick.
+      if (
+        settings.proTranslation &&
+        pending.length >= 2 &&
+        pendingCount < 6 &&
+        proBatchTranslate(pending, source)
+      ) {
+        /* batch launched; per-line prefetch resumes next tick if it failed */
+      } else {
+        // Per-line prefetch: bounded BEFORE launching — the old
+        // check-after burst fired 8 concurrent requests at once, the
+        // exact pattern that rate-limits the free endpoint.
+        let launched = 0;
+        for (const g of pending) {
+          if (launched >= 3 || pendingCount >= 6) break;
+          translate(g.text, source, groupContext(g.id), {
+            prefetch: true,
+            secs: g.end - g.start,
+          }).catch(() => {});
           launched++;
-          if (launched >= 8 || pendingCount > 10) break;
         }
       }
+      // Pre-generate the neural voice shortly before each line's moment —
+      // never for lines already spoken or skipped: they must cost nothing.
+      if (cloudVoiceActive()) {
+        for (const g of upcoming) {
+          if (g.start - t >= 20 || g.end < t || ctl.spokenIds.has(g.id)) continue;
+          const hit = cache.get(cacheKey(source, target, g.text));
+          if (hit) hit.then((txt) => getCloudAudio(txt)).catch(() => {});
+        }
+      }
+    }
+
+    // One metered request for several upcoming lines (Gemini structured
+    // output server-side). Seeds the SAME cache the per-line path uses, so
+    // the two paths can never double-translate a group. Returns false when
+    // batching is unavailable (cooldown, unsupported) — caller falls back.
+    function proBatchTranslate(groups, source) {
+      if (proBatchBroken) return false;
+      const target = settings.targetLang;
+      const batch = groups.slice(0, 6);
+      const entries = batch.map((g) => {
+        const gl = glossaryMatcher;
+        const prot = protectTerms(g.text, {
+          builtin: !!settings.keepTerms,
+          glossary: gl,
+        });
+        let resolve;
+        let reject;
+        const promise = new Promise((res, rej) => {
+          resolve = res;
+          reject = rej;
+        });
+        promise.catch(() => {});
+        return { g, prot, promise, resolve, reject };
+      });
+      // Seed the cache first: concurrent per-line calls must join these
+      // promises instead of launching their own provider work.
+      for (const e of entries) {
+        const key = cacheKey(source, target, e.g.text);
+        e.promise.catch(() => cache.delete(key));
+        cache.set(key, e.promise);
+      }
+      const first = ctl.groups.findIndex((g) => g.id === batch[0].id);
+      const before =
+        first > 0
+          ? ctl.groups.slice(Math.max(0, first - 3), first).map((g) => g.text)
+          : [];
+      pendingCount += entries.length;
+      runtime
+        .sendMessage({
+          type: "translate-pro-batch",
+          lines: entries.map((e, i) => ({
+            id: String(i),
+            text: e.prot.protectedText,
+            secs: Math.max(0, Math.round((e.g.end - e.g.start) * 10) / 10),
+          })),
+          before,
+          source,
+          target,
+        })
+        .then((resp) => {
+          if (!resp || !resp.ok || !Array.isArray(resp.items))
+            throw new Error((resp && resp.error) || "batch failed");
+          const byId = new Map(resp.items.map((it) => [String(it.id), it.text]));
+          for (let i = 0; i < entries.length; i++) {
+            const e = entries[i];
+            const raw = byId.get(String(i));
+            if (typeof raw !== "string" || !raw.trim()) {
+              e.reject(new Error("missing line"));
+              continue;
+            }
+            const { restored, ok } = restoreTerms(raw, e.prot.found);
+            const out = ok
+              ? restored
+              : restored.replace(/[⟦⟧]/g, " ").replace(/\s+/g, " ").trim();
+            if (!out) {
+              e.reject(new Error("empty line"));
+              continue;
+            }
+            translationMode = "pro";
+            lastTranslateError = "";
+            persistPut(pKey(source, target, e.g.text), out);
+            e.resolve(out);
+          }
+        })
+        .catch((err) => {
+          const m = String((err && err.message) || err || "");
+          if (/unsupported/.test(m)) proBatchBroken = true;
+          for (const e of entries) e.reject(err);
+        })
+        .finally(() => {
+          pendingCount -= entries.length;
+        });
+      return true;
     }
 
     // --- speech synthesis --------------------------------------------------
@@ -887,23 +1186,29 @@ import { makeT, resolveUiLang } from "./i18n.js";
       // Pro neural voice (Aura-2 languages only): cloud engine first,
       // automatic local fallback — dubbing never stops on a cloud hiccup.
       if (cloudVoiceActive()) {
-        speakCloud(text, cueDur);
+        speakCloud(text, cueDur, id);
         return;
       }
-      speakLocal(text, cueDur);
+      speakLocal(text, cueDur, id);
     }
 
-    async function speakCloud(text, cueDur) {
+    async function speakCloud(text, cueDur, id) {
       // Occupy the speech slot immediately: drainQueue and anySpeaking
       // treat currentUtterance as "voice busy" whatever the engine.
       const token = { cloud: true, at: performance.now() };
       ctl.currentUtterance = token;
       const url = await getCloudAudio(text);
-      if (ctl.currentUtterance !== token) return; // cancelled meanwhile
+      if (ctl.currentUtterance !== token) {
+        // Cancelled during the fetch (pause, seek, language change): no
+        // audio ever played — un-mark the group so a resume within its
+        // moment can still voice it.
+        if (id) ctl.spokenIds.delete(id);
+        return;
+      }
       if (!url) {
         // Cloud refused (quota, offline, unsupported): local takes over.
         ctl.currentUtterance = null;
-        speakLocal(text, cueDur);
+        speakLocal(text, cueDur, id);
         return;
       }
       const a = new Audio(url);
@@ -932,12 +1237,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
         if (ctl.cloudAudio === a) ctl.cloudAudio = null;
         if (ctl.currentUtterance === token) {
           ctl.currentUtterance = null;
-          speakLocal(text, cueDur);
+          speakLocal(text, cueDur, id);
         }
       }
     }
 
-    function speakLocal(text, cueDur) {
+    function speakLocal(text, cueDur, id) {
       const u = new SpeechSynthesisUtterance(text);
       const v = pickVoice();
       if (v) u.voice = v;
@@ -966,6 +1271,8 @@ import { makeT, resolveUiLang } from "./i18n.js";
         speechSynthesis.speak(u);
       } catch (e) {
         ctl.currentUtterance = null;
+        // Nothing was voiced: leave the group re-schedulable.
+        if (id) ctl.spokenIds.delete(id);
       }
     }
 
@@ -978,6 +1285,11 @@ import { makeT, resolveUiLang } from "./i18n.js";
       if (ctl.currentUtterance || ctl.queue.length === 0) return;
       // Never speak while the video is stopped (except our own catch-up pause)
       if ((video.paused && !ctl.autoPaused) || video.seeking) {
+        // Flushed lines were never voiced: release their ids so a resume
+        // within their moment can schedule them again.
+        for (const q of ctl.queue) {
+          if (q.id) ctl.scheduledIds.delete(q.id);
+        }
         ctl.queue.length = 0;
         return;
       }
@@ -988,7 +1300,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
         ctl.queue[0].end + 4 < t &&
         !ctl.autoPaused
       ) {
-        ctl.queue.shift();
+        const stale = ctl.queue.shift();
+        if (stale && stale.id) {
+          // Deliberately skipped: never retranslated, never revisited.
+          ctl.spokenIds.add(stale.id);
+          ctl.scheduledIds.delete(stale.id);
+        }
       }
       const q = ctl.queue.shift();
       if (!q) return;
@@ -1005,7 +1322,13 @@ import { makeT, resolveUiLang } from "./i18n.js";
           ctl.autoPaused = true;
           video.pause();
         } else if (!ctl.autoPaused) {
-          ctl.queue.shift();
+          const dropped = ctl.queue.shift();
+          if (dropped && dropped.id) {
+            // The voice is behind and this line lost its slot: mark it
+            // skipped, or the next tick would retranslate it in a loop.
+            ctl.spokenIds.add(dropped.id);
+            ctl.scheduledIds.delete(dropped.id);
+          }
         }
       }
       drainQueue();
@@ -1025,7 +1348,9 @@ import { makeT, resolveUiLang } from "./i18n.js";
       if (!entry || entry.version !== group.version) {
         entry = {
           version: group.version,
-          promise: translate(group.text, source, groupContext(group.id)),
+          promise: translate(group.text, source, groupContext(group.id), {
+            secs: group.end - group.start,
+          }),
         };
         ctl.inFlight.set(group.id, entry);
       }
@@ -1200,6 +1525,18 @@ import { makeT, resolveUiLang } from "./i18n.js";
             ctl.scheduledIds.delete(g.id);
             ctl.inFlight.delete(g.id);
             ctl.groupMeta.delete(g.id);
+          }
+        }
+        // Live streams accumulate cues forever: prune what is far behind
+        // the playhead once the list gets big (VOD watch-throughs rarely
+        // reach this — seeks backward re-harvest from the track anyway).
+        if (ctl.cues.length > 1200) {
+          let cut = 0;
+          while (cut < ctl.cues.length && ctl.cues[cut].end < t - 300) cut++;
+          if (cut > 0) {
+            for (const c of ctl.cues.slice(0, cut)) ctl.cueKeys.delete(c.key);
+            ctl.cues.splice(0, cut);
+            ctl.lastCueCount = -1;
           }
         }
       }
@@ -2046,6 +2383,8 @@ import { makeT, resolveUiLang } from "./i18n.js";
       }
       builtinBroken = false;
       lastTranslateError = "";
+      proBatchBroken = false;
+      providerDetectedSource = "";
       scanDirty = true;
       scan();
       sendResponse({ ok: true });

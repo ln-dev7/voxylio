@@ -13,7 +13,8 @@ export function createGoogleV2Provider(hasKey) {
         source: source || "auto",
         target,
       });
-      if (resp && resp.ok) return resp.text;
+      if (resp && resp.ok)
+        return { text: resp.text, detected: resp.detected || "" };
       throw new Error((resp && resp.error) || "googlev2 failed");
     },
   });
