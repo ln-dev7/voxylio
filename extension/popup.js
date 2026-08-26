@@ -2333,6 +2333,7 @@
       );
     }
   }
+  var IS_SAFARI = /apple/i.test(navigator.vendor || "");
   function setSignedOut(out) {
     document.body.classList.toggle("signed-out", out);
     $("signinCard").hidden = !out;
@@ -2412,7 +2413,7 @@
       signedIn = linked;
       setSignedOut(!linked);
       updateLaunch();
-      banner.hidden = !linked || ent.plan === "pro";
+      banner.hidden = !linked || ent.plan === "pro" || IS_SAFARI;
       email.textContent = linked && ent.email || "";
       email.hidden = !(linked && ent.email);
       signout.hidden = !linked;
@@ -2422,6 +2423,7 @@
       $("proAudioRow").hidden = !isPro;
       if (isPro) renderQuota(ent);
       else $("quotaBox").hidden = true;
+      btn.hidden = false;
       if (!linked) {
         plan.textContent = t("accountNotLinked") || "Non connect\xE9";
         plan.classList.remove("pro");
@@ -2434,6 +2436,11 @@
         btn.textContent = t("manage") || "G\xE9rer";
         btn.classList.add("ghost");
         note.textContent = ent.status === "canceled" ? t("accountNoteProCanceled") || "Abonnement actif jusqu'\xE0 la fin de la p\xE9riode." : t("accountNotePro") || "Merci de soutenir Voxylio.";
+      } else if (IS_SAFARI) {
+        plan.textContent = t("accountFree") || "Gratuit";
+        plan.classList.remove("pro");
+        btn.hidden = true;
+        note.textContent = "";
       } else {
         plan.textContent = t("accountFree") || "Gratuit";
         plan.classList.remove("pro");

@@ -296,6 +296,13 @@ async function refreshStatus() {
   }
 }
 
+// Mac App Store rule 3.1.1: no buttons or calls to action that lead to
+// a purchase made outside the app. The Safari build therefore never
+// shows the Pro banner or a "Go Pro" button — sign-in and managing an
+// EXISTING subscription stay (the multiplatform-services allowance).
+// Chrome reports "Google Inc." and Firefox "" as vendor: false there.
+const IS_SAFARI = /apple/i.test(navigator.vendor || "");
+
 // The whole popup is gated: signed out, only the sign-in card shows —
 // the dubbing engine itself refuses to start without a linked account.
 function setSignedOut(out) {
@@ -393,8 +400,9 @@ async function refreshAccount() {
     signedIn = linked;
     setSignedOut(!linked);
     updateLaunch();
-    // The promoted CTA up top: visible for every linked non-Pro user.
-    banner.hidden = !linked || ent.plan === "pro";
+    // The promoted CTA up top: visible for every linked non-Pro user —
+    // never on Safari (App Store external-purchase rule).
+    banner.hidden = !linked || ent.plan === "pro" || IS_SAFARI;
     // Which account is linked (DubTab-style) + a way out of it.
     email.textContent = (linked && ent.email) || "";
     email.hidden = !(linked && ent.email);
@@ -406,6 +414,7 @@ async function refreshAccount() {
     $("proAudioRow").hidden = !isPro;
     if (isPro) renderQuota(ent);
     else $("quotaBox").hidden = true;
+    btn.hidden = false;
     if (!linked) {
       plan.textContent = t("accountNotLinked") || "Non connecté";
       plan.classList.remove("pro");
@@ -424,6 +433,12 @@ async function refreshAccount() {
           ? t("accountNoteProCanceled") ||
             "Abonnement actif jusqu'à la fin de la période."
           : t("accountNotePro") || "Merci de soutenir Voxylio.";
+    } else if (IS_SAFARI) {
+      // Free plan on Safari: state the plan — no purchase CTA, no upsell.
+      plan.textContent = t("accountFree") || "Gratuit";
+      plan.classList.remove("pro");
+      btn.hidden = true;
+      note.textContent = "";
     } else {
       plan.textContent = t("accountFree") || "Gratuit";
       plan.classList.remove("pro");

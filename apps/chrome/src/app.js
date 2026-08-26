@@ -572,6 +572,11 @@ function renderAcctQuota(ent) {
   }
 }
 
+// Mac App Store rule 3.1.1: the Safari build never shows a "Go Pro"
+// button (external purchase). Sign-in and managing an existing
+// subscription remain allowed. Chrome/Firefox vendors don't match.
+const IS_SAFARI = /apple/i.test(navigator.vendor || "");
+
 async function renderAccount() {
   const plan = $("acctPlan");
   const cta = $("acctCta");
@@ -582,6 +587,7 @@ async function renderAccount() {
     $("acctEmail").textContent = (linked && ent.email) || "";
     signout.hidden = !linked;
     renderAcctQuota(linked ? ent : null);
+    cta.hidden = false;
     if (!linked) {
       plan.textContent = t("accountNotLinked") || "Non connecté";
       plan.classList.remove("pro");
@@ -590,6 +596,10 @@ async function renderAccount() {
       plan.textContent = t("accountPro") || "Pro";
       plan.classList.add("pro");
       cta.textContent = t("manage") || "Gérer";
+    } else if (IS_SAFARI) {
+      plan.textContent = t("accountFree") || "Gratuit";
+      plan.classList.remove("pro");
+      cta.hidden = true;
     } else {
       plan.textContent = t("accountFree") || "Gratuit";
       plan.classList.remove("pro");

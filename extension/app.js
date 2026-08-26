@@ -2758,6 +2758,7 @@ ${text}
       resets.textContent = "";
     }
   }
+  var IS_SAFARI = /apple/i.test(navigator.vendor || "");
   async function renderAccount() {
     const plan = $("acctPlan");
     const cta = $("acctCta");
@@ -2768,6 +2769,7 @@ ${text}
       $("acctEmail").textContent = linked && ent.email || "";
       signout.hidden = !linked;
       renderAcctQuota(linked ? ent : null);
+      cta.hidden = false;
       if (!linked) {
         plan.textContent = t("accountNotLinked") || "Non connect\xE9";
         plan.classList.remove("pro");
@@ -2776,6 +2778,10 @@ ${text}
         plan.textContent = t("accountPro") || "Pro";
         plan.classList.add("pro");
         cta.textContent = t("manage") || "G\xE9rer";
+      } else if (IS_SAFARI) {
+        plan.textContent = t("accountFree") || "Gratuit";
+        plan.classList.remove("pro");
+        cta.hidden = true;
       } else {
         plan.textContent = t("accountFree") || "Gratuit";
         plan.classList.remove("pro");
