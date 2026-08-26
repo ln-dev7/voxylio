@@ -8,7 +8,7 @@
 //  - the LAST group of a live stream is a `draft` (still growing) — only
 //    the caller can finalize it (time-stability heuristics live there);
 //  - roll-up AND sliding-window caption feeds are merged into one cue.
-import { cleanCaption, endsSentence } from "./subtitles.js";
+import { cleanCaption, endsSentence, continuesEllipsis } from "./subtitles.js";
 
 export const GROUP_MAX_LEN = 280; // max characters per sentence (safety cap)
 export const GROUP_MAX_GAP = 1.4; // silence (s) that closes a sentence
@@ -113,10 +113,12 @@ export function buildGroups(cues, opts = {}) {
   let cur = null;
   for (const c of cues) {
     const txt = cleanCaption(c.text);
-    if (!txt) continue;
+    // Letterless leftovers ("...", "???", "1:23") are display junk: they
+    // must never reach a translator, a quota meter, or a voice.
+    if (!txt || !/\p{L}/u.test(txt)) continue;
     if (
       cur &&
-      (endsSentence(cur.text) ||
+      ((endsSentence(cur.text) && !continuesEllipsis(cur.text, txt)) ||
         c.start - cur.end > MAX_GAP ||
         cur.text.length > MAX_LEN)
     ) {
@@ -134,9 +136,19 @@ export function buildGroups(cues, opts = {}) {
     }
   }
   if (cur) groups.push(cur);
+  // Same-start groups (two speakers on one timestamp, frame-quantised DOM
+  // cues) must NOT share an id — a collision silently swallows the second
+  // line (marked spoken with the first, translation dropped as stale).
+  // The disambiguating counter is deterministic for a given cue list, so
+  // ids stay stable across rebuilds.
+  const used = new Map();
   for (let i = 0; i < groups.length; i++) {
     const g = groups[i];
-    g.id = "g" + Math.round(g.start * 100);
+    let id = "g" + Math.round(g.start * 100);
+    const n = used.get(id) || 0;
+    used.set(id, n + 1);
+    if (n > 0) id += "_" + n;
+    g.id = id;
     g.version = textHash(g.text);
     // The trailing group may still be growing (live/progressive feeds).
     g.final = i < groups.length - 1;
