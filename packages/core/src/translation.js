@@ -12,6 +12,11 @@
 //   // and simply moves on this time when it loses the race.
 //   ready(source, target): Promise<{ translate(text): Promise<string> } | null>,
 // }
+//
+// translate() may resolve a plain string, or { text, detected } when the
+// provider learned the actual source language along the way (gtx, DeepL
+// and Google v2 all report it) — the caller can use it to stop dubbing a
+// video that is already in the target language.
 
 export const READY_TIMEOUT_MS = 2500;
 export const ATTEMPT_TIMEOUT_MS = 8000;
@@ -31,7 +36,9 @@ const TIMEOUT = Symbol("timeout");
 
 /**
  * Builds the chain. `providers` is the ordered list to try; opts allow
- * injecting timeouts and a clock for tests.
+ * injecting timeouts, a clock for tests, and a shared `pairState` Map so
+ * cooldowns survive chain rebuilds (settings toggles must not un-cool a
+ * provider that is known to be down).
  */
 export function createTranslatorChain(providers, opts = {}) {
   const {
@@ -40,15 +47,18 @@ export function createTranslatorChain(providers, opts = {}) {
     cooldownMs = COOLDOWN_MS,
     failuresBeforeCooldown = FAILURES_BEFORE_COOLDOWN,
     now = () => Date.now(),
+    pairState = new Map(), // "providerId:source->target" -> { failures, readyMisses, coolUntil }
   } = opts;
 
-  // "providerId:source->target" -> { failures, coolUntil }
-  const pairState = new Map();
   let lastKind = "none";
   let lastProviderId = "";
   let lastError = "";
 
   const stateKey = (id, source, target) => `${id}:${source}->${target}`;
+
+  function getState(key) {
+    return pairState.get(key) ?? { failures: 0, readyMisses: 0, coolUntil: 0 };
+  }
 
   function inCooldown(id, source, target) {
     const s = pairState.get(stateKey(id, source, target));
@@ -57,11 +67,26 @@ export function createTranslatorChain(providers, opts = {}) {
 
   function recordFailure(id, source, target) {
     const key = stateKey(id, source, target);
-    const s = pairState.get(key) ?? { failures: 0, coolUntil: 0 };
+    const s = getState(key);
     s.failures += 1;
     if (s.failures >= failuresBeforeCooldown) {
       s.coolUntil = now() + cooldownMs;
       s.failures = 0;
+    }
+    pairState.set(key, s);
+  }
+
+  // A ready() that keeps losing the race (model download that never ends,
+  // dead backend) must not cost every future line the full readyTimeoutMs:
+  // after two consecutive misses the pair cools down like a failure —
+  // without counting as one (the provider did nothing wrong yet).
+  function recordReadyMiss(id, source, target) {
+    const key = stateKey(id, source, target);
+    const s = getState(key);
+    s.readyMisses += 1;
+    if (s.readyMisses >= 2) {
+      s.coolUntil = now() + cooldownMs;
+      s.readyMisses = 0;
     }
     pairState.set(key, s);
   }
@@ -71,10 +96,11 @@ export function createTranslatorChain(providers, opts = {}) {
   }
 
   /**
-   * Translates through the chain. Resolves { text, providerId, kind };
-   * rejects when every provider failed or was unavailable. `opts` is
-   * forwarded to the provider's translate — e.g. { context: { before,
-   * after } } for context-aware providers; others simply ignore it.
+   * Translates through the chain. Resolves { text, providerId, kind,
+   * detected? }; rejects when every provider failed or was unavailable.
+   * `opts` is forwarded to the provider's translate — e.g. { context:
+   * { before, after }, secs } for context-aware providers; others simply
+   * ignore it.
    */
   async function translate(text, source, target, opts) {
     const errors = [];
@@ -85,27 +111,43 @@ export function createTranslatorChain(providers, opts = {}) {
       }
       let translator = null;
       try {
-        translator = await withTimeout(p.ready(source, target), readyTimeoutMs, null);
+        translator = await withTimeout(p.ready(source, target), readyTimeoutMs, TIMEOUT);
       } catch (e) {
         // ready() threw: treat as a real failure for this pair.
         recordFailure(p.id, source, target);
         errors.push(`${p.id}: ${e && e.message}`);
         continue;
       }
+      if (translator === TIMEOUT) {
+        recordReadyMiss(p.id, source, target);
+        errors.push(`${p.id}: not ready`);
+        continue;
+      }
       if (!translator) {
-        // Not ready / not applicable this time: no penalty, next provider.
+        // Not applicable (unsupported pair, no key): no penalty of any kind.
         errors.push(`${p.id}: not ready`);
         continue;
       }
       try {
-        const out = await withTimeout(translator.translate(text, opts), attemptTimeoutMs, TIMEOUT);
+        let out = await withTimeout(translator.translate(text, opts), attemptTimeoutMs, TIMEOUT);
         if (out === TIMEOUT) throw new Error("attempt timed out");
-        if (typeof out !== "string" || !out) throw new Error("empty translation");
+        let detected;
+        if (out && typeof out === "object") {
+          detected = typeof out.detected === "string" ? out.detected : undefined;
+          out = out.text;
+        }
+        if (typeof out !== "string") throw new Error("bad translation");
+        if (!out.trim()) {
+          // An empty result is "nothing to say", not a provider fault —
+          // two junk lines in a row must never cool a healthy provider.
+          errors.push(`${p.id}: empty`);
+          continue;
+        }
         recordSuccess(p.id, source, target);
         lastKind = p.kind;
         lastProviderId = p.id;
         lastError = "";
-        return { text: out, providerId: p.id, kind: p.kind };
+        return { text: out, providerId: p.id, kind: p.kind, detected };
       } catch (e) {
         recordFailure(p.id, source, target);
         errors.push(`${p.id}: ${(e && e.message) || "failed"}`);
