@@ -5171,61 +5171,94 @@
       </style>
       <div class="wrap">
         <div class="bar" role="toolbar" aria-label="Voxylio">
-          <span class="handle" title="${T.move}">\u283F</span>
+          <span class="handle">\u283F</span>
           <span class="status"><span class="dot"></span><span class="stext"></span><span class="timer">00:00</span></span>
-          <button class="power" aria-label="${T.power}" title="${T.power}">
+          <button class="power">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
               <path d="M2.5 6.5v3h2.4L8.5 12V4L4.9 6.5H2.5z" fill="currentColor" stroke="none"/>
               <path d="M10.5 5.5a3.4 3.4 0 010 5M12.3 4a5.8 5.8 0 010 8" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round"/>
             </svg>
           </button>
-          <select class="lang" aria-label="${T.langT}" title="${T.langT}"></select>
-          <button class="chip voiceBtn" title="${T.voice}">
+          <select class="lang"></select>
+          <button class="chip voiceBtn">
             <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="5.6" y="1.8" width="4.8" height="8" rx="2.4"/><path d="M3.2 8a4.8 4.8 0 009.6 0M8 12.8v1.6"/></svg>
             <span class="vname"></span><span class="chev">\u25BE</span>
           </button>
-          <button class="icon mixBtn" title="${T.mixer}" aria-label="${T.mixer}">
+          <button class="icon mixBtn">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3.5 2.5v6M3.5 11.5v2M8 2.5v2M8 7.5v6M12.5 2.5v6M12.5 11.5v2"/><circle cx="3.5" cy="10" r="1.6"/><circle cx="8" cy="6" r="1.6"/><circle cx="12.5" cy="10" r="1.6"/></svg>
           </button>
-          <button class="icon setBtn" title="${T.quick}" aria-label="${T.quick}">
+          <button class="icon setBtn">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.1"/><path d="M8 1.9v1.8M8 12.3v1.8M1.9 8h1.8M12.3 8h1.8M3.7 3.7L5 5M11 11l1.3 1.3M12.3 3.7L11 5M5 11l-1.3 1.3"/></svg>
           </button>
-          <button class="ghost mini" title="${T.minimize}">\u2013</button>
-          <button class="ghost close" aria-label="${T.close}" title="${T.close}">\u2715</button>
+          <button class="ghost mini">\u2013</button>
+          <button class="ghost close">\u2715</button>
         </div>
 
         <div class="pop pop-voice above" hidden>
-          <h3 class="vtitle">${T.voice}</h3>
+          <h3 class="vtitle"></h3>
           <div class="vlist"></div>
         </div>
 
         <div class="pop pop-mix above" hidden>
-          <h3>${T.mixer}</h3>
-          <div class="prow"><span class="plabel">${T.voiceVol}</span><span class="pval voiceVal"></span></div>
-          <input class="voiceVol" type="range" min="0" max="100" step="1" aria-label="${T.voiceVol}" />
-          <div class="prow"><span class="plabel">${T.duckL}</span><span class="pval duckVal"></span></div>
-          <input class="duckR" type="range" min="0" max="60" step="1" aria-label="${T.duckL}" />
+          <h3 class="mixTitle"></h3>
+          <div class="prow"><span class="plabel lVoiceVol"></span><span class="pval voiceVal"></span></div>
+          <input class="voiceVol" type="range" min="0" max="100" step="1" />
+          <div class="prow"><span class="plabel lDuck"></span><span class="pval duckVal"></span></div>
+          <input class="duckR" type="range" min="0" max="60" step="1" />
           <div class="presets">
-            <button class="pImm">${T.pImm}</button>
-            <button class="pBal">${T.pBal}</button>
-            <button class="pVo">${T.pVo}</button>
+            <button class="pImm"></button>
+            <button class="pBal"></button>
+            <button class="pVo"></button>
           </div>
         </div>
 
         <div class="pop pop-set above" hidden>
-          <h3>${T.quick}</h3>
-          <div class="prow"><span class="plabel">${T.rateL}</span><span class="pval rateVal"></span></div>
-          <input class="rateR" type="range" min="0.8" max="1.6" step="0.05" aria-label="${T.rateL}" />
-          <div class="prow"><span class="plabel">${T.capL}</span><span class="pval capVal"></span></div>
-          <input class="capR" type="range" min="14" max="34" step="1" aria-label="${T.capL}" />
+          <h3 class="setTitle"></h3>
+          <div class="prow"><span class="plabel lRate"></span><span class="pval rateVal"></span></div>
+          <input class="rateR" type="range" min="0.8" max="1.6" step="0.05" />
+          <div class="prow"><span class="plabel lCap"></span><span class="pval capVal"></span></div>
+          <input class="capR" type="range" min="14" max="34" step="1" />
           <div class="sep"></div>
-          <div class="trow"><span class="plabel">${T.subsL}</span>
+          <div class="trow"><span class="plabel lSubs"></span>
             <label class="switch"><input type="checkbox" class="subsT" /><span class="knob"></span></label></div>
-          <div class="trow"><span class="plabel">${T.pauseL}</span>
+          <div class="trow"><span class="plabel lPause"></span>
             <label class="switch"><input type="checkbox" class="pauseT" /><span class="knob"></span></label></div>
         </div>
       </div>`;
       const q = (sel) => root.querySelector(sel);
+      const setTxt = (sel, txt) => {
+        const el = q(sel);
+        if (el) el.textContent = txt;
+      };
+      const setA = (sel, attrs) => {
+        const el = q(sel);
+        if (!el) return;
+        for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+      };
+      setA(".handle", { title: T.move });
+      setA(".power", { "aria-label": T.power, title: T.power });
+      setA(".lang", { "aria-label": T.langT, title: T.langT });
+      setA(".voiceBtn", { title: T.voice });
+      setA(".mixBtn", { title: T.mixer, "aria-label": T.mixer });
+      setA(".setBtn", { title: T.quick, "aria-label": T.quick });
+      setA(".mini", { title: T.minimize });
+      setA(".close", { "aria-label": T.close, title: T.close });
+      setA(".voiceVol", { "aria-label": T.voiceVol });
+      setA(".duckR", { "aria-label": T.duckL });
+      setA(".rateR", { "aria-label": T.rateL });
+      setA(".capR", { "aria-label": T.capL });
+      setTxt(".vtitle", T.voice);
+      setTxt(".mixTitle", T.mixer);
+      setTxt(".setTitle", T.quick);
+      setTxt(".lVoiceVol", T.voiceVol);
+      setTxt(".lDuck", T.duckL);
+      setTxt(".pImm", T.pImm);
+      setTxt(".pBal", T.pBal);
+      setTxt(".pVo", T.pVo);
+      setTxt(".lRate", T.rateL);
+      setTxt(".lCap", T.capL);
+      setTxt(".lSubs", T.subsL);
+      setTxt(".lPause", T.pauseL);
       overlayRefs = {
         T,
         bar: q(".bar"),
