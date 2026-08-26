@@ -10,6 +10,7 @@ import { Pricing } from "@/components/pricing";
 import { Install } from "@/components/install";
 import { Faq } from "@/components/faq";
 import { SiteFooter } from "@/components/site-footer";
+import { StructuredData } from "@/components/structured-data";
 
 export default async function HomePage({
   params,
@@ -21,6 +22,7 @@ export default async function HomePage({
 
   return (
     <div className="flex min-h-screen flex-col">
+      <StructuredData locale={locale} days={trialDays()} />
       <SiteHeader />
       <main className="flex-1">
         <Hero />

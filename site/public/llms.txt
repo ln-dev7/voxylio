@@ -1,0 +1,21 @@
+# Voxylio
+
+> Voxylio is a browser extension that dubs subtitled videos in real time: it reads the video's captions and speaks them aloud in the viewer's language (65+ languages), with the original audio automatically lowered. Free on YouTube, Netflix, Prime Video, Disney+ and Twitch after a trial that unlocks every website; the Pro plan works on every site and adds contextual AI translation (beta), natural cloud voices, and live audio transcription for videos without subtitles.
+
+Voxylio runs on Chrome, Edge, Firefox and Safari (macOS). Free features run locally in the browser (local translation, system voices); Pro features call the Voxylio backend with monthly quotas that reset on the subscription's renewal day. A Google sign-in links the extension to an account. Source-available under the FSL-1.1-MIT license (each release becomes MIT after two years).
+
+## Pages
+
+- [Home](https://voxylio.lndev.me/en): what Voxylio does, how it works, pricing, install steps, FAQ
+- [Changelog](https://voxylio.lndev.me/en/changelog): release history
+- [Privacy](https://voxylio.lndev.me/en/privacy): privacy policy
+- [Terms](https://voxylio.lndev.me/en/terms): terms of service
+- [Chrome Web Store listing](https://chromewebstore.google.com/detail/hahcpbcjfdanjncobfcdeidodfggggkp): install for Chrome
+- [Source code](https://github.com/ln-dev7/voxylio): monorepo (extension + site)
+
+## Facts
+
+- Pricing: Free plan (major platforms) and Pro at $7.99/month or $69.99/year
+- Languages: dubs into 65+ languages; site and extension are localized in 10
+- The extension sells nothing in-app; Pro is purchased on voxylio.lndev.me
+- Developer: Leonel Ngoya (lndev) — https://lndev.me

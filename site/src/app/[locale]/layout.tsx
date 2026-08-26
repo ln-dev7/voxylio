@@ -8,6 +8,20 @@ import { SITE_URL } from "@/lib/constants";
 import { ThemeProvider } from "@/components/theme-provider";
 import "../globals.css";
 
+// og:locale per supported language (was en_US for everything non-French).
+const OG_LOCALES: Record<string, string> = {
+  en: "en_US",
+  fr: "fr_FR",
+  de: "de_DE",
+  es: "es_ES",
+  it: "it_IT",
+  ja: "ja_JP",
+  ko: "ko_KR",
+  "pt-BR": "pt_BR",
+  "zh-CN": "zh_CN",
+  "zh-TW": "zh_TW",
+};
+
 // Self-hosted fonts: Inter for body, Space Grotesk for display type
 const inter = localFont({
   src: "../fonts/InterVariable.woff2",
@@ -38,7 +52,11 @@ export async function generateMetadata({
     description: t("description"),
     alternates: {
       canonical: `/${locale}`,
-      languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}`])),
+      languages: {
+        ...Object.fromEntries(routing.locales.map((l) => [l, `/${l}`])),
+        // Fallback for unmatched languages (seo-audit: x-default required).
+        "x-default": `/${routing.defaultLocale}`,
+      },
     },
     openGraph: {
       type: "website",
@@ -46,7 +64,7 @@ export async function generateMetadata({
       siteName: "Voxylio",
       title: t("title"),
       description: t("description"),
-      locale: locale === "fr" ? "fr_FR" : "en_US",
+      locale: OG_LOCALES[locale] ?? "en_US",
       images: [{ url: "/og.png", width: 1200, height: 630, alt: "Voxylio" }],
     },
     twitter: {
