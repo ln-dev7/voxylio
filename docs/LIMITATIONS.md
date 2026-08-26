@@ -43,3 +43,21 @@ roadmap, not a bug.
   design.
 - Extension UI is currently French-only; listing/store texts exist in FR
   and EN.
+
+## Premium Audio (no-subtitle dubbing, Pro beta)
+
+- Audio capture uses `HTMLMediaElement.captureStream()`: DRM-protected
+  players (Widevine — Netflix, Disney+, Prime) and CORS-tainted media
+  (many course CDNs without CORS headers) refuse or throw — the popup
+  says so honestly ("can't capture this player's audio") and nothing
+  else breaks. Those platforms have subtitles anyway.
+- NO local fallback exists for this feature: minutes exhausted, it
+  pauses until the next monthly period (every text feature falls back
+  to the local engine instead — this is the one exception, stated in
+  the FAQ and the popup).
+- Transcription quality degrades above ~1.25× playback speed (the
+  captured audio is the sped-up signal); a rate change restarts the
+  streaming session so cue timing stays correct.
+- Metering is heartbeat-based (~20 s granularity, hard client stop at
+  the granted allowance): a session can overrun the meter by a few
+  seconds at most.

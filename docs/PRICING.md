@@ -181,11 +181,24 @@ recorded in docs/BOOSTS.md §4.
 1. **Context-aware translation** — translate a sliding window of
    neighbouring subtitles instead of isolated sentences: pronouns, tone,
    register, proper nouns, terminology, idioms. Audibly better on the
-   first video. This is the flagship.
+   first video. This is the flagship. SHIPPED (beta-labeled).
 2. **Neural cloud voices** — several styles, better prosody; speaker
-   timbre preservation much later.
+   timbre preservation much later. SHIPPED (Aura-2, 7 languages).
 3. **No-subtitle dubbing** — audio → transcription → contextual
    translation → voice, hard-metered (real cloud cost).
+   SHIPPED in v1.8.0 (beta): the content script captures the media
+   element's audio (`captureStream` — DRM/CORS-tainted players refuse,
+   honest limit in docs/LIMITATIONS.md), streams 16 kHz linear16 to
+   Deepgram Nova-3 live through a short-lived token minted by
+   `/api/pro/audio` (grant + usage heartbeats, minutes metered in
+   `pro_usage.audio_seconds`, `PRO_MONTHLY_AUDIO_MIN`, default 60), and
+   every final transcript feeds the NORMAL pipeline as cues. Engages
+   ONLY when a video exposes no subtitles anywhere (no textTracks, no
+   <track>, no DOM captions, no YouTube static track), opt-in toggle,
+   Pro accounts only — the trial never includes it. The trial length
+   itself is now `TRIAL_DAYS` (server env; site copy interpolates
+   {days}, the extension computes from `trialEndsAt` — changing the
+   env needs no code or copy change).
 
 Summaries, glossaries and sync reinforce the subscription; they never
 replace the three pillars.
