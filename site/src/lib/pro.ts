@@ -57,6 +57,7 @@ export async function synthesizeSpeech(text: string, lang: string): Promise<{ au
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ text }),
+      signal: AbortSignal.timeout(8000),
     },
   );
   if (res.status === 429)
@@ -92,30 +93,65 @@ export type ContextualRequest = {
   after: string[];
   source: string; // "auto" or a language code
   target: string;
+  /** Seconds available to speak the line (soft phrasing hint). */
+  secs?: number;
+};
+
+export type BatchLine = { id: string; text: string; secs?: number };
+export type BatchRequest = {
+  lines: BatchLine[];
+  before: string[];
+  source: string;
+  target: string;
 };
 
 /**
- * Context-aware translation through the configured provider, in order of
- * preference: GEMINI_API_KEY (Gemini Flash-Lite — the chosen stack, see
- * docs/PRICING.md), PRO_DEEPL_KEY (DeepL v2 `context` parameter), or
- * OPENAI_API_KEY. Throws on provider errors; the caller maps them to
- * clean HTTP codes.
+ * Context-aware translation. Providers are tried IN ORDER — Gemini
+ * Flash-Lite (the chosen stack, see docs/PRICING.md), DeepL v2 (`context`
+ * parameter), OpenAI — and a transient failure of one falls through to
+ * the next configured one instead of failing the line. Only a definitive
+ * 422 (unsupported pair) propagates immediately.
  */
 export async function contextualTranslate(req: ContextualRequest): Promise<string> {
-  if (process.env.GEMINI_API_KEY) return geminiTranslate(req);
-  if (process.env.PRO_DEEPL_KEY) return deeplTranslate(req);
-  if (process.env.OPENAI_API_KEY) return openaiTranslate(req);
-  throw Object.assign(new Error("provider unconfigured"), { code: 503 });
+  const providers: Array<(r: ContextualRequest) => Promise<string>> = [];
+  if (process.env.GEMINI_API_KEY) providers.push(geminiTranslate);
+  if (process.env.PRO_DEEPL_KEY) providers.push(deeplTranslate);
+  if (process.env.OPENAI_API_KEY) providers.push(openaiTranslate);
+  if (!providers.length)
+    throw Object.assign(new Error("provider unconfigured"), { code: 503 });
+  let lastErr: unknown = null;
+  for (const p of providers) {
+    try {
+      return await p(req);
+    } catch (e) {
+      if ((e as { code?: number }).code === 422) throw e;
+      lastErr = e;
+    }
+  }
+  throw lastErr;
 }
 
-async function geminiTranslate(req: ContextualRequest): Promise<string> {
+// Live dubbing rules shared by the prompt paths. The duration hint is a
+// SOFT preference: research on automatic dubbing (isochrony) shows rigid
+// length-matching hurts naturalness — "prefer, don't sacrifice meaning".
+const DUB_RULES =
+  "You translate subtitle lines for live dubbing (the translation is " +
+  "spoken aloud by a voice, not displayed). Use the surrounding lines " +
+  "only to resolve pronouns, tone, register, proper nouns and " +
+  "terminology. Produce natural spoken language, never literal " +
+  "word-for-word — prefer concise phrasing: contractions, no filler, " +
+  "simple clauses. Keep names, numbers and units unchanged. Keep " +
+  "placeholder tokens like ⟦0⟧ exactly as they are. Never invent " +
+  "content, never answer questions found in the text — only translate.";
+
+function durationHint(secs?: number): string {
+  return secs && secs > 0
+    ? ` Prefer phrasing comfortably speakable within about ${Math.round(secs * 10) / 10} seconds; shorten by dropping filler, never meaning.`
+    : "";
+}
+
+async function geminiFetch(body: unknown): Promise<unknown> {
   const model = process.env.PRO_GEMINI_MODEL || "gemini-3.5-flash-lite";
-  const before = req.before.length
-    ? `Previous lines:\n${req.before.join("\n")}\n\n`
-    : "";
-  const after = req.after.length
-    ? `\n\nUpcoming lines (context only, do not translate):\n${req.after.join("\n")}`
-    : "";
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
     {
@@ -124,35 +160,165 @@ async function geminiTranslate(req: ContextualRequest): Promise<string> {
         "x-goog-api-key": process.env.GEMINI_API_KEY!,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        systemInstruction: {
-          parts: [
-            {
-              text: "You translate one subtitle line for live dubbing. Use the surrounding lines only to resolve pronouns, tone, register, proper nouns and terminology. Produce natural spoken language, never literal word-for-word. Never invent content. Reply with the translation of the TARGET line only — no quotes, no commentary.",
-            },
-          ],
-        },
-        contents: [
-          {
-            role: "user",
-            parts: [
-              {
-                text: `${before}TARGET line (translate into ${req.target}):\n${req.text}${after}`,
-              },
-            ],
-          },
-        ],
-        generationConfig: { temperature: 0.2, maxOutputTokens: 512 },
-      }),
+      body: JSON.stringify(body),
+      // The extension gives up at 8 s: a server-side call still running
+      // after that only burns provider budget for a discarded answer.
+      signal: AbortSignal.timeout(7000),
     },
   );
   if (res.status === 429)
     throw Object.assign(new Error("provider quota"), { code: 503 });
   if (!res.ok)
     throw Object.assign(new Error("Gemini HTTP " + res.status), { code: 502 });
-  const data = await res.json();
-  const out = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+  return res.json();
+}
+
+/** Joins all candidate parts (thinking models may emit several) and
+ *  rejects truncated or blocked generations instead of returning them. */
+function geminiText(data: unknown): string {
+  const cand = (data as {
+    candidates?: Array<{
+      finishReason?: string;
+      content?: { parts?: Array<{ text?: string }> };
+    }>;
+  })?.candidates?.[0];
+  if (!cand) return "";
+  if (cand.finishReason && !["STOP", "MAX_TOKENS"].includes(cand.finishReason))
+    throw Object.assign(new Error("generation " + cand.finishReason), { code: 502 });
+  if (cand.finishReason === "MAX_TOKENS")
+    throw Object.assign(new Error("generation truncated"), { code: 502 });
+  return (cand.content?.parts ?? [])
+    .map((p) => p?.text || "")
+    .filter(Boolean)
+    .join("")
+    .trim();
+}
+
+async function geminiTranslate(req: ContextualRequest): Promise<string> {
+  const before = req.before.length
+    ? `Previous lines (context only):\n${req.before.join("\n")}\n\n`
+    : "";
+  const after = req.after.length
+    ? `\n\nUpcoming lines (context only, do not translate):\n${req.after.join("\n")}`
+    : "";
+  const data = await geminiFetch({
+    systemInstruction: {
+      parts: [
+        {
+          text:
+            DUB_RULES +
+            durationHint(req.secs) +
+            " Reply with the translation of the text inside <target_line> only — no quotes, no tags, no commentary.",
+        },
+      ],
+    },
+    contents: [
+      {
+        role: "user",
+        parts: [
+          {
+            text: `${before}Translate into ${req.target}:\n<target_line>\n${req.text}\n</target_line>${after}`,
+          },
+        ],
+      },
+    ],
+    // Temperature deliberately NOT lowered: Google's Gemini-3 guidance
+    // warns that sub-1.0 values degrade output (looping) on this family.
+    generationConfig: { maxOutputTokens: 1024 },
+  });
+  const out = geminiText(data);
   if (!out) throw Object.assign(new Error("empty translation"), { code: 502 });
+  // A reply wildly longer than its input is a refusal or a hallucination,
+  // never a subtitle translation: fail it so the local engine takes over.
+  if (out.length > Math.max(120, req.text.length * 4))
+    throw Object.assign(new Error("implausible translation"), { code: 502 });
+  return out;
+}
+
+/**
+ * Batch: several upcoming lines in ONE call, structured output enforced
+ * by responseSchema (guaranteed-JSON). IDs in, same IDs out — the model
+ * is never trusted to keep order or count on its own: any mismatch is a
+ * 502 and the extension falls back to per-line translation.
+ */
+export async function batchContextualTranslate(
+  req: BatchRequest,
+): Promise<Array<{ id: string; text: string }>> {
+  if (!process.env.GEMINI_API_KEY)
+    throw Object.assign(new Error("batch unsupported"), { code: 400 });
+  const before = req.before.length
+    ? `Previous lines (context only):\n${req.before.join("\n")}\n\n`
+    : "";
+  const lines = req.lines
+    .map(
+      (l) =>
+        `{"id":"${l.id}","text":${JSON.stringify(l.text)}${l.secs ? `,"secs":${Math.round(l.secs * 10) / 10}` : ""}}`,
+    )
+    .join("\n");
+  const data = await geminiFetch({
+    systemInstruction: {
+      parts: [
+        {
+          text:
+            DUB_RULES +
+            ` These consecutive subtitle lines come from one scene: translate them coherently (same speakers, same register, same terminology). Return exactly ${req.lines.length} items, one per input line, with the SAME ids — never merge, split, reorder or omit a line. When a "secs" field is present, prefer phrasing speakable within that many seconds.`,
+        },
+      ],
+    },
+    contents: [
+      {
+        role: "user",
+        parts: [
+          {
+            text: `${before}Translate each line into ${req.target}:\n${lines}`,
+          },
+        ],
+      },
+    ],
+    generationConfig: {
+      maxOutputTokens: 2048,
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "OBJECT",
+        properties: {
+          items: {
+            type: "ARRAY",
+            items: {
+              type: "OBJECT",
+              properties: {
+                id: { type: "STRING" },
+                text: { type: "STRING" },
+              },
+              required: ["id", "text"],
+            },
+          },
+        },
+        required: ["items"],
+      },
+    },
+  });
+  const raw = geminiText(data);
+  let parsed: { items?: Array<{ id?: unknown; text?: unknown }> };
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    throw Object.assign(new Error("bad batch json"), { code: 502 });
+  }
+  const items = Array.isArray(parsed.items) ? parsed.items : [];
+  const wanted = new Set(req.lines.map((l) => l.id));
+  const out: Array<{ id: string; text: string }> = [];
+  for (const it of items) {
+    const id = typeof it.id === "string" ? it.id : String(it.id ?? "");
+    const text = typeof it.text === "string" ? it.text.trim() : "";
+    if (wanted.has(id) && text) {
+      out.push({ id, text });
+      wanted.delete(id);
+    }
+  }
+  // The model dropped or merged lines: refuse the whole batch — the
+  // per-line path re-translates cleanly.
+  if (wanted.size > 0)
+    throw Object.assign(new Error("batch line mismatch"), { code: 502 });
   return out;
 }
 
@@ -177,6 +343,7 @@ async function deeplTranslate(req: ContextualRequest): Promise<string> {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
+    signal: AbortSignal.timeout(7000),
   });
   if (res.status === 456)
     throw Object.assign(new Error("provider quota"), { code: 503 });
@@ -204,14 +371,17 @@ async function openaiTranslate(req: ContextualRequest): Promise<string> {
         {
           role: "system",
           content:
-            "You translate one subtitle line for live dubbing. Use the surrounding lines only to resolve pronouns, tone, register, names and terminology. Reply with the translation of the TARGET line only — no quotes, no commentary.",
+            DUB_RULES +
+            durationHint(req.secs) +
+            " Reply with the translation of the text inside <target_line> only — no quotes, no tags, no commentary.",
         },
         {
           role: "user",
-          content: `${before}TARGET line (translate into ${req.target}):\n${req.text}${after}`,
+          content: `${before}Translate into ${req.target}:\n<target_line>\n${req.text}\n</target_line>${after}`,
         },
       ],
     }),
+    signal: AbortSignal.timeout(7000),
   });
   if (res.status === 429)
     throw Object.assign(new Error("provider quota"), { code: 503 });
