@@ -78,11 +78,16 @@ const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromi
       [5300, () => track.addCue(new VTTCue(5.4, 7.6, 'explore the playground together in depth'))],
     ];
     for (const [ms, fn] of feed) setTimeout(fn, ms);
+    // Volume timeline: the duck must engage UNDER the voice and release
+    // after the dialog — never sit at 12% through silence.
+    window.__vols = [];
+    setInterval(() => window.__vols.push(Math.round(v.volume * 100) / 100), 400);
     return v.play();
   });
 
-  await page.waitForTimeout(10500);
+  await page.waitForTimeout(14500);
   const spoken = await page.evaluate(() => window.__spoken);
+  const vols = await page.evaluate(() => window.__vols);
 
   // --- extension reloaded while the tab stays open (orphaned script) ---
   const orphan = await page.evaluate(async () => {
@@ -126,8 +131,13 @@ const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromi
     }
   }
   if (spoken.length !== 2) fails.push(`exactement 2 répliques attendues, ${spoken.length} entendues`);
+  // duck dynamique : baissé pendant le dialogue, relâché après (jamais
+  // un duck permanent à travers les silences)
+  if (!vols.some((x) => x < 0.5))
+    fails.push(`le duck ne s'est jamais engagé pendant le dialogue (${vols.join(',')})`);
+  if (vols[vols.length - 1] < 0.85)
+    fails.push(`volume non relâché après le dialogue (${vols.join(',')})`);
   // teardown de l'orphelin : volume restauré, plus aucune parole, place libérée
-  if (orphan.before.volume >= 0.5) fails.push('le duck aurait dû être actif avant invalidation');
   if (orphan.after.volume < 0.99) fails.push(`volume non restauré après invalidation (${orphan.after.volume})`);
   if (orphan.after.spoken !== orphan.before.spoken) fails.push('l’orphelin a parlé après invalidation');
   if (!orphan.after.flagReleased) fails.push('le flag d’injection n’a pas été libéré');

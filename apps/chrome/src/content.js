@@ -16,6 +16,7 @@ import {
   textHash,
   validateSettings,
   computeUtteranceRate,
+  estimateWords,
   pickVoice as pickBestVoice,
   LOCALES,
   LANGUAGES,
@@ -193,23 +194,30 @@ import { makeT, resolveUiLang } from "./i18n.js";
   // refusal falls back to the local engine in speak().
   const cloudAudioCache = new BoundedMap(80); // "lang::text" -> Promise<dataUrl|null>
 
+  // Voice-consistency latch: after a cloud refusal the WHOLE passage
+  // stays on the local voice for a while — one sentence in a different
+  // voice mid-dialog is far more jarring than a consistent fallback.
+  let cloudVoiceDownUntil = 0;
+
   function cloudVoiceActive() {
     return (
       !!settings.proVoice &&
       accountLinked &&
-      AURA2_LANGS.has(settings.targetLang)
+      AURA2_LANGS.has(settings.targetLang) &&
+      Date.now() >= cloudVoiceDownUntil
     );
   }
 
-  function getCloudAudio(text) {
-    const key = settings.targetLang + "::" + text;
+  function getCloudAudio(text, lang) {
+    const voiceLang = lang || settings.targetLang;
+    const key = voiceLang + "::" + text;
     if (cloudAudioCache.has(key)) return cloudAudioCache.get(key);
     const p = (async () => {
       try {
         const resp = await runtime.sendMessage({
           type: "speak-pro",
           text,
-          lang: settings.targetLang,
+          lang: voiceLang,
         });
         if (resp && resp.ok && resp.audio)
           return "data:" + (resp.mime || "audio/mpeg") + ";base64," + resp.audio;
@@ -432,6 +440,13 @@ import { makeT, resolveUiLang } from "./i18n.js";
       changes.glossary
     )
       rebuildChain();
+    // Audio sliders act on the CURRENT line (live duck retarget, live
+    // cloud-audio volume), not just the next one.
+    if (changes.duck || changes.voiceVolume) {
+      for (const c of controllers.values()) {
+        if (typeof c.onAudioSettings === "function") c.onAudioSettings();
+      }
+    }
     if (changes.uiLang) {
       // Rebuild the floating bar in the new language.
       uiT = null;
@@ -486,6 +501,18 @@ import { makeT, resolveUiLang } from "./i18n.js";
   });
   const providerKeys = { deepl: "", googlev2: "" };
   const proProvider = createProProvider();
+  // Warm the on-device model as soon as a pair is known: the download
+  // races AHEAD of the first line instead of starting with it.
+  const warmedPairs = new Set();
+  function warmBuiltin(source, target) {
+    if (!source || source === "auto" || !target || source === target) return;
+    const k = source + "->" + target;
+    if (warmedPairs.has(k)) return;
+    warmedPairs.add(k);
+    try {
+      Promise.resolve(builtinProvider.ready(source, target)).catch(() => {});
+    } catch (e) {}
+  }
   // Cooldowns survive chain rebuilds: a settings toggle must not un-cool
   // a provider that is known to be down.
   const chainPairState = new Map();
@@ -603,10 +630,14 @@ import { makeT, resolveUiLang } from "./i18n.js";
 
   let voices = [];
   function loadVoices() {
-    voices = speechSynthesis.getVoices() || [];
+    try {
+      voices = speechSynthesis.getVoices() || [];
+    } catch (e) {
+      voices = [];
+    }
   }
-  loadVoices();
   if (typeof speechSynthesis !== "undefined") {
+    loadVoices();
     speechSynthesis.onvoiceschanged = loadVoices;
   }
 
@@ -614,9 +645,15 @@ import { makeT, resolveUiLang } from "./i18n.js";
   // consistency), recomputed when the language or user choice changes.
   let cachedVoice = null;
   let cachedVoiceKey = "";
+  // Measured words-per-second of the ACTIVE local voice at rate 1 —
+  // learned from real utterances, reset when the voice changes. Feeds
+  // computeUtteranceRate so pacing fits the voice actually speaking.
+  let localWps = 0;
 
   function pickVoice() {
-    loadVoices();
+    // getVoices() is a sync platform call: only re-read while empty
+    // (Chrome populates the list asynchronously at startup).
+    if (!voices.length) loadVoices();
     // Per-language preference first (hub page), then the global choice.
     const wanted =
       (settings.voiceByLang && settings.voiceByLang[settings.targetLang]) ||
@@ -624,10 +661,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
     const k = settings.targetLang + "|" + wanted + "|" + voices.length;
     if (k === cachedVoiceKey) return cachedVoice;
     cachedVoiceKey = k;
-    cachedVoice = pickBestVoice(voices, {
+    const next = pickBestVoice(voices, {
       targetLang: settings.targetLang,
       voiceName: wanted,
     });
+    if (next !== cachedVoice) localWps = 0; // new voice, new calibration
+    cachedVoice = next;
     return cachedVoice;
   }
 
@@ -767,8 +806,16 @@ import { makeT, resolveUiLang } from "./i18n.js";
       currentUtterance: null,
       queue: [], // pending lines [{text, dur, start, end}] — bounded FIFO
       autoPaused: false, // we paused the video to let the voice catch up
-      settingVolume: false, // our own volume writes (vs the user's)
-      savedVolume: null,
+      savedVolume: null, // pre-duck volume (null = not ducked/unknown)
+      lastWrittenVolume: null, // last volume WE wrote (user-change detector)
+      userVolumeOverride: false, // user took over the mix: hands off
+      ducked: false,
+      duckHoldUntil: 0,
+      rampTimer: null,
+      lastRate: 0, // previous line's final utterance rate (tempo smoothing)
+      lastPumpAt: 0, // speechSynthesis keepalive clock
+      inTick: false,
+      voicesGraceUntil: 0,
       active: false, // dubbing actually running on this video
       pollTimer: null,
       lastTime: -1,
@@ -1042,6 +1089,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       const source = effectiveSource();
       if (source !== "auto" && source === settings.targetLang) return;
       const target = settings.targetLang;
+      warmBuiltin(source, target);
       const pending = [];
       for (const g of upcoming) {
         const key = cacheKey(source, target, g.text);
@@ -1176,28 +1224,46 @@ import { makeT, resolveUiLang } from "./i18n.js";
 
     // --- speech synthesis --------------------------------------------------
 
-    function speak(text, cueDur, id) {
+    // `extras` rides along with the line: { orig, start, end, rec } —
+    // the original text (caption + journal at the moment the line is
+    // ACTUALLY voiced, never before), its cue window, and a
+    // journaled-once flag that survives requeues.
+    function speak(text, cueDur, id, extras) {
       if (id) {
         // The group is now truly being voiced: lock it forever.
         ctl.spokenIds.add(id);
         ctl.scheduledIds.delete(id);
         ctl.inFlight.delete(id);
       }
+      // The caption and the journal follow the VOICE, not the translator:
+      // a line that is dropped later must never have been shown or logged.
+      if (extras && extras.orig && !extras.rec) {
+        extras.rec = true;
+        recordLine(
+          { id, start: extras.start, end: extras.end, text: extras.orig },
+          text,
+          extras.start
+        );
+      }
+      if (settings.subtitles && extras && extras.orig)
+        showCaption(extras.orig, text);
+      // Speech is starting: duck the original bed under the voice.
+      duckNow();
       // Pro neural voice (Aura-2 languages only): cloud engine first,
       // automatic local fallback — dubbing never stops on a cloud hiccup.
       if (cloudVoiceActive()) {
-        speakCloud(text, cueDur, id);
+        speakCloud(text, cueDur, id, extras);
         return;
       }
-      speakLocal(text, cueDur, id);
+      speakLocal(text, cueDur, id, extras);
     }
 
-    async function speakCloud(text, cueDur, id) {
+    async function speakCloud(text, cueDur, id, extras) {
       // Occupy the speech slot immediately: drainQueue and anySpeaking
       // treat currentUtterance as "voice busy" whatever the engine.
-      const token = { cloud: true, at: performance.now() };
+      const token = { cloud: true, at: performance.now(), _vxId: id };
       ctl.currentUtterance = token;
-      const url = await getCloudAudio(text);
+      const url = await getCloudAudio(text, settings.targetLang);
       if (ctl.currentUtterance !== token) {
         // Cancelled during the fetch (pause, seek, language change): no
         // audio ever played — un-mark the group so a resume within its
@@ -1206,66 +1272,144 @@ import { makeT, resolveUiLang } from "./i18n.js";
         return;
       }
       if (!url) {
-        // Cloud refused (quota, offline, unsupported): local takes over.
+        // Cloud refused (quota, offline, unsupported): local takes over —
+        // and STAYS local for a while, one voice per passage.
+        cloudVoiceDownUntil = Date.now() + 60_000;
         ctl.currentUtterance = null;
-        speakLocal(text, cueDur, id);
+        speakLocal(text, cueDur, id, extras);
         return;
       }
       const a = new Audio(url);
+      try {
+        a.preservesPitch = true;
+      } catch (e) {}
       const vv = Number(settings.voiceVolume);
       a.volume = Math.max(0, Math.min(100, Number.isFinite(vv) ? vv : 100)) / 100;
-      a.playbackRate = computeUtteranceRate({
-        text,
-        cueDur,
-        baseRate: settings.rate,
-        playbackRate: video.playbackRate || 1,
+      // Wait briefly for metadata: knowing the MP3's REAL duration lets
+      // the rate fit the slot exactly instead of guessing from words.
+      await new Promise((res) => {
+        if (Number.isFinite(a.duration) && a.duration > 0) return res();
+        a.onloadedmetadata = () => res();
+        setTimeout(res, 250);
       });
+      if (ctl.currentUtterance !== token) {
+        if (id) ctl.spokenIds.delete(id);
+        return;
+      }
+      // Aura-2 already speaks at a natural cadence: apply only HALF of
+      // the user's rate preference, and stretch further only as needed to
+      // fit the real audio inside the cue window (clamped: time-stretch
+      // artifacts get audible past ~1.35).
+      const base = Number.isFinite(settings.rate) ? settings.rate : 1.1;
+      const cloudBase = Math.max(0.9, 1 + (base - 1) * 0.5);
+      let natural = cloudBase;
+      if (Number.isFinite(a.duration) && a.duration > 0.2 && cueDur > 0.5) {
+        const fit = a.duration / Math.max(0.8, cueDur);
+        natural = Math.max(cloudBase, Math.min(fit, cloudBase * 1.3, 1.35));
+      }
+      a._vxBaseRate = natural;
+      a.playbackRate = Math.min(natural * (video.playbackRate || 1), 3);
+      ctl.lastRate = a.playbackRate;
       ctl.cloudAudio = a;
       const spokeAt = performance.now();
       const finish = () => {
         if (ctl.cloudAudio === a) ctl.cloudAudio = null;
         if (ctl.currentUtterance === token) ctl.currentUtterance = null;
+        // Stats on clean playback only — an error must not count a line.
         recordSpokenSeconds((performance.now() - spokeAt) / 1000);
         drainQueue();
       };
       a.onended = finish;
-      a.onerror = finish;
+      a.onerror = () => {
+        if (ctl.cloudAudio === a) ctl.cloudAudio = null;
+        if (ctl.currentUtterance === token) ctl.currentUtterance = null;
+        drainQueue();
+      };
       try {
         await a.play();
       } catch (e) {
-        // Autoplay refusal or decode error: same sentence, local voice.
+        // Autoplay refusal or decode error: same sentence, local voice —
+        // and hold local afterwards (voice consistency).
+        cloudVoiceDownUntil = Date.now() + 60_000;
         if (ctl.cloudAudio === a) ctl.cloudAudio = null;
         if (ctl.currentUtterance === token) {
           ctl.currentUtterance = null;
-          speakLocal(text, cueDur, id);
+          speakLocal(text, cueDur, id, extras);
         }
       }
     }
 
-    function speakLocal(text, cueDur, id) {
-      const u = new SpeechSynthesisUtterance(text);
+    function speakLocal(text, cueDur, id, extras) {
       const v = pickVoice();
+      // Chrome populates getVoices() asynchronously: opening the video
+      // with the platform default voice, then switching, is jarring.
+      // Wait a beat for the real list before the FIRST line.
+      if (!v && !voices.length) {
+        if (!ctl.voicesGraceUntil)
+          ctl.voicesGraceUntil = performance.now() + 1500;
+        if (performance.now() < ctl.voicesGraceUntil) {
+          if (id) ctl.spokenIds.delete(id);
+          ctl.queue.unshift({
+            text,
+            dur: cueDur,
+            start: extras && extras.start != null ? extras.start : video.currentTime,
+            end:
+              extras && extras.end != null
+                ? extras.end
+                : video.currentTime + cueDur,
+            id,
+            orig: extras && extras.orig,
+            rec: !!(extras && extras.rec),
+          });
+          return; // the next tick's drainQueue retries
+        }
+      }
+      const u = new SpeechSynthesisUtterance(text);
       if (v) u.voice = v;
-      u.lang = LOCALES[settings.targetLang] || settings.targetLang;
+      // The chosen voice's own locale wins: sending fr-FR with an fr-CA
+      // voice makes some engines override the voice.
+      u.lang = (v && v.lang) || LOCALES[settings.targetLang] || settings.targetLang;
 
       const vv = Number(settings.voiceVolume);
       u.volume = Math.max(0, Math.min(100, Number.isFinite(vv) ? vv : 100)) / 100;
-      // Pacing lives in @voxylio/core (computeUtteranceRate).
+      // Pacing lives in @voxylio/core: calibrated to the actual voice
+      // (localWps) and eased toward the previous line's tempo.
       u.rate = computeUtteranceRate({
         text,
         cueDur,
         baseRate: settings.rate,
         playbackRate: video.playbackRate || 1,
+        wps: localWps || undefined,
+        prevRate: ctl.lastRate || 0,
       });
+      ctl.lastRate = u.rate;
 
-      const spokeAt = performance.now();
+      u._vxAt = performance.now();
+      u._vxId = id;
+      u.onstart = () => {
+        u._vxStarted = performance.now();
+      };
       u.onend = () => {
-        // Local usage stats: how long the voice actually spoke.
-        recordSpokenSeconds((performance.now() - spokeAt) / 1000);
+        if (u._vxStarted && !u._vxCancelled) {
+          const secs = (performance.now() - u._vxStarted) / 1000;
+          recordSpokenSeconds(secs);
+          // Calibrate the voice's natural pace from what it just did.
+          const words = estimateWords(text);
+          if (secs > 0.6 && words >= 3 && u.rate > 0) {
+            const measured = Math.max(1.2, Math.min(6, words / (secs * u.rate)));
+            localWps = localWps ? localWps * 0.75 + measured * 0.25 : measured;
+          }
+        } else if (!u._vxStarted && !u._vxCancelled) {
+          // Engines that never fire onstart (rare): approximate.
+          recordSpokenSeconds((performance.now() - u._vxAt) / 1000);
+        }
         if (ctl.currentUtterance === u) ctl.currentUtterance = null;
         drainQueue();
       };
-      u.onerror = u.onend;
+      u.onerror = () => {
+        if (ctl.currentUtterance === u) ctl.currentUtterance = null;
+        drainQueue();
+      };
       ctl.currentUtterance = u;
       try {
         speechSynthesis.speak(u);
@@ -1307,22 +1451,38 @@ import { makeT, resolveUiLang } from "./i18n.js";
           ctl.scheduledIds.delete(stale.id);
         }
       }
-      const q = ctl.queue.shift();
+      const q = ctl.queue[0];
       if (!q) return;
-      speak(q.text, q.dur, q.id);
+      // Its moment has not come yet: wait for it. Speaking queued lines
+      // the instant the voice frees up made the dub run AHEAD of the
+      // picture — drift was never repaid, only compounded. (The tick
+      // calls drainQueue every 150 ms, so gated lines start on time.)
+      if (!ctl.autoPaused && q.start > t + 0.25) return;
+      ctl.queue.shift();
+      // A line that WAITED in the queue paces against the time actually
+      // remaining (with a small floor): it must compress or it overruns
+      // the next line. On-time lines keep their full window.
+      const late = t - q.start > 0.8;
+      const dur = late
+        ? Math.max(1.2, Math.min(q.dur || 1.2, q.end - t))
+        : q.dur || Math.max(0.6, q.end - t);
+      speak(q.text, dur, q.id, q);
     }
 
     // Bounded enqueue: never lose a line silently. When the voice falls
-    // behind, either auto-pause the video (opt-in) or drop the OLDEST
-    // waiting line — never the newest, which is the most relevant.
+    // behind, either auto-pause the video (opt-in) or drop the STALEST
+    // waiting line — the one whose moment is most past.
     function enqueue(item) {
       ctl.queue.push(item);
-      if (ctl.queue.length > 2) {
+      if (ctl.queue.length > 3) {
         if (settings.autoPause && !video.paused && !ctl.autoPaused) {
           ctl.autoPaused = true;
           video.pause();
         } else if (!ctl.autoPaused) {
-          const dropped = ctl.queue.shift();
+          const t = video.currentTime;
+          let idx = ctl.queue.findIndex((it) => it.end + 1.5 < t);
+          if (idx < 0) idx = 0;
+          const dropped = ctl.queue.splice(idx, 1)[0];
           if (dropped && dropped.id) {
             // The voice is behind and this line lost its slot: mark it
             // skipped, or the next tick would retranslate it in a loop.
@@ -1375,7 +1535,6 @@ import { makeT, resolveUiLang } from "./i18n.js";
         ctl.inFlight.delete(group.id);
         return;
       }
-      if (settings.subtitles) showCaption(group.text, text);
       // A translation may arrive after the video was paused: never speak
       // while the video is stopped (except our own catch-up pause).
       if (!ctl.active || (video.paused && !ctl.autoPaused) || video.seeking) {
@@ -1389,13 +1548,26 @@ import { makeT, resolveUiLang } from "./i18n.js";
         ctl.inFlight.delete(group.id);
         return;
       }
-      const dur = group.end - group.start;
-      // This line WILL be voiced (now or queued): journal it.
-      recordLine(group, text, group.start);
+      // Caption + journal happen in speak(), the moment the line is
+      // actually voiced — a line dropped from the queue must never have
+      // been shown on screen or logged in the transcript.
+      // Direct lines pace against the FULL cue window (starting a little
+      // into the window is normal — stability wait, translation): speech
+      // may spill into the following gap. Only lines that waited in the
+      // queue compress against what actually remains (drainQueue).
+      const item = {
+        text,
+        dur: Math.max(0.6, group.end - group.start),
+        start: group.start,
+        end: group.end,
+        id: group.id,
+        orig: group.text,
+        rec: false,
+      };
       if (ctl.currentUtterance) {
-        enqueue({ text, dur, start: group.start, end: group.end, id: group.id });
+        enqueue(item);
       } else {
-        speak(text, dur, group.id);
+        speak(item.text, item.dur, item.id, item);
       }
     }
 
@@ -1467,8 +1639,15 @@ import { makeT, resolveUiLang } from "./i18n.js";
       }
       ctl.lastTime = t;
 
+      // Harvest and pre-translate even while PAUSED: the seconds after a
+      // resume used to start from zero (no translations, no cloud audio).
+      harvestTextTracks(); // HLS cues keep arriving
+      rebuildGroups();
+      pretranslate();
+
       if ((video.paused && !ctl.autoPaused) || video.seeking) return;
 
+      const now = performance.now();
       // Safety nets against a stalled queue — engine-specific, so the
       // Pro cloud voice and the local voice can NEVER overlap: the
       // speechSynthesis check must not reclaim the slot while an Audio
@@ -1476,25 +1655,50 @@ import { makeT, resolveUiLang } from "./i18n.js";
       if (ctl.currentUtterance && ctl.currentUtterance.cloud) {
         const a = ctl.cloudAudio;
         const stalledFetch =
-          !a && performance.now() - (ctl.currentUtterance.at || 0) > 12000;
+          !a && now - (ctl.currentUtterance.at || 0) > 12000;
         if ((a && a.ended) || stalledFetch) {
           ctl.currentUtterance = null;
           ctl.cloudAudio = null;
           drainQueue();
         }
-      } else if (
-        ctl.currentUtterance &&
-        !speechSynthesis.speaking &&
-        !speechSynthesis.pending
-      ) {
-        // Chrome sometimes "loses" an utterance's onend event (known
-        // garbage-collection bug), which would stall the queue.
-        ctl.currentUtterance = null;
-        drainQueue();
+      } else if (ctl.currentUtterance) {
+        const u = ctl.currentUtterance;
+        const age = now - (u._vxAt || 0);
+        const engineIdle =
+          !speechSynthesis.speaking && !speechSynthesis.pending;
+        if ((engineIdle && age > 1500) || age > 45000) {
+          // Engine idle: Chrome "lost" the onend event (GC bug) — but
+          // only reclaim after a minimum age, because remote voices show
+          // speaking=false during their startup lag and reclaiming then
+          // OVERLAPPED two utterances. The 45 s ceiling frees a truly
+          // hung utterance (network voice died mid-line).
+          if (age > 45000) {
+            try {
+              speechSynthesis.cancel();
+            } catch (e) {}
+          }
+          ctl.currentUtterance = null;
+          drainQueue();
+        } else if (
+          !engineIdle &&
+          age > 9000 &&
+          now - (ctl.lastPumpAt || 0) > 9000 &&
+          typeof speechSynthesis.pause === "function" &&
+          typeof speechSynthesis.resume === "function"
+        ) {
+          // Chrome kills Google-voice utterances ~14 s in unless nudged:
+          // the classic pause()+resume() keepalive, cycled well under 14 s.
+          ctl.lastPumpAt = now;
+          try {
+            speechSynthesis.pause();
+            speechSynthesis.resume();
+          } catch (e) {}
+        }
       }
 
-      harvestTextTracks(); // HLS cues keep arriving
-      rebuildGroups();
+      // Queue lines wait for their own start time: pick them up each tick.
+      drainQueue();
+      maybeReleaseDuck(now);
 
       // active sentence (a nearly finished one is skipped: speaking a long
       // line 0.4s before its end would delay everything that follows)
@@ -1513,7 +1717,25 @@ import { makeT, resolveUiLang } from "./i18n.js";
         !ctl.scheduledIds.has(current.id)
       ) {
         onGroupEnter(current);
-      } else if (!current || !settings.subtitles) {
+      } else if (!current) {
+        // A trailing group can become FINAL only after its window has
+        // already passed (live feeds stabilize late): catch it within a
+        // short grace instead of silently dropping the sentence.
+        let late = null;
+        for (const g of ctl.groups) {
+          if (g.start > t) break;
+          if (g.end <= t && t - g.end < 1.5) late = g;
+        }
+        if (
+          late &&
+          isFinalGroup(late) &&
+          !ctl.spokenIds.has(late.id) &&
+          !ctl.scheduledIds.has(late.id)
+        ) {
+          onGroupEnter(late);
+        }
+        hideCaption();
+      } else if (!settings.subtitles) {
         hideCaption();
       }
       // Registries are bounded: forget groups far behind the playhead.
@@ -1541,7 +1763,6 @@ import { makeT, resolveUiLang } from "./i18n.js";
         }
       }
       positionCaption();
-      pretranslate();
     }
 
     // Transient flush: cuts voice + queue and voids in-flight work, but
@@ -1551,9 +1772,16 @@ import { makeT, resolveUiLang } from "./i18n.js";
       ctl.scheduledIds.clear();
       ctl.inFlight.clear();
       const hadSpeech = ctl.currentUtterance || ctl.queue.length > 0;
+      // We owed the user a resume (catch-up pause): honour it before
+      // clearing the flag, or the video stays stranded paused forever.
+      const owedResume = ctl.autoPaused;
       ctl.queue.length = 0;
+      // A cancelled utterance must not be counted by its own onend.
+      if (ctl.currentUtterance && !ctl.currentUtterance.cloud)
+        ctl.currentUtterance._vxCancelled = true;
       ctl.currentUtterance = null;
       ctl.autoPaused = false;
+      ctl.lastRate = 0; // next passage starts at its own natural tempo
       if (ctl.cloudAudio) {
         try {
           ctl.cloudAudio.pause();
@@ -1567,30 +1795,203 @@ import { makeT, resolveUiLang } from "./i18n.js";
           speechSynthesis.cancel();
         } catch (e) {}
       }
+      if (owedResume && ctl.active && video.paused && !video.ended) {
+        video.play().catch(() => {});
+      }
+      // Speech is over: give the original its volume back (gently).
+      releaseDuckNow();
     }
 
     // --- original audio (ducking) -----------------------------------------
+    // Speech-gated: the bed ducks under the voice (fast dB-domain attack),
+    // HOLDS through a dialog burst, and comes back gently in real pauses.
+    // The old behavior held the video at duck% for the whole session —
+    // music, silences and credits included.
 
-    function setVolume(v) {
-      ctl.settingVolume = true;
-      video.volume = Math.max(0, Math.min(1, v));
-      // volumechange fires asynchronously; release the flag right after
-      setTimeout(() => (ctl.settingVolume = false), 0);
+    const DUCK_ATTACK_MS = 250;
+    const DUCK_RELEASE_MS = 700;
+    const DUCK_HOLD_MS = 4500; // keeps a burst from pumping
+
+    function writeVolume(v) {
+      const clamped = Math.max(0, Math.min(1, v));
+      ctl.lastWrittenVolume = clamped;
+      try {
+        video.volume = clamped;
+      } catch (e) {}
     }
-    function applyDucking() {
-      if (ctl.savedVolume == null) ctl.savedVolume = video.volume;
-      setVolume(settings.duck / 100);
-    }
-    function restoreVolume() {
-      if (ctl.savedVolume != null) {
-        setVolume(ctl.savedVolume);
-        ctl.savedVolume = null;
+
+    function stopRamp() {
+      if (ctl.rampTimer) {
+        clearInterval(ctl.rampTimer);
+        ctl.rampTimer = null;
       }
     }
-    // The user moved the volume themselves while dubbing: respect it —
-    // never restore a stale value on stop.
+
+    // Equal-dB steps (perceived-loudness-linear): a linear-domain ramp
+    // front-loads the audible change and sounds like a pump.
+    function rampVolumeTo(target, ms) {
+      stopRamp();
+      const from = video.volume;
+      if (Math.abs(from - target) < 0.015) {
+        writeVolume(target);
+        return;
+      }
+      const STEP_MS = 40;
+      const steps = Math.max(1, Math.round(ms / STEP_MS));
+      const floor = 0.001;
+      const fromDb = 20 * Math.log10(Math.max(floor, from));
+      const toDb = 20 * Math.log10(Math.max(floor, target));
+      let i = 0;
+      ctl.rampTimer = setInterval(() => {
+        i++;
+        if (i >= steps) {
+          stopRamp();
+          writeVolume(target);
+          return;
+        }
+        writeVolume(Math.pow(10, (fromDb + ((toDb - fromDb) * i) / steps) / 20));
+      }, STEP_MS);
+    }
+
+    /** Speech is starting: bring the bed down (idempotent). */
+    function duckNow() {
+      if (ctl.userVolumeOverride) return;
+      if (ctl.savedVolume == null) ctl.savedVolume = video.volume;
+      ctl.duckHoldUntil = Infinity; // held while the voice is busy
+      const target = Math.min(
+        ctl.savedVolume,
+        Math.max(0, Math.min(60, Number(settings.duck) || 0)) / 100
+      );
+      if (!ctl.ducked || Math.abs(video.volume - target) > 0.02) {
+        rampVolumeTo(target, DUCK_ATTACK_MS);
+      }
+      ctl.ducked = true;
+    }
+
+    /** Called each tick: release the duck after a real pause in speech —
+     *  never between two lines of the same burst, and never when the
+     *  next line is imminent (that reads as pumping). */
+    function maybeReleaseDuck(now) {
+      if (!ctl.ducked || ctl.userVolumeOverride) return;
+      if (ctl.currentUtterance || ctl.queue.length > 0) {
+        ctl.duckHoldUntil = Infinity;
+        return;
+      }
+      if (ctl.duckHoldUntil === Infinity) ctl.duckHoldUntil = now + DUCK_HOLD_MS;
+      if (now < ctl.duckHoldUntil) return;
+      const t = video.currentTime;
+      for (const g of ctl.groups) {
+        if (g.start > t + 1.5) break;
+        if (g.start > t && !ctl.spokenIds.has(g.id)) return; // line imminent
+      }
+      ctl.ducked = false;
+      ctl.duckHoldUntil = 0;
+      if (ctl.savedVolume != null) rampVolumeTo(ctl.savedVolume, DUCK_RELEASE_MS);
+    }
+
+    /** Immediate gentle release (pause, stop of a passage). */
+    function releaseDuckNow() {
+      ctl.duckHoldUntil = 0;
+      if (!ctl.ducked || ctl.userVolumeOverride) return;
+      ctl.ducked = false;
+      if (ctl.savedVolume != null)
+        rampVolumeTo(ctl.savedVolume, DUCK_RELEASE_MS);
+    }
+
+    function restoreVolume() {
+      stopRamp();
+      if (ctl.savedVolume != null && !ctl.userVolumeOverride) {
+        writeVolume(ctl.savedVolume);
+      }
+      ctl.savedVolume = null;
+      ctl.ducked = false;
+      ctl.duckHoldUntil = 0;
+      ctl.userVolumeOverride = false;
+      ctl.lastWrittenVolume = null;
+    }
+
+    // A volume change WE did not write is the user's: hands off their
+    // mix from then on (until they touch the duck slider or stop/start).
     function onVolumeChange() {
-      if (!ctl.settingVolume) ctl.savedVolume = null;
+      if (ctl.lastWrittenVolume == null) return;
+      if (Math.abs(video.volume - ctl.lastWrittenVolume) > 0.005) {
+        ctl.userVolumeOverride = true;
+        ctl.savedVolume = null;
+        stopRamp();
+      }
+    }
+
+    // Live audio-settings hook (duck slider, voice volume) — the sliders
+    // must act on the CURRENT line, not the next one.
+    ctl.onAudioSettings = () => {
+      ctl.userVolumeOverride = false; // touching the slider re-arms us
+      if (ctl.cloudAudio) {
+        const vv = Number(settings.voiceVolume);
+        ctl.cloudAudio.volume =
+          Math.max(0, Math.min(100, Number.isFinite(vv) ? vv : 100)) / 100;
+      }
+      if (ctl.ducked && ctl.savedVolume != null) {
+        const target = Math.min(
+          ctl.savedVolume,
+          Math.max(0, Math.min(60, Number(settings.duck) || 0)) / 100
+        );
+        rampVolumeTo(target, 120);
+      }
+    };
+
+    // --- playback-rate & buffering ----------------------------------------
+
+    // A speed change must not eat the line being spoken: the cloud audio
+    // adapts IN PLACE; a local utterance is re-scheduled (its rate is
+    // fixed at construction), never silently dropped.
+    function onRateChange() {
+      const pr = video.playbackRate || 1;
+      if (ctl.currentUtterance && ctl.currentUtterance.cloud && ctl.cloudAudio) {
+        const a = ctl.cloudAudio;
+        try {
+          a.playbackRate = Math.min((a._vxBaseRate || 1) * pr, 3);
+        } catch (e) {}
+        return;
+      }
+      const cur = ctl.currentUtterance;
+      const curId = cur && cur._vxId;
+      hardStopSpeech();
+      // The interrupted line may be re-voiced if its moment isn't gone.
+      if (curId) ctl.spokenIds.delete(curId);
+    }
+
+    // Rebuffering: the picture freezes but audio elements would keep
+    // playing — hold the voice with the video, resume together.
+    function onBuffering() {
+      if (ctl.cloudAudio) {
+        try {
+          ctl.cloudAudio.pause();
+        } catch (e) {}
+      }
+      if (
+        ctl.currentUtterance &&
+        !ctl.currentUtterance.cloud &&
+        typeof speechSynthesis.pause === "function"
+      ) {
+        try {
+          speechSynthesis.pause();
+        } catch (e) {}
+      }
+    }
+    function onPlayingAgain() {
+      if (
+        ctl.cloudAudio &&
+        ctl.cloudAudio.paused &&
+        ctl.currentUtterance &&
+        ctl.currentUtterance.cloud
+      ) {
+        ctl.cloudAudio.play().catch(() => {});
+      }
+      if (typeof speechSynthesis.resume === "function") {
+        try {
+          speechSynthesis.resume();
+        } catch (e) {}
+      }
     }
 
     // --- start / stop ------------------------------------------------------
@@ -1598,15 +1999,30 @@ import { makeT, resolveUiLang } from "./i18n.js";
     function start() {
       if (ctl.active) return;
       ctl.active = true;
-      applyDucking();
+      // No blanket duck here: the bed only ducks when a voice speaks.
       harvestTextTracks();
       harvestTrackElements();
       ctl.pollTimer = setInterval(tick, 150);
       video.addEventListener("pause", onPauseEvent);
       video.addEventListener("seeking", fullFlush);
       video.addEventListener("ended", hardStopSpeech);
-      video.addEventListener("ratechange", hardStopSpeech);
+      video.addEventListener("ratechange", onRateChange);
       video.addEventListener("volumechange", onVolumeChange);
+      video.addEventListener("waiting", onBuffering);
+      video.addEventListener("playing", onPlayingAgain);
+      // Background tabs clamp setInterval to ~1s: timeupdate (~4 Hz,
+      // unclamped) keeps line starts on time there.
+      video.addEventListener("timeupdate", onTimeUpdate);
+    }
+
+    function onTimeUpdate() {
+      if (ctl.inTick) return;
+      ctl.inTick = true;
+      try {
+        tick();
+      } finally {
+        ctl.inTick = false;
+      }
     }
 
     // A pause WE triggered to let the voice catch up must not kill the
@@ -1623,8 +2039,11 @@ import { makeT, resolveUiLang } from "./i18n.js";
       video.removeEventListener("pause", onPauseEvent);
       video.removeEventListener("seeking", fullFlush);
       video.removeEventListener("ended", hardStopSpeech);
-      video.removeEventListener("ratechange", hardStopSpeech);
+      video.removeEventListener("ratechange", onRateChange);
       video.removeEventListener("volumechange", onVolumeChange);
+      video.removeEventListener("waiting", onBuffering);
+      video.removeEventListener("playing", onPlayingAgain);
+      video.removeEventListener("timeupdate", onTimeUpdate);
       hardStopSpeech();
       restoreVolume();
       hideCaption();
@@ -1643,7 +2062,6 @@ import { makeT, resolveUiLang } from "./i18n.js";
       // and nothing starts without a linked account (free plan included).
       if (settings.enabled && accountLinked && !siteDisabled() && video === primaryVideo) {
         start();
-        applyDucking();
       } else {
         stop();
       }
