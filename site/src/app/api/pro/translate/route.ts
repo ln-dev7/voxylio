@@ -5,7 +5,7 @@ import { readEntitlementSafe } from "@/lib/entitlement";
 import {
   batchContextualTranslate,
   contextualTranslate,
-  currentPeriod,
+  billingPeriod,
   proMonthlyChars,
 } from "@/lib/pro";
 
@@ -113,7 +113,7 @@ export async function POST(req: Request) {
   }
 
   // Monthly quota — only the target lines are metered, never the context.
-  const period = currentPeriod();
+  const period = billingPeriod(ent?.currentPeriodEnd ?? null).key;
   const cap = proMonthlyChars();
   const [usage] = await db
     .select({ chars: schema.proUsage.chars })

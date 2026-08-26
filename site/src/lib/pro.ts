@@ -15,6 +15,42 @@ export function currentPeriod(): string {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 }
 
+/**
+ * Billing-anchored quota window (owner report, 2026-08-26: subscription
+ * "active until 9/25" but the meter said "resets September 1"). Quotas
+ * reset on the subscription's renewal DAY each month: the anchor is the
+ * day-of-month of `currentPeriodEnd`, so a monthly plan resets exactly
+ * at renewal and a yearly plan gets the same monthly windows anchored on
+ * its renewal day. Without an anchor (legacy row, webhook lag) it falls
+ * back to the calendar month — both key shapes ("YYYY-MM-DD" here,
+ * "YYYY-MM" legacy) coexist in pro_usage.period.
+ */
+export function billingPeriod(
+  anchor: Date | null | undefined,
+  now: Date = new Date(),
+): { key: string; resetsAt: Date } {
+  if (!anchor || Number.isNaN(anchor.getTime())) {
+    return {
+      key: currentPeriod(),
+      resetsAt: new Date(
+        Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1),
+      ),
+    };
+  }
+  const day = anchor.getUTCDate();
+  // Anchor day clamped into (year, month): a 31st in April → the 30th.
+  const at = (y: number, m: number) => {
+    const last = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+    return new Date(Date.UTC(y, m, Math.min(day, last)));
+  };
+  let start = at(now.getUTCFullYear(), now.getUTCMonth());
+  if (start > now) start = at(now.getUTCFullYear(), now.getUTCMonth() - 1);
+  return {
+    key: start.toISOString().slice(0, 10), // "YYYY-MM-DD"
+    resetsAt: at(start.getUTCFullYear(), start.getUTCMonth() + 1),
+  };
+}
+
 const DEFAULT_MONTHLY_TTS_CHARS = 100_000; // ≈ 1 h 45 of spoken voice
 
 export function proMonthlyTtsChars(): number {

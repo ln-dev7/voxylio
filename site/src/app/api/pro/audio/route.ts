@@ -4,7 +4,7 @@ import { db, schema } from "@/db";
 import { readEntitlementSafe } from "@/lib/entitlement";
 import {
   audioProviderConfigured,
-  currentPeriod,
+  billingPeriod,
   grantDeepgramToken,
   proMonthlyAudioSeconds,
 } from "@/lib/pro";
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
     return err(400, "bad_json");
   }
 
-  const period = currentPeriod();
+  const period = billingPeriod(ent?.currentPeriodEnd ?? null).key;
   const cap = proMonthlyAudioSeconds();
   // This feature cannot exist without its column: before `pnpm db:push`
   // adds audio_seconds, refuse cleanly (the extension stands down).

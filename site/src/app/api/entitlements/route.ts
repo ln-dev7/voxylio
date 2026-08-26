@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { db, schema } from "@/db";
 import {
   audioProviderConfigured,
-  currentPeriod,
+  billingPeriod,
   proMonthlyAudioSeconds,
   proMonthlyChars,
   proMonthlyTtsChars,
@@ -122,6 +122,9 @@ export async function GET(req: Request) {
   // Capability flags + remaining cloud quota (docs/PRICING.md): the
   // extension renders these, it never decides on its own.
   const isPro = out.plan === "pro";
+  // Quota window anchored on the subscription's renewal day (falls back
+  // to the calendar month when no period end is known).
+  const bp = billingPeriod(ent?.currentPeriodEnd ?? null);
   let cloudCharsRemaining = 0;
   let ttsCharsRemaining = 0;
   let audioSecondsRemaining = 0;
@@ -136,7 +139,7 @@ export async function GET(req: Request) {
         .where(
           and(
             eq(schema.proUsage.userId, userId),
-            eq(schema.proUsage.period, currentPeriod()),
+            eq(schema.proUsage.period, bp.key),
           ),
         )
         .limit(1);
@@ -154,7 +157,7 @@ export async function GET(req: Request) {
           .where(
             and(
               eq(schema.proUsage.userId, userId),
-              eq(schema.proUsage.period, currentPeriod()),
+              eq(schema.proUsage.period, bp.key),
             ),
           )
           .limit(1);
@@ -177,12 +180,9 @@ export async function GET(req: Request) {
     cloud_sync: false,
   };
 
-  // First day of the next period (UTC): the popup, hub and account page
-  // all render "resets on <date>" from this rather than guessing.
-  const now = new Date();
-  const quotaResetsAt = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1),
-  ).toISOString();
+  // Renewal-day reset (UTC): the popup, hub and account page all render
+  // "resets on <date>" from this rather than guessing.
+  const quotaResetsAt = bp.resetsAt.toISOString();
 
   return Response.json(
     {

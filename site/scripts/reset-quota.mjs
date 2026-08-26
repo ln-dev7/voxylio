@@ -1,8 +1,8 @@
 // Reset a user's Pro cloud quotas (owner tool — never shipped anywhere).
 //
 //   cd site
-//   node scripts/reset-quota.mjs leonelngoya@gmail.com            # current month
-//   node scripts/reset-quota.mjs leonelngoya@gmail.com --all      # every period
+//   node scripts/reset-quota.mjs leonelngoya@gmail.com            # fresh meters (all periods)
+//   node scripts/reset-quota.mjs leonelngoya@gmail.com --all      # same (kept for habit)
 //   node scripts/reset-quota.mjs leonelngoya@gmail.com --trial    # + restart the full trial
 //   node scripts/reset-quota.mjs leonelngoya@gmail.com --dry      # show, change nothing
 //   node scripts/reset-quota.mjs --list                           # who exists in our tables
@@ -64,7 +64,6 @@ if (!url) {
   process.exit(1);
 }
 
-const period = `${new Date().getUTCFullYear()}-${String(new Date().getUTCMonth() + 1).padStart(2, "0")}`;
 const client = new pg.Client({ connectionString: url });
 await client.connect();
 
@@ -124,13 +123,17 @@ try {
              coalesce(u.audio_seconds, 0) as audio_seconds,
              u.period
       from entitlement e
-      full outer join pro_usage u on u.user_id = e.user_id and u.period = $1
+      left join lateral (
+        select period, chars, tts_chars, audio_seconds
+        from pro_usage pu where pu.user_id = e.user_id
+        order by period desc limit 1
+      ) u on true
       order by plan desc
-    `, [period]);
+    `);
     if (!r.rows.length) console.log("No entitlement/pro_usage rows at all.");
     for (const row of r.rows) {
       console.log(
-        `${row.user_id}  plan=${row.plan}  [${row.period ?? period}] ` +
+        `${row.user_id}  plan=${row.plan}  [${row.period ?? "no usage"}] ` +
           `trad=${row.chars} voix=${row.tts_chars} audio=${row.audio_seconds}s`,
       );
     }
@@ -145,24 +148,22 @@ try {
     [user.id],
   );
   if (!before.rows.length) console.log("No usage rows — quotas already full.");
-  for (const r of before.rows) {
+  before.rows.forEach((r, i) => {
     console.log(
       `  ${r.period}: translation ${r.chars} chars · voice ${r.tts_chars} chars · audio ${r.audio_seconds}s` +
-        (r.period === period ? "  ← current" : ""),
+        (i === before.rows.length - 1 ? "  ← latest window" : ""),
     );
-  }
+  });
 
   if (DRY) {
     console.log("\n--dry: nothing changed.");
   } else {
-    const del = ALL
-      ? await client.query("delete from pro_usage where user_id = $1", [user.id])
-      : await client.query(
-          "delete from pro_usage where user_id = $1 and period = $2",
-          [user.id, period],
-        );
+    const del = await client.query(
+      "delete from pro_usage where user_id = $1",
+      [user.id],
+    );
     console.log(
-      `\nReset: ${del.rowCount} usage row(s) deleted (${ALL ? "all periods" : period}) — all meters full again.`,
+      `\nReset: ${del.rowCount} usage row(s) deleted — all meters full again.`,
     );
 
     if (TRIAL) {

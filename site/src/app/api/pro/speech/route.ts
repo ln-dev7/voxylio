@@ -3,7 +3,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { readEntitlementSafe } from "@/lib/entitlement";
 import {
-  currentPeriod,
+  billingPeriod,
   proMonthlyTtsChars,
   synthesizeSpeech,
 } from "@/lib/pro";
@@ -60,7 +60,7 @@ export async function POST(req: Request) {
   if (!text.trim() || !lang) return err(400, "bad_request");
 
   // Separate TTS meter — never mixed with translation characters.
-  const period = currentPeriod();
+  const period = billingPeriod(ent?.currentPeriodEnd ?? null).key;
   const cap = proMonthlyTtsChars();
   const [usage] = await db
     .select({ ttsChars: schema.proUsage.ttsChars })
