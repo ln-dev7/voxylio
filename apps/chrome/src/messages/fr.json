@@ -165,5 +165,7 @@
   "quotaTitle": "Quota Pro du mois",
   "quotaTrans": "Traduction IA (bêta)",
   "quotaVoice": "Voix neurale",
-  "quotaResets": "Se réinitialise le {date}"
+  "quotaResets": "Se réinitialise le {date}",
+  "statusProSite": "Ce site est réservé au Pro. En gratuit : YouTube, Netflix, Prime Video, Disney+ et Twitch.",
+  "statusTrialNote": "Essai complet : ce site reste débloqué encore $COUNT$ j"
 }

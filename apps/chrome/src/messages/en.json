@@ -165,5 +165,7 @@
   "quotaTitle": "Monthly Pro quota",
   "quotaTrans": "AI translation (beta)",
   "quotaVoice": "Neural voice",
-  "quotaResets": "Resets on {date}"
+  "quotaResets": "Resets on {date}",
+  "statusProSite": "This site is Pro-only. Free plan: YouTube, Netflix, Prime Video, Disney+ and Twitch.",
+  "statusTrialNote": "Full trial: this site stays unlocked for $COUNT$ more day(s)"
 }

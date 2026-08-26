@@ -165,5 +165,7 @@
   "quotaTitle": "今月のPro枠",
   "quotaTrans": "AI翻訳（ベータ版）",
   "quotaVoice": "ニューラル音声",
-  "quotaResets": "{date}にリセット"
+  "quotaResets": "{date}にリセット",
+  "statusProSite": "このサイトはPro専用です。無料プラン：YouTube、Netflix、Prime Video、Disney+、Twitch。",
+  "statusTrialNote": "フル体験中：このサイトはあと$COUNT$日利用できます"
 }

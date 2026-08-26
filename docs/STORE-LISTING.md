@@ -15,9 +15,9 @@
 
 ### en — English
 
-**Résumé court** (105 caractères) :
+**Résumé court** (104 caractères) :
 
-> Dub any subtitled video in real time — free on-device translation, a voice over the video, 70+ languages.
+> Dub any subtitled video in real time — free on YouTube, Netflix & more, 3-day full trial, 70+ languages.
 
 **Description :**
 
@@ -28,8 +28,8 @@ It reads the video's subtitles — the player's track, or the captions shown on 
 
 ★ Full-sentence dubbing — a fluid voice, translations in context
 ★ 70+ target languages — source language detected automatically
-★ Free and unlimited: on-device translation (Chrome's built-in translation API) + your system voices — no card, no quota
-★ A free Voxylio account (Google sign-in) is required to start dubbing
+★ Free on the big platforms (YouTube, Netflix, Prime Video, Disney+, Twitch): unlimited on-device translation (Chrome's built-in API) + your system voices — no card
+★ A free Voxylio account (Google sign-in) is required — every new account starts with a 3-day trial that unlocks every site
 ★ Optional Pro: contextual AI translation (beta) — whole scenes translated coherently — and natural neural voices in 7 languages, with automatic local fallback
 ★ Personal glossary: force your translations, protect your terms
 ★ Bilingual on-screen captions (original + translation)
@@ -37,14 +37,14 @@ It reads the video's subtitles — the player's track, or the captions shown on 
 ★ Floating controller: language, voice, speed, original-audio mix
 ★ Dubbing history and statistics computed locally, transcript export (.srt)
 
-Works wherever subtitles exist: course platforms, video documentation, standard HTML5 players — plus the on-screen captions of YouTube, Netflix, Prime Video, Disney+ and Twitch.
+The engine works wherever subtitles exist — course platforms, video documentation, standard HTML5 players. The free plan covers the big platforms above; the 3-day trial and Pro unlock every other site.
 ```
 
 ### fr — Français
 
-**Résumé court** (125 caractères) :
+**Résumé court** (124 caractères) :
 
-> Doublez n'importe quelle vidéo sous-titrée en temps réel : traduction locale gratuite, voix par-dessus la vidéo, 70+ langues.
+> Doublez vos vidéos sous-titrées en temps réel : gratuit sur YouTube, Netflix et plus, essai complet de 3 jours, 70+ langues.
 
 **Description :**
 
@@ -55,8 +55,8 @@ Il lit les sous-titres de la vidéo — la piste du lecteur, ou les sous-titres 
 
 ★ Doublage par phrases complètes — voix fluide, traductions en contexte
 ★ 70+ langues cibles — langue source détectée automatiquement
-★ Gratuit et illimité : traduction locale sur votre appareil (API de traduction intégrée de Chrome) + voix système — sans carte bancaire, sans quota
-★ Compte Voxylio gratuit (connexion Google) requis pour activer le doublage
+★ Gratuit sur les grandes plateformes (YouTube, Netflix, Prime Video, Disney+, Twitch) : traduction locale illimitée (API intégrée de Chrome) + voix système — sans carte bancaire
+★ Compte Voxylio gratuit (connexion Google) requis — chaque nouveau compte démarre avec 3 jours d'essai qui débloquent tous les sites
 ★ Pro, en option : traduction IA contextuelle (bêta) — des scènes entières traduites avec cohérence — et voix neurales naturelles en 7 langues, avec repli automatique sur la voix locale
 ★ Glossaire personnel : imposez vos traductions, protégez vos termes
 ★ Sous-titres bilingues à l'écran (original + traduction)
@@ -64,14 +64,14 @@ Il lit les sous-titres de la vidéo — la piste du lecteur, ou les sous-titres 
 ★ Contrôleur flottant : langue, voix, vitesse, mixage de l'audio original
 ★ Historique de doublage et statistiques calculés en local, export de transcription (.srt)
 
-Fonctionne partout où des sous-titres existent : plateformes de cours, documentation vidéo, lecteurs HTML5 standards — et les sous-titres affichés de YouTube, Netflix, Prime Video, Disney+ et Twitch.
+Le moteur fonctionne partout où des sous-titres existent — plateformes de cours, documentation vidéo, lecteurs HTML5 standards. Le plan gratuit couvre les grandes plateformes ci-dessus ; l'essai de 3 jours et le Pro débloquent tous les autres sites.
 ```
 
 ### es — Español
 
-**Résumé court** (119 caractères) :
+**Résumé court** (121 caractères) :
 
-> Dobla cualquier vídeo subtitulado en tiempo real: traducción local gratuita, una voz sobre el vídeo, más de 70 idiomas.
+> Dobla vídeos subtitulados en tiempo real: gratis en YouTube, Netflix y más, prueba completa de 3 días, más de 70 idiomas.
 
 **Description :**
 
@@ -82,8 +82,8 @@ Lee los subtítulos del vídeo — la pista del reproductor o los subtítulos mo
 
 ★ Doblaje por frases completas — una voz fluida, traducciones en contexto
 ★ Más de 70 idiomas de destino — idioma de origen detectado automáticamente
-★ Gratis e ilimitado: traducción en el dispositivo (API de traducción integrada de Chrome) + las voces de tu sistema — sin tarjeta, sin cuota
-★ Se requiere una cuenta Voxylio gratuita (inicio de sesión con Google) para empezar a doblar
+★ Gratis en las grandes plataformas (YouTube, Netflix, Prime Video, Disney+, Twitch): traducción ilimitada en el dispositivo (API integrada de Chrome) + las voces de tu sistema — sin tarjeta
+★ Se requiere una cuenta Voxylio gratuita (inicio de sesión con Google) — cada cuenta nueva empieza con una prueba de 3 días que desbloquea todos los sitios
 ★ Pro opcional: traducción IA contextual (beta) — escenas enteras traducidas con coherencia — y voces neuronales naturales en 7 idiomas, con respaldo local automático
 ★ Glosario personal: impón tus traducciones, protege tus términos
 ★ Subtítulos bilingües en pantalla (original + traducción)
@@ -91,14 +91,14 @@ Lee los subtítulos del vídeo — la pista del reproductor o los subtítulos mo
 ★ Controlador flotante: idioma, voz, velocidad, mezcla del audio original
 ★ Historial de doblaje y estadísticas calculados en local, exportación de transcripción (.srt)
 
-Funciona dondequiera que existan subtítulos: plataformas de cursos, documentación en vídeo, reproductores HTML5 estándar — además de los subtítulos en pantalla de YouTube, Netflix, Prime Video, Disney+ y Twitch.
+El motor funciona dondequiera que existan subtítulos — plataformas de cursos, documentación en vídeo, reproductores HTML5 estándar. El plan gratuito cubre las grandes plataformas de arriba; la prueba de 3 días y Pro desbloquean todos los demás sitios.
 ```
 
 ### de — Deutsch
 
-**Résumé court** (125 caractères) :
+**Résumé court** (114 caractères) :
 
-> Synchronisiere jedes untertitelte Video in Echtzeit: kostenlose lokale Übersetzung, eine Stimme über dem Video, 70+ Sprachen.
+> Synchronisiere untertitelte Videos in Echtzeit: gratis auf YouTube, Netflix & mehr, 3 Tage Volltest, 70+ Sprachen.
 
 **Description :**
 
@@ -109,8 +109,8 @@ Es liest die Untertitel des Videos — die Spur des Players oder die eingeblende
 
 ★ Synchronisation in ganzen Sätzen — eine flüssige Stimme, Übersetzungen im Kontext
 ★ Über 70 Zielsprachen — Ausgangssprache wird automatisch erkannt
-★ Kostenlos und unbegrenzt: Übersetzung auf dem Gerät (Chromes integrierte Übersetzungs-API) + deine Systemstimmen — keine Karte, kein Kontingent
-★ Zum Starten der Synchronisation ist ein kostenloses Voxylio-Konto (Google-Anmeldung) erforderlich
+★ Gratis auf den großen Plattformen (YouTube, Netflix, Prime Video, Disney+, Twitch): unbegrenzte Übersetzung auf dem Gerät (Chromes integrierte API) + deine Systemstimmen — keine Karte
+★ Ein kostenloses Voxylio-Konto (Google-Anmeldung) ist erforderlich — jedes neue Konto startet mit einem 3-Tage-Test, der alle Seiten freischaltet
 ★ Optionales Pro: kontextuelle KI-Übersetzung (Beta) — ganze Szenen kohärent übersetzt — und natürliche neuronale Stimmen in 7 Sprachen, mit automatischem lokalem Fallback
 ★ Persönliches Glossar: erzwinge deine Übersetzungen, schütze deine Begriffe
 ★ Zweisprachige Untertitel im Bild (Original + Übersetzung)
@@ -118,14 +118,14 @@ Es liest die Untertitel des Videos — die Spur des Players oder die eingeblende
 ★ Schwebender Controller: Sprache, Stimme, Tempo, Mix des Originaltons
 ★ Verlauf und Statistiken lokal berechnet, Transkript-Export (.srt)
 
-Funktioniert überall, wo es Untertitel gibt: Kursplattformen, Videodokumentation, Standard-HTML5-Player — plus die eingeblendeten Untertitel von YouTube, Netflix, Prime Video, Disney+ und Twitch.
+Die Engine funktioniert überall, wo es Untertitel gibt — Kursplattformen, Videodokumentation, Standard-HTML5-Player. Der Gratis-Plan deckt die großen Plattformen oben ab; der 3-Tage-Test und Pro schalten alle anderen Seiten frei.
 ```
 
 ### it — Italiano
 
-**Résumé court** (122 caractères) :
+**Résumé court** (123 caractères) :
 
-> Doppia in tempo reale qualsiasi video sottotitolato: traduzione locale gratuita, una voce sopra il video, oltre 70 lingue.
+> Doppia video sottotitolati in tempo reale: gratis su YouTube, Netflix e altro, prova completa di 3 giorni, oltre 70 lingue.
 
 **Description :**
 
@@ -136,8 +136,8 @@ Legge i sottotitoli del video — la traccia del player o i sottotitoli mostrati
 
 ★ Doppiaggio per frasi complete — una voce fluida, traduzioni nel contesto
 ★ Oltre 70 lingue di destinazione — lingua di origine rilevata automaticamente
-★ Gratuito e illimitato: traduzione sul dispositivo (API di traduzione integrata di Chrome) + le voci del tuo sistema — nessuna carta, nessuna quota
-★ Per avviare il doppiaggio serve un account Voxylio gratuito (accesso Google)
+★ Gratis sulle grandi piattaforme (YouTube, Netflix, Prime Video, Disney+, Twitch): traduzione illimitata sul dispositivo (API integrata di Chrome) + le voci del tuo sistema — nessuna carta
+★ Serve un account Voxylio gratuito (accesso Google) — ogni nuovo account parte con una prova di 3 giorni che sblocca tutti i siti
 ★ Pro opzionale: traduzione IA contestuale (beta) — scene intere tradotte con coerenza — e voci neurali naturali in 7 lingue, con ripiego locale automatico
 ★ Glossario personale: imponi le tue traduzioni, proteggi i tuoi termini
 ★ Sottotitoli bilingui sullo schermo (originale + traduzione)
@@ -145,14 +145,14 @@ Legge i sottotitoli del video — la traccia del player o i sottotitoli mostrati
 ★ Controller flottante: lingua, voce, velocità, mix dell'audio originale
 ★ Cronologia e statistiche calcolate in locale, esportazione della trascrizione (.srt)
 
-Funziona ovunque esistano sottotitoli: piattaforme di corsi, documentazione video, player HTML5 standard — più i sottotitoli sullo schermo di YouTube, Netflix, Prime Video, Disney+ e Twitch.
+Il motore funziona ovunque esistano sottotitoli — piattaforme di corsi, documentazione video, player HTML5 standard. Il piano gratuito copre le grandi piattaforme qui sopra; la prova di 3 giorni e il Pro sbloccano tutti gli altri siti.
 ```
 
 ### ja — 日本語
 
-**Résumé court** (48 caractères) :
+**Résumé court** (58 caractères) :
 
-> 字幕付き動画をリアルタイムで吹き替え：無料のオンデバイス翻訳、動画に重なる音声、70以上の言語。
+> 字幕付き動画をリアルタイムで吹き替え：YouTube・Netflix などで無料、3日間のフル体験、70以上の言語。
 
 **Description :**
 
@@ -163,8 +163,8 @@ Voxylio は、動画をあなたの言語で話させます。
 
 ★ 文単位の吹き替え — 滑らかな声、文脈を踏まえた翻訳
 ★ 70以上の対象言語 — 元言語は自動検出
-★ 無料・無制限：オンデバイス翻訳（Chrome 内蔵の翻訳 API）＋システム音声 — カード不要、制限なし
-★ 吹き替えの開始には無料の Voxylio アカウント（Google ログイン）が必要です
+★ 主要プラットフォーム（YouTube・Netflix・Prime Video・Disney+・Twitch）で無料：無制限のオンデバイス翻訳（Chrome 内蔵 API）＋システム音声 — カード不要
+★ 無料の Voxylio アカウント（Google ログイン）が必要です — 新規アカウントは、すべてのサイトが使える3日間の体験付きで始まります
 ★ オプションの Pro：文脈を理解する AI 翻訳（ベータ版） — シーン全体を一貫して翻訳 — と7言語の自然なニューラル音声、ローカルへの自動フォールバック付き
 ★ パーソナル用語集：訳語の固定も、用語の保護も
 ★ 画面上のバイリンガル字幕（原文＋訳文）
@@ -172,14 +172,14 @@ Voxylio は、動画をあなたの言語で話させます。
 ★ フローティングコントローラー：言語・声・速度・元音声のミックス
 ★ 吹き替え履歴と統計はローカルで計算、文字起こしのエクスポート（.srt）
 
-字幕があればどこでも動きます：学習プラットフォーム、動画ドキュメント、標準の HTML5 プレーヤー — さらに YouTube・Netflix・Prime Video・Disney+・Twitch の画面上の字幕にも。
+エンジンは字幕があればどこでも動きます — 学習プラットフォーム、動画ドキュメント、標準の HTML5 プレーヤー。無料プランは上記の主要プラットフォームをカバーし、3日間の体験と Pro が他のすべてのサイトをアンロックします。
 ```
 
 ### ko — 한국어
 
-**Résumé court** (55 caractères) :
+**Résumé court** (63 caractères) :
 
-> 자막 있는 영상을 실시간 더빙: 무료 기기 내 번역, 영상 위에 얹히는 음성, 70개 이상의 언어.
+> 자막 있는 영상을 실시간 더빙: YouTube·Netflix 등에서 무료, 3일 전체 체험, 70개 이상의 언어.
 
 **Description :**
 
@@ -190,8 +190,8 @@ Voxylio는 영상이 당신의 언어로 말하게 합니다.
 
 ★ 완성된 문장 단위 더빙 — 매끄러운 목소리, 문맥을 반영한 번역
 ★ 70개 이상의 대상 언어 — 원어 자동 감지
-★ 무료·무제한: 기기 내 번역(Chrome 내장 번역 API) + 시스템 음성 — 카드 불필요, 할당량 없음
-★ 더빙을 시작하려면 무료 Voxylio 계정(Google 로그인)이 필요합니다
+★ 주요 플랫폼(YouTube·Netflix·Prime Video·Disney+·Twitch)에서 무료: 무제한 기기 내 번역(Chrome 내장 API) + 시스템 음성 — 카드 불필요
+★ 무료 Voxylio 계정(Google 로그인)이 필요합니다 — 새 계정은 모든 사이트가 열리는 3일 체험으로 시작합니다
 ★ 선택형 Pro: 문맥 AI 번역(베타) — 장면 전체를 일관되게 번역 — 과 7개 언어의 자연스러운 신경망 음성, 자동 로컬 폴백 포함
 ★ 개인 용어집: 원하는 번역을 강제하고 용어를 보호하세요
 ★ 화면 이중 자막(원문 + 번역)
@@ -199,14 +199,14 @@ Voxylio는 영상이 당신의 언어로 말하게 합니다.
 ★ 플로팅 컨트롤러: 언어, 목소리, 속도, 원본 오디오 믹스
 ★ 더빙 기록과 통계는 로컬에서 계산, 대본 내보내기(.srt)
 
-자막이 있는 곳이면 어디서나 작동합니다: 강의 플랫폼, 영상 문서, 표준 HTML5 플레이어 — 그리고 YouTube·Netflix·Prime Video·Disney+·Twitch의 화면 자막까지.
+엔진은 자막이 있는 곳이면 어디서나 작동합니다 — 강의 플랫폼, 영상 문서, 표준 HTML5 플레이어. 무료 플랜은 위의 주요 플랫폼을 지원하며, 3일 체험과 Pro가 그 외 모든 사이트를 잠금 해제합니다.
 ```
 
 ### pt-BR — Português (Brasil)
 
-**Résumé court** (113 caractères) :
+**Résumé court** (119 caractères) :
 
-> Duble qualquer vídeo legendado em tempo real: tradução local gratuita, uma voz sobre o vídeo, mais de 70 idiomas.
+> Duble vídeos legendados em tempo real: grátis no YouTube, Netflix e mais, teste completo de 3 dias, mais de 70 idiomas.
 
 **Description :**
 
@@ -217,8 +217,8 @@ Ele lê as legendas do vídeo — a trilha do player ou as legendas exibidas na 
 
 ★ Dublagem por frases completas — uma voz fluida, traduções em contexto
 ★ Mais de 70 idiomas de destino — idioma de origem detectado automaticamente
-★ Grátis e ilimitado: tradução no dispositivo (API de tradução integrada do Chrome) + as vozes do seu sistema — sem cartão, sem cota
-★ É necessária uma conta Voxylio gratuita (login com Google) para começar a dublar
+★ Grátis nas grandes plataformas (YouTube, Netflix, Prime Video, Disney+, Twitch): tradução ilimitada no dispositivo (API integrada do Chrome) + as vozes do seu sistema — sem cartão
+★ É necessária uma conta Voxylio gratuita (login com Google) — cada conta nova começa com um teste de 3 dias que desbloqueia todos os sites
 ★ Pro opcional: tradução com IA contextual (beta) — cenas inteiras traduzidas com coerência — e vozes neurais naturais em 7 idiomas, com retorno automático à voz local
 ★ Glossário pessoal: imponha suas traduções, proteja seus termos
 ★ Legendas bilíngues na tela (original + tradução)
@@ -226,14 +226,14 @@ Ele lê as legendas do vídeo — a trilha do player ou as legendas exibidas na 
 ★ Controle flutuante: idioma, voz, velocidade, mixagem do áudio original
 ★ Histórico de dublagem e estatísticas calculados localmente, exportação de transcrição (.srt)
 
-Funciona onde houver legendas: plataformas de cursos, documentação em vídeo, players HTML5 padrão — além das legendas na tela do YouTube, Netflix, Prime Video, Disney+ e Twitch.
+O motor funciona onde houver legendas — plataformas de cursos, documentação em vídeo, players HTML5 padrão. O plano gratuito cobre as grandes plataformas acima; o teste de 3 dias e o Pro desbloqueiam todos os outros sites.
 ```
 
 ### zh-CN — 简体中文
 
-**Résumé court** (41 caractères) :
+**Résumé court** (54 caractères) :
 
-> 实时配音任何带字幕的视频：免费设备端翻译，语音叠加在视频上，支持 70 多种语言。
+> 实时配音带字幕的视频：在 YouTube、Netflix 等免费使用，3 天完整试用，支持 70 多种语言。
 
 **Description :**
 
@@ -244,8 +244,8 @@ Voxylio 让视频说你的语言。
 
 ★ 整句配音 — 声音流畅，翻译贴合上下文
 ★ 70 多种目标语言 — 自动检测源语言
-★ 免费且无限制：设备端翻译（Chrome 内置翻译 API）+ 系统语音 — 无需绑卡、没有配额
-★ 开始配音需要免费的 Voxylio 账号（Google 登录）
+★ 各大平台（YouTube、Netflix、Prime Video、Disney+、Twitch）免费：设备端翻译无限制（Chrome 内置 API）+ 系统语音 — 无需绑卡
+★ 需要免费的 Voxylio 账号（Google 登录）— 每个新账号都有解锁所有网站的 3 天试用
 ★ 可选 Pro：上下文 AI 翻译（测试版） — 整个场景连贯翻译 — 以及 7 种语言的自然神经语音，自动回退到本地
 ★ 个人术语表：强制你的译法，保护你的术语
 ★ 屏幕双语字幕（原文 + 译文）
@@ -253,14 +253,14 @@ Voxylio 让视频说你的语言。
 ★ 悬浮控制器：语言、声音、语速、原声混音
 ★ 配音历史与统计在本地计算，支持字幕导出（.srt）
 
-只要有字幕就能用：课程平台、视频文档、标准 HTML5 播放器 — 还有 YouTube、Netflix、Prime Video、Disney+、Twitch 的屏幕字幕。
+只要有字幕，引擎就能运行 — 课程平台、视频文档、标准 HTML5 播放器。免费版覆盖上述各大平台；3 天试用和 Pro 解锁其余所有网站。
 ```
 
 ### zh-TW — 繁體中文
 
-**Résumé court** (41 caractères) :
+**Résumé court** (55 caractères) :
 
-> 即時為任何有字幕的影片配音：免費裝置端翻譯，語音疊在影片上，支援 70 多種語言。
+> 即時為有字幕的影片配音：在 YouTube、Netflix 等免費使用，3 天完整試用，支援 70 多種語言。
 
 **Description :**
 
@@ -271,8 +271,8 @@ Voxylio 讓影片說你的語言。
 
 ★ 整句配音 — 聲音流暢，翻譯貼合上下文
 ★ 70 多種目標語言 — 自動偵測來源語言
-★ 免費且無限制：裝置端翻譯（Chrome 內建翻譯 API）+ 系統語音 — 不需綁卡、沒有額度
-★ 開始配音需要免費的 Voxylio 帳號（Google 登入）
+★ 各大平台（YouTube、Netflix、Prime Video、Disney+、Twitch）免費：裝置端翻譯無限制（Chrome 內建 API）+ 系統語音 — 不需綁卡
+★ 需要免費的 Voxylio 帳號（Google 登入）— 每個新帳號都有解鎖所有網站的 3 天試用
 ★ 可選 Pro：情境 AI 翻譯（測試版） — 整個場景連貫翻譯 — 以及 7 種語言的自然神經語音，自動回退到本機
 ★ 個人術語表：強制你的譯法，保護你的術語
 ★ 畫面雙語字幕（原文 + 譯文）
@@ -280,7 +280,7 @@ Voxylio 讓影片說你的語言。
 ★ 懸浮控制器：語言、聲音、語速、原聲混音
 ★ 配音歷史與統計在本機計算，支援字幕匯出（.srt）
 
-只要有字幕就能用：課程平台、影片文件、標準 HTML5 播放器 — 還有 YouTube、Netflix、Prime Video、Disney+、Twitch 的畫面字幕。
+只要有字幕，引擎就能運行 — 課程平台、影片文件、標準 HTML5 播放器。免費版涵蓋上述各大平台；3 天試用和 Pro 解鎖其餘所有網站。
 ```
 ## Onglet Confidentialité — contenu exact des champs (1.7.0)
 

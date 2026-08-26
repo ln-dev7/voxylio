@@ -165,5 +165,7 @@
   "quotaTitle": "Cota Pro do mês",
   "quotaTrans": "Tradução IA (beta)",
   "quotaVoice": "Voz neural",
-  "quotaResets": "Renovada em {date}"
+  "quotaResets": "Renovada em {date}",
+  "statusProSite": "Este site é exclusivo do Pro. Plano gratuito: YouTube, Netflix, Prime Video, Disney+ e Twitch.",
+  "statusTrialNote": "Teste completo: este site continua liberado por mais $COUNT$ dia(s)"
 }

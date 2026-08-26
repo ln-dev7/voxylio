@@ -165,5 +165,7 @@
   "quotaTitle": "Monatliches Pro-Kontingent",
   "quotaTrans": "KI-Übersetzung (Beta)",
   "quotaVoice": "Neuronale Stimme",
-  "quotaResets": "Wird am {date} zurückgesetzt"
+  "quotaResets": "Wird am {date} zurückgesetzt",
+  "statusProSite": "Diese Seite ist Pro vorbehalten. Gratis: YouTube, Netflix, Prime Video, Disney+ und Twitch.",
+  "statusTrialNote": "Volltest: diese Seite bleibt noch $COUNT$ Tag(e) freigeschaltet"
 }

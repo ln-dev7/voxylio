@@ -6,13 +6,18 @@ extension, and the backend capability design all follow this document.
 
 ## The rule
 
-**Free = understand a video. Pro = a clearly better translation, and the
-video turned into exploitable content.**
+**Free = understand a video on the big platforms. Pro = every site, a
+clearly better translation, and the video turned into exploitable
+content.**
 
-Never charge for basic controls, never degrade the free experience to
-push upgrades, never restrict what costs us nothing. Local dubbing is the
-adoption engine — its marginal cost is ~zero and it is what makes users
-experience the product's value.
+Never charge for basic controls, never degrade the free experience ON
+ITS OWN GROUND (the big platforms) to push upgrades. Local dubbing is
+the adoption engine — its marginal cost is ~zero and it is what makes
+users experience the product's value. SUPERSEDED IN PART (2026-08-26):
+"never restrict what costs us nothing" no longer holds — free is scoped
+to YouTube, Netflix, Prime Video, Disney+ and Twitch after a 3-day full
+trial; the convenience of the packaged product is the paid surface, the
+MIT code remains the escape hatch. See « Owner update » below.
 
 ## Owner overrides (differ from the advisory notes this is based on)
 
@@ -125,16 +130,27 @@ the code never drift from them:
    (site, 10 locales), store descriptions (docs/STORE-LISTING.md,
    10 languages). Done on 2026-08-26. Removing the label is an owner
    decision, and requires sweeping the exact same list.
-2. **The free plan is too generous — tightening decided in principle.**
-   Rationale: the packaged product (store build, account, updates) is
-   the convenience; the code is MIT — whoever refuses to pay can clone
-   and run it locally. Free must stay good enough to genuinely test the
-   tool, and become insufficient for heavy daily use. The MECHANISM
-   (usage cap / site gating / feature gating / trial) is not chosen yet
-   — no copy or code change until the owner picks one. Every surface
-   currently saying « gratuit et illimité » (hero ticks, pricing card,
-   compare table, FAQ, modal, store listing) will need the same sweep
-   discipline as the beta labels.
+2. **The free plan is tightened — mechanism CHOSEN (2026-08-26,
+   shipped in v1.8.0).** Rationale: the packaged product (store build,
+   account, updates) is the convenience; the code is MIT — whoever
+   refuses to pay can clone and run it locally. The split:
+   - **3-day full trial** for every account, every site unlocked.
+     Starts at the FIRST authenticated `/api/entitlements` call after
+     the feature deployed (`entitlement.trialStartedAt`), so existing
+     accounts get their full window too. No card, nothing auto-charged.
+   - **Free after the trial** = unlimited on-device dubbing on the big
+     platforms ONLY: YouTube, Netflix, Prime Video, Disney+, Twitch
+     (`packages/core/src/plan.js` — the single source of truth).
+   - **Pro** = every site the engine supports (course platforms
+     included) + the cloud features.
+   - Enforcement is client-side (`planGate` in the content script) and
+     FAILS OPEN when the server sent no `trialEndsAt` — a rollout
+     ordering issue must never lock users out. Cloners bypass it; per
+     the rationale above, that is accepted.
+   - Copy swept on 2026-08-26 (same discipline as the beta labels):
+     hero tick, pricing subtitle + both cards + modal, compare table,
+     FAQ (cost/sites/pro + new trial item), store listing summaries +
+     descriptions ×10, changelog 1.8.0 ×10.
 3. **The neural voice is NOT the Pro seller** (owner's own judgment:
    « pas si convaincante »). Consequence: the conversion story must not
    lean on it. Pillar #3 (no-subtitle dubbing / Premium Audio) is the

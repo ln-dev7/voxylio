@@ -20,14 +20,23 @@ type Tag = "new" | "improved" | "pro";
 // Text lives in messages (Changelog.*); this is only the shape.
 const RELEASES: Array<{
   version: string;
-  id: "v171" | "v170" | "v151";
-  badge: "latest" | "store" | "review";
+  id: "v180" | "v171" | "v170" | "v151";
+  badge?: "latest" | "store" | "review";
   items: Array<{ key: string; tag: Tag }>;
 }> = [
   {
+    version: "1.8.0",
+    id: "v180",
+    badge: "latest",
+    items: [
+      { key: "trial", tag: "new" },
+      { key: "freeSites", tag: "improved" },
+      { key: "proSites", tag: "pro" },
+    ],
+  },
+  {
     version: "1.7.1",
     id: "v171",
-    badge: "latest",
     items: [
       { key: "flow", tag: "improved" },
       { key: "fallback", tag: "improved" },
@@ -117,7 +126,7 @@ export default async function ChangelogPage({
                     <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-amber-400">
                       {t("review")}
                     </span>
-                  ) : (
+                  ) : release.badge === "store" ? (
                     <a
                       href={CHROME_STORE_URL}
                       target="_blank"
@@ -126,7 +135,7 @@ export default async function ChangelogPage({
                     >
                       {t("store")}
                     </a>
-                  )}
+                  ) : null}
                   <span className="text-sm text-muted-foreground/70">
                     {t(`${release.id}.date`)}
                   </span>

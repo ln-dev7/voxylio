@@ -29,6 +29,9 @@ import {
   pickCaptionTrack,
   timedtextUrl,
   parseJson3,
+  isFreeSite,
+  planGate,
+  trialDaysLeft,
   DEFAULTS as SHARED_DEFAULTS,
   createTranslatorChain,
   journalAppendLine,
@@ -132,6 +135,21 @@ import { makeT, resolveUiLang } from "./i18n.js";
   // the check also succeeds offline, so a bad connection never locks a
   // signed-in user out mid-video.
   let accountLinked = false;
+  let accountPlan = "free";
+  let accountTrialEndsAt = null;
+
+  // The one site-level plan decision (packages/core/src/plan.js): Pro
+  // everywhere; free accounts everywhere during the 3-day trial, then
+  // only on the big platforms. Fails open when the server sent no
+  // trial info (old backend, offline cache from before the rollout).
+  function sitePlanAllowed() {
+    return planGate({
+      plan: accountPlan,
+      trialEndsAt: accountTrialEndsAt,
+      now: Date.now(),
+      hostname: location.hostname,
+    }).allowed;
+  }
 
   function recheckAccount() {
     try {
@@ -139,8 +157,16 @@ import { makeT, resolveUiLang } from "./i18n.js";
       if (p && typeof p.then === "function") {
         p.then((ent) => {
           const linked = !!(ent && ent.linked);
-          if (linked !== accountLinked) {
+          const plan = (ent && ent.plan) || "free";
+          const trial = (ent && ent.trialEndsAt) || null;
+          if (
+            linked !== accountLinked ||
+            plan !== accountPlan ||
+            trial !== accountTrialEndsAt
+          ) {
             accountLinked = linked;
+            accountPlan = plan;
+            accountTrialEndsAt = trial;
             refreshAll();
           }
         }).catch(() => {});
@@ -317,6 +343,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
 
   function maybeEnableSiteCaptions() {
     if (!settings.enabled || !accountLinked || siteDisabled()) return;
+    if (!sitePlanAllowed()) return; // Pro-only site for this account
     if (domLastText) return; // captions already flowing
     const video = primaryVideo;
     const ctl = video && controllers.get(video);
@@ -2226,7 +2253,13 @@ import { makeT, resolveUiLang } from "./i18n.js";
       // Dub only the primary video — one voice, one duck, per page.
       // A hostname on the options page's disabled list stays untouched,
       // and nothing starts without a linked account (free plan included).
-      if (settings.enabled && accountLinked && !siteDisabled() && video === primaryVideo) {
+      if (
+        settings.enabled &&
+        accountLinked &&
+        !siteDisabled() &&
+        sitePlanAllowed() &&
+        video === primaryVideo
+      ) {
         start();
       } else {
         stop();
@@ -3009,6 +3042,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       // Single explicit state for the popup
       let state = "no-video";
       if (siteDisabled()) state = "site-disabled";
+      else if (accountLinked && !sitePlanAllowed()) state = "pro-site";
       else if (controllers.size > 0) {
         if (nCues > 0) {
           if (targetVoices.length === 0) state = "no-voice";
@@ -3032,6 +3066,9 @@ import { makeT, resolveUiLang } from "./i18n.js";
         page: location.hostname,
         state,
         signinRequired: !accountLinked,
+        siteFree: isFreeSite(location.hostname),
+        trialDaysLeft: trialDaysLeft(accountTrialEndsAt, Date.now()),
+        plan: accountPlan,
         speaking: anySpeaking(),
         translationMode,
         lastTranslateError,

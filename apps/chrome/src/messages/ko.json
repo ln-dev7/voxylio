@@ -165,5 +165,7 @@
   "quotaTitle": "이번 달 Pro 한도",
   "quotaTrans": "AI 번역 (베타)",
   "quotaVoice": "신경망 음성",
-  "quotaResets": "{date}에 초기화"
+  "quotaResets": "{date}에 초기화",
+  "statusProSite": "이 사이트는 Pro 전용입니다. 무료 플랜: YouTube, Netflix, Prime Video, Disney+, Twitch.",
+  "statusTrialNote": "전체 체험: 이 사이트는 $COUNT$일 더 이용할 수 있습니다"
 }

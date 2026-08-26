@@ -190,6 +190,32 @@ function statusFragment(resp) {
     case "site-disabled":
       add(line(t("statusSiteDisabled") || "Voxylio est désactivé sur ce site (voir Options).", "warn"));
       break;
+    case "pro-site":
+      add(
+        line(
+          "★ " +
+            (t("statusProSite") ||
+              "Ce site est réservé au Pro. En gratuit : YouTube, Netflix, Prime Video, Disney+ et Twitch."),
+          "warn",
+        ),
+      );
+      break;
+  }
+  // Free account, on a Pro-only site, still inside the 3-day trial:
+  // say plainly what unlocks this site today and until when.
+  if (
+    resp.plan !== "pro" &&
+    resp.trialDaysLeft != null &&
+    !resp.siteFree &&
+    resp.state !== "pro-site"
+  ) {
+    add(
+      line(
+        "⏳ " +
+          (t("statusTrialNote", [String(resp.trialDaysLeft)]) ||
+            `Essai complet : ce site reste débloqué encore ${resp.trialDaysLeft} j`),
+      ),
+    );
   }
   return frag;
 }

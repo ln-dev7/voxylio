@@ -22,6 +22,11 @@ export const entitlement = pgTable("entitlement", {
   polarCustomerId: text("polar_customer_id"),
   polarSubscriptionId: text("polar_subscription_id"),
   currentPeriodEnd: timestamp("current_period_end"),
+  // 3-day full trial (every site unlocked): stamped at the FIRST
+  // authenticated /api/entitlements call — so accounts created before
+  // the feature shipped get their full window too (owner decision,
+  // 2026-08-26). The extension enforces `trialEndsAt = this + 3 days`.
+  trialStartedAt: timestamp("trial_started_at"),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 

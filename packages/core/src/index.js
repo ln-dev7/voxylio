@@ -60,6 +60,7 @@ export {
   timedtextUrl,
   parseJson3,
 } from "./yt.js";
+export { isFreeSite, planGate, trialDaysLeft } from "./plan.js";
 export {
   JOURNAL_CAPS,
   journalAppendLine,

@@ -327,6 +327,9 @@ async function refreshEntitlements(force) {
       cloudCharsTotal: data.cloudCharsTotal ?? null,
       ttsCharsTotal: data.ttsCharsTotal ?? null,
       quotaResetsAt: data.quotaResetsAt || null,
+      // 3-day full trial window; free accounts outside it are limited
+      // to the big platforms (packages/core/src/plan.js).
+      trialEndsAt: data.trialEndsAt || null,
       checkedAt: Date.now(),
     };
     chrome.storage.local.set({ entitlements: ent });

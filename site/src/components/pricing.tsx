@@ -103,8 +103,8 @@ function PricingModal({ open, onClose }: { open: boolean; onClose: () => void })
 
 type Cadence = "monthly" | "yearly";
 
-const FREE_FEATURES = ["f1", "f2", "f3", "f4", "f5"] as const;
-const PRO_FEATURES = ["f1", "f2", "f3", "f4", "f5"] as const;
+const FREE_FEATURES = ["f0", "f1", "f2", "f3", "f4", "f5"] as const;
+const PRO_FEATURES = ["f0", "f1", "f2", "f3", "f4", "f5"] as const;
 
 /**
  * Two plans, one promise: everything local stays free and account-free.

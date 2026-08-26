@@ -21,7 +21,7 @@
     "ctaGithub": "Auf GitHub ansehen",
     "note": "Funktioniert bei Videos, deren Player eine Untertitelspur bereitstellt — die meisten Kursplattformen tun das.",
     "ticks": {
-      "free": "Kostenlos & unbegrenzt",
+      "free": "Gratis auf den großen Plattformen",
       "local": "Lokal zuerst",
       "noCard": "Ohne Kreditkarte",
       "noQuota": "70+ Sprachen"
@@ -105,11 +105,11 @@
     "items": {
       "sites": {
         "question": "Auf welchen Seiten funktioniert es?",
-        "answer": "Jede Website, deren Player eine Untertitelspur bereitstellt — plus die eingeblendeten Untertitel von YouTube, Netflix, Prime Video, Disney+ und Twitch, die Voxylio direkt von der Seite liest. Sind sie ausgeschaltet, kann es sie oft für dich aktivieren."
+        "answer": "Jede Website, deren Player eine Untertitelspur bereitstellt — plus die eingeblendeten Untertitel von YouTube, Netflix, Prime Video, Disney+ und Twitch, die Voxylio direkt von der Seite liest. Sind sie ausgeschaltet, kann es sie oft für dich aktivieren. Im Gratis-Plan deckt das Dubbing YouTube, Netflix, Prime Video, Disney+ und Twitch ab — der 3-Tage-Test und Pro schalten alle anderen Seiten frei."
       },
       "cost": {
         "question": "Ist es wirklich kostenlos?",
-        "answer": "Ja. Der Gratis-Plan ist unbegrenzt — du meldest dich nur mit Google an. Die Übersetzung läuft auf dem Gerät mit Chromes integrierter API (Chrome 138+), die Stimme kommt von deinem System. Keine Karte, kein API-Schlüssel, kein Kontingent."
+        "answer": "Ja — auf YouTube, Netflix, Prime Video, Disney+ und Twitch ist der Gratis-Plan unbegrenzt: Die Übersetzung läuft auf dem Gerät mit Chromes integrierter API (Chrome 138+), die Stimme kommt vom System. Jedes neue Konto startet zudem mit einem 3-Tage-Test, der alle Seiten freischaltet. Keine Karte, kein API-Schlüssel."
       },
       "account": {
         "question": "Warum ein Konto?",
@@ -117,7 +117,7 @@
       },
       "pro": {
         "question": "Was enthält der Pro-Plan?",
-        "answer": "Alles Lokale bleibt gratis und unbegrenzt. Pro finanziert die Funktionen, die einen Server brauchen: die kontextbewusste Übersetzung (Beta) — benachbarte Sätze werden zusammen übertragen, damit Pronomen, Ton, Namen und Terminologie stimmen — und natürliche neuronale Stimmen in 7 Sprachen (Englisch, Spanisch, Deutsch, Französisch, Niederländisch, Italienisch, Japanisch), jeweils mit großzügigem Monatskontingent. Ist ein Kontingent aufgebraucht, oder bei jeder anderen Sprache, läuft die Synchronisation einfach mit der kostenlosen lokalen Engine weiter — ein Video wird nie unterbrochen. Zusammenfassungen und Geräte-Sync folgen nach und nach."
+        "answer": "Die großen Plattformen bleiben mit der lokalen Engine gratis und unbegrenzt, und Pro schaltet alle anderen Seiten frei. Pro finanziert die Funktionen, die einen Server brauchen: die kontextbewusste Übersetzung (Beta) — benachbarte Sätze werden zusammen übertragen, damit Pronomen, Ton, Namen und Terminologie stimmen — und natürliche neuronale Stimmen in 7 Sprachen (Englisch, Spanisch, Deutsch, Französisch, Niederländisch, Italienisch, Japanisch), jeweils mit großzügigem Monatskontingent. Ist ein Kontingent aufgebraucht, oder bei jeder anderen Sprache, läuft die Synchronisation einfach mit der kostenlosen lokalen Engine weiter — ein Video wird nie unterbrochen. Zusammenfassungen und Geräte-Sync folgen nach und nach."
       },
       "quota": {
         "question": "Was passiert, wenn ein Pro-Kontingent aufgebraucht ist?",
@@ -146,6 +146,10 @@
       "offline": {
         "question": "Funktioniert es offline?",
         "answer": "Ja, mit der lokalen Engine: Sobald Chrome das Übersetzungsmodell für dein Sprachpaar geladen hat, funktioniert die Synchronisation ohne Verbindung, mit deinen Systemstimmen. Online-Fallback und Pro-Funktionen brauchen eine."
+      },
+      "trial": {
+        "question": "Wie funktioniert der 3-Tage-Test?",
+        "answer": "Jedes neue Konto startet mit 3 vollen Tagen, in denen jede Seite freigeschaltet ist — ohne Karte, nichts wird automatisch abgebucht. Danach behältst du einfach den Gratis-Plan auf den großen Plattformen; Pro bringt jederzeit alle Seiten zurück."
       }
     }
   },
@@ -196,7 +200,7 @@
     "rows": {
       "price": {
         "label": "Preis",
-        "us": "Kostenlos und unbegrenzt (lokale Engine) — Pro optional",
+        "us": "Gratis auf den großen Plattformen — ein Festpreis für alles andere",
         "them": "19–129 $/Monat, Stundenkontingente"
       },
       "accuracy": {
@@ -302,6 +306,15 @@
         "fallback": "Reaktionsschnellerer Fallback auf Netflix und anderen Playern: weniger Stille zwischen Sätzen, späte Zeilen werden aufgeholt statt übersprungen.",
         "quota": "Pro-Kontingentanzeigen im Popup, im Hub und auf Ihrer Kontoseite — verbleibendes Volumen, Gesamtwerte und Verlängerungsdatum."
       }
+    },
+    "v180": {
+      "date": "August 2026",
+      "summary": "Die neue Free/Pro-Aufteilung: 3 Tage alles testen, die großen Plattformen für immer gratis behalten, mit Pro jede Seite freischalten.",
+      "items": {
+        "trial": "3 Tage Volltest für jedes neue Konto — jede Seite freigeschaltet, keine Karte nötig",
+        "freeSites": "Der Gratis-Plan konzentriert sich auf YouTube, Netflix, Prime Video, Disney+ und Twitch — unbegrenzt, auf dem Gerät",
+        "proSites": "Pro schaltet jede von der Engine unterstützte Seite frei — Kursplattformen inklusive"
+      }
     }
   },
   "Account": {
@@ -334,7 +347,7 @@
   },
   "Pricing": {
     "title": "Ein einfacher, ehrlicher Preis",
-    "subtitle": "Alles, was auf deinem Gerät läuft, ist für immer gratis — einmal mit Google anmelden und du dubbst. Pro finanziert die Funktionen, die einen Server brauchen.",
+    "subtitle": "Teste 3 Tage lang alles gratis, auf jeder Seite. Danach bleibt Gratis auf den großen Plattformen unbegrenzt — Pro schaltet jede Seite plus die Cloud-Funktionen frei.",
     "monthly": "Monatlich",
     "yearly": "Jährlich",
     "priceFree": "0 $",
@@ -346,10 +359,11 @@
     "note": "Sichere Zahlung über Polar. Umsatzsteuer wird automatisch abgewickelt. Jederzeit kündbar, wirksam zum Periodenende.",
     "free": {
       "name": "Kostenlos",
-      "tagline": "Für alle, mit einem Gratis-Konto",
+      "tagline": "Die großen Plattformen, mit einem Gratis-Konto",
       "cta": "Erweiterung installieren",
       "features": {
-        "f1": "Unbegrenztes Echtzeit-Dubbing, 100 % auf deinem Gerät",
+        "f0": "3 Tage Volltest — jede Seite freigeschaltet, ohne Karte",
+        "f1": "Unbegrenztes Dubbing auf dem Gerät: YouTube, Netflix, Prime Video, Disney+ und Twitch",
         "f2": "Über 65 Zielsprachen, Ausgangssprache automatisch erkannt",
         "f3": "Übersetzte Untertitel direkt auf dem Video",
         "f4": "Was du ansiehst, verlässt nie dein Gerät",
@@ -358,10 +372,11 @@
     },
     "pro": {
       "name": "Pro",
-      "tagline": "Die Funktionen, die einen Server brauchen",
+      "tagline": "Jede Seite + die Cloud-Funktionen",
       "cta": "Pro holen",
       "badge": "Empfohlen",
       "features": {
+        "f0": "Jede von der Engine unterstützte Seite — Kursplattformen inklusive",
         "f1": "Kontextbewusste KI-Übersetzung (Beta), treffender — großzügiges Monatskontingent",
         "f2": "Natürliche neuronale Stimmen in 7 Sprachen — sonst übernimmt die lokale Stimme",
         "f3": "Früher Zugang zu neuen Sprachen und Plattformen",
@@ -373,11 +388,11 @@
     "modal": {
       "trigger": "So funktionieren die Preise",
       "title": "Die Preise, erklärt",
-      "intro": "Zwei Pläne, ein Versprechen: Was auf deinem Gerät läuft, ist kostenlos und unbegrenzt — Pro finanziert, was einen Server braucht.",
-      "freeTitle": "Kostenlos — lokal und unbegrenzt",
-      "freeBody": "Übersetzung auf dem Gerät (Chromes integrierte KI), deine Systemstimmen, zweisprachige Untertitel, Glossar, Verlauf und Statistiken: kein Kontingent, keine Karte. Eine kostenlose Google-Anmeldung ist die einzige Voraussetzung.",
-      "proTitle": "Pro — die Cloud obendrauf",
-      "proBody": "Kontextuelle KI-Übersetzung (Beta) (ganze Szenen bleiben kohärent) und natürliche neuronale Stimmen in 7 Sprachen. 7,99 $/Monat oder 69,99 $/Jahr (−27 %).",
+      "intro": "Zwei Pläne, ein Test: Jedes neue Konto bekommt 3 Tage mit allen Seiten freigeschaltet. Danach behält Gratis die großen Plattformen, und Pro öffnet alles.",
+      "freeTitle": "Gratis — die großen Plattformen",
+      "freeBody": "Unbegrenztes Dubbing auf dem Gerät für YouTube, Netflix, Prime Video, Disney+ und Twitch: Chromes integrierte Übersetzung, deine Systemstimmen, zweisprachige Untertitel, Glossar, Verlauf und Statistiken. Ohne Karte — eine kostenlose Google-Anmeldung genügt.",
+      "proTitle": "Pro — jede Seite + die Cloud",
+      "proBody": "Jede von der Engine unterstützte Seite — Kursplattformen inklusive — plus kontextuelle KI-Übersetzung (Beta) und natürliche neuronale Stimmen in 7 Sprachen. $7.99/Monat oder $69.99/Jahr (−27%).",
       "meterTitle": "Ein großzügiges Monatskontingent",
       "meterBody": "Pro schöpft aus einem monatlichen Volumen an KI-Übersetzung und neuronaler Sprache, ausgelegt auf intensives tägliches Schauen. Nur die übersetzte Zeile zählt — nie der mitgeschickte Kontext.",
       "fallbackTitle": "Nie unterbrochen",

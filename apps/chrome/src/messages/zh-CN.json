@@ -165,5 +165,7 @@
   "quotaTitle": "本月 Pro 额度",
   "quotaTrans": "AI 翻译（测试版）",
   "quotaVoice": "神经语音",
-  "quotaResets": "{date}重置"
+  "quotaResets": "{date}重置",
+  "statusProSite": "此网站为 Pro 专享。免费版：YouTube、Netflix、Prime Video、Disney+ 和 Twitch。",
+  "statusTrialNote": "完整试用：此网站还可使用 $COUNT$ 天"
 }

@@ -21,7 +21,7 @@
     "ctaGithub": "View on GitHub",
     "note": "Works on videos whose player exposes a subtitle track — most course platforms do.",
     "ticks": {
-      "free": "Free & unlimited",
+      "free": "Free on the big platforms",
       "local": "Local-first",
       "noCard": "No credit card",
       "noQuota": "70+ languages"
@@ -105,11 +105,11 @@
     "items": {
       "sites": {
         "question": "Which sites does it work on?",
-        "answer": "Any site whose player exposes a subtitle track — plus the on-screen captions of YouTube, Netflix, Prime Video, Disney+ and Twitch, which Voxylio reads directly from the page. If captions are off, it can often switch them on for you."
+        "answer": "Any site whose player exposes a subtitle track — plus the on-screen captions of YouTube, Netflix, Prime Video, Disney+ and Twitch, which Voxylio reads directly from the page. If captions are off, it can often switch them on for you. On the free plan, dubbing covers YouTube, Netflix, Prime Video, Disney+ and Twitch — the 3-day trial and Pro unlock every other site."
       },
       "cost": {
         "question": "Is it really free?",
-        "answer": "Yes. The free plan is unlimited — you just sign in with Google. Translation runs on-device with Chrome's built-in API (Chrome 138+) and speech uses your system's voices. No card, no API key, no quota."
+        "answer": "Yes — on YouTube, Netflix, Prime Video, Disney+ and Twitch, the free plan is unlimited: translation runs on-device with Chrome's built-in API (Chrome 138+) and speech uses your system's voices. Every new account also starts with a 3-day trial that unlocks every site. No card, no API key."
       },
       "account": {
         "question": "Why do I need an account?",
@@ -117,7 +117,7 @@
       },
       "pro": {
         "question": "What does Pro include?",
-        "answer": "Everything local stays free and unlimited. Pro funds the features that need a server: context-aware translation (beta) — nearby sentences are sent together so pronouns, tone, names and terminology stay right — and natural neural voices in 7 languages (English, Spanish, German, French, Dutch, Italian, Japanese), each within a generous monthly allowance. When an allowance runs out, or for any other language, dubbing simply continues with the free local engine — a video is never interrupted. Summaries and cross-device sync will join Pro over time."
+        "answer": "The big platforms stay free and unlimited with the local engine, and Pro unlocks every other site. Pro funds the features that need a server: context-aware translation (beta) — nearby sentences are sent together so pronouns, tone, names and terminology stay right — and natural neural voices in 7 languages (English, Spanish, German, French, Dutch, Italian, Japanese), each within a generous monthly allowance. When an allowance runs out, or for any other language, dubbing simply continues with the free local engine — a video is never interrupted. Summaries and cross-device sync will join Pro over time."
       },
       "quota": {
         "question": "What happens when a Pro allowance runs out?",
@@ -146,6 +146,10 @@
       "offline": {
         "question": "Does it work offline?",
         "answer": "Yes for the local engine: once Chrome has downloaded the translation model for your pair, dubbing works without a connection, with your system voices. The online fallback and Pro features need one."
+      },
+      "trial": {
+        "question": "How does the 3-day trial work?",
+        "answer": "Every new account starts with 3 full days where every site is unlocked — no card, nothing charged automatically. When it ends, you simply keep the free plan on the big platforms; Pro brings back every site whenever you want."
       }
     }
   },
@@ -196,7 +200,7 @@
     "rows": {
       "price": {
         "label": "Price",
-        "us": "Free and unlimited (local engine) — Pro optional",
+        "us": "Free on the big platforms — one fixed price for everything else",
         "them": "$19–129/month, hour quotas"
       },
       "accuracy": {
@@ -302,6 +306,15 @@
         "fallback": "Snappier fallback on Netflix and other players: less silence between sentences, and late lines are caught instead of skipped.",
         "quota": "Pro quota meters in the popup, the hub and your account page — remaining volume, totals and renewal date."
       }
+    },
+    "v180": {
+      "date": "August 2026",
+      "summary": "The new Free/Pro split: try everything for 3 days, keep the big platforms free forever, and go Pro for every site.",
+      "items": {
+        "trial": "3-day full trial for every new account — every site unlocked, no card required",
+        "freeSites": "The free plan focuses on YouTube, Netflix, Prime Video, Disney+ and Twitch — unlimited, on-device",
+        "proSites": "Pro unlocks every site the engine supports — course platforms included"
+      }
     }
   },
   "Account": {
@@ -334,7 +347,7 @@
   },
   "Pricing": {
     "title": "Simple, honest pricing",
-    "subtitle": "Everything that runs on your device is free, forever — one Google sign-in and you're dubbing. Pro funds the features that need a server.",
+    "subtitle": "Try everything free for 3 days, on every site. After that, free keeps the big platforms unlimited — Pro unlocks every site plus the cloud features.",
     "monthly": "Monthly",
     "yearly": "Yearly",
     "priceFree": "$0",
@@ -345,10 +358,11 @@
     "note": "Secure payment via Polar. VAT handled automatically. Cancel anytime, effective at the end of the period.",
     "free": {
       "name": "Free",
-      "tagline": "For everyone, with a free account",
+      "tagline": "The big platforms, with a free account",
       "cta": "Install the extension",
       "features": {
-        "f1": "Unlimited real-time dubbing, 100% on your device",
+        "f0": "3-day full trial — every site unlocked, no card",
+        "f1": "Unlimited on-device dubbing on YouTube, Netflix, Prime Video, Disney+ and Twitch",
         "f2": "65+ dubbing languages, source auto-detected",
         "f3": "Translated subtitles right on the video",
         "f4": "What you watch never leaves your device",
@@ -357,10 +371,11 @@
     },
     "pro": {
       "name": "Pro",
-      "tagline": "The features that need a server",
+      "tagline": "Every site + the cloud features",
       "cta": "Go Pro",
       "badge": "Recommended",
       "features": {
+        "f0": "Every site the engine supports — course platforms included",
         "f1": "Context-aware AI translation (beta), more faithful — generous monthly allowance",
         "f2": "Natural neural voices in 7 languages — local voice takes over elsewhere",
         "f3": "Early access to new languages and platforms",
@@ -373,11 +388,11 @@
     "modal": {
       "trigger": "How pricing works",
       "title": "Pricing, explained",
-      "intro": "Two plans, one promise: whatever runs on your device is free and unlimited — Pro funds what needs a server.",
-      "freeTitle": "Free — local and unlimited",
-      "freeBody": "On-device translation (Chrome's built-in AI), your system voices, bilingual captions, glossary, history and stats: no quota, no card. A free Google sign-in is the only requirement.",
-      "proTitle": "Pro — the cloud on top",
-      "proBody": "Context-aware AI translation (beta) (whole scenes stay coherent) and natural neural voices in 7 languages. $7.99/month or $69.99/year (−27%).",
+      "intro": "Two plans, one trial: every new account gets 3 days with every site unlocked. Then free keeps the big platforms, and Pro opens everything.",
+      "freeTitle": "Free — the big platforms",
+      "freeBody": "Unlimited on-device dubbing on YouTube, Netflix, Prime Video, Disney+ and Twitch: Chrome's built-in translation, your system voices, bilingual captions, glossary, history and stats. No card — a free Google sign-in is all it takes.",
+      "proTitle": "Pro — every site + the cloud",
+      "proBody": "Every site the engine supports — course platforms included — plus context-aware AI translation (beta) and natural neural voices in 7 languages. $7.99/month or $69.99/year (−27%).",
       "meterTitle": "A generous monthly allowance",
       "meterBody": "Pro draws from a monthly volume of AI translation and neural speech sized for heavy, daily watching. Only the line being translated counts — never the context sent around it.",
       "fallbackTitle": "Never interrupted",

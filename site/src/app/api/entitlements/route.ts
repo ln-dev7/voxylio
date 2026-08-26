@@ -70,6 +70,29 @@ export async function GET(req: Request) {
     .where(eq(schema.entitlement.userId, userId))
     .limit(1);
 
+  // First authenticated sighting starts the 3-day full trial (every
+  // site unlocked). Never touches plan/status of an existing row, and
+  // never fails the request: before `pnpm db:push` adds the column,
+  // trialEndsAt simply stays null and the extension fails open.
+  let trialStartedAt = ent?.trialStartedAt ?? null;
+  if (!trialStartedAt) {
+    trialStartedAt = new Date();
+    try {
+      await db
+        .insert(schema.entitlement)
+        .values({ userId, trialStartedAt })
+        .onConflictDoUpdate({
+          target: schema.entitlement.userId,
+          set: { trialStartedAt },
+        });
+    } catch {
+      trialStartedAt = null; // column not migrated yet: report nothing
+    }
+  }
+  const trialEndsAt = trialStartedAt
+    ? new Date(trialStartedAt.getTime() + 3 * 24 * 3600 * 1000).toISOString()
+    : null;
+
   // The popup shows which account is linked. Users are managed by Neon
   // Auth (synced into neon_auth.users_sync); never fail the request over
   // a missing sync table.
@@ -150,6 +173,7 @@ export async function GET(req: Request) {
       cloudCharsTotal: isPro ? proMonthlyChars() : 0,
       ttsCharsTotal: isPro ? proMonthlyTtsChars() : 0,
       quotaResetsAt,
+      trialEndsAt,
       checkedAt: new Date().toISOString(),
     },
     { headers: CORS },

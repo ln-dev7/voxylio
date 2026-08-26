@@ -21,7 +21,7 @@
     "ctaGithub": "Ver en GitHub",
     "note": "Funciona con los vídeos cuyo reproductor expone una pista de subtítulos — la mayoría de las plataformas de cursos lo hacen.",
     "ticks": {
-      "free": "Gratis e ilimitado",
+      "free": "Gratis en las grandes plataformas",
       "local": "Primero local",
       "noCard": "Sin tarjeta bancaria",
       "noQuota": "70+ idiomas"
@@ -105,11 +105,11 @@
     "items": {
       "sites": {
         "question": "¿En qué sitios funciona?",
-        "answer": "Cualquier sitio cuyo reproductor exponga una pista de subtítulos — más los subtítulos en pantalla de YouTube, Netflix, Prime Video, Disney+ y Twitch, que Voxylio lee directamente de la página. Si están desactivados, a menudo puede activarlos por ti."
+        "answer": "Cualquier sitio cuyo reproductor exponga una pista de subtítulos — más los subtítulos en pantalla de YouTube, Netflix, Prime Video, Disney+ y Twitch, que Voxylio lee directamente de la página. Si están desactivados, a menudo puede activarlos por ti. En el plan gratuito, el doblaje cubre YouTube, Netflix, Prime Video, Disney+ y Twitch — la prueba de 3 días y Pro desbloquean todos los demás sitios."
       },
       "cost": {
         "question": "¿Es realmente gratis?",
-        "answer": "Sí. El plan gratuito es ilimitado — solo tienes que iniciar sesión con Google. La traducción se ejecuta en el dispositivo con la API integrada de Chrome (138+) y la voz usa las voces de tu sistema. Sin tarjeta, sin clave API, sin cuotas."
+        "answer": "Sí — en YouTube, Netflix, Prime Video, Disney+ y Twitch, el plan gratuito es ilimitado: la traducción se ejecuta en el dispositivo con la API integrada de Chrome (Chrome 138+) y la voz usa las del sistema. Además, cada cuenta nueva empieza con una prueba de 3 días que desbloquea todos los sitios. Sin tarjeta, sin clave API."
       },
       "account": {
         "question": "¿Por qué una cuenta?",
@@ -117,7 +117,7 @@
       },
       "pro": {
         "question": "¿Qué incluye el plan Pro?",
-        "answer": "Todo lo local sigue siendo gratis e ilimitado. Pro financia las funciones que necesitan servidor: la traducción contextual (beta) — las frases vecinas se envían juntas para mantener pronombres, tono, nombres y terminología correctos — y las voces neuronales naturales en 7 idiomas (inglés, español, alemán, francés, neerlandés, italiano, japonés), cada una dentro de un generoso volumen mensual. Cuando un volumen se agota, o para cualquier otro idioma, el doblaje continúa con el motor local gratuito — un vídeo nunca se interrumpe. Los resúmenes y la sincronización entre dispositivos llegarán a Pro con el tiempo."
+        "answer": "Las grandes plataformas siguen siendo gratis e ilimitadas con el motor local, y Pro desbloquea todos los demás sitios. Pro financia las funciones que necesitan servidor: la traducción contextual (beta) — las frases vecinas se envían juntas para mantener pronombres, tono, nombres y terminología correctos — y las voces neuronales naturales en 7 idiomas (inglés, español, alemán, francés, neerlandés, italiano, japonés), cada una dentro de un generoso volumen mensual. Cuando un volumen se agota, o para cualquier otro idioma, el doblaje continúa con el motor local gratuito — un vídeo nunca se interrumpe. Los resúmenes y la sincronización entre dispositivos llegarán a Pro con el tiempo."
       },
       "quota": {
         "question": "¿Qué pasa cuando se agota un volumen Pro?",
@@ -146,6 +146,10 @@
       "offline": {
         "question": "¿Funciona sin conexión?",
         "answer": "Sí para el motor local: una vez que Chrome descarga el modelo de traducción de tu par, el doblaje funciona sin conexión, con tus voces del sistema. El respaldo en línea y las funciones Pro sí la necesitan."
+      },
+      "trial": {
+        "question": "¿Cómo funciona la prueba de 3 días?",
+        "answer": "Cada cuenta nueva empieza con 3 días completos con todos los sitios desbloqueados — sin tarjeta, no se cobra nada automáticamente. Al terminar, simplemente conservas el plan gratuito en las grandes plataformas; Pro recupera todos los sitios cuando quieras."
       }
     }
   },
@@ -196,7 +200,7 @@
     "rows": {
       "price": {
         "label": "Precio",
-        "us": "Gratis e ilimitado (motor local) — Pro opcional",
+        "us": "Gratis en las grandes plataformas — un precio fijo para todo lo demás",
         "them": "19–129 $/mes, cuotas por hora"
       },
       "accuracy": {
@@ -302,6 +306,15 @@
         "fallback": "Respaldo más ágil en Netflix y otros reproductores: menos silencio entre frases, y las líneas tardías se recuperan en lugar de omitirse.",
         "quota": "Medidores de cuota Pro en el popup, el hub y tu página de cuenta — volumen restante, totales y fecha de renovación."
       }
+    },
+    "v180": {
+      "date": "Agosto de 2026",
+      "summary": "El nuevo reparto Free/Pro: prueba todo durante 3 días, conserva las grandes plataformas gratis para siempre y pasa a Pro para todos los sitios.",
+      "items": {
+        "trial": "Prueba completa de 3 días para cada cuenta nueva — todos los sitios desbloqueados, sin tarjeta",
+        "freeSites": "El plan gratuito se centra en YouTube, Netflix, Prime Video, Disney+ y Twitch — ilimitado, en el dispositivo",
+        "proSites": "Pro desbloquea todos los sitios compatibles con el motor — plataformas de cursos incluidas"
+      }
     }
   },
   "Account": {
@@ -334,7 +347,7 @@
   },
   "Pricing": {
     "title": "Un precio simple y honesto",
-    "subtitle": "Todo lo que se ejecuta en tu dispositivo es gratis, para siempre — un inicio de sesión con Google y ya estás doblando. Pro financia las funciones que necesitan servidor.",
+    "subtitle": "Prueba todo gratis durante 3 días, en todos los sitios. Después, el plan gratuito mantiene las grandes plataformas sin límite — Pro desbloquea todos los sitios y las funciones en la nube.",
     "monthly": "Mensual",
     "yearly": "Anual",
     "priceFree": "0 $",
@@ -346,10 +359,11 @@
     "note": "Pago seguro con Polar. IVA gestionado automáticamente. Cancela cuando quieras, con efecto al final del período.",
     "free": {
       "name": "Gratis",
-      "tagline": "Para todo el mundo, con una cuenta gratuita",
+      "tagline": "Las grandes plataformas, con una cuenta gratuita",
       "cta": "Instalar la extensión",
       "features": {
-        "f1": "Doblaje en tiempo real ilimitado, 100 % en tu dispositivo",
+        "f0": "Prueba completa de 3 días — todos los sitios desbloqueados, sin tarjeta",
+        "f1": "Doblaje ilimitado en el dispositivo: YouTube, Netflix, Prime Video, Disney+ y Twitch",
         "f2": "Más de 65 idiomas de doblaje, origen autodetectado",
         "f3": "Subtítulos traducidos sobre el vídeo",
         "f4": "Lo que ves nunca sale de tu dispositivo",
@@ -358,10 +372,11 @@
     },
     "pro": {
       "name": "Pro",
-      "tagline": "Las funciones que necesitan un servidor",
+      "tagline": "Todos los sitios + las funciones en la nube",
       "cta": "Pásate a Pro",
       "badge": "Recomendado",
       "features": {
+        "f0": "Todos los sitios compatibles con el motor — plataformas de cursos incluidas",
         "f1": "Traducción IA contextual (beta), más fiel — generoso volumen mensual",
         "f2": "Voces neuronales naturales en 7 idiomas — la voz local toma el relevo en el resto",
         "f3": "Acceso anticipado a nuevos idiomas y plataformas",
@@ -373,11 +388,11 @@
     "modal": {
       "trigger": "Cómo funcionan los precios",
       "title": "Los precios, explicados",
-      "intro": "Dos planes, una promesa: lo que corre en tu dispositivo es gratis e ilimitado — Pro financia lo que necesita un servidor.",
-      "freeTitle": "Gratis — local e ilimitado",
-      "freeBody": "Traducción en el dispositivo (IA integrada de Chrome), tus voces del sistema, subtítulos bilingües, glosario, historial y estadísticas: sin cuota, sin tarjeta. Un inicio de sesión gratuito con Google es el único requisito.",
-      "proTitle": "Pro — la nube encima",
-      "proBody": "Traducción IA contextual (beta) (escenas enteras coherentes) y voces neuronales naturales en 7 idiomas. 7,99 $/mes o 69,99 $/año (−27 %).",
+      "intro": "Dos planes, una prueba: cada cuenta nueva tiene 3 días con todos los sitios desbloqueados. Después, el gratuito conserva las grandes plataformas y Pro lo abre todo.",
+      "freeTitle": "Gratis — las grandes plataformas",
+      "freeBody": "Doblaje ilimitado en el dispositivo para YouTube, Netflix, Prime Video, Disney+ y Twitch: traducción integrada de Chrome, tus voces del sistema, subtítulos bilingües, glosario, historial y estadísticas. Sin tarjeta — basta con iniciar sesión gratis con Google.",
+      "proTitle": "Pro — todos los sitios + la nube",
+      "proBody": "Todos los sitios compatibles con el motor — plataformas de cursos incluidas — más traducción IA contextual (beta) y voces neuronales naturales en 7 idiomas. $7.99/mes o $69.99/año (−27%).",
       "meterTitle": "Un volumen mensual generoso",
       "meterBody": "Pro usa un volumen mensual de traducción IA y de voz neuronal pensado para un visionado diario intensivo. Solo cuenta la frase traducida — nunca el contexto enviado alrededor.",
       "fallbackTitle": "Nunca se interrumpe",
