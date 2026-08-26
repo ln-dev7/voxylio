@@ -169,9 +169,9 @@
   "statusProSite": "此網站為 Pro 專屬。免費版：YouTube、Netflix、Prime Video、Disney+ 和 Twitch。",
   "statusTrialNote": "完整試用：此網站還可使用 $COUNT$ 天",
   "proAudioLabel": "無字幕影片 Pro 配音（測試版）",
-  "titleProAudio": "影片完全沒有字幕？其音訊將被即時轉寫（每月 60 分鐘），然後正常配音。無本機回退：分鐘用完後，該功能等待下一週期。",
-  "quotaAudio": "進階音訊",
-  "statusAudioLive": "無字幕：正在即時轉寫音訊 — 配音將在幾秒後開始。",
-  "statusAudioQuota": "本月進階音訊分鐘已用完 — 無字幕配音將在下一週期恢復。",
-  "statusAudioUnavailable": "無法擷取此播放器的音訊（網站保護）— 無字幕配音在此無法運作。"
+  "titleProAudio": "影片完全沒有字幕？其音訊將被即時轉寫（每月 60 分鐘），然後正常配音。無本機回退：分鐘用完後，該功能等待下一週期。 測試版功能：轉寫品質可能有所差異。",
+  "quotaAudio": "進階音訊（測試版）",
+  "statusAudioLive": "無字幕：正在即時轉寫音訊（測試版） — 配音將在幾秒後開始。",
+  "statusAudioQuota": "本月進階音訊分鐘已用完 — 無字幕配音（測試版）將在下一週期恢復。",
+  "statusAudioUnavailable": "無法擷取此播放器的音訊（網站保護）— 無字幕配音（測試版）在此無法運作。"
 }

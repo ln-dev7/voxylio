@@ -169,9 +169,9 @@
   "statusProSite": "Ce site est réservé au Pro. En gratuit : YouTube, Netflix, Prime Video, Disney+ et Twitch.",
   "statusTrialNote": "Essai complet : ce site reste débloqué encore $COUNT$ j",
   "proAudioLabel": "Doublage sans sous-titres Pro (bêta)",
-  "titleProAudio": "Vidéo sans aucun sous-titre ? L'audio est transcrit en direct (60 min/mois) puis doublé normalement. Sans repli local : minutes épuisées, la fonction attend le prochain cycle.",
-  "quotaAudio": "Audio Premium",
-  "statusAudioLive": "Aucun sous-titre : transcription en direct de l'audio — le doublage suit dans quelques secondes.",
-  "statusAudioQuota": "Minutes Premium Audio épuisées pour ce mois — le doublage sans sous-titres reprend au prochain cycle.",
-  "statusAudioUnavailable": "Impossible de capturer l'audio de ce lecteur (protection du site) — le doublage sans sous-titres ne peut pas fonctionner ici."
+  "titleProAudio": "Vidéo sans aucun sous-titre ? L'audio est transcrit en direct (60 min/mois) puis doublé normalement. Sans repli local : minutes épuisées, la fonction attend le prochain cycle. Fonction en bêta : la qualité de transcription peut varier.",
+  "quotaAudio": "Audio Premium (bêta)",
+  "statusAudioLive": "Aucun sous-titre : transcription en direct de l'audio (bêta) — le doublage suit dans quelques secondes.",
+  "statusAudioQuota": "Minutes Premium Audio épuisées pour ce mois — le doublage sans sous-titres (bêta) reprend au prochain cycle.",
+  "statusAudioUnavailable": "Impossible de capturer l'audio de ce lecteur (protection du site) — le doublage sans sous-titres (bêta) ne peut pas fonctionner ici."
 }

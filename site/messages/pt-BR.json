@@ -121,7 +121,7 @@
       },
       "quota": {
         "question": "O que acontece quando um volume Pro acaba?",
-        "answer": "A dublagem nunca para. Assim que um volume é atingido, as falas continuam com o motor local gratuito, e o volume é recarregado no próximo período mensal. A dublagem sem legendas é a única exceção: sem fallback local, esgotados os minutos, ela pausa até o próximo período."
+        "answer": "A dublagem nunca para. Assim que um volume é atingido, as falas continuam com o motor local gratuito, e o volume é recarregado no próximo período mensal. A dublagem sem legendas (beta) é a única exceção: sem fallback local, esgotados os minutos, ela pausa até o próximo período."
       },
       "glossary": {
         "question": "Posso controlar como certos termos são traduzidos?",
@@ -345,7 +345,7 @@
     "usageVoice": "Voz neural",
     "usageResets": "A cota é renovada em {date}",
     "usageFallback": "Quando uma cota acaba, o motor local assume automaticamente — a dublagem nunca para.",
-    "usageAudio": "Áudio Premium (min)"
+    "usageAudio": "Áudio Premium (beta, min)"
   },
   "Pricing": {
     "title": "Um preço simples e honesto",
@@ -386,7 +386,7 @@
         "f5": "Uma só conta em todos os seus navegadores",
         "f6": "Dublagem sem legendas (beta): transcrição ao vivo + dublagem quando um vídeo não tem nenhuma legenda — 60 min/mês"
       },
-      "quota": "Volume mensal: 1.500.000 caracteres de tradução IA + 100.000 caracteres de voz neural — depois o motor local assume automaticamente. Dublagem sem legendas: 60 min de Áudio Premium."
+      "quota": "Volume mensal: 1.500.000 caracteres de tradução IA + 100.000 caracteres de voz neural — depois o motor local assume automaticamente. Dublagem sem legendas (beta): 60 min de Áudio Premium."
     },
     "modal": {
       "trigger": "Como funcionam os preços",

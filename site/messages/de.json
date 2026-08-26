@@ -121,7 +121,7 @@
       },
       "quota": {
         "question": "Was passiert, wenn ein Pro-Kontingent aufgebraucht ist?",
-        "answer": "Die Synchronisation stoppt nie. Sobald ein Kontingent erreicht ist, laufen die Zeilen mit der kostenlosen lokalen Engine weiter, und das Kontingent füllt sich zur nächsten Monatsperiode wieder auf. Dubbing ohne Untertitel ist die einzige Ausnahme: ohne lokalen Fallback pausiert es bei aufgebrauchten Minuten bis zur nächsten Periode."
+        "answer": "Die Synchronisation stoppt nie. Sobald ein Kontingent erreicht ist, laufen die Zeilen mit der kostenlosen lokalen Engine weiter, und das Kontingent füllt sich zur nächsten Monatsperiode wieder auf. Dubbing ohne Untertitel (Beta) ist die einzige Ausnahme: ohne lokalen Fallback pausiert es bei aufgebrauchten Minuten bis zur nächsten Periode."
       },
       "glossary": {
         "question": "Kann ich steuern, wie bestimmte Begriffe übersetzt werden?",
@@ -345,7 +345,7 @@
     "usageVoice": "Neuronale Stimme",
     "usageResets": "Kontingent wird am {date} zurückgesetzt",
     "usageFallback": "Ist ein Kontingent aufgebraucht, übernimmt automatisch die lokale Engine — das Dubbing stoppt nie.",
-    "usageAudio": "Premium Audio (Min.)"
+    "usageAudio": "Premium Audio (Beta, Min.)"
   },
   "Pricing": {
     "title": "Ein einfacher, ehrlicher Preis",
@@ -386,7 +386,7 @@
         "f5": "Ein Konto für alle deine Browser",
         "f6": "Dubbing ohne Untertitel (Beta): Live-Transkription + Dubbing, wenn ein Video gar keine Untertitel hat — 60 Min./Monat"
       },
-      "quota": "Monatliches Volumen: 1.500.000 Zeichen KI-Übersetzung + 100.000 Zeichen neuronale Stimme — danach übernimmt automatisch die lokale Engine. Dubbing ohne Untertitel: 60 Min. Premium Audio."
+      "quota": "Monatliches Volumen: 1.500.000 Zeichen KI-Übersetzung + 100.000 Zeichen neuronale Stimme — danach übernimmt automatisch die lokale Engine. Dubbing ohne Untertitel (Beta): 60 Min. Premium Audio."
     },
     "modal": {
       "trigger": "So funktionieren die Preise",

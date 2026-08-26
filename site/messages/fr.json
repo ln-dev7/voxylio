@@ -121,7 +121,7 @@
       },
       "quota": {
         "question": "Que se passe-t-il quand un volume Pro est épuisé ?",
-        "answer": "Le doublage ne s'arrête jamais. Dès qu'un volume est atteint, les répliques continuent avec le moteur local gratuit, et le volume se recharge à la période mensuelle suivante. Le doublage sans sous-titres est la seule exception : sans repli local, minutes épuisées, il se met en pause jusqu'à la période suivante."
+        "answer": "Le doublage ne s'arrête jamais. Dès qu'un volume est atteint, les répliques continuent avec le moteur local gratuit, et le volume se recharge à la période mensuelle suivante. Le doublage sans sous-titres (bêta) est la seule exception : sans repli local, minutes épuisées, il se met en pause jusqu'à la période suivante."
       },
       "glossary": {
         "question": "Puis-je contrôler la traduction de certains termes ?",
@@ -345,7 +345,7 @@
     "usageVoice": "Voix neurale",
     "usageResets": "Quota renouvelé le {date}",
     "usageFallback": "Quand un quota est épuisé, le moteur local prend le relais automatiquement — le doublage ne s'arrête jamais.",
-    "usageAudio": "Audio Premium (min)"
+    "usageAudio": "Audio Premium (bêta, min)"
   },
   "Pricing": {
     "title": "Un prix simple et honnête",
@@ -385,7 +385,7 @@
         "f5": "Un même compte sur tous vos navigateurs",
         "f6": "Doublage sans sous-titres (bêta) : transcription en direct + doublage quand une vidéo n'a aucun sous-titre — 60 min/mois"
       },
-      "quota": "Volume mensuel : 1 500 000 caractères de traduction IA + 100 000 caractères de voix neurale — puis le moteur local prend le relais automatiquement. Doublage sans sous-titres : 60 min d'Audio Premium."
+      "quota": "Volume mensuel : 1 500 000 caractères de traduction IA + 100 000 caractères de voix neurale — puis le moteur local prend le relais automatiquement. Doublage sans sous-titres (bêta) : 60 min d'Audio Premium."
     },
     "billedYearly": "facturé 69,99 $/an",
     "modal": {

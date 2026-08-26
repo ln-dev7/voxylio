@@ -169,9 +169,9 @@
   "statusProSite": "Este site é exclusivo do Pro. Plano gratuito: YouTube, Netflix, Prime Video, Disney+ e Twitch.",
   "statusTrialNote": "Teste completo: este site continua liberado por mais $COUNT$ dia(s)",
   "proAudioLabel": "Dublagem sem legendas Pro (beta)",
-  "titleProAudio": "Vídeo sem nenhuma legenda? O áudio é transcrito ao vivo (60 min/mês) e depois dublado normalmente. Sem fallback local: minutos esgotados, o recurso espera o próximo ciclo.",
-  "quotaAudio": "Áudio Premium",
-  "statusAudioLive": "Sem legendas: transcrevendo o áudio ao vivo — a dublagem chega em alguns segundos.",
-  "statusAudioQuota": "Minutos de Áudio Premium esgotados neste mês — a dublagem sem legendas volta no próximo ciclo.",
-  "statusAudioUnavailable": "Não é possível capturar o áudio deste player (proteção do site) — a dublagem sem legendas não funciona aqui."
+  "titleProAudio": "Vídeo sem nenhuma legenda? O áudio é transcrito ao vivo (60 min/mês) e depois dublado normalmente. Sem fallback local: minutos esgotados, o recurso espera o próximo ciclo. Recurso em beta: a qualidade da transcrição pode variar.",
+  "quotaAudio": "Áudio Premium (beta)",
+  "statusAudioLive": "Sem legendas: transcrevendo o áudio ao vivo (beta) — a dublagem chega em alguns segundos.",
+  "statusAudioQuota": "Minutos de Áudio Premium esgotados neste mês — a dublagem sem legendas (beta) volta no próximo ciclo.",
+  "statusAudioUnavailable": "Não é possível capturar o áudio deste player (proteção do site) — a dublagem sem legendas (beta) não funciona aqui."
 }

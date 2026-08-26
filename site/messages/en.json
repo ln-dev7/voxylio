@@ -121,7 +121,7 @@
       },
       "quota": {
         "question": "What happens when a Pro allowance runs out?",
-        "answer": "Dubbing never stops. The moment an allowance is reached, lines continue with the free local engine, and the allowance resets with the next monthly period. No-subtitle dubbing is the one exception: it has no local fallback, so when its minutes run out it pauses until the next period."
+        "answer": "Dubbing never stops. The moment an allowance is reached, lines continue with the free local engine, and the allowance resets with the next monthly period. No-subtitle dubbing (beta) is the one exception: it has no local fallback, so when its minutes run out it pauses until the next period."
       },
       "glossary": {
         "question": "Can I control how specific terms are translated?",
@@ -345,7 +345,7 @@
     "usageVoice": "Neural voice",
     "usageResets": "Quota resets on {date}",
     "usageFallback": "When a quota runs out, the local engine takes over automatically — dubbing never stops.",
-    "usageAudio": "Premium Audio (min)"
+    "usageAudio": "Premium Audio (beta, min)"
   },
   "Pricing": {
     "title": "Simple, honest pricing",
@@ -385,7 +385,7 @@
         "f5": "One account across all your browsers",
         "f6": "No-subtitle dubbing (beta): live transcription + dubbing when a video has no captions at all — 60 min/month"
       },
-      "quota": "Monthly allowance: 1,500,000 characters of AI translation + 100,000 characters of neural speech — then the local engine takes over automatically. No-subtitle dubbing: 60 min of Premium Audio."
+      "quota": "Monthly allowance: 1,500,000 characters of AI translation + 100,000 characters of neural speech — then the local engine takes over automatically. No-subtitle dubbing (beta): 60 min of Premium Audio."
     },
     "billedYearly": "billed at $69.99/year",
     "modal": {

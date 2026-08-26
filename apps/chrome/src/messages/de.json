@@ -169,9 +169,9 @@
   "statusProSite": "Diese Seite ist Pro vorbehalten. Gratis: YouTube, Netflix, Prime Video, Disney+ und Twitch.",
   "statusTrialNote": "Volltest: diese Seite bleibt noch $COUNT$ Tag(e) freigeschaltet",
   "proAudioLabel": "Pro-Dubbing ohne Untertitel (Beta)",
-  "titleProAudio": "Video ganz ohne Untertitel? Der Ton wird live transkribiert (60 Min./Monat) und dann normal synchronisiert. Kein lokaler Fallback: Minuten aufgebraucht, die Funktion wartet auf den nächsten Zyklus.",
-  "quotaAudio": "Premium Audio",
-  "statusAudioLive": "Keine Untertitel: Der Ton wird live transkribiert — das Dubbing folgt in wenigen Sekunden.",
-  "statusAudioQuota": "Premium-Audio-Minuten für diesen Monat aufgebraucht — Dubbing ohne Untertitel geht im nächsten Zyklus weiter.",
-  "statusAudioUnavailable": "Der Ton dieses Players lässt sich nicht erfassen (Seitenschutz) — Dubbing ohne Untertitel funktioniert hier nicht."
+  "titleProAudio": "Video ganz ohne Untertitel? Der Ton wird live transkribiert (60 Min./Monat) und dann normal synchronisiert. Kein lokaler Fallback: Minuten aufgebraucht, die Funktion wartet auf den nächsten Zyklus. Beta-Funktion: Die Transkriptionsqualität kann variieren.",
+  "quotaAudio": "Premium Audio (Beta)",
+  "statusAudioLive": "Keine Untertitel: Der Ton wird live transkribiert (Beta) — das Dubbing folgt in wenigen Sekunden.",
+  "statusAudioQuota": "Premium-Audio-Minuten für diesen Monat aufgebraucht — Dubbing ohne Untertitel (Beta) geht im nächsten Zyklus weiter.",
+  "statusAudioUnavailable": "Der Ton dieses Players lässt sich nicht erfassen (Seitenschutz) — Dubbing ohne Untertitel (Beta) funktioniert hier nicht."
 }

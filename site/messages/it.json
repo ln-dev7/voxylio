@@ -121,7 +121,7 @@
       },
       "quota": {
         "question": "Cosa succede quando un volume Pro si esaurisce?",
-        "answer": "Il doppiaggio non si ferma mai. Appena un volume è raggiunto, le battute continuano con il motore locale gratuito, e il volume si ricarica al periodo mensile successivo. Il doppiaggio senza sottotitoli è l'unica eccezione: senza ripiego locale, esauriti i minuti, va in pausa fino al periodo successivo."
+        "answer": "Il doppiaggio non si ferma mai. Appena un volume è raggiunto, le battute continuano con il motore locale gratuito, e il volume si ricarica al periodo mensile successivo. Il doppiaggio senza sottotitoli (beta) è l'unica eccezione: senza ripiego locale, esauriti i minuti, va in pausa fino al periodo successivo."
       },
       "glossary": {
         "question": "Posso controllare come vengono tradotti certi termini?",
@@ -345,7 +345,7 @@
     "usageVoice": "Voce neurale",
     "usageResets": "La quota si azzera il {date}",
     "usageFallback": "Quando una quota si esaurisce, il motore locale subentra automaticamente — il doppiaggio non si ferma mai.",
-    "usageAudio": "Audio Premium (min)"
+    "usageAudio": "Audio Premium (beta, min)"
   },
   "Pricing": {
     "title": "Un prezzo semplice e onesto",
@@ -386,7 +386,7 @@
         "f5": "Un solo account su tutti i tuoi browser",
         "f6": "Doppiaggio senza sottotitoli (beta): trascrizione in diretta + doppiaggio quando un video non ha alcun sottotitolo — 60 min/mese"
       },
-      "quota": "Volume mensile: 1.500.000 caratteri di traduzione IA + 100.000 caratteri di voce neurale — poi il motore locale subentra automaticamente. Doppiaggio senza sottotitoli: 60 min di Audio Premium."
+      "quota": "Volume mensile: 1.500.000 caratteri di traduzione IA + 100.000 caratteri di voce neurale — poi il motore locale subentra automaticamente. Doppiaggio senza sottotitoli (beta): 60 min di Audio Premium."
     },
     "modal": {
       "trigger": "Come funzionano i prezzi",
