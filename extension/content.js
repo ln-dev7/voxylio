@@ -289,16 +289,22 @@
   // ../../packages/core/src/pacing.js
   var WORDS_PER_SECOND = 2.6;
   var SPACELESS_RE = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uac00-\ud7af\u0e00-\u0e7f]/;
+  function estimateWords(text) {
+    const s = String(text || "").trim();
+    return SPACELESS_RE.test(s) ? Math.max(1, Math.round(s.replace(/\s+/g, "").length / 2.5)) : s.split(/\s+/).filter(Boolean).length;
+  }
   function computeUtteranceRate({
     text,
     cueDur,
     baseRate,
-    playbackRate = 1
+    playbackRate = 1,
+    wps,
+    prevRate = 0
   }) {
-    const s = String(text || "").trim();
     const base = Number.isFinite(baseRate) && baseRate > 0 ? baseRate : 1;
-    const words = SPACELESS_RE.test(s) ? Math.max(1, Math.round(s.replace(/\s+/g, "").length / 2.5)) : s.split(/\s+/).filter(Boolean).length;
-    const estimated = words / WORDS_PER_SECOND;
+    const perSec = Number.isFinite(wps) && wps > 0.5 && wps < 8 ? wps : WORDS_PER_SECOND;
+    const words = estimateWords(text);
+    const estimated = words / perSec;
     let rate = base;
     if (cueDur > 0.5) {
       const ratio = estimated / base / cueDur;
@@ -306,8 +312,13 @@
         rate = Math.min(base * ratio, base * 1.25, 1.45);
       }
     }
+    rate = Math.max(rate, base);
     const pr = Number.isFinite(playbackRate) && playbackRate > 0 ? playbackRate : 1;
-    return Math.min(rate * pr, 3);
+    let out = Math.min(rate * pr, 3);
+    if (Number.isFinite(prevRate) && prevRate > 0) {
+      out = Math.min(3, prevRate + (out - prevRate) * 0.6);
+    }
+    return out;
   }
 
   // ../../packages/core/src/languages.js
@@ -885,8 +896,13 @@
 
   // ../../packages/webext/src/providers/builtin.js
   var RETRY_MS = 12e4;
+  var PENDING_GRACE_MS = 400;
   function createBuiltinProvider({ onBroken } = {}) {
     const instances = /* @__PURE__ */ new Map();
+    const graced = (entry) => entry.value !== void 0 ? entry.p : Promise.race([
+      entry.p,
+      new Promise((res) => setTimeout(() => res(null), PENDING_GRACE_MS))
+    ]);
     return {
       id: "builtin",
       kind: "local",
@@ -895,7 +911,7 @@
         const key = source + "->" + target;
         const cached = instances.get(key);
         if (cached && (cached.value !== null || Date.now() - cached.at < RETRY_MS))
-          return cached.p;
+          return graced(cached);
         const entry = { value: void 0, at: Date.now(), p: null };
         entry.p = (async () => {
           try {
@@ -921,7 +937,7 @@
           return v;
         });
         instances.set(key, entry);
-        return entry.p;
+        return graced(entry);
       }
     };
   }
@@ -2804,18 +2820,20 @@
       });
     }
     const cloudAudioCache = new BoundedMap(80);
+    let cloudVoiceDownUntil = 0;
     function cloudVoiceActive() {
-      return !!settings.proVoice && accountLinked && AURA2_LANGS.has(settings.targetLang);
+      return !!settings.proVoice && accountLinked && AURA2_LANGS.has(settings.targetLang) && Date.now() >= cloudVoiceDownUntil;
     }
-    function getCloudAudio(text) {
-      const key = settings.targetLang + "::" + text;
+    function getCloudAudio(text, lang) {
+      const voiceLang = lang || settings.targetLang;
+      const key = voiceLang + "::" + text;
       if (cloudAudioCache.has(key)) return cloudAudioCache.get(key);
       const p = (async () => {
         try {
           const resp = await runtime.sendMessage({
             type: "speak-pro",
             text,
-            lang: settings.targetLang
+            lang: voiceLang
           });
           if (resp && resp.ok && resp.audio)
             return "data:" + (resp.mime || "audio/mpeg") + ";base64," + resp.audio;
@@ -2977,6 +2995,11 @@
       if (changes.glossary) rebuildGlossary();
       if (changes.provider || changes.cloudFallback || changes.proTranslation || changes.keepTerms || changes.glossary)
         rebuildChain();
+      if (changes.duck || changes.voiceVolume) {
+        for (const c of controllers.values()) {
+          if (typeof c.onAudioSettings === "function") c.onAudioSettings();
+        }
+      }
       if (changes.uiLang) {
         uiT = null;
         destroyOverlay();
@@ -3006,6 +3029,18 @@
     });
     const providerKeys = { deepl: "", googlev2: "" };
     const proProvider = createProProvider();
+    const warmedPairs = /* @__PURE__ */ new Set();
+    function warmBuiltin(source, target) {
+      if (!source || source === "auto" || !target || source === target) return;
+      const k = source + "->" + target;
+      if (warmedPairs.has(k)) return;
+      warmedPairs.add(k);
+      try {
+        Promise.resolve(builtinProvider.ready(source, target)).catch(() => {
+        });
+      } catch (e) {
+      }
+    }
     const chainPairState = /* @__PURE__ */ new Map();
     let chain = createTranslatorChain([builtinProvider]);
     function rebuildChain() {
@@ -3096,24 +3131,31 @@
     }
     let voices = [];
     function loadVoices() {
-      voices = speechSynthesis.getVoices() || [];
+      try {
+        voices = speechSynthesis.getVoices() || [];
+      } catch (e) {
+        voices = [];
+      }
     }
-    loadVoices();
     if (typeof speechSynthesis !== "undefined") {
+      loadVoices();
       speechSynthesis.onvoiceschanged = loadVoices;
     }
     let cachedVoice = null;
     let cachedVoiceKey = "";
+    let localWps = 0;
     function pickVoice2() {
-      loadVoices();
+      if (!voices.length) loadVoices();
       const wanted = settings.voiceByLang && settings.voiceByLang[settings.targetLang] || settings.voiceName;
       const k = settings.targetLang + "|" + wanted + "|" + voices.length;
       if (k === cachedVoiceKey) return cachedVoice;
       cachedVoiceKey = k;
-      cachedVoice = pickVoice(voices, {
+      const next = pickVoice(voices, {
         targetLang: settings.targetLang,
         voiceName: wanted
       });
+      if (next !== cachedVoice) localWps = 0;
+      cachedVoice = next;
       return cachedVoice;
     }
     let journalSession = null;
@@ -3236,9 +3278,21 @@
         // pending lines [{text, dur, start, end}] — bounded FIFO
         autoPaused: false,
         // we paused the video to let the voice catch up
-        settingVolume: false,
-        // our own volume writes (vs the user's)
         savedVolume: null,
+        // pre-duck volume (null = not ducked/unknown)
+        lastWrittenVolume: null,
+        // last volume WE wrote (user-change detector)
+        userVolumeOverride: false,
+        // user took over the mix: hands off
+        ducked: false,
+        duckHoldUntil: 0,
+        rampTimer: null,
+        lastRate: 0,
+        // previous line's final utterance rate (tempo smoothing)
+        lastPumpAt: 0,
+        // speechSynthesis keepalive clock
+        inTick: false,
+        voicesGraceUntil: 0,
         active: false,
         // dubbing actually running on this video
         pollTimer: null,
@@ -3442,6 +3496,7 @@
         const source = effectiveSource();
         if (source !== "auto" && source === settings.targetLang) return;
         const target = settings.targetLang;
+        warmBuiltin(source, target);
         const pending = [];
         for (const g of upcoming) {
           const key = cacheKey(source, target, g.text);
@@ -3545,40 +3600,69 @@
         });
         return true;
       }
-      function speak(text, cueDur, id) {
+      function speak(text, cueDur, id, extras) {
         if (id) {
           ctl.spokenIds.add(id);
           ctl.scheduledIds.delete(id);
           ctl.inFlight.delete(id);
         }
+        if (extras && extras.orig && !extras.rec) {
+          extras.rec = true;
+          recordLine(
+            { id, start: extras.start, end: extras.end, text: extras.orig },
+            text,
+            extras.start
+          );
+        }
+        if (settings.subtitles && extras && extras.orig)
+          showCaption(extras.orig, text);
+        duckNow();
         if (cloudVoiceActive()) {
-          speakCloud(text, cueDur, id);
+          speakCloud(text, cueDur, id, extras);
           return;
         }
-        speakLocal(text, cueDur, id);
+        speakLocal(text, cueDur, id, extras);
       }
-      async function speakCloud(text, cueDur, id) {
-        const token = { cloud: true, at: performance.now() };
+      async function speakCloud(text, cueDur, id, extras) {
+        const token = { cloud: true, at: performance.now(), _vxId: id };
         ctl.currentUtterance = token;
-        const url = await getCloudAudio(text);
+        const url = await getCloudAudio(text, settings.targetLang);
         if (ctl.currentUtterance !== token) {
           if (id) ctl.spokenIds.delete(id);
           return;
         }
         if (!url) {
+          cloudVoiceDownUntil = Date.now() + 6e4;
           ctl.currentUtterance = null;
-          speakLocal(text, cueDur, id);
+          speakLocal(text, cueDur, id, extras);
           return;
         }
         const a = new Audio(url);
+        try {
+          a.preservesPitch = true;
+        } catch (e) {
+        }
         const vv = Number(settings.voiceVolume);
         a.volume = Math.max(0, Math.min(100, Number.isFinite(vv) ? vv : 100)) / 100;
-        a.playbackRate = computeUtteranceRate({
-          text,
-          cueDur,
-          baseRate: settings.rate,
-          playbackRate: video.playbackRate || 1
+        await new Promise((res) => {
+          if (Number.isFinite(a.duration) && a.duration > 0) return res();
+          a.onloadedmetadata = () => res();
+          setTimeout(res, 250);
         });
+        if (ctl.currentUtterance !== token) {
+          if (id) ctl.spokenIds.delete(id);
+          return;
+        }
+        const base = Number.isFinite(settings.rate) ? settings.rate : 1.1;
+        const cloudBase = Math.max(0.9, 1 + (base - 1) * 0.5);
+        let natural = cloudBase;
+        if (Number.isFinite(a.duration) && a.duration > 0.2 && cueDur > 0.5) {
+          const fit = a.duration / Math.max(0.8, cueDur);
+          natural = Math.max(cloudBase, Math.min(fit, cloudBase * 1.3, 1.35));
+        }
+        a._vxBaseRate = natural;
+        a.playbackRate = Math.min(natural * (video.playbackRate || 1), 3);
+        ctl.lastRate = a.playbackRate;
         ctl.cloudAudio = a;
         const spokeAt = performance.now();
         const finish = () => {
@@ -3588,37 +3672,79 @@
           drainQueue();
         };
         a.onended = finish;
-        a.onerror = finish;
+        a.onerror = () => {
+          if (ctl.cloudAudio === a) ctl.cloudAudio = null;
+          if (ctl.currentUtterance === token) ctl.currentUtterance = null;
+          drainQueue();
+        };
         try {
           await a.play();
         } catch (e) {
+          cloudVoiceDownUntil = Date.now() + 6e4;
           if (ctl.cloudAudio === a) ctl.cloudAudio = null;
           if (ctl.currentUtterance === token) {
             ctl.currentUtterance = null;
-            speakLocal(text, cueDur, id);
+            speakLocal(text, cueDur, id, extras);
           }
         }
       }
-      function speakLocal(text, cueDur, id) {
-        const u = new SpeechSynthesisUtterance(text);
+      function speakLocal(text, cueDur, id, extras) {
         const v = pickVoice2();
+        if (!v && !voices.length) {
+          if (!ctl.voicesGraceUntil)
+            ctl.voicesGraceUntil = performance.now() + 1500;
+          if (performance.now() < ctl.voicesGraceUntil) {
+            if (id) ctl.spokenIds.delete(id);
+            ctl.queue.unshift({
+              text,
+              dur: cueDur,
+              start: extras && extras.start != null ? extras.start : video.currentTime,
+              end: extras && extras.end != null ? extras.end : video.currentTime + cueDur,
+              id,
+              orig: extras && extras.orig,
+              rec: !!(extras && extras.rec)
+            });
+            return;
+          }
+        }
+        const u = new SpeechSynthesisUtterance(text);
         if (v) u.voice = v;
-        u.lang = LOCALES[settings.targetLang] || settings.targetLang;
+        u.lang = v && v.lang || LOCALES[settings.targetLang] || settings.targetLang;
         const vv = Number(settings.voiceVolume);
         u.volume = Math.max(0, Math.min(100, Number.isFinite(vv) ? vv : 100)) / 100;
         u.rate = computeUtteranceRate({
           text,
           cueDur,
           baseRate: settings.rate,
-          playbackRate: video.playbackRate || 1
+          playbackRate: video.playbackRate || 1,
+          wps: localWps || void 0,
+          prevRate: ctl.lastRate || 0
         });
-        const spokeAt = performance.now();
+        ctl.lastRate = u.rate;
+        u._vxAt = performance.now();
+        u._vxId = id;
+        u.onstart = () => {
+          u._vxStarted = performance.now();
+        };
         u.onend = () => {
-          recordSpokenSeconds((performance.now() - spokeAt) / 1e3);
+          if (u._vxStarted && !u._vxCancelled) {
+            const secs = (performance.now() - u._vxStarted) / 1e3;
+            recordSpokenSeconds(secs);
+            const words = estimateWords(text);
+            if (secs > 0.6 && words >= 3 && u.rate > 0) {
+              const measured = Math.max(1.2, Math.min(6, words / (secs * u.rate)));
+              localWps = localWps ? localWps * 0.75 + measured * 0.25 : measured;
+            }
+          } else if (!u._vxStarted && !u._vxCancelled) {
+            recordSpokenSeconds((performance.now() - u._vxAt) / 1e3);
+          }
           if (ctl.currentUtterance === u) ctl.currentUtterance = null;
           drainQueue();
         };
-        u.onerror = u.onend;
+        u.onerror = () => {
+          if (ctl.currentUtterance === u) ctl.currentUtterance = null;
+          drainQueue();
+        };
         ctl.currentUtterance = u;
         try {
           speechSynthesis.speak(u);
@@ -3649,18 +3775,25 @@
             ctl.scheduledIds.delete(stale.id);
           }
         }
-        const q = ctl.queue.shift();
+        const q = ctl.queue[0];
         if (!q) return;
-        speak(q.text, q.dur, q.id);
+        if (!ctl.autoPaused && q.start > t + 0.25) return;
+        ctl.queue.shift();
+        const late = t - q.start > 0.8;
+        const dur = late ? Math.max(1.2, Math.min(q.dur || 1.2, q.end - t)) : q.dur || Math.max(0.6, q.end - t);
+        speak(q.text, dur, q.id, q);
       }
       function enqueue(item) {
         ctl.queue.push(item);
-        if (ctl.queue.length > 2) {
+        if (ctl.queue.length > 3) {
           if (settings.autoPause && !video.paused && !ctl.autoPaused) {
             ctl.autoPaused = true;
             video.pause();
           } else if (!ctl.autoPaused) {
-            const dropped = ctl.queue.shift();
+            const t = video.currentTime;
+            let idx = ctl.queue.findIndex((it) => it.end + 1.5 < t);
+            if (idx < 0) idx = 0;
+            const dropped = ctl.queue.splice(idx, 1)[0];
             if (dropped && dropped.id) {
               ctl.spokenIds.add(dropped.id);
               ctl.scheduledIds.delete(dropped.id);
@@ -3701,7 +3834,6 @@
           ctl.inFlight.delete(group.id);
           return;
         }
-        if (settings.subtitles) showCaption(group.text, text);
         if (!ctl.active || video.paused && !ctl.autoPaused || video.seeking) {
           ctl.scheduledIds.delete(group.id);
           return;
@@ -3712,12 +3844,19 @@
           ctl.inFlight.delete(group.id);
           return;
         }
-        const dur = group.end - group.start;
-        recordLine(group, text, group.start);
+        const item = {
+          text,
+          dur: Math.max(0.6, group.end - group.start),
+          start: group.start,
+          end: group.end,
+          id: group.id,
+          orig: group.text,
+          rec: false
+        };
         if (ctl.currentUtterance) {
-          enqueue({ text, dur, start: group.start, end: group.end, id: group.id });
+          enqueue(item);
         } else {
-          speak(text, dur, group.id);
+          speak(item.text, item.dur, item.id, item);
         }
       }
       function ensureCaptionEl() {
@@ -3766,21 +3905,43 @@
           fullFlush();
         }
         ctl.lastTime = t;
+        harvestTextTracks();
+        rebuildGroups();
+        pretranslate();
         if (video.paused && !ctl.autoPaused || video.seeking) return;
+        const now = performance.now();
         if (ctl.currentUtterance && ctl.currentUtterance.cloud) {
           const a = ctl.cloudAudio;
-          const stalledFetch = !a && performance.now() - (ctl.currentUtterance.at || 0) > 12e3;
+          const stalledFetch = !a && now - (ctl.currentUtterance.at || 0) > 12e3;
           if (a && a.ended || stalledFetch) {
             ctl.currentUtterance = null;
             ctl.cloudAudio = null;
             drainQueue();
           }
-        } else if (ctl.currentUtterance && !speechSynthesis.speaking && !speechSynthesis.pending) {
-          ctl.currentUtterance = null;
-          drainQueue();
+        } else if (ctl.currentUtterance) {
+          const u = ctl.currentUtterance;
+          const age = now - (u._vxAt || 0);
+          const engineIdle = !speechSynthesis.speaking && !speechSynthesis.pending;
+          if (engineIdle && age > 1500 || age > 45e3) {
+            if (age > 45e3) {
+              try {
+                speechSynthesis.cancel();
+              } catch (e) {
+              }
+            }
+            ctl.currentUtterance = null;
+            drainQueue();
+          } else if (!engineIdle && age > 9e3 && now - (ctl.lastPumpAt || 0) > 9e3 && typeof speechSynthesis.pause === "function" && typeof speechSynthesis.resume === "function") {
+            ctl.lastPumpAt = now;
+            try {
+              speechSynthesis.pause();
+              speechSynthesis.resume();
+            } catch (e) {
+            }
+          }
         }
-        harvestTextTracks();
-        rebuildGroups();
+        drainQueue();
+        maybeReleaseDuck(now);
         let current = null;
         for (const g of ctl.groups) {
           if (g.start <= t && t < g.end - 0.4) {
@@ -3791,7 +3952,17 @@
         }
         if (current && isFinalGroup(current) && !ctl.spokenIds.has(current.id) && !ctl.scheduledIds.has(current.id)) {
           onGroupEnter(current);
-        } else if (!current || !settings.subtitles) {
+        } else if (!current) {
+          let late = null;
+          for (const g of ctl.groups) {
+            if (g.start > t) break;
+            if (g.end <= t && t - g.end < 1.5) late = g;
+          }
+          if (late && isFinalGroup(late) && !ctl.spokenIds.has(late.id) && !ctl.scheduledIds.has(late.id)) {
+            onGroupEnter(late);
+          }
+          hideCaption();
+        } else if (!settings.subtitles) {
           hideCaption();
         }
         if (Date.now() > ctl.cleanupAt) {
@@ -3815,16 +3986,19 @@
           }
         }
         positionCaption();
-        pretranslate();
       }
       function hardStopSpeech() {
         ctl.generation += 1;
         ctl.scheduledIds.clear();
         ctl.inFlight.clear();
         const hadSpeech = ctl.currentUtterance || ctl.queue.length > 0;
+        const owedResume = ctl.autoPaused;
         ctl.queue.length = 0;
+        if (ctl.currentUtterance && !ctl.currentUtterance.cloud)
+          ctl.currentUtterance._vxCancelled = true;
         ctl.currentUtterance = null;
         ctl.autoPaused = false;
+        ctl.lastRate = 0;
         if (ctl.cloudAudio) {
           try {
             ctl.cloudAudio.pause();
@@ -3838,37 +4012,186 @@
           } catch (e) {
           }
         }
+        if (owedResume && ctl.active && video.paused && !video.ended) {
+          video.play().catch(() => {
+          });
+        }
+        releaseDuckNow();
       }
-      function setVolume(v) {
-        ctl.settingVolume = true;
-        video.volume = Math.max(0, Math.min(1, v));
-        setTimeout(() => ctl.settingVolume = false, 0);
-      }
-      function applyDucking() {
-        if (ctl.savedVolume == null) ctl.savedVolume = video.volume;
-        setVolume(settings.duck / 100);
-      }
-      function restoreVolume() {
-        if (ctl.savedVolume != null) {
-          setVolume(ctl.savedVolume);
-          ctl.savedVolume = null;
+      const DUCK_ATTACK_MS = 250;
+      const DUCK_RELEASE_MS = 700;
+      const DUCK_HOLD_MS = 4500;
+      function writeVolume(v) {
+        const clamped = Math.max(0, Math.min(1, v));
+        ctl.lastWrittenVolume = clamped;
+        try {
+          video.volume = clamped;
+        } catch (e) {
         }
       }
+      function stopRamp() {
+        if (ctl.rampTimer) {
+          clearInterval(ctl.rampTimer);
+          ctl.rampTimer = null;
+        }
+      }
+      function rampVolumeTo(target, ms) {
+        stopRamp();
+        const from = video.volume;
+        if (Math.abs(from - target) < 0.015) {
+          writeVolume(target);
+          return;
+        }
+        const STEP_MS = 40;
+        const steps = Math.max(1, Math.round(ms / STEP_MS));
+        const floor = 1e-3;
+        const fromDb = 20 * Math.log10(Math.max(floor, from));
+        const toDb = 20 * Math.log10(Math.max(floor, target));
+        let i = 0;
+        ctl.rampTimer = setInterval(() => {
+          i++;
+          if (i >= steps) {
+            stopRamp();
+            writeVolume(target);
+            return;
+          }
+          writeVolume(Math.pow(10, (fromDb + (toDb - fromDb) * i / steps) / 20));
+        }, STEP_MS);
+      }
+      function duckNow() {
+        if (ctl.userVolumeOverride) return;
+        if (ctl.savedVolume == null) ctl.savedVolume = video.volume;
+        ctl.duckHoldUntil = Infinity;
+        const target = Math.min(
+          ctl.savedVolume,
+          Math.max(0, Math.min(60, Number(settings.duck) || 0)) / 100
+        );
+        if (!ctl.ducked || Math.abs(video.volume - target) > 0.02) {
+          rampVolumeTo(target, DUCK_ATTACK_MS);
+        }
+        ctl.ducked = true;
+      }
+      function maybeReleaseDuck(now) {
+        if (!ctl.ducked || ctl.userVolumeOverride) return;
+        if (ctl.currentUtterance || ctl.queue.length > 0) {
+          ctl.duckHoldUntil = Infinity;
+          return;
+        }
+        if (ctl.duckHoldUntil === Infinity) ctl.duckHoldUntil = now + DUCK_HOLD_MS;
+        if (now < ctl.duckHoldUntil) return;
+        const t = video.currentTime;
+        for (const g of ctl.groups) {
+          if (g.start > t + 1.5) break;
+          if (g.start > t && !ctl.spokenIds.has(g.id)) return;
+        }
+        ctl.ducked = false;
+        ctl.duckHoldUntil = 0;
+        if (ctl.savedVolume != null) rampVolumeTo(ctl.savedVolume, DUCK_RELEASE_MS);
+      }
+      function releaseDuckNow() {
+        ctl.duckHoldUntil = 0;
+        if (!ctl.ducked || ctl.userVolumeOverride) return;
+        ctl.ducked = false;
+        if (ctl.savedVolume != null)
+          rampVolumeTo(ctl.savedVolume, DUCK_RELEASE_MS);
+      }
+      function restoreVolume() {
+        stopRamp();
+        if (ctl.savedVolume != null && !ctl.userVolumeOverride) {
+          writeVolume(ctl.savedVolume);
+        }
+        ctl.savedVolume = null;
+        ctl.ducked = false;
+        ctl.duckHoldUntil = 0;
+        ctl.userVolumeOverride = false;
+        ctl.lastWrittenVolume = null;
+      }
       function onVolumeChange() {
-        if (!ctl.settingVolume) ctl.savedVolume = null;
+        if (ctl.lastWrittenVolume == null) return;
+        if (Math.abs(video.volume - ctl.lastWrittenVolume) > 5e-3) {
+          ctl.userVolumeOverride = true;
+          ctl.savedVolume = null;
+          stopRamp();
+        }
+      }
+      ctl.onAudioSettings = () => {
+        ctl.userVolumeOverride = false;
+        if (ctl.cloudAudio) {
+          const vv = Number(settings.voiceVolume);
+          ctl.cloudAudio.volume = Math.max(0, Math.min(100, Number.isFinite(vv) ? vv : 100)) / 100;
+        }
+        if (ctl.ducked && ctl.savedVolume != null) {
+          const target = Math.min(
+            ctl.savedVolume,
+            Math.max(0, Math.min(60, Number(settings.duck) || 0)) / 100
+          );
+          rampVolumeTo(target, 120);
+        }
+      };
+      function onRateChange() {
+        const pr = video.playbackRate || 1;
+        if (ctl.currentUtterance && ctl.currentUtterance.cloud && ctl.cloudAudio) {
+          const a = ctl.cloudAudio;
+          try {
+            a.playbackRate = Math.min((a._vxBaseRate || 1) * pr, 3);
+          } catch (e) {
+          }
+          return;
+        }
+        const cur = ctl.currentUtterance;
+        const curId = cur && cur._vxId;
+        hardStopSpeech();
+        if (curId) ctl.spokenIds.delete(curId);
+      }
+      function onBuffering() {
+        if (ctl.cloudAudio) {
+          try {
+            ctl.cloudAudio.pause();
+          } catch (e) {
+          }
+        }
+        if (ctl.currentUtterance && !ctl.currentUtterance.cloud && typeof speechSynthesis.pause === "function") {
+          try {
+            speechSynthesis.pause();
+          } catch (e) {
+          }
+        }
+      }
+      function onPlayingAgain() {
+        if (ctl.cloudAudio && ctl.cloudAudio.paused && ctl.currentUtterance && ctl.currentUtterance.cloud) {
+          ctl.cloudAudio.play().catch(() => {
+          });
+        }
+        if (typeof speechSynthesis.resume === "function") {
+          try {
+            speechSynthesis.resume();
+          } catch (e) {
+          }
+        }
       }
       function start() {
         if (ctl.active) return;
         ctl.active = true;
-        applyDucking();
         harvestTextTracks();
         harvestTrackElements();
         ctl.pollTimer = setInterval(tick, 150);
         video.addEventListener("pause", onPauseEvent);
         video.addEventListener("seeking", fullFlush);
         video.addEventListener("ended", hardStopSpeech);
-        video.addEventListener("ratechange", hardStopSpeech);
+        video.addEventListener("ratechange", onRateChange);
         video.addEventListener("volumechange", onVolumeChange);
+        video.addEventListener("waiting", onBuffering);
+        video.addEventListener("playing", onPlayingAgain);
+        video.addEventListener("timeupdate", onTimeUpdate);
+      }
+      function onTimeUpdate() {
+        if (ctl.inTick) return;
+        ctl.inTick = true;
+        try {
+          tick();
+        } finally {
+          ctl.inTick = false;
+        }
       }
       function onPauseEvent() {
         if (!ctl.autoPaused) hardStopSpeech();
@@ -3881,8 +4204,11 @@
         video.removeEventListener("pause", onPauseEvent);
         video.removeEventListener("seeking", fullFlush);
         video.removeEventListener("ended", hardStopSpeech);
-        video.removeEventListener("ratechange", hardStopSpeech);
+        video.removeEventListener("ratechange", onRateChange);
         video.removeEventListener("volumechange", onVolumeChange);
+        video.removeEventListener("waiting", onBuffering);
+        video.removeEventListener("playing", onPlayingAgain);
+        video.removeEventListener("timeupdate", onTimeUpdate);
         hardStopSpeech();
         restoreVolume();
         hideCaption();
@@ -3894,7 +4220,6 @@
       ctl.onSettingsChanged = () => {
         if (settings.enabled && accountLinked && !siteDisabled() && video === primaryVideo) {
           start();
-          applyDucking();
         } else {
           stop();
         }
