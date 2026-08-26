@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowRight, ChevronDown, ChevronUp, Languages as LanguagesIcon } from "lucide-react";
+import { ChevronDown, ChevronUp, Languages as LanguagesIcon } from "lucide-react";
 import { LANGUAGES } from "@voxylio/core";
 import { Button } from "@/components/ui/button";
 
@@ -29,11 +29,6 @@ const ORDERED = [
 // can never drift from what the extension actually supports. Each card
 // shows the code, the endonym, and the name in the visitor's locale
 // via Intl.DisplayNames — no translation files needed for 71 names.
-
-const PAIRS = [
-  ["en", "fr"],
-  ["ja", "en"],
-] as const;
 
 /** ReactBits "CountUp": the number climbs when it enters the viewport. */
 function CountUp({ to }: { to: number }) {
@@ -120,20 +115,6 @@ export function LanguagesGrid() {
             })}
           </h2>
           <p className="text-pretty text-sm text-muted-foreground">{t("subtitle")}</p>
-
-          {/* Any direction: a few real pairs as living proof */}
-          <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
-            {PAIRS.map(([from, to]) => (
-              <span
-                key={`${from}-${to}`}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground"
-              >
-                {from}
-                <ArrowRight className="size-3 text-primary" aria-hidden="true" />
-                <span className="text-foreground">{to}</span>
-              </span>
-            ))}
-          </div>
         </div>
 
         <div className="relative">
