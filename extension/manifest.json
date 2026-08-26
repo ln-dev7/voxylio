@@ -4,7 +4,8 @@
   "version": "1.7.0",
   "description": "__MSG_appDesc__",
   "permissions": [
-    "storage"
+    "storage",
+    "scripting"
   ],
   "host_permissions": [
     "<all_urls>"

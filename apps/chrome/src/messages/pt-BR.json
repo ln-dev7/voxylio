@@ -144,5 +144,6 @@
  "uiLangAuto": "Idioma do navegador",
  "proTransLabel": "Tradução contextual Pro",
  "translationPro": "Tradução: Pro (contextual)",
- "proVoiceLabel": "Voz neural Pro"
+ "proVoiceLabel": "Voz neural Pro",
+ "launchCta": "Iniciar a dublagem nesta página"
 }

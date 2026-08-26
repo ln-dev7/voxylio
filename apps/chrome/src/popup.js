@@ -81,6 +81,32 @@ let tabId = null;
 let settings = null;
 let voicesFilled = false;
 let lastResp = null;
+let signedIn = false;
+let triedInject = false;
+
+// The content script may be missing (extension just installed/updated,
+// page opened before). Instead of asking for F5, inject it on demand.
+async function ensureContentInjected() {
+  if (tabId == null) return;
+  try {
+    await chrome.tabs.sendMessage(tabId, { type: "getStatus" });
+    return; // already there
+  } catch (e) {}
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId, allFrames: true },
+      files: ["content.js"],
+    });
+  } catch (e) {
+    /* restricted page (chrome://, Web Store…): nothing to inject into */
+  }
+}
+
+// The big one-shot CTA: visible when signed in and dubbing is off.
+function updateLaunch() {
+  const btn = $("launchBtn");
+  if (btn) btn.hidden = !signedIn || !!(settings && settings.enabled);
+}
 
 // --- status rendering (DOM building, never innerHTML) ---
 
@@ -187,6 +213,19 @@ async function refreshStatus() {
     status.replaceChildren(statusFragment(resp));
     fillVoices(resp);
   } catch (e) {
+    // First failure: the content script probably is not there yet —
+    // inject it and retry silently before ever bothering the user.
+    if (!triedInject) {
+      triedInject = true;
+      await ensureContentInjected();
+      try {
+        const resp = await chrome.tabs.sendMessage(tabId, { type: "getStatus" });
+        lastResp = resp;
+        status.replaceChildren(statusFragment(resp));
+        fillVoices(resp);
+        return;
+      } catch (e2) {}
+    }
     status.replaceChildren(
       line(
         t("statusNoComm") ||
@@ -215,7 +254,9 @@ async function refreshAccount() {
   try {
     const ent = await chrome.runtime.sendMessage({ type: "entitlements" });
     const linked = !!(ent && ent.linked);
+    signedIn = linked;
     setSignedOut(!linked);
+    updateLaunch();
     // The promoted CTA up top: visible for every linked non-Pro user.
     banner.hidden = !linked || ent.plan === "pro";
     // Which account is linked (DubTab-style) + a way out of it.
@@ -257,6 +298,8 @@ async function refreshAccount() {
     // No background answer: same as not linked — the engine is gated on
     // the very same call, so the popup and the page always agree.
     setSignedOut(true);
+    signedIn = false;
+    updateLaunch();
     plan.textContent = t("accountNotLinked") || "Non connecté";
     banner.hidden = true;
     email.hidden = true;
@@ -271,7 +314,26 @@ async function init() {
   populateLanguageSelects();
   render(settings);
 
-  $("enabled").addEventListener("change", (e) => save({ enabled: e.target.checked }));
+  $("enabled").addEventListener("change", (e) => {
+    settings.enabled = e.target.checked;
+    save({ enabled: e.target.checked });
+    updateLaunch();
+  });
+  // One-shot launch (DubTab-style): make sure the page is instrumented,
+  // switch dubbing on, kick a fresh scan — no reload ever needed.
+  $("launchBtn").addEventListener("click", async () => {
+    await ensureContentInjected();
+    settings.enabled = true;
+    $("enabled").checked = true;
+    await chrome.storage.sync.set({ enabled: true });
+    updateLaunch();
+    if (tabId != null) {
+      try {
+        await chrome.tabs.sendMessage(tabId, { type: "retry" });
+      } catch (e) {}
+    }
+    refreshStatus();
+  });
   $("overlay").addEventListener("change", (e) => save({ overlay: e.target.checked }));
   $("subtitles").addEventListener("change", (e) => save({ subtitles: e.target.checked }));
   $("sourceLang").addEventListener("change", (e) => save({ sourceLang: e.target.value }));

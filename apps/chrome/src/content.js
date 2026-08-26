@@ -201,6 +201,30 @@ import { makeT, resolveUiLang } from "./i18n.js";
     ctl.addDomCue(video.currentTime, text);
   }
 
+  // On YouTube, if dubbing is wanted but the player's captions are OFF,
+  // switch them on ourselves (one programmatic click on the CC button —
+  // the same long-stable control the user would press). Only when the
+  // button reports captions available; once per watch URL. Other players
+  // keep the guidance message: their caption menus are too fragile to
+  // drive blindly.
+  let ccClickedFor = "";
+  function maybeEnableSiteCaptions() {
+    if (!domSite || domSite.id !== "youtube") return;
+    if (!settings.enabled || !accountLinked || siteDisabled()) return;
+    if (domLastText) return; // captions already flowing
+    const ctl = primaryVideo && controllers.get(primaryVideo);
+    if (!ctl || ctl.cues.length > 0) return;
+    if (ccClickedFor === location.href) return;
+    const btn = document.querySelector(".ytp-subtitles-button");
+    if (!btn) return;
+    if (btn.getAttribute("aria-pressed") === "true") return; // already on
+    if (btn.getAttribute("aria-disabled") === "true") return; // none exist
+    ccClickedFor = location.href;
+    try {
+      btn.click();
+    } catch (e) {}
+  }
+
   function syncDomCaptions() {
     if (!domSite) return;
     if (domCapContainer && !domCapContainer.isConnected) {
@@ -829,7 +853,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
     async function speakCloud(text, cueDur) {
       // Occupy the speech slot immediately: drainQueue and anySpeaking
       // treat currentUtterance as "voice busy" whatever the engine.
-      const token = { cloud: true };
+      const token = { cloud: true, at: performance.now() };
       ctl.currentUtterance = token;
       const url = await getCloudAudio(text);
       if (ctl.currentUtterance !== token) return; // cancelled meanwhile
@@ -1077,13 +1101,26 @@ import { makeT, resolveUiLang } from "./i18n.js";
 
       if ((video.paused && !ctl.autoPaused) || video.seeking) return;
 
-      // Safety net: Chrome sometimes "loses" an utterance's onend event
-      // (known garbage-collection bug), which would stall the queue.
-      if (
+      // Safety nets against a stalled queue — engine-specific, so the
+      // Pro cloud voice and the local voice can NEVER overlap: the
+      // speechSynthesis check must not reclaim the slot while an Audio
+      // element is still playing.
+      if (ctl.currentUtterance && ctl.currentUtterance.cloud) {
+        const a = ctl.cloudAudio;
+        const stalledFetch =
+          !a && performance.now() - (ctl.currentUtterance.at || 0) > 12000;
+        if ((a && a.ended) || stalledFetch) {
+          ctl.currentUtterance = null;
+          ctl.cloudAudio = null;
+          drainQueue();
+        }
+      } else if (
         ctl.currentUtterance &&
         !speechSynthesis.speaking &&
         !speechSynthesis.pending
       ) {
+        // Chrome sometimes "loses" an utterance's onend event (known
+        // garbage-collection bug), which would stall the queue.
         ctl.currentUtterance = null;
         drainQueue();
       }
@@ -1860,6 +1897,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
     }
     primaryVideo = pickPrimary();
     syncDomCaptions();
+    maybeEnableSiteCaptions();
     refreshAll();
   }
 

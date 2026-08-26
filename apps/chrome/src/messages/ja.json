@@ -144,5 +144,6 @@
  "uiLangAuto": "ブラウザの言語",
  "proTransLabel": "Pro 文脈対応翻訳",
  "translationPro": "翻訳：Pro（文脈対応）",
- "proVoiceLabel": "Pro ニューラル音声"
+ "proVoiceLabel": "Pro ニューラル音声",
+ "launchCta": "このページで吹き替えを開始"
 }

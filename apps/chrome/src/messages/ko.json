@@ -144,5 +144,6 @@
  "uiLangAuto": "브라우저 언어",
  "proTransLabel": "Pro 문맥 인식 번역",
  "translationPro": "번역: Pro(문맥 인식)",
- "proVoiceLabel": "Pro 신경망 음성"
+ "proVoiceLabel": "Pro 신경망 음성",
+ "launchCta": "이 페이지에서 더빙 시작"
 }

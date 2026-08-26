@@ -122,6 +122,29 @@
       outline-offset: 2px;
     }
 
+    /* ---- launch button ---- */
+    .launch-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      border: none;
+      border-radius: 9999px;
+      background: var(--accent);
+      color: #121212;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      padding: 12px 0;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    .launch-btn:hover { filter: brightness(1.08); }
+    .launch-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .launch-btn[hidden] { display: none; }
+    .launch-btn svg { display: block; }
+
     /* ---- status card ---- */
     .status {
       background: var(--surface);
@@ -489,6 +512,11 @@
     <span class="pro-banner-text" data-i18n="proBanner">✦ Traduction contextuelle et voix neurales</span>
     <button id="proBannerBtn" class="pro-banner-cta" data-i18n="goPro" title="Débloquer le plan Pro">Passer Pro</button>
   </div>
+
+  <button id="launchBtn" class="launch-btn" hidden>
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2.5 1.5l8 4.5-8 4.5z"/></svg>
+    <span data-i18n="launchCta">Lancer le doublage sur cette page</span>
+  </button>
 
   <div class="status" id="status" aria-live="polite">Recherche d’une vidéo…</div>
 

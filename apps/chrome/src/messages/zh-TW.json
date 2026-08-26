@@ -144,5 +144,6 @@
  "uiLangAuto": "瀏覽器語言",
  "proTransLabel": "Pro 上下文翻譯",
  "translationPro": "翻譯：Pro（結合上下文）",
- "proVoiceLabel": "Pro 神經語音"
+ "proVoiceLabel": "Pro 神經語音",
+ "launchCta": "在此頁面開始配音"
 }

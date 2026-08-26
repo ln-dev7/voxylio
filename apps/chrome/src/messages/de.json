@@ -144,5 +144,6 @@
  "uiLangAuto": "Browsersprache",
  "proTransLabel": "Kontextbewusste Pro-Übersetzung",
  "translationPro": "Übersetzung: Pro (kontextbewusst)",
- "proVoiceLabel": "Neuronale Pro-Stimme"
+ "proVoiceLabel": "Neuronale Pro-Stimme",
+ "launchCta": "Synchronisation auf dieser Seite starten"
 }

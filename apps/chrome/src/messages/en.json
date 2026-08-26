@@ -144,5 +144,6 @@
  "uiLangAuto": "Browser language",
  "proTransLabel": "Pro contextual translation",
  "translationPro": "Translation: Pro (contextual)",
- "proVoiceLabel": "Pro neural voice"
+ "proVoiceLabel": "Pro neural voice",
+ "launchCta": "Start dubbing on this page"
 }

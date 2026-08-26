@@ -989,7 +989,8 @@
     uiLangAuto: "Browser language",
     proTransLabel: "Pro contextual translation",
     translationPro: "Translation: Pro (contextual)",
-    proVoiceLabel: "Pro neural voice"
+    proVoiceLabel: "Pro neural voice",
+    launchCta: "Start dubbing on this page"
   };
 
   // src/messages/fr.json
@@ -1139,7 +1140,8 @@
     uiLangAuto: "Langue du navigateur",
     proTransLabel: "Traduction contextuelle Pro",
     translationPro: "Traduction : Pro (contextuelle)",
-    proVoiceLabel: "Voix neurale Pro"
+    proVoiceLabel: "Voix neurale Pro",
+    launchCta: "Lancer le doublage sur cette page"
   };
 
   // src/messages/es.json
@@ -1289,7 +1291,8 @@
     uiLangAuto: "Idioma del navegador",
     proTransLabel: "Traducci\xF3n contextual Pro",
     translationPro: "Traducci\xF3n: Pro (contextual)",
-    proVoiceLabel: "Voz neuronal Pro"
+    proVoiceLabel: "Voz neuronal Pro",
+    launchCta: "Iniciar el doblaje en esta p\xE1gina"
   };
 
   // src/messages/de.json
@@ -1439,7 +1442,8 @@
     uiLangAuto: "Browsersprache",
     proTransLabel: "Kontextbewusste Pro-\xDCbersetzung",
     translationPro: "\xDCbersetzung: Pro (kontextbewusst)",
-    proVoiceLabel: "Neuronale Pro-Stimme"
+    proVoiceLabel: "Neuronale Pro-Stimme",
+    launchCta: "Synchronisation auf dieser Seite starten"
   };
 
   // src/messages/it.json
@@ -1589,7 +1593,8 @@
     uiLangAuto: "Lingua del browser",
     proTransLabel: "Traduzione contestuale Pro",
     translationPro: "Traduzione: Pro (contestuale)",
-    proVoiceLabel: "Voce neurale Pro"
+    proVoiceLabel: "Voce neurale Pro",
+    launchCta: "Avvia il doppiaggio su questa pagina"
   };
 
   // src/messages/ja.json
@@ -1739,7 +1744,8 @@
     uiLangAuto: "\u30D6\u30E9\u30A6\u30B6\u306E\u8A00\u8A9E",
     proTransLabel: "Pro \u6587\u8108\u5BFE\u5FDC\u7FFB\u8A33",
     translationPro: "\u7FFB\u8A33\uFF1APro\uFF08\u6587\u8108\u5BFE\u5FDC\uFF09",
-    proVoiceLabel: "Pro \u30CB\u30E5\u30FC\u30E9\u30EB\u97F3\u58F0"
+    proVoiceLabel: "Pro \u30CB\u30E5\u30FC\u30E9\u30EB\u97F3\u58F0",
+    launchCta: "\u3053\u306E\u30DA\u30FC\u30B8\u3067\u5439\u304D\u66FF\u3048\u3092\u958B\u59CB"
   };
 
   // src/messages/ko.json
@@ -1889,7 +1895,8 @@
     uiLangAuto: "\uBE0C\uB77C\uC6B0\uC800 \uC5B8\uC5B4",
     proTransLabel: "Pro \uBB38\uB9E5 \uC778\uC2DD \uBC88\uC5ED",
     translationPro: "\uBC88\uC5ED: Pro(\uBB38\uB9E5 \uC778\uC2DD)",
-    proVoiceLabel: "Pro \uC2E0\uACBD\uB9DD \uC74C\uC131"
+    proVoiceLabel: "Pro \uC2E0\uACBD\uB9DD \uC74C\uC131",
+    launchCta: "\uC774 \uD398\uC774\uC9C0\uC5D0\uC11C \uB354\uBE59 \uC2DC\uC791"
   };
 
   // src/messages/zh-CN.json
@@ -2039,7 +2046,8 @@
     uiLangAuto: "\u6D4F\u89C8\u5668\u8BED\u8A00",
     proTransLabel: "Pro \u4E0A\u4E0B\u6587\u7FFB\u8BD1",
     translationPro: "\u7FFB\u8BD1\uFF1APro\uFF08\u7ED3\u5408\u4E0A\u4E0B\u6587\uFF09",
-    proVoiceLabel: "Pro \u795E\u7ECF\u8BED\u97F3"
+    proVoiceLabel: "Pro \u795E\u7ECF\u8BED\u97F3",
+    launchCta: "\u5728\u6B64\u9875\u9762\u5F00\u59CB\u914D\u97F3"
   };
 
   // src/messages/zh-TW.json
@@ -2189,7 +2197,8 @@
     uiLangAuto: "\u700F\u89BD\u5668\u8A9E\u8A00",
     proTransLabel: "Pro \u4E0A\u4E0B\u6587\u7FFB\u8B6F",
     translationPro: "\u7FFB\u8B6F\uFF1APro\uFF08\u7D50\u5408\u4E0A\u4E0B\u6587\uFF09",
-    proVoiceLabel: "Pro \u795E\u7D93\u8A9E\u97F3"
+    proVoiceLabel: "Pro \u795E\u7D93\u8A9E\u97F3",
+    launchCta: "\u5728\u6B64\u9801\u9762\u958B\u59CB\u914D\u97F3"
   };
 
   // src/messages/pt-BR.json
@@ -2339,7 +2348,8 @@
     uiLangAuto: "Idioma do navegador",
     proTransLabel: "Tradu\xE7\xE3o contextual Pro",
     translationPro: "Tradu\xE7\xE3o: Pro (contextual)",
-    proVoiceLabel: "Voz neural Pro"
+    proVoiceLabel: "Voz neural Pro",
+    launchCta: "Iniciar a dublagem nesta p\xE1gina"
   };
 
   // src/i18n.js
@@ -2501,6 +2511,24 @@
       if (text === domLastText) return;
       domLastText = text;
       ctl.addDomCue(video.currentTime, text);
+    }
+    let ccClickedFor = "";
+    function maybeEnableSiteCaptions() {
+      if (!domSite || domSite.id !== "youtube") return;
+      if (!settings.enabled || !accountLinked || siteDisabled()) return;
+      if (domLastText) return;
+      const ctl = primaryVideo && controllers.get(primaryVideo);
+      if (!ctl || ctl.cues.length > 0) return;
+      if (ccClickedFor === location.href) return;
+      const btn = document.querySelector(".ytp-subtitles-button");
+      if (!btn) return;
+      if (btn.getAttribute("aria-pressed") === "true") return;
+      if (btn.getAttribute("aria-disabled") === "true") return;
+      ccClickedFor = location.href;
+      try {
+        btn.click();
+      } catch (e) {
+      }
     }
     function syncDomCaptions() {
       if (!domSite) return;
@@ -2996,7 +3024,7 @@
         speakLocal(text, cueDur);
       }
       async function speakCloud(text, cueDur) {
-        const token = { cloud: true };
+        const token = { cloud: true, at: performance.now() };
         ctl.currentUtterance = token;
         const url = await getCloudAudio(text);
         if (ctl.currentUtterance !== token) return;
@@ -3188,7 +3216,15 @@
         }
         ctl.lastTime = t;
         if (video.paused && !ctl.autoPaused || video.seeking) return;
-        if (ctl.currentUtterance && !speechSynthesis.speaking && !speechSynthesis.pending) {
+        if (ctl.currentUtterance && ctl.currentUtterance.cloud) {
+          const a = ctl.cloudAudio;
+          const stalledFetch = !a && performance.now() - (ctl.currentUtterance.at || 0) > 12e3;
+          if (a && a.ended || stalledFetch) {
+            ctl.currentUtterance = null;
+            ctl.cloudAudio = null;
+            drainQueue();
+          }
+        } else if (ctl.currentUtterance && !speechSynthesis.speaking && !speechSynthesis.pending) {
           ctl.currentUtterance = null;
           drainQueue();
         }
@@ -3865,6 +3901,7 @@
       }
       primaryVideo = pickPrimary();
       syncDomCaptions();
+      maybeEnableSiteCaptions();
       refreshAll();
     }
     function lightScan() {

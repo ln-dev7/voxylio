@@ -144,5 +144,6 @@
  "uiLangAuto": "浏览器语言",
  "proTransLabel": "Pro 上下文翻译",
  "translationPro": "翻译：Pro（结合上下文）",
- "proVoiceLabel": "Pro 神经语音"
+ "proVoiceLabel": "Pro 神经语音",
+ "launchCta": "在此页面开始配音"
 }
