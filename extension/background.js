@@ -247,6 +247,16 @@
   var SITE_ORIGIN = "https://voxylio.lndev.me";
   var CHECK_MS = 24 * 60 * 60 * 1e3;
   var GRACE_MS = 72 * 60 * 60 * 1e3;
+  function clearProFlags() {
+    try {
+      chrome.storage.sync.get({ proTranslation: false, proVoice: false }, (v) => {
+        if (v && (v.proTranslation || v.proVoice)) {
+          chrome.storage.sync.set({ proTranslation: false, proVoice: false });
+        }
+      });
+    } catch (e) {
+    }
+  }
   function getLocal(keys) {
     return new Promise((resolve) => chrome.storage.local.get(keys, resolve));
   }
@@ -265,6 +275,7 @@
       });
       if (res.status === 401) {
         chrome.storage.local.remove(["accountToken", "entitlements"]);
+        clearProFlags();
         return { plan: "free", status: "none", linked: false };
       }
       if (!res.ok) throw new Error("HTTP " + res.status);
@@ -277,6 +288,7 @@
         checkedAt: Date.now()
       };
       chrome.storage.local.set({ entitlements: ent });
+      if (ent.plan !== "pro") clearProFlags();
       return { ...ent, linked: true };
     } catch (e) {
       if (cached && age < GRACE_MS) return { ...cached, linked: true, offline: true };
