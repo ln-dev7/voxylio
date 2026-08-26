@@ -443,7 +443,7 @@
   // src/messages/fr.json
   var fr_default = {
     appName: "Voxylio \u2014 doublage multilingue",
-    appDesc: "Double en temps r\xE9el les vid\xE9os sous-titr\xE9es : traduction locale, voix synchronis\xE9e avec la lecture. Plus de 65 langues.",
+    appDesc: "Double les vid\xE9os sous-titr\xE9es en temps r\xE9el : traduction locale, voix synchronis\xE9e. Plus de 65 langues.",
     srcLabel: "Langue de la vid\xE9o",
     detectAuto: "D\xE9tection automatique",
     targetLabel: "Langue du doublage",
@@ -622,7 +622,7 @@
   // src/messages/es.json
   var es_default = {
     appName: "Voxylio \u2014 doblaje multiling\xFCe",
-    appDesc: "Dobla v\xEDdeos subtitulados en tiempo real: traducci\xF3n local, voz sincronizada con la reproducci\xF3n. M\xE1s de 65 idiomas.",
+    appDesc: "Dobla v\xEDdeos subtitulados en tiempo real: traducci\xF3n local, voz sincronizada. M\xE1s de 65 idiomas.",
     srcLabel: "Idioma del v\xEDdeo",
     detectAuto: "Detecci\xF3n autom\xE1tica",
     targetLabel: "Idioma del doblaje",
@@ -801,7 +801,7 @@
   // src/messages/de.json
   var de_default = {
     appName: "Voxylio \u2014 mehrsprachige Synchronisation",
-    appDesc: "Synchronisiert untertitelte Videos in Echtzeit: lokale \xDCbersetzung, Stimme im Takt der Wiedergabe. \xDCber 65 Sprachen.",
+    appDesc: "Vertont untertitelte Videos in Echtzeit: lokale \xDCbersetzung, Stimme im Takt der Wiedergabe. \xDCber 65 Sprachen.",
     srcLabel: "Sprache des Videos",
     detectAuto: "Automatisch erkennen",
     targetLabel: "Sprache der Synchronisation",
@@ -980,7 +980,7 @@
   // src/messages/it.json
   var it_default = {
     appName: "Voxylio \u2014 doppiaggio multilingue",
-    appDesc: "Doppia i video sottotitolati in tempo reale: traduzione locale, voce sincronizzata con la riproduzione. Oltre 65 lingue.",
+    appDesc: "Doppia i video sottotitolati in tempo reale: traduzione locale, voce sincronizzata. Oltre 65 lingue.",
     srcLabel: "Lingua del video",
     detectAuto: "Rilevamento automatico",
     targetLabel: "Lingua del doppiaggio",

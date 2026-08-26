@@ -1,6 +1,6 @@
 {
   "appName": "Voxylio — doppiaggio multilingue",
-  "appDesc": "Doppia i video sottotitolati in tempo reale: traduzione locale, voce sincronizzata con la riproduzione. Oltre 65 lingue.",
+  "appDesc": "Doppia i video sottotitolati in tempo reale: traduzione locale, voce sincronizzata. Oltre 65 lingue.",
   "srcLabel": "Lingua del video",
   "detectAuto": "Rilevamento automatico",
   "targetLabel": "Lingua del doppiaggio",

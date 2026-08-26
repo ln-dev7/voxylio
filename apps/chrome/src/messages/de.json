@@ -1,6 +1,6 @@
 {
   "appName": "Voxylio — mehrsprachige Synchronisation",
-  "appDesc": "Synchronisiert untertitelte Videos in Echtzeit: lokale Übersetzung, Stimme im Takt der Wiedergabe. Über 65 Sprachen.",
+  "appDesc": "Vertont untertitelte Videos in Echtzeit: lokale Übersetzung, Stimme im Takt der Wiedergabe. Über 65 Sprachen.",
   "srcLabel": "Sprache des Videos",
   "detectAuto": "Automatisch erkennen",
   "targetLabel": "Sprache der Synchronisation",

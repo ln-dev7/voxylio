@@ -1,6 +1,6 @@
 {
   "appName": "Voxylio — doblaje multilingüe",
-  "appDesc": "Dobla vídeos subtitulados en tiempo real: traducción local, voz sincronizada con la reproducción. Más de 65 idiomas.",
+  "appDesc": "Dobla vídeos subtitulados en tiempo real: traducción local, voz sincronizada. Más de 65 idiomas.",
   "srcLabel": "Idioma del vídeo",
   "detectAuto": "Detección automática",
   "targetLabel": "Idioma del doblaje",
