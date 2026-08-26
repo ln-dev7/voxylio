@@ -117,7 +117,7 @@
       },
       "pro": {
         "question": "What does Pro include?",
-        "answer": "Everything local stays free and unlimited. Pro funds the features that need a server: context-aware translation — nearby sentences are sent together so pronouns, tone, names and terminology stay right — and natural neural voices in 7 languages (English, Spanish, German, French, Dutch, Italian, Japanese), each within a generous monthly allowance. When an allowance runs out, or for any other language, dubbing simply continues with the free local engine — a video is never interrupted. Summaries and cross-device sync will join Pro over time."
+        "answer": "Everything local stays free and unlimited. Pro funds the features that need a server: context-aware translation (beta) — nearby sentences are sent together so pronouns, tone, names and terminology stay right — and natural neural voices in 7 languages (English, Spanish, German, French, Dutch, Italian, Japanese), each within a generous monthly allowance. When an allowance runs out, or for any other language, dubbing simply continues with the free local engine — a video is never interrupted. Summaries and cross-device sync will join Pro over time."
       },
       "quota": {
         "question": "What happens when a Pro allowance runs out?",
@@ -274,7 +274,7 @@
         "account": "Voxylio account (free, Google sign-in): dubbing now starts with a single sign-in, and your plan follows you.",
         "hub": "A full settings hub: dubbing history, transcript export (.srt), local statistics, and a voice per language.",
         "glossary": "Personal glossary: force your own translations, or protect terms so they are never translated.",
-        "proTranslate": "Pro — contextual AI translation: whole scenes translated coherently, so pronouns, tone and terminology hold from one line to the next.",
+        "proTranslate": "Pro — contextual AI translation (beta): whole scenes translated coherently, so pronouns, tone and terminology hold from one line to the next.",
         "proVoice": "Pro — natural neural voices in 7 languages, with the local voice taking over instantly if the cloud ever fails.",
         "launch": "A Launch button starts dubbing without reloading the page — and the player's captions are switched on for you whenever possible.",
         "sites": "Reads on-screen captions too: YouTube, Netflix, Prime Video, Disney+ and Twitch, on top of every player exposing a subtitle track.",
@@ -327,7 +327,7 @@
     "checkoutSuccess": "Payment received — your Pro plan activates in a few seconds.",
     "upgradeYearly": "or $69.99/yr (−27%)",
     "usageTitle": "This month's Pro usage",
-    "usageTrans": "AI translation",
+    "usageTrans": "AI translation (beta)",
     "usageVoice": "Neural voice",
     "usageResets": "Quota resets on {date}",
     "usageFallback": "When a quota runs out, the local engine takes over automatically — dubbing never stops."
@@ -361,7 +361,7 @@
       "cta": "Go Pro",
       "badge": "Recommended",
       "features": {
-        "f1": "Context-aware AI translation, more faithful — generous monthly allowance",
+        "f1": "Context-aware AI translation (beta), more faithful — generous monthly allowance",
         "f2": "Natural neural voices in 7 languages — local voice takes over elsewhere",
         "f3": "Early access to new languages and platforms",
         "f4": "Priority support",
@@ -377,7 +377,7 @@
       "freeTitle": "Free — local and unlimited",
       "freeBody": "On-device translation (Chrome's built-in AI), your system voices, bilingual captions, glossary, history and stats: no quota, no card. A free Google sign-in is the only requirement.",
       "proTitle": "Pro — the cloud on top",
-      "proBody": "Context-aware AI translation (whole scenes stay coherent) and natural neural voices in 7 languages. $7.99/month or $69.99/year (−27%).",
+      "proBody": "Context-aware AI translation (beta) (whole scenes stay coherent) and natural neural voices in 7 languages. $7.99/month or $69.99/year (−27%).",
       "meterTitle": "A generous monthly allowance",
       "meterBody": "Pro draws from a monthly volume of AI translation and neural speech sized for heavy, daily watching. Only the line being translated counts — never the context sent around it.",
       "fallbackTitle": "Never interrupted",

@@ -117,7 +117,7 @@
       },
       "pro": {
         "question": "Was enthält der Pro-Plan?",
-        "answer": "Alles Lokale bleibt gratis und unbegrenzt. Pro finanziert die Funktionen, die einen Server brauchen: die kontextbewusste Übersetzung — benachbarte Sätze werden zusammen übertragen, damit Pronomen, Ton, Namen und Terminologie stimmen — und natürliche neuronale Stimmen in 7 Sprachen (Englisch, Spanisch, Deutsch, Französisch, Niederländisch, Italienisch, Japanisch), jeweils mit großzügigem Monatskontingent. Ist ein Kontingent aufgebraucht, oder bei jeder anderen Sprache, läuft die Synchronisation einfach mit der kostenlosen lokalen Engine weiter — ein Video wird nie unterbrochen. Zusammenfassungen und Geräte-Sync folgen nach und nach."
+        "answer": "Alles Lokale bleibt gratis und unbegrenzt. Pro finanziert die Funktionen, die einen Server brauchen: die kontextbewusste Übersetzung (Beta) — benachbarte Sätze werden zusammen übertragen, damit Pronomen, Ton, Namen und Terminologie stimmen — und natürliche neuronale Stimmen in 7 Sprachen (Englisch, Spanisch, Deutsch, Französisch, Niederländisch, Italienisch, Japanisch), jeweils mit großzügigem Monatskontingent. Ist ein Kontingent aufgebraucht, oder bei jeder anderen Sprache, läuft die Synchronisation einfach mit der kostenlosen lokalen Engine weiter — ein Video wird nie unterbrochen. Zusammenfassungen und Geräte-Sync folgen nach und nach."
       },
       "quota": {
         "question": "Was passiert, wenn ein Pro-Kontingent aufgebraucht ist?",
@@ -274,7 +274,7 @@
         "account": "Voxylio-Konto (kostenlos, Google-Anmeldung): die Synchronisation startet mit einer einzigen Anmeldung, und dein Plan zieht mit.",
         "hub": "Eine echte Einstellungszentrale: Verlauf, Transkript-Export (.srt), lokale Statistiken und eine Stimme pro Sprache.",
         "glossary": "Persönliches Glossar: erzwinge eigene Übersetzungen oder schütze Begriffe, damit sie nie übersetzt werden.",
-        "proTranslate": "Pro — kontextuelle KI-Übersetzung: ganze Szenen kohärent übersetzt — Pronomen, Ton und Terminologie bleiben von Zeile zu Zeile stimmig.",
+        "proTranslate": "Pro — kontextuelle KI-Übersetzung (Beta): ganze Szenen kohärent übersetzt — Pronomen, Ton und Terminologie bleiben von Zeile zu Zeile stimmig.",
         "proVoice": "Pro — natürliche neuronale Stimmen in 7 Sprachen; die lokale Stimme übernimmt sofort, falls die Cloud ausfällt.",
         "launch": "Ein Start-Button beginnt die Synchronisation ohne Neuladen der Seite — und die Untertitel des Players werden, wenn möglich, für dich aktiviert.",
         "sites": "Liest auch eingeblendete Untertitel: YouTube, Netflix, Prime Video, Disney+ und Twitch — zusätzlich zu jedem Player mit Untertitelspur.",
@@ -327,7 +327,7 @@
     "checkoutSuccess": "Zahlung erhalten — dein Pro-Plan wird in wenigen Sekunden aktiviert.",
     "upgradeYearly": "oder 69,99 $/Jahr (−27 %)",
     "usageTitle": "Pro-Nutzung diesen Monat",
-    "usageTrans": "KI-Übersetzung",
+    "usageTrans": "KI-Übersetzung (Beta)",
     "usageVoice": "Neuronale Stimme",
     "usageResets": "Kontingent wird am {date} zurückgesetzt",
     "usageFallback": "Ist ein Kontingent aufgebraucht, übernimmt automatisch die lokale Engine — das Dubbing stoppt nie."
@@ -362,7 +362,7 @@
       "cta": "Pro holen",
       "badge": "Empfohlen",
       "features": {
-        "f1": "Kontextbewusste KI-Übersetzung, treffender — großzügiges Monatskontingent",
+        "f1": "Kontextbewusste KI-Übersetzung (Beta), treffender — großzügiges Monatskontingent",
         "f2": "Natürliche neuronale Stimmen in 7 Sprachen — sonst übernimmt die lokale Stimme",
         "f3": "Früher Zugang zu neuen Sprachen und Plattformen",
         "f4": "Bevorzugter Support",
@@ -377,7 +377,7 @@
       "freeTitle": "Kostenlos — lokal und unbegrenzt",
       "freeBody": "Übersetzung auf dem Gerät (Chromes integrierte KI), deine Systemstimmen, zweisprachige Untertitel, Glossar, Verlauf und Statistiken: kein Kontingent, keine Karte. Eine kostenlose Google-Anmeldung ist die einzige Voraussetzung.",
       "proTitle": "Pro — die Cloud obendrauf",
-      "proBody": "Kontextuelle KI-Übersetzung (ganze Szenen bleiben kohärent) und natürliche neuronale Stimmen in 7 Sprachen. 7,99 $/Monat oder 69,99 $/Jahr (−27 %).",
+      "proBody": "Kontextuelle KI-Übersetzung (Beta) (ganze Szenen bleiben kohärent) und natürliche neuronale Stimmen in 7 Sprachen. 7,99 $/Monat oder 69,99 $/Jahr (−27 %).",
       "meterTitle": "Ein großzügiges Monatskontingent",
       "meterBody": "Pro schöpft aus einem monatlichen Volumen an KI-Übersetzung und neuronaler Sprache, ausgelegt auf intensives tägliches Schauen. Nur die übersetzte Zeile zählt — nie der mitgeschickte Kontext.",
       "fallbackTitle": "Nie unterbrochen",

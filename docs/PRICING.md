@@ -94,7 +94,7 @@ top-10% heaviest users. Launch quotas as "beta, may evolve", then fix.
 - **Deepgram Nova-3** hears: streaming STT for no-subtitle videos only
   (≈ $0.0048–0.0058/min streaming ⇒ ≈ $0.35/h).
 - **Gemini Flash-Lite** translates: contextual text-to-text (cheap;
-  `GEMINI_API_KEY`, default model `gemini-3.5-flash-lite`) — SHIPPED as
+  `VOXYLIO_GEMINI_API_KEY`, default model `gemini-3.5-flash-lite`) — SHIPPED as
   the primary provider of `/api/pro/translate`.
 - **Google Cloud TTS Neural2** speaks: ≈ $16/1M chars ⇒ ≈ $0.80–0.95/h
   of spoken video. Cartesia/ElevenLabs stay optional upsells for later.
@@ -112,6 +112,37 @@ without. Cloud budget target stays ≈ $2/subscriber/month on average.
   monthly expiry.
 - Keys are NEVER in the extension; the backend can mint short-lived
   Deepgram tokens if direct streaming is ever needed.
+
+## Owner update (2026-08-26) — repositioning in progress
+
+Three decisions taken in conversation, recorded here so the copy and
+the code never drift from them:
+
+1. **Contextual translation is labeled « (bêta) » EVERYWHERE** until
+   its quality is judged stable by the owner: popup toggle + tooltip +
+   banner + status line + quota meter labels (extension, 10 locales),
+   pricing card + pricing modal + FAQ + changelog + account meters
+   (site, 10 locales), store descriptions (docs/STORE-LISTING.md,
+   10 languages). Done on 2026-08-26. Removing the label is an owner
+   decision, and requires sweeping the exact same list.
+2. **The free plan is too generous — tightening decided in principle.**
+   Rationale: the packaged product (store build, account, updates) is
+   the convenience; the code is MIT — whoever refuses to pay can clone
+   and run it locally. Free must stay good enough to genuinely test the
+   tool, and become insufficient for heavy daily use. The MECHANISM
+   (usage cap / site gating / feature gating / trial) is not chosen yet
+   — no copy or code change until the owner picks one. Every surface
+   currently saying « gratuit et illimité » (hero ticks, pricing card,
+   compare table, FAQ, modal, store listing) will need the same sweep
+   discipline as the beta labels.
+3. **The neural voice is NOT the Pro seller** (owner's own judgment:
+   « pas si convaincante »). Consequence: the conversion story must not
+   lean on it. Pillar #3 (no-subtitle dubbing / Premium Audio) is the
+   real differentiator to build next; meanwhile the pitch leans on
+   convenience + quotas + early access.
+
+Refund doctrine (usage-based partial refunds, always net-positive) is
+recorded in docs/BOOSTS.md §4.
 
 ## The three Pro pillars (build in this order)
 

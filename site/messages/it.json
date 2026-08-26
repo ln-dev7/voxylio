@@ -117,7 +117,7 @@
       },
       "pro": {
         "question": "Cosa include il piano Pro?",
-        "answer": "Tutto ciò che è locale resta gratis e illimitato. Il Pro finanzia le funzioni che richiedono un server: la traduzione contestuale — le frasi vicine vengono inviate insieme per mantenere corretti pronomi, tono, nomi e terminologia — e le voci neurali naturali in 7 lingue (inglese, spagnolo, tedesco, francese, olandese, italiano, giapponese), ciascuna entro un generoso volume mensile. Quando un volume si esaurisce, o per qualsiasi altra lingua, il doppiaggio continua con il motore locale gratuito — un video non viene mai interrotto. Riassunti e sincronizzazione tra dispositivi arriveranno nel tempo."
+        "answer": "Tutto ciò che è locale resta gratis e illimitato. Il Pro finanzia le funzioni che richiedono un server: la traduzione contestuale (beta) — le frasi vicine vengono inviate insieme per mantenere corretti pronomi, tono, nomi e terminologia — e le voci neurali naturali in 7 lingue (inglese, spagnolo, tedesco, francese, olandese, italiano, giapponese), ciascuna entro un generoso volume mensile. Quando un volume si esaurisce, o per qualsiasi altra lingua, il doppiaggio continua con il motore locale gratuito — un video non viene mai interrotto. Riassunti e sincronizzazione tra dispositivi arriveranno nel tempo."
       },
       "quota": {
         "question": "Cosa succede quando un volume Pro si esaurisce?",
@@ -274,7 +274,7 @@
         "account": "Account Voxylio (gratuito, accesso Google): il doppiaggio parte con un solo accesso e il tuo piano ti segue.",
         "hub": "Un vero centro impostazioni: cronologia del doppiaggio, esportazione trascrizione (.srt), statistiche locali e una voce per lingua.",
         "glossary": "Glossario personale: imponi le tue traduzioni o proteggi i termini perché non vengano mai tradotti.",
-        "proTranslate": "Pro — traduzione IA contestuale: scene intere tradotte con coerenza — pronomi, tono e terminologia reggono da una battuta all'altra.",
+        "proTranslate": "Pro — traduzione IA contestuale (beta): scene intere tradotte con coerenza — pronomi, tono e terminologia reggono da una battuta all'altra.",
         "proVoice": "Pro — voci neurali naturali in 7 lingue, con la voce locale che subentra all'istante se il cloud si ferma.",
         "launch": "Un pulsante Avvia fa partire il doppiaggio senza ricaricare la pagina — e i sottotitoli del player si attivano per te quando possibile.",
         "sites": "Legge anche i sottotitoli sullo schermo: YouTube, Netflix, Prime Video, Disney+ e Twitch, oltre a ogni player con traccia sottotitoli.",
@@ -327,7 +327,7 @@
     "checkoutSuccess": "Pagamento ricevuto — il tuo piano Pro si attiva tra pochi secondi.",
     "upgradeYearly": "oppure 69,99 $/anno (−27%)",
     "usageTitle": "Utilizzo Pro del mese",
-    "usageTrans": "Traduzione IA",
+    "usageTrans": "Traduzione IA (beta)",
     "usageVoice": "Voce neurale",
     "usageResets": "La quota si azzera il {date}",
     "usageFallback": "Quando una quota si esaurisce, il motore locale subentra automaticamente — il doppiaggio non si ferma mai."
@@ -362,7 +362,7 @@
       "cta": "Passa a Pro",
       "badge": "Consigliato",
       "features": {
-        "f1": "Traduzione IA contestuale, più fedele — generoso volume mensile",
+        "f1": "Traduzione IA contestuale (beta), più fedele — generoso volume mensile",
         "f2": "Voci neurali naturali in 7 lingue — altrove subentra la voce locale",
         "f3": "Accesso anticipato a nuove lingue e piattaforme",
         "f4": "Supporto prioritario",
@@ -377,7 +377,7 @@
       "freeTitle": "Gratuito — locale e illimitato",
       "freeBody": "Traduzione sul dispositivo (IA integrata di Chrome), le tue voci di sistema, sottotitoli bilingui, glossario, cronologia e statistiche: nessuna quota, nessuna carta. Un accesso Google gratuito è l'unico requisito.",
       "proTitle": "Pro — il cloud in più",
-      "proBody": "Traduzione IA contestuale (scene intere coerenti) e voci neurali naturali in 7 lingue. 7,99 $/mese o 69,99 $/anno (−27%).",
+      "proBody": "Traduzione IA contestuale (beta) (scene intere coerenti) e voci neurali naturali in 7 lingue. 7,99 $/mese o 69,99 $/anno (−27%).",
       "meterTitle": "Un volume mensile generoso",
       "meterBody": "Pro attinge a un volume mensile di traduzione IA e voce neurale pensato per una visione quotidiana intensiva. Conta solo la battuta tradotta — mai il contesto inviato attorno.",
       "fallbackTitle": "Mai interrotto",

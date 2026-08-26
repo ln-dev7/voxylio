@@ -95,14 +95,34 @@ Ce qu'on construit à la place, dans l'ordre :
 ## 4. Règles honnêtes & remboursements
 
 - Avant paiement : afficher la date d'expiration exacte du boost.
-- Un boost consommé n'est pas remboursable ; un boost intact peut
-  l'être au cas par cas (remboursement partiel/total possible via
-  Polar : `POST /v1/refunds`, raisons normalisées, `revoke_benefits`
-  pour les one-time). Les frais de transaction Polar ne sont pas
-  restitués au vendeur — un remboursement « geste commercial » coûte
-  ~la commission. À écrire noir sur blanc dans la page Terms (section
-  remboursements à ajouter — elle n'existe pas encore).
 - Jamais de boost auto-acheté, jamais d'auto-renouvellement de pack.
+
+### Doctrine de remboursement (décision owner, 2026-08-26)
+
+Jamais de remboursement total automatique : le remboursement est
+**proportionnel au quota NON consommé**, et Voxylio doit TOUJOURS
+rester gagnant (le quota consommé m'a coûté de l'argent ; les frais de
+transaction Polar ne sont pas restitués au vendeur, et il reste une
+marge).
+
+- Formule de référence (abo comme boost) :
+  `remboursable = prix × (1 − max(fractionUtilisée_trad,
+  fractionUtilisée_tts)) − retenue`, plancher 0.
+  La `retenue` couvre AU MINIMUM les frais Polar de la transaction plus
+  une marge fixe — c'est elle qui garantit « toujours gagnant », même
+  face à un quota intact.
+- Quota vidé (ou quasi : ≥ 90 % d'un des deux compteurs) → **aucun
+  remboursement**.
+- Quota intact → remboursement **partiel** (prix − retenue), jamais
+  100 %.
+- Le calcul lit `pro_usage` (+ `quota_boost`) pour la période — c'est
+  déjà la source de vérité des jauges ; l'exécution passe par
+  `POST /v1/refunds` de Polar (montant en cents, partiel, motif
+  normalisé ; `revoke_benefits` pour couper un boost one-time).
+- À traduire en une politique publique claire dans la page Terms
+  (section à ajouter) AVANT d'annoncer quoi que ce soit — la règle
+  affichée doit être exactement celle appliquée. Statut : à revoir
+  ensemble plus tard, rien n'est publié pour l'instant.
 
 ## 5. Ordre de build (phase 1)
 

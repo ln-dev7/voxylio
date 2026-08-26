@@ -117,7 +117,7 @@
       },
       "pro": {
         "question": "Que comprend le plan Pro ?",
-        "answer": "Tout ce qui est local reste gratuit et illimité. Le Pro finance les fonctions qui demandent un serveur : la traduction contextuelle — les phrases voisines sont envoyées ensemble pour garder pronoms, ton, noms propres et terminologie justes — et les voix neurales naturelles en 7 langues (anglais, espagnol, allemand, français, néerlandais, italien, japonais), chacune dans la limite d'un volume mensuel généreux. Quand un volume est épuisé, ou pour toute autre langue, le doublage continue simplement avec le moteur local gratuit — une vidéo n'est jamais interrompue. Les résumés et la synchronisation entre appareils rejoindront le Pro au fil du temps."
+        "answer": "Tout ce qui est local reste gratuit et illimité. Le Pro finance les fonctions qui demandent un serveur : la traduction contextuelle (bêta) — les phrases voisines sont envoyées ensemble pour garder pronoms, ton, noms propres et terminologie justes — et les voix neurales naturelles en 7 langues (anglais, espagnol, allemand, français, néerlandais, italien, japonais), chacune dans la limite d'un volume mensuel généreux. Quand un volume est épuisé, ou pour toute autre langue, le doublage continue simplement avec le moteur local gratuit — une vidéo n'est jamais interrompue. Les résumés et la synchronisation entre appareils rejoindront le Pro au fil du temps."
       },
       "quota": {
         "question": "Que se passe-t-il quand un volume Pro est épuisé ?",
@@ -274,7 +274,7 @@
         "account": "Compte Voxylio (gratuit, connexion Google) : le doublage démarre avec une simple connexion, et votre plan vous suit.",
         "hub": "Un vrai centre de réglages : historique de doublage, export de transcription (.srt), statistiques locales et une voix par langue.",
         "glossary": "Glossaire personnel : imposez vos propres traductions, ou protégez des termes pour qu'ils ne soient jamais traduits.",
-        "proTranslate": "Pro — traduction IA contextuelle : des scènes entières traduites avec cohérence — pronoms, ton et terminologie tiennent d'une réplique à l'autre.",
+        "proTranslate": "Pro — traduction IA contextuelle (bêta) : des scènes entières traduites avec cohérence — pronoms, ton et terminologie tiennent d'une réplique à l'autre.",
         "proVoice": "Pro — voix neurales naturelles en 7 langues, la voix locale prenant le relais instantanément si le cloud flanche.",
         "launch": "Un bouton Lancer démarre le doublage sans recharger la page — et les sous-titres du lecteur s'activent pour vous quand c'est possible.",
         "sites": "Lit aussi les sous-titres affichés à l'écran : YouTube, Netflix, Prime Video, Disney+ et Twitch, en plus de tout lecteur exposant une piste de sous-titres.",
@@ -327,7 +327,7 @@
     "checkoutSuccess": "Paiement reçu — votre plan Pro s'active dans quelques secondes.",
     "upgradeYearly": "ou 69,99 $/an (−27 %)",
     "usageTitle": "Utilisation Pro du mois",
-    "usageTrans": "Traduction IA",
+    "usageTrans": "Traduction IA (bêta)",
     "usageVoice": "Voix neurale",
     "usageResets": "Quota renouvelé le {date}",
     "usageFallback": "Quand un quota est épuisé, le moteur local prend le relais automatiquement — le doublage ne s'arrête jamais."
@@ -361,7 +361,7 @@
       "cta": "Passer Pro",
       "badge": "Recommandé",
       "features": {
-        "f1": "Traduction IA contextuelle, plus fidèle — volume mensuel généreux",
+        "f1": "Traduction IA contextuelle (bêta), plus fidèle — volume mensuel généreux",
         "f2": "Voix neurales naturelles en 7 langues — la voix locale prend le relais ailleurs",
         "f3": "Accès anticipé aux nouvelles langues et plateformes",
         "f4": "Support prioritaire",
@@ -377,7 +377,7 @@
       "freeTitle": "Gratuit — local et illimité",
       "freeBody": "Traduction sur l'appareil (IA intégrée de Chrome), vos voix système, sous-titres bilingues, glossaire, historique et statistiques : sans quota, sans carte. Une connexion Google gratuite est la seule condition.",
       "proTitle": "Pro — le cloud en plus",
-      "proBody": "Traduction IA contextuelle (des scènes entières cohérentes) et voix neurales naturelles en 7 langues. 7,99 $/mois ou 69,99 $/an (−27 %).",
+      "proBody": "Traduction IA contextuelle (bêta) (des scènes entières cohérentes) et voix neurales naturelles en 7 langues. 7,99 $/mois ou 69,99 $/an (−27 %).",
       "meterTitle": "Un volume mensuel généreux",
       "meterBody": "Pro puise dans un volume mensuel de traduction IA et de voix neurale dimensionné pour un visionnage quotidien intensif. Seule la réplique traduite compte — jamais le contexte envoyé autour.",
       "fallbackTitle": "Jamais interrompu",

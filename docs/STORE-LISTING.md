@@ -30,7 +30,7 @@ It reads the video's subtitles — the player's track, or the captions shown on 
 ★ 70+ target languages — source language detected automatically
 ★ Free and unlimited: on-device translation (Chrome's built-in translation API) + your system voices — no card, no quota
 ★ A free Voxylio account (Google sign-in) is required to start dubbing
-★ Optional Pro: contextual AI translation — whole scenes translated coherently — and natural neural voices in 7 languages, with automatic local fallback
+★ Optional Pro: contextual AI translation (beta) — whole scenes translated coherently — and natural neural voices in 7 languages, with automatic local fallback
 ★ Personal glossary: force your translations, protect your terms
 ★ Bilingual on-screen captions (original + translation)
 ★ Launch button — starts without reloading the page, and switches the player's captions on for you when possible
@@ -57,7 +57,7 @@ Il lit les sous-titres de la vidéo — la piste du lecteur, ou les sous-titres 
 ★ 70+ langues cibles — langue source détectée automatiquement
 ★ Gratuit et illimité : traduction locale sur votre appareil (API de traduction intégrée de Chrome) + voix système — sans carte bancaire, sans quota
 ★ Compte Voxylio gratuit (connexion Google) requis pour activer le doublage
-★ Pro, en option : traduction IA contextuelle — des scènes entières traduites avec cohérence — et voix neurales naturelles en 7 langues, avec repli automatique sur la voix locale
+★ Pro, en option : traduction IA contextuelle (bêta) — des scènes entières traduites avec cohérence — et voix neurales naturelles en 7 langues, avec repli automatique sur la voix locale
 ★ Glossaire personnel : imposez vos traductions, protégez vos termes
 ★ Sous-titres bilingues à l'écran (original + traduction)
 ★ Bouton Lancer — démarre sans recharger la page, et active les sous-titres du lecteur quand c'est possible
@@ -84,7 +84,7 @@ Lee los subtítulos del vídeo — la pista del reproductor o los subtítulos mo
 ★ Más de 70 idiomas de destino — idioma de origen detectado automáticamente
 ★ Gratis e ilimitado: traducción en el dispositivo (API de traducción integrada de Chrome) + las voces de tu sistema — sin tarjeta, sin cuota
 ★ Se requiere una cuenta Voxylio gratuita (inicio de sesión con Google) para empezar a doblar
-★ Pro opcional: traducción IA contextual — escenas enteras traducidas con coherencia — y voces neuronales naturales en 7 idiomas, con respaldo local automático
+★ Pro opcional: traducción IA contextual (beta) — escenas enteras traducidas con coherencia — y voces neuronales naturales en 7 idiomas, con respaldo local automático
 ★ Glosario personal: impón tus traducciones, protege tus términos
 ★ Subtítulos bilingües en pantalla (original + traducción)
 ★ Botón Iniciar — arranca sin recargar la página y activa por ti los subtítulos del reproductor cuando es posible
@@ -111,7 +111,7 @@ Es liest die Untertitel des Videos — die Spur des Players oder die eingeblende
 ★ Über 70 Zielsprachen — Ausgangssprache wird automatisch erkannt
 ★ Kostenlos und unbegrenzt: Übersetzung auf dem Gerät (Chromes integrierte Übersetzungs-API) + deine Systemstimmen — keine Karte, kein Kontingent
 ★ Zum Starten der Synchronisation ist ein kostenloses Voxylio-Konto (Google-Anmeldung) erforderlich
-★ Optionales Pro: kontextuelle KI-Übersetzung — ganze Szenen kohärent übersetzt — und natürliche neuronale Stimmen in 7 Sprachen, mit automatischem lokalem Fallback
+★ Optionales Pro: kontextuelle KI-Übersetzung (Beta) — ganze Szenen kohärent übersetzt — und natürliche neuronale Stimmen in 7 Sprachen, mit automatischem lokalem Fallback
 ★ Persönliches Glossar: erzwinge deine Übersetzungen, schütze deine Begriffe
 ★ Zweisprachige Untertitel im Bild (Original + Übersetzung)
 ★ Start-Button — beginnt ohne Neuladen der Seite und schaltet, wenn möglich, die Untertitel des Players für dich ein
@@ -138,7 +138,7 @@ Legge i sottotitoli del video — la traccia del player o i sottotitoli mostrati
 ★ Oltre 70 lingue di destinazione — lingua di origine rilevata automaticamente
 ★ Gratuito e illimitato: traduzione sul dispositivo (API di traduzione integrata di Chrome) + le voci del tuo sistema — nessuna carta, nessuna quota
 ★ Per avviare il doppiaggio serve un account Voxylio gratuito (accesso Google)
-★ Pro opzionale: traduzione IA contestuale — scene intere tradotte con coerenza — e voci neurali naturali in 7 lingue, con ripiego locale automatico
+★ Pro opzionale: traduzione IA contestuale (beta) — scene intere tradotte con coerenza — e voci neurali naturali in 7 lingue, con ripiego locale automatico
 ★ Glossario personale: imponi le tue traduzioni, proteggi i tuoi termini
 ★ Sottotitoli bilingui sullo schermo (originale + traduzione)
 ★ Pulsante Avvia — parte senza ricaricare la pagina e attiva per te i sottotitoli del player quando possibile
@@ -165,7 +165,7 @@ Voxylio は、動画をあなたの言語で話させます。
 ★ 70以上の対象言語 — 元言語は自動検出
 ★ 無料・無制限：オンデバイス翻訳（Chrome 内蔵の翻訳 API）＋システム音声 — カード不要、制限なし
 ★ 吹き替えの開始には無料の Voxylio アカウント（Google ログイン）が必要です
-★ オプションの Pro：文脈を理解する AI 翻訳 — シーン全体を一貫して翻訳 — と7言語の自然なニューラル音声、ローカルへの自動フォールバック付き
+★ オプションの Pro：文脈を理解する AI 翻訳（ベータ版） — シーン全体を一貫して翻訳 — と7言語の自然なニューラル音声、ローカルへの自動フォールバック付き
 ★ パーソナル用語集：訳語の固定も、用語の保護も
 ★ 画面上のバイリンガル字幕（原文＋訳文）
 ★ 開始ボタン — ページを再読み込みせずに開始し、可能ならプレーヤーの字幕も自動でオン
@@ -192,7 +192,7 @@ Voxylio는 영상이 당신의 언어로 말하게 합니다.
 ★ 70개 이상의 대상 언어 — 원어 자동 감지
 ★ 무료·무제한: 기기 내 번역(Chrome 내장 번역 API) + 시스템 음성 — 카드 불필요, 할당량 없음
 ★ 더빙을 시작하려면 무료 Voxylio 계정(Google 로그인)이 필요합니다
-★ 선택형 Pro: 문맥 AI 번역 — 장면 전체를 일관되게 번역 — 과 7개 언어의 자연스러운 신경망 음성, 자동 로컬 폴백 포함
+★ 선택형 Pro: 문맥 AI 번역(베타) — 장면 전체를 일관되게 번역 — 과 7개 언어의 자연스러운 신경망 음성, 자동 로컬 폴백 포함
 ★ 개인 용어집: 원하는 번역을 강제하고 용어를 보호하세요
 ★ 화면 이중 자막(원문 + 번역)
 ★ 시작 버튼 — 페이지 새로고침 없이 시작하고, 가능하면 플레이어 자막도 자동으로 켭니다
@@ -219,7 +219,7 @@ Ele lê as legendas do vídeo — a trilha do player ou as legendas exibidas na 
 ★ Mais de 70 idiomas de destino — idioma de origem detectado automaticamente
 ★ Grátis e ilimitado: tradução no dispositivo (API de tradução integrada do Chrome) + as vozes do seu sistema — sem cartão, sem cota
 ★ É necessária uma conta Voxylio gratuita (login com Google) para começar a dublar
-★ Pro opcional: tradução com IA contextual — cenas inteiras traduzidas com coerência — e vozes neurais naturais em 7 idiomas, com retorno automático à voz local
+★ Pro opcional: tradução com IA contextual (beta) — cenas inteiras traduzidas com coerência — e vozes neurais naturais em 7 idiomas, com retorno automático à voz local
 ★ Glossário pessoal: imponha suas traduções, proteja seus termos
 ★ Legendas bilíngues na tela (original + tradução)
 ★ Botão Iniciar — começa sem recarregar a página e ativa as legendas do player para você quando possível
@@ -246,7 +246,7 @@ Voxylio 让视频说你的语言。
 ★ 70 多种目标语言 — 自动检测源语言
 ★ 免费且无限制：设备端翻译（Chrome 内置翻译 API）+ 系统语音 — 无需绑卡、没有配额
 ★ 开始配音需要免费的 Voxylio 账号（Google 登录）
-★ 可选 Pro：上下文 AI 翻译 — 整个场景连贯翻译 — 以及 7 种语言的自然神经语音，自动回退到本地
+★ 可选 Pro：上下文 AI 翻译（测试版） — 整个场景连贯翻译 — 以及 7 种语言的自然神经语音，自动回退到本地
 ★ 个人术语表：强制你的译法，保护你的术语
 ★ 屏幕双语字幕（原文 + 译文）
 ★ 启动按钮 — 无需刷新页面即可开始，可能时还会自动打开播放器字幕
@@ -273,7 +273,7 @@ Voxylio 讓影片說你的語言。
 ★ 70 多種目標語言 — 自動偵測來源語言
 ★ 免費且無限制：裝置端翻譯（Chrome 內建翻譯 API）+ 系統語音 — 不需綁卡、沒有額度
 ★ 開始配音需要免費的 Voxylio 帳號（Google 登入）
-★ 可選 Pro：情境 AI 翻譯 — 整個場景連貫翻譯 — 以及 7 種語言的自然神經語音，自動回退到本機
+★ 可選 Pro：情境 AI 翻譯（測試版） — 整個場景連貫翻譯 — 以及 7 種語言的自然神經語音，自動回退到本機
 ★ 個人術語表：強制你的譯法，保護你的術語
 ★ 畫面雙語字幕（原文 + 譯文）
 ★ 啟動按鈕 — 不必重新整理頁面即可開始，可能時還會自動開啟播放器字幕
