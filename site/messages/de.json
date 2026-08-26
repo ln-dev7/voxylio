@@ -170,7 +170,8 @@
       "issues": "Problem melden",
       "privacy": "Datenschutz",
       "changelog": "Neuheiten",
-      "terms": "Nutzungsbedingungen"
+      "terms": "Nutzungsbedingungen",
+      "contact": "Kontakt"
     },
     "theme": {
       "label": "Design",
@@ -405,6 +406,22 @@
       "cancelTitle": "Jederzeit kündbar",
       "cancelBody": "Verwalte oder kündige über deine Kontoseite. Pro bleibt bis zum Ende des bezahlten Zeitraums aktiv — danach behältst du den vollen Gratis-Plan.",
       "close": "Schließen"
+    }
+  },
+  "Contact": {
+    "title": "Kontakt",
+    "subtitle": "Eine Frage, ein Bug, eine Idee? Wähl den passenden Kanal — wir antworten schnell.",
+    "email": {
+      "title": "E-Mail",
+      "description": "Am besten für Fragen zu Konto, Abrechnung oder Pro — auf Englisch oder Französisch."
+    },
+    "github": {
+      "title": "Bug oder Feature-Idee",
+      "description": "Eröffne ein Issue auf GitHub — der schnellste Weg zu einem nachverfolgten Fix."
+    },
+    "x": {
+      "title": "Kurze Frage",
+      "description": "Schreib uns auf X für alles Kurze."
     }
   }
 }

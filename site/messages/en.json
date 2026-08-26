@@ -170,7 +170,8 @@
       "issues": "Report an issue",
       "privacy": "Privacy",
       "changelog": "Changelog",
-      "terms": "Terms"
+      "terms": "Terms",
+      "contact": "Contact"
     },
     "theme": {
       "label": "Theme",
@@ -405,6 +406,22 @@
       "cancelTitle": "Cancel anytime",
       "cancelBody": "Manage or cancel from your account page. Pro stays active until the end of the paid period — then you keep the full free plan.",
       "close": "Close"
+    }
+  },
+  "Contact": {
+    "title": "Contact",
+    "subtitle": "A question, a bug, an idea? Pick the channel that fits — we answer quickly.",
+    "email": {
+      "title": "Email",
+      "description": "Best for account, billing or Pro questions — write in English or French."
+    },
+    "github": {
+      "title": "Bug or feature idea",
+      "description": "Open an issue on GitHub — the fastest way to get a fix tracked."
+    },
+    "x": {
+      "title": "Quick question",
+      "description": "Ping us on X for anything short."
     }
   }
 }

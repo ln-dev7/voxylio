@@ -118,6 +118,14 @@ export function SiteFooter() {
                   {t("links.terms")}
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t("links.contact")}
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>

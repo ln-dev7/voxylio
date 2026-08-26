@@ -170,7 +170,8 @@
       "issues": "回報問題",
       "privacy": "隱私權",
       "changelog": "更新日誌",
-      "terms": "服務條款"
+      "terms": "服務條款",
+      "contact": "聯絡我們"
     },
     "theme": {
       "label": "主題",
@@ -405,6 +406,22 @@
       "cancelTitle": "隨時取消",
       "cancelBody": "在帳戶頁面管理或取消。Pro 持續到已付費週期結束 — 之後你依然擁有完整的免費方案。",
       "close": "關閉"
+    }
+  },
+  "Contact": {
+    "title": "聯絡我們",
+    "subtitle": "有問題、bug 或想法？選擇合適的管道 — 我們會盡快回覆。",
+    "email": {
+      "title": "電子郵件",
+      "description": "適合帳號、付款或 Pro 相關問題（請以英文或法文來信）。"
+    },
+    "github": {
+      "title": "Bug 或功能建議",
+      "description": "在 GitHub 上開 issue — 追蹤修正的最快方式。"
+    },
+    "x": {
+      "title": "簡短提問",
+      "description": "簡短內容歡迎在 X 上聯絡我們。"
     }
   }
 }

@@ -170,7 +170,8 @@
       "issues": "Segnala un problema",
       "privacy": "Privacy",
       "changelog": "Novità",
-      "terms": "Termini"
+      "terms": "Termini",
+      "contact": "Contatti"
     },
     "theme": {
       "label": "Tema",
@@ -405,6 +406,22 @@
       "cancelTitle": "Annulla quando vuoi",
       "cancelBody": "Gestisci o annulla dalla tua pagina account. Pro resta attivo fino alla fine del periodo pagato — poi conservi il piano gratuito completo.",
       "close": "Chiudi"
+    }
+  },
+  "Contact": {
+    "title": "Contatti",
+    "subtitle": "Una domanda, un bug, un'idea? Scegli il canale che preferisci: rispondiamo in fretta.",
+    "email": {
+      "title": "Email",
+      "description": "Ideale per account, fatturazione o domande su Pro — scrivi in inglese o francese."
+    },
+    "github": {
+      "title": "Bug o idea di funzionalità",
+      "description": "Apri una issue su GitHub: il modo più rapido per tracciare una correzione."
+    },
+    "x": {
+      "title": "Domanda veloce",
+      "description": "Scrivici su X per qualsiasi cosa breve."
     }
   }
 }

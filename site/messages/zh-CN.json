@@ -170,7 +170,8 @@
       "issues": "报告问题",
       "privacy": "隐私",
       "changelog": "更新日志",
-      "terms": "服务条款"
+      "terms": "服务条款",
+      "contact": "联系我们"
     },
     "theme": {
       "label": "主题",
@@ -405,6 +406,22 @@
       "cancelTitle": "随时取消",
       "cancelBody": "在账户页面管理或取消。Pro 持续到已付费周期结束 — 之后你依然拥有完整的免费计划。",
       "close": "关闭"
+    }
+  },
+  "Contact": {
+    "title": "联系我们",
+    "subtitle": "有问题、bug 或想法？选择合适的渠道 — 我们会尽快回复。",
+    "email": {
+      "title": "邮件",
+      "description": "适合账户、付款或 Pro 相关问题（请用英语或法语来信）。"
+    },
+    "github": {
+      "title": "Bug 或功能建议",
+      "description": "在 GitHub 上提交 issue — 跟进修复的最快方式。"
+    },
+    "x": {
+      "title": "简短提问",
+      "description": "简短内容欢迎在 X 上联系我们。"
     }
   }
 }
