@@ -340,7 +340,7 @@
     "extensionError": "Impossibile raggiungere l'estensione. Apri questa pagina in Chrome con Voxylio installato.",
     "checkoutSuccess": "Pagamento ricevuto — il tuo piano Pro si attiva tra pochi secondi.",
     "upgradeYearly": "oppure 69,99 $/anno (−27%)",
-    "usageTitle": "Utilizzo Pro del mese",
+    "usageTitle": "Quota Pro residua questo mese",
     "usageTrans": "Traduzione IA (beta)",
     "usageVoice": "Voce neurale",
     "usageResets": "La quota si azzera il {date}",

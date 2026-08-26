@@ -340,7 +340,7 @@
     "extensionError": "Não foi possível contatar a extensão. Abra esta página no Chrome com o Voxylio instalado.",
     "checkoutSuccess": "Pagamento recebido — seu plano Pro será ativado em segundos.",
     "upgradeYearly": "ou US$ 69,99/ano (−27%)",
-    "usageTitle": "Uso Pro deste mês",
+    "usageTitle": "Cota Pro restante neste mês",
     "usageTrans": "Tradução IA (beta)",
     "usageVoice": "Voz neural",
     "usageResets": "A cota é renovada em {date}",

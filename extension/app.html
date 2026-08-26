@@ -287,6 +287,17 @@
     .acct-id .plan.pro { color: var(--accent); }
     .acct-id .email { font-size: 12px; color: var(--text-muted); }
     .acct-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .acct-quota { margin-top: 18px; border-top: 1px solid #1d1d1d; padding-top: 14px; display: grid; gap: 12px; }
+    .acct-quota[hidden] { display: none; }
+    .acct-quota .q-title { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    .acct-quota .q-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 12.5px; color: var(--text-muted); margin-bottom: 5px; }
+    .acct-quota .q-head b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .acct-quota .q-bar { height: 6px; border-radius: 9999px; background: var(--surface-2); overflow: hidden; }
+    .acct-quota .q-fill { height: 100%; border-radius: 9999px; background: var(--accent); transition: width 0.3s ease; }
+    .acct-quota .q-fill.low { background: #f5a623; }
+    .acct-quota .q-fill.out { background: #e5484d; }
+    .acct-quota .q-resets { font-size: 11.5px; color: var(--text-faint); margin: 0; }
+    .acct-quota .q-resets:empty { display: none; }
     .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 14px; }
     .stat { background: var(--surface); border-radius: 12px; padding: 16px 18px; }
     .stat .n { font-size: 30px; font-weight: 700; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; display: block; }
@@ -528,6 +539,31 @@
               <button class="btn primary" id="acctCta">…</button>
               <button class="btn" id="acctSignout" data-i18n="signOut" hidden>Se déconnecter</button>
             </div>
+          </div>
+          <div class="acct-quota" id="acctQuota" hidden>
+            <span class="q-title" data-i18n="quotaTitle">Quota Pro restant</span>
+            <div>
+              <div class="q-head">
+                <span data-i18n="quotaTrans">Traduction IA (bêta)</span>
+                <b id="acctQuotaTransVal"></b>
+              </div>
+              <div class="q-bar"><div class="q-fill" id="acctQuotaTransFill"></div></div>
+            </div>
+            <div>
+              <div class="q-head">
+                <span data-i18n="quotaVoice">Voix neurale</span>
+                <b id="acctQuotaVoiceVal"></b>
+              </div>
+              <div class="q-bar"><div class="q-fill" id="acctQuotaVoiceFill"></div></div>
+            </div>
+            <div id="acctQuotaAudioItem" hidden>
+              <div class="q-head">
+                <span data-i18n="quotaAudio">Audio Premium (bêta)</span>
+                <b id="acctQuotaAudioVal"></b>
+              </div>
+              <div class="q-bar"><div class="q-fill" id="acctQuotaAudioFill"></div></div>
+            </div>
+            <p class="q-resets" id="acctQuotaResets"></p>
           </div>
         </div>
 

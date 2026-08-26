@@ -340,7 +340,7 @@
     "extensionError": "拡張機能に接続できませんでした。Voxylioをインストール済みのChromeでこのページを開いてください。",
     "checkoutSuccess": "お支払いを受領しました — Proプランは数秒で有効になります。",
     "upgradeYearly": "または $69.99/年（−27%）",
-    "usageTitle": "今月のPro使用状況",
+    "usageTitle": "今月のPro残量",
     "usageTrans": "AI翻訳（ベータ版）",
     "usageVoice": "ニューラル音声",
     "usageResets": "クォータは{date}にリセットされます",

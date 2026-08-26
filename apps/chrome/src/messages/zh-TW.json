@@ -162,7 +162,7 @@
   "titleOptions": "翻譯服務商、API 金鑰、已停用網站",
   "titleAccount": "在網站上管理你的 Voxylio 帳號",
   "optKeepTerms": "保留英文技術術語（commit、build、prompt…）",
-  "quotaTitle": "本月 Pro 額度",
+  "quotaTitle": "剩餘 Pro 額度",
   "quotaTrans": "AI 翻譯（測試版）",
   "quotaVoice": "神經語音",
   "quotaResets": "{date}重置",

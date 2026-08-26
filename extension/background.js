@@ -230,6 +230,14 @@
       refreshEntitlements(!!msg.force).then(sendResponse).catch(() => sendResponse({ plan: "free", status: "none", linked: false }));
       return true;
     }
+    if (msg && msg.type === "audio-grant") {
+      audioApi({ op: "grant" }).then(sendResponse).catch((e) => sendResponse({ ok: false, error: String(e && e.message) }));
+      return true;
+    }
+    if (msg && msg.type === "audio-usage") {
+      audioApi({ op: "usage", seconds: msg.seconds }).then(sendResponse).catch((e) => sendResponse({ ok: false, error: String(e && e.message) }));
+      return true;
+    }
     if (msg && msg.type === "voxylio:link-relay" && typeof msg.token === "string" && msg.token.startsWith("vxt_")) {
       chrome.storage.local.set({ accountToken: msg.token }, () => {
         refreshEntitlements(true).then((ent) => sendResponse({ ok: true, plan: ent.plan })).catch(() => sendResponse({ ok: true, plan: "free" }));
@@ -246,6 +254,7 @@
   });
   var SITE_ORIGIN = "https://voxylio.lndev.me";
   var CHECK_MS = 24 * 60 * 60 * 1e3;
+  var PRO_CHECK_MS = 15 * 60 * 1e3;
   var GRACE_MS = 72 * 60 * 60 * 1e3;
   function clearProFlags() {
     try {
@@ -268,7 +277,8 @@
     if (!accountToken) return { plan: "free", status: "none", linked: false };
     const cached = entitlements || null;
     const age = cached ? Date.now() - (cached.checkedAt || 0) : Infinity;
-    if (cached && !force && age < CHECK_MS) return { ...cached, linked: true };
+    const ttl = cached && cached.plan === "pro" ? PRO_CHECK_MS : CHECK_MS;
+    if (cached && !force && age < ttl) return { ...cached, linked: true };
     try {
       const res = await fetch(SITE_ORIGIN + "/api/entitlements", {
         headers: { Authorization: "Bearer " + accountToken }
@@ -285,6 +295,20 @@
         status: data.status || "none",
         currentPeriodEnd: data.currentPeriodEnd || null,
         email: data.email || null,
+        // Cloud quota, rendered by the popup and the hub (docs/PRICING.md):
+        // remaining/total characters this period, and when it resets.
+        cloudCharsRemaining: data.cloudCharsRemaining ?? null,
+        ttsCharsRemaining: data.ttsCharsRemaining ?? null,
+        cloudCharsTotal: data.cloudCharsTotal ?? null,
+        ttsCharsTotal: data.ttsCharsTotal ?? null,
+        quotaResetsAt: data.quotaResetsAt || null,
+        // Premium Audio minutes (no-subtitle dubbing, beta).
+        audioSecondsRemaining: data.audioSecondsRemaining ?? null,
+        audioSecondsTotal: data.audioSecondsTotal ?? null,
+        // Full trial window; free accounts outside it are limited to the
+        // big platforms (packages/core/src/plan.js). Length is set by the
+        // server (TRIAL_DAYS) — the extension never hardcodes it.
+        trialEndsAt: data.trialEndsAt || null,
         checkedAt: Date.now()
       };
       chrome.storage.local.set({ entitlements: ent });
@@ -373,6 +397,42 @@
     return data.items;
   }
   var voiceBlockedUntil = 0;
+  var audioBlockedUntil = 0;
+  async function audioApi(payload) {
+    if (Date.now() < audioBlockedUntil)
+      return { ok: false, error: "cooling down" };
+    const { accountToken } = await getLocal({ accountToken: "" });
+    if (!accountToken) {
+      audioBlockedUntil = Date.now() + 6e4;
+      return { ok: false, error: "not signed in" };
+    }
+    const res = await fetch(SITE_ORIGIN + "/api/pro/audio", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + accountToken,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 402 || res.status === 429) {
+      audioBlockedUntil = Date.now() + 10 * 6e4;
+      return { ok: false, quota: true, remainingSeconds: 0 };
+    }
+    if (res.status === 401 || res.status === 403) {
+      audioBlockedUntil = Date.now() + 5 * 6e4;
+      return { ok: false, error: "not entitled" };
+    }
+    if (res.status === 503) {
+      audioBlockedUntil = Date.now() + 5 * 6e4;
+      return { ok: false, error: "provider unavailable" };
+    }
+    if (!res.ok) {
+      audioBlockedUntil = Date.now() + 2 * 6e4;
+      return { ok: false, error: "HTTP " + res.status };
+    }
+    return { ok: true, ...data };
+  }
   async function speakPro(msg) {
     if (Date.now() < voiceBlockedUntil) throw new Error("voice cooling down");
     const { accountToken } = await getLocal({ accountToken: "" });

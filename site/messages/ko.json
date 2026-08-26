@@ -340,7 +340,7 @@
     "extensionError": "확장 프로그램에 연결할 수 없습니다. Voxylio가 설치된 Chrome에서 이 페이지를 여세요.",
     "checkoutSuccess": "결제가 완료되었습니다 — Pro 플랜이 몇 초 안에 활성화됩니다.",
     "upgradeYearly": "또는 $69.99/년 (−27%)",
-    "usageTitle": "이번 달 Pro 사용량",
+    "usageTitle": "이번 달 남은 Pro 한도",
     "usageTrans": "AI 번역 (베타)",
     "usageVoice": "신경망 음성",
     "usageResets": "한도는 {date}에 초기화됩니다",

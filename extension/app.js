@@ -252,6 +252,11 @@
     proTranslation: false,
     // Pro neural voice (opt-in, Aura-2 languages; local voice otherwise).
     proVoice: false,
+    // Pro no-subtitle dubbing (opt-in, beta): when a video exposes no
+    // subtitles at all, capture its audio and transcribe it live
+    // (Deepgram Nova-3) — the transcript feeds the normal pipeline.
+    // Metered in minutes server-side; NO local fallback exists for this.
+    proAudio: false,
     autoPause: false,
     keepTerms: true,
     // User glossary: [{ from, to }] — `to` empty keeps the source form
@@ -291,6 +296,7 @@
         case "cloudFallback":
         case "proTranslation":
         case "proVoice":
+        case "proAudio":
         case "autoPause":
         case "keepTerms":
           out[k] = Boolean(v);
@@ -456,7 +462,7 @@ ${text}
     goPro: "Go Pro",
     manage: "Manage",
     accountNoteNotLinked: "Sign in to start dubbing.",
-    accountNoteFree: "Unlock context-aware translation and natural neural voices.",
+    accountNoteFree: "Unlock context-aware translation (beta) and natural neural voices.",
     accountNotePro: "Thanks for supporting Voxylio.",
     accountNoteProCanceled: "Subscription active until the end of the period.",
     statusSearching: "Looking for a video\u2026",
@@ -504,7 +510,7 @@ ${text}
     optBackupHint: "The export never contains API keys.",
     optPrivacy: "Privacy",
     optSaved: "Saved \u2713",
-    proBanner: "\u2726 Context-aware translation and neural voices",
+    proBanner: "\u2726 Context-aware translation (beta) and neural voices",
     signinTitle: "Sign in to start dubbing",
     signinText: "Free with a Google account. Dubbing and your settings stay on your device.",
     signinCta: "Continue with Google",
@@ -576,22 +582,34 @@ ${text}
     uiLangLabel: "Interface language",
     uiLangHint: "Applies to the popup, this page and the floating bar. Dubbing languages are chosen separately.",
     uiLangAuto: "Browser language",
-    proTransLabel: "Pro contextual translation",
-    translationPro: "Translation: Pro (contextual)",
+    proTransLabel: "Pro contextual translation (beta)",
+    translationPro: "Translation: Pro contextual (beta)",
     proVoiceLabel: "Pro neural voice",
     launchCta: "Start dubbing on this page",
     titleGoPro: "Unlock the Pro plan",
     titlePreview: "Play a voice preview",
     titleAutoPause: "Pauses the video for a few seconds when the voice falls too far behind, instead of skipping lines",
     titleLocalOnly: "Uses only Chrome's local translation: no text leaves your device. When it is unavailable, dubbing waits instead of going online.",
-    titleProTrans: "Translates with the context of nearby sentences through the Voxylio cloud (monthly allowance). When it runs out, dubbing continues locally.",
+    titleProTrans: "Translates with the context of nearby sentences through the Voxylio cloud (monthly allowance). When it runs out, dubbing continues locally. Beta feature: quality can still vary from video to video.",
     titleProVoice: "Aura-2 neural voice (7 languages: EN ES DE FR NL IT JA). For other languages, or when the allowance runs out, the local voice takes over.",
     titleRetry: "Re-runs detection of the video, subtitles and translation",
     titleDiag: "Copies a technical report to attach to a bug report",
     titleReset: "Restores all default settings",
     titleOptions: "Translation providers, API keys, disabled sites",
     titleAccount: "Manage your Voxylio account on the site",
-    optKeepTerms: "Keep technical terms in English (commit, build, prompt\u2026)"
+    optKeepTerms: "Keep technical terms in English (commit, build, prompt\u2026)",
+    quotaTitle: "Pro quota left",
+    quotaTrans: "AI translation (beta)",
+    quotaVoice: "Neural voice",
+    quotaResets: "Resets on {date}",
+    statusProSite: "This site is Pro-only. Free plan: YouTube, Netflix, Prime Video, Disney+ and Twitch.",
+    statusTrialNote: "Full trial: this site stays unlocked for $COUNT$ more day(s)",
+    proAudioLabel: "Pro no-subtitle dubbing (beta)",
+    titleProAudio: "Video with no subtitles at all? Its audio is transcribed live (60 min/month) then dubbed normally. No local fallback: minutes out, the feature waits for the next cycle. Beta feature: transcription quality can vary.",
+    quotaAudio: "Premium Audio (beta)",
+    statusAudioLive: "No subtitles: transcribing the audio live (beta) \u2014 dubbing follows in a few seconds.",
+    statusAudioQuota: "Premium Audio minutes exhausted for this month \u2014 no-subtitle dubbing (beta) resumes next cycle.",
+    statusAudioUnavailable: "This player's audio can't be captured (site protection) \u2014 no-subtitle dubbing (beta) can't work here."
   };
 
   // src/messages/fr.json
@@ -623,7 +641,7 @@ ${text}
     goPro: "Passer Pro",
     manage: "G\xE9rer",
     accountNoteNotLinked: "Connecte-toi pour activer le doublage.",
-    accountNoteFree: "D\xE9bloquez la traduction contextuelle et les voix neurales naturelles.",
+    accountNoteFree: "D\xE9bloquez la traduction contextuelle (b\xEAta) et les voix neurales naturelles.",
     accountNotePro: "Merci de soutenir Voxylio.",
     accountNoteProCanceled: "Abonnement actif jusqu\u2019\xE0 la fin de la p\xE9riode.",
     statusSearching: "Recherche d\u2019une vid\xE9o\u2026",
@@ -671,7 +689,7 @@ ${text}
     optBackupHint: "L\u2019export ne contient jamais les cl\xE9s API.",
     optPrivacy: "Confidentialit\xE9",
     optSaved: "Enregistr\xE9 \u2713",
-    proBanner: "\u2726 Traduction contextuelle et voix neurales",
+    proBanner: "\u2726 Traduction contextuelle (b\xEAta) et voix neurales",
     signinTitle: "Connecte-toi pour activer le doublage",
     signinText: "Gratuit avec un compte Google. Le doublage et tes r\xE9glages restent sur ton appareil.",
     signinCta: "Continuer avec Google",
@@ -743,22 +761,34 @@ ${text}
     uiLangLabel: "Langue de l'interface",
     uiLangHint: "S'applique au popup, \xE0 cette page et \xE0 la barre flottante. Les langues de doublage se choisissent \xE0 part.",
     uiLangAuto: "Langue du navigateur",
-    proTransLabel: "Traduction contextuelle Pro",
-    translationPro: "Traduction : Pro (contextuelle)",
+    proTransLabel: "Traduction contextuelle Pro (b\xEAta)",
+    translationPro: "Traduction : Pro contextuelle (b\xEAta)",
     proVoiceLabel: "Voix neurale Pro",
     launchCta: "Lancer le doublage sur cette page",
     titleGoPro: "D\xE9bloquer le plan Pro",
     titlePreview: "\xC9couter un aper\xE7u de la voix",
     titleAutoPause: "Met la vid\xE9o en pause quelques secondes quand la voix prend trop de retard, au lieu de sauter des phrases",
     titleLocalOnly: "N'utilise que la traduction locale de Chrome : aucun texte ne quitte votre appareil. Si elle est indisponible, le doublage attend au lieu de passer en ligne.",
-    titleProTrans: "Traduit avec le contexte des phrases voisines via le cloud Voxylio (volume mensuel). En cas de volume \xE9puis\xE9, le doublage continue en local.",
+    titleProTrans: "Traduit avec le contexte des phrases voisines via le cloud Voxylio (volume mensuel). En cas de volume \xE9puis\xE9, le doublage continue en local. Fonction en b\xEAta : la qualit\xE9 peut encore varier selon les vid\xE9os.",
     titleProVoice: "Voix neurale Aura-2 (7 langues : EN ES DE FR NL IT JA). Pour les autres langues ou si le volume est \xE9puis\xE9, la voix locale prend le relais.",
     titleRetry: "Relance la d\xE9tection de la vid\xE9o, des sous-titres et de la traduction",
     titleDiag: "Copie un diagnostic technique \xE0 joindre \xE0 un signalement",
     titleReset: "R\xE9tablit tous les r\xE9glages par d\xE9faut",
     titleOptions: "Fournisseurs de traduction, cl\xE9s API, sites d\xE9sactiv\xE9s",
     titleAccount: "G\xE9rer votre compte Voxylio sur le site",
-    optKeepTerms: "Pr\xE9server les termes techniques en anglais (commit, build, prompt\u2026)"
+    optKeepTerms: "Pr\xE9server les termes techniques en anglais (commit, build, prompt\u2026)",
+    quotaTitle: "Quota Pro restant",
+    quotaTrans: "Traduction IA (b\xEAta)",
+    quotaVoice: "Voix neurale",
+    quotaResets: "Se r\xE9initialise le {date}",
+    statusProSite: "Ce site est r\xE9serv\xE9 au Pro. En gratuit : YouTube, Netflix, Prime Video, Disney+ et Twitch.",
+    statusTrialNote: "Essai complet : ce site reste d\xE9bloqu\xE9 encore $COUNT$ j",
+    proAudioLabel: "Doublage sans sous-titres Pro (b\xEAta)",
+    titleProAudio: "Vid\xE9o sans aucun sous-titre ? L'audio est transcrit en direct (60 min/mois) puis doubl\xE9 normalement. Sans repli local : minutes \xE9puis\xE9es, la fonction attend le prochain cycle. Fonction en b\xEAta : la qualit\xE9 de transcription peut varier.",
+    quotaAudio: "Audio Premium (b\xEAta)",
+    statusAudioLive: "Aucun sous-titre : transcription en direct de l'audio (b\xEAta) \u2014 le doublage suit dans quelques secondes.",
+    statusAudioQuota: "Minutes Premium Audio \xE9puis\xE9es pour ce mois \u2014 le doublage sans sous-titres (b\xEAta) reprend au prochain cycle.",
+    statusAudioUnavailable: "Impossible de capturer l'audio de ce lecteur (protection du site) \u2014 le doublage sans sous-titres (b\xEAta) ne peut pas fonctionner ici."
   };
 
   // src/messages/es.json
@@ -790,7 +820,7 @@ ${text}
     goPro: "Pasar a Pro",
     manage: "Gestionar",
     accountNoteNotLinked: "Inicia sesi\xF3n para activar el doblaje.",
-    accountNoteFree: "Desbloquea la traducci\xF3n contextual y las voces neuronales naturales.",
+    accountNoteFree: "Desbloquea la traducci\xF3n contextual (beta) y las voces neuronales naturales.",
     accountNotePro: "Gracias por apoyar Voxylio.",
     accountNoteProCanceled: "Suscripci\xF3n activa hasta el final del per\xEDodo.",
     statusSearching: "Buscando un v\xEDdeo\u2026",
@@ -839,7 +869,7 @@ ${text}
     optBackupHint: "La exportaci\xF3n nunca contiene las claves API.",
     optPrivacy: "Privacidad",
     optSaved: "Guardado \u2713",
-    proBanner: "\u2726 Traducci\xF3n contextual y voces neuronales",
+    proBanner: "\u2726 Traducci\xF3n contextual (beta) y voces neuronales",
     signinTitle: "Inicia sesi\xF3n para activar el doblaje",
     signinText: "Gratis con una cuenta de Google. El doblaje y tus ajustes se quedan en tu dispositivo.",
     signinCta: "Continuar con Google",
@@ -910,22 +940,34 @@ ${text}
     uiLangLabel: "Idioma de la interfaz",
     uiLangHint: "Se aplica al popup, a esta p\xE1gina y a la barra flotante. Los idiomas de doblaje se eligen aparte.",
     uiLangAuto: "Idioma del navegador",
-    proTransLabel: "Traducci\xF3n contextual Pro",
-    translationPro: "Traducci\xF3n: Pro (contextual)",
+    proTransLabel: "Traducci\xF3n contextual Pro (beta)",
+    translationPro: "Traducci\xF3n: Pro contextual (beta)",
     proVoiceLabel: "Voz neuronal Pro",
     launchCta: "Iniciar el doblaje en esta p\xE1gina",
     titleGoPro: "Desbloquear el plan Pro",
     titlePreview: "Escuchar una muestra de la voz",
     titleAutoPause: "Pausa el v\xEDdeo unos segundos cuando la voz se retrasa demasiado, en lugar de saltarse frases",
     titleLocalOnly: "Usa solo la traducci\xF3n local de Chrome: ning\xFAn texto sale de tu dispositivo. Si no est\xE1 disponible, el doblaje espera en lugar de ir en l\xEDnea.",
-    titleProTrans: "Traduce con el contexto de las frases cercanas a trav\xE9s de la nube de Voxylio (volumen mensual). Si se agota, el doblaje contin\xFAa en local.",
+    titleProTrans: "Traduce con el contexto de las frases cercanas a trav\xE9s de la nube de Voxylio (volumen mensual). Si se agota, el doblaje contin\xFAa en local. Funci\xF3n en beta: la calidad a\xFAn puede variar seg\xFAn el v\xEDdeo.",
     titleProVoice: "Voz neuronal Aura-2 (7 idiomas: EN ES DE FR NL IT JA). Para otros idiomas, o si el volumen se agota, la voz local toma el relevo.",
     titleRetry: "Relanza la detecci\xF3n del v\xEDdeo, los subt\xEDtulos y la traducci\xF3n",
     titleDiag: "Copia un diagn\xF3stico t\xE9cnico para adjuntar a un reporte",
     titleReset: "Restaura todos los ajustes predeterminados",
     titleOptions: "Proveedores de traducci\xF3n, claves API, sitios desactivados",
     titleAccount: "Gestionar tu cuenta Voxylio en el sitio",
-    optKeepTerms: "Conservar los t\xE9rminos t\xE9cnicos en ingl\xE9s (commit, build, prompt\u2026)"
+    optKeepTerms: "Conservar los t\xE9rminos t\xE9cnicos en ingl\xE9s (commit, build, prompt\u2026)",
+    quotaTitle: "Cuota Pro restante",
+    quotaTrans: "Traducci\xF3n IA (beta)",
+    quotaVoice: "Voz neuronal",
+    quotaResets: "Se restablece el {date}",
+    statusProSite: "Este sitio es solo Pro. Plan gratuito: YouTube, Netflix, Prime Video, Disney+ y Twitch.",
+    statusTrialNote: "Prueba completa: este sitio sigue desbloqueado $COUNT$ d\xEDa(s) m\xE1s",
+    proAudioLabel: "Doblaje sin subt\xEDtulos Pro (beta)",
+    titleProAudio: "\xBFV\xEDdeo sin ning\xFAn subt\xEDtulo? Su audio se transcribe en directo (60 min/mes) y luego se dobla normalmente. Sin respaldo local: minutos agotados, la funci\xF3n espera al siguiente ciclo. Funci\xF3n en beta: la calidad de la transcripci\xF3n puede variar.",
+    quotaAudio: "Audio Premium (beta)",
+    statusAudioLive: "Sin subt\xEDtulos: transcribiendo el audio en directo (beta) \u2014 el doblaje llega en unos segundos.",
+    statusAudioQuota: "Minutos de Audio Premium agotados este mes \u2014 el doblaje sin subt\xEDtulos (beta) vuelve el pr\xF3ximo ciclo.",
+    statusAudioUnavailable: "No se puede capturar el audio de este reproductor (protecci\xF3n del sitio) \u2014 el doblaje sin subt\xEDtulos (beta) no puede funcionar aqu\xED."
   };
 
   // src/messages/de.json
@@ -957,7 +999,7 @@ ${text}
     goPro: "Pro holen",
     manage: "Verwalten",
     accountNoteNotLinked: "Melde dich an, um die Synchronisation zu starten.",
-    accountNoteFree: "Schalte kontextbewusste \xDCbersetzung und nat\xFCrliche neuronale Stimmen frei.",
+    accountNoteFree: "Schalte kontextuelle \xDCbersetzung (Beta) und nat\xFCrliche neuronale Stimmen frei.",
     accountNotePro: "Danke, dass du Voxylio unterst\xFCtzt.",
     accountNoteProCanceled: "Abo aktiv bis zum Ende des Zeitraums.",
     statusSearching: "Suche nach einem Video\u2026",
@@ -1006,7 +1048,7 @@ ${text}
     optBackupHint: "Der Export enth\xE4lt nie API-Schl\xFCssel.",
     optPrivacy: "Datenschutz",
     optSaved: "Gespeichert \u2713",
-    proBanner: "\u2726 Kontextbewusste \xDCbersetzung und neuronale Stimmen",
+    proBanner: "\u2726 Kontextuelle \xDCbersetzung (Beta) und neuronale Stimmen",
     signinTitle: "Melde dich an, um zu synchronisieren",
     signinText: "Gratis mit einem Google-Konto. Synchronisation und Einstellungen bleiben auf deinem Ger\xE4t.",
     signinCta: "Weiter mit Google",
@@ -1077,22 +1119,34 @@ ${text}
     uiLangLabel: "Sprache der Oberfl\xE4che",
     uiLangHint: "Gilt f\xFCr das Popup, diese Seite und die schwebende Leiste. Die Synchronsprachen w\xE4hlst du separat.",
     uiLangAuto: "Browsersprache",
-    proTransLabel: "Kontextbewusste Pro-\xDCbersetzung",
-    translationPro: "\xDCbersetzung: Pro (kontextbewusst)",
+    proTransLabel: "Kontextuelle Pro-\xDCbersetzung (Beta)",
+    translationPro: "\xDCbersetzung: Pro kontextuell (Beta)",
     proVoiceLabel: "Neuronale Pro-Stimme",
     launchCta: "Synchronisation auf dieser Seite starten",
     titleGoPro: "Pro-Plan freischalten",
     titlePreview: "Stimmprobe abspielen",
     titleAutoPause: "Pausiert das Video f\xFCr ein paar Sekunden, wenn die Stimme zu weit zur\xFCckf\xE4llt, statt S\xE4tze zu \xFCberspringen",
     titleLocalOnly: "Nutzt nur Chromes lokale \xDCbersetzung: kein Text verl\xE4sst dein Ger\xE4t. Ist sie nicht verf\xFCgbar, wartet die Synchronisation, statt online zu gehen.",
-    titleProTrans: "\xDCbersetzt mit dem Kontext der Nachbars\xE4tze \xFCber die Voxylio-Cloud (Monatskontingent). Ist es aufgebraucht, geht es lokal weiter.",
+    titleProTrans: "\xDCbersetzt mit dem Kontext der Nachbars\xE4tze \xFCber die Voxylio-Cloud (Monatskontingent). Ist es aufgebraucht, geht es lokal weiter. Beta-Funktion: Die Qualit\xE4t kann je nach Video noch variieren.",
     titleProVoice: "Neuronale Aura-2-Stimme (7 Sprachen: EN ES DE FR NL IT JA). F\xFCr andere Sprachen oder bei ersch\xF6pftem Kontingent \xFCbernimmt die lokale Stimme.",
     titleRetry: "Startet die Erkennung von Video, Untertiteln und \xDCbersetzung neu",
     titleDiag: "Kopiert einen technischen Bericht f\xFCr eine Fehlermeldung",
     titleReset: "Stellt alle Standardeinstellungen wieder her",
     titleOptions: "\xDCbersetzungsanbieter, API-Schl\xFCssel, deaktivierte Seiten",
     titleAccount: "Dein Voxylio-Konto auf der Website verwalten",
-    optKeepTerms: "Technische Begriffe auf Englisch lassen (commit, build, prompt\u2026)"
+    optKeepTerms: "Technische Begriffe auf Englisch lassen (commit, build, prompt\u2026)",
+    quotaTitle: "Verbleibendes Pro-Kontingent",
+    quotaTrans: "KI-\xDCbersetzung (Beta)",
+    quotaVoice: "Neuronale Stimme",
+    quotaResets: "Wird am {date} zur\xFCckgesetzt",
+    statusProSite: "Diese Seite ist Pro vorbehalten. Gratis: YouTube, Netflix, Prime Video, Disney+ und Twitch.",
+    statusTrialNote: "Volltest: diese Seite bleibt noch $COUNT$ Tag(e) freigeschaltet",
+    proAudioLabel: "Pro-Dubbing ohne Untertitel (Beta)",
+    titleProAudio: "Video ganz ohne Untertitel? Der Ton wird live transkribiert (60 Min./Monat) und dann normal synchronisiert. Kein lokaler Fallback: Minuten aufgebraucht, die Funktion wartet auf den n\xE4chsten Zyklus. Beta-Funktion: Die Transkriptionsqualit\xE4t kann variieren.",
+    quotaAudio: "Premium Audio (Beta)",
+    statusAudioLive: "Keine Untertitel: Der Ton wird live transkribiert (Beta) \u2014 das Dubbing folgt in wenigen Sekunden.",
+    statusAudioQuota: "Premium-Audio-Minuten f\xFCr diesen Monat aufgebraucht \u2014 Dubbing ohne Untertitel (Beta) geht im n\xE4chsten Zyklus weiter.",
+    statusAudioUnavailable: "Der Ton dieses Players l\xE4sst sich nicht erfassen (Seitenschutz) \u2014 Dubbing ohne Untertitel (Beta) funktioniert hier nicht."
   };
 
   // src/messages/it.json
@@ -1124,7 +1178,7 @@ ${text}
     goPro: "Passa a Pro",
     manage: "Gestisci",
     accountNoteNotLinked: "Accedi per attivare il doppiaggio.",
-    accountNoteFree: "Sblocca la traduzione contestuale e le voci neurali naturali.",
+    accountNoteFree: "Sblocca la traduzione contestuale (beta) e le voci neurali naturali.",
     accountNotePro: "Grazie per sostenere Voxylio.",
     accountNoteProCanceled: "Abbonamento attivo fino alla fine del periodo.",
     statusSearching: "Ricerca di un video\u2026",
@@ -1173,7 +1227,7 @@ ${text}
     optBackupHint: "L'esportazione non contiene mai le chiavi API.",
     optPrivacy: "Privacy",
     optSaved: "Salvato \u2713",
-    proBanner: "\u2726 Traduzione contestuale e voci neurali",
+    proBanner: "\u2726 Traduzione contestuale (beta) e voci neurali",
     signinTitle: "Accedi per attivare il doppiaggio",
     signinText: "Gratis con un account Google. Il doppiaggio e le tue impostazioni restano sul tuo dispositivo.",
     signinCta: "Continua con Google",
@@ -1244,22 +1298,34 @@ ${text}
     uiLangLabel: "Lingua dell'interfaccia",
     uiLangHint: "Vale per il popup, questa pagina e la barra flottante. Le lingue di doppiaggio si scelgono a parte.",
     uiLangAuto: "Lingua del browser",
-    proTransLabel: "Traduzione contestuale Pro",
-    translationPro: "Traduzione: Pro (contestuale)",
+    proTransLabel: "Traduzione contestuale Pro (beta)",
+    translationPro: "Traduzione: Pro contestuale (beta)",
     proVoiceLabel: "Voce neurale Pro",
     launchCta: "Avvia il doppiaggio su questa pagina",
     titleGoPro: "Sblocca il piano Pro",
     titlePreview: "Ascolta un'anteprima della voce",
     titleAutoPause: "Mette il video in pausa per qualche secondo quando la voce \xE8 troppo indietro, invece di saltare frasi",
     titleLocalOnly: "Usa solo la traduzione locale di Chrome: nessun testo lascia il tuo dispositivo. Se non \xE8 disponibile, il doppiaggio attende invece di andare online.",
-    titleProTrans: "Traduce con il contesto delle frasi vicine tramite il cloud Voxylio (volume mensile). Se si esaurisce, il doppiaggio continua in locale.",
+    titleProTrans: "Traduce con il contesto delle frasi vicine tramite il cloud Voxylio (volume mensile). Se si esaurisce, il doppiaggio continua in locale. Funzione in beta: la qualit\xE0 pu\xF2 ancora variare da un video all'altro.",
     titleProVoice: "Voce neurale Aura-2 (7 lingue: EN ES DE FR NL IT JA). Per le altre lingue, o a volume esaurito, subentra la voce locale.",
     titleRetry: "Rilancia il rilevamento di video, sottotitoli e traduzione",
     titleDiag: "Copia una diagnostica tecnica da allegare a una segnalazione",
     titleReset: "Ripristina tutte le impostazioni predefinite",
     titleOptions: "Fornitori di traduzione, chiavi API, siti disattivati",
     titleAccount: "Gestisci il tuo account Voxylio sul sito",
-    optKeepTerms: "Mantieni i termini tecnici in inglese (commit, build, prompt\u2026)"
+    optKeepTerms: "Mantieni i termini tecnici in inglese (commit, build, prompt\u2026)",
+    quotaTitle: "Quota Pro residua",
+    quotaTrans: "Traduzione IA (beta)",
+    quotaVoice: "Voce neurale",
+    quotaResets: "Si azzera il {date}",
+    statusProSite: "Questo sito \xE8 riservato a Pro. Piano gratuito: YouTube, Netflix, Prime Video, Disney+ e Twitch.",
+    statusTrialNote: "Prova completa: questo sito resta sbloccato ancora $COUNT$ giorno/i",
+    proAudioLabel: "Doppiaggio senza sottotitoli Pro (beta)",
+    titleProAudio: "Video senza alcun sottotitolo? L'audio viene trascritto in diretta (60 min/mese) e poi doppiato normalmente. Nessun ripiego locale: minuti esauriti, la funzione attende il ciclo successivo. Funzione in beta: la qualit\xE0 della trascrizione pu\xF2 variare.",
+    quotaAudio: "Audio Premium (beta)",
+    statusAudioLive: "Nessun sottotitolo: trascrizione dell'audio in diretta (beta) \u2014 il doppiaggio arriva tra pochi secondi.",
+    statusAudioQuota: "Minuti di Audio Premium esauriti per questo mese \u2014 il doppiaggio senza sottotitoli (beta) riprende al prossimo ciclo.",
+    statusAudioUnavailable: "Impossibile catturare l'audio di questo player (protezione del sito) \u2014 il doppiaggio senza sottotitoli (beta) non pu\xF2 funzionare qui."
   };
 
   // src/messages/ja.json
@@ -1291,7 +1357,7 @@ ${text}
     goPro: "Pro\u306B\u3059\u308B",
     manage: "\u7BA1\u7406",
     accountNoteNotLinked: "\u30ED\u30B0\u30A4\u30F3\u3057\u3066\u5439\u304D\u66FF\u3048\u3092\u6709\u52B9\u306B\u3057\u3066\u304F\u3060\u3055\u3044\u3002",
-    accountNoteFree: "\u6587\u8108\u5BFE\u5FDC\u7FFB\u8A33\u3068\u81EA\u7136\u306A\u30CB\u30E5\u30FC\u30E9\u30EB\u97F3\u58F0\u3092\u89E3\u653E\u3057\u307E\u3057\u3087\u3046\u3002",
+    accountNoteFree: "\u6587\u8108\u7FFB\u8A33\uFF08\u30D9\u30FC\u30BF\u7248\uFF09\u3068\u81EA\u7136\u306A\u30CB\u30E5\u30FC\u30E9\u30EB\u97F3\u58F0\u3092\u30A2\u30F3\u30ED\u30C3\u30AF\u3002",
     accountNotePro: "Voxylio\u3078\u306E\u3054\u652F\u63F4\u3042\u308A\u304C\u3068\u3046\u3054\u3056\u3044\u307E\u3059\u3002",
     accountNoteProCanceled: "\u671F\u9593\u7D42\u4E86\u307E\u3067\u30B5\u30D6\u30B9\u30AF\u30EA\u30D7\u30B7\u30E7\u30F3\u6709\u52B9\u3002",
     statusSearching: "\u52D5\u753B\u3092\u63A2\u3057\u3066\u3044\u307E\u3059\u2026",
@@ -1340,7 +1406,7 @@ ${text}
     optBackupHint: "\u30A8\u30AF\u30B9\u30DD\u30FC\u30C8\u306BAPI\u30AD\u30FC\u306F\u542B\u307E\u308C\u307E\u305B\u3093\u3002",
     optPrivacy: "\u30D7\u30E9\u30A4\u30D0\u30B7\u30FC",
     optSaved: "\u4FDD\u5B58\u3057\u307E\u3057\u305F \u2713",
-    proBanner: "\u2726 \u6587\u8108\u5BFE\u5FDC\u7FFB\u8A33\u3068\u30CB\u30E5\u30FC\u30E9\u30EB\u97F3\u58F0",
+    proBanner: "\u2726 \u6587\u8108\u7FFB\u8A33\uFF08\u30D9\u30FC\u30BF\u7248\uFF09\u3068\u30CB\u30E5\u30FC\u30E9\u30EB\u97F3\u58F0",
     signinTitle: "\u30ED\u30B0\u30A4\u30F3\u3057\u3066\u5439\u304D\u66FF\u3048\u3092\u958B\u59CB",
     signinText: "Google \u30A2\u30AB\u30A6\u30F3\u30C8\u3067\u7121\u6599\u3002\u5439\u304D\u66FF\u3048\u3082\u8A2D\u5B9A\u3082\u7AEF\u672B\u4E0A\u306B\u6B8B\u308A\u307E\u3059\u3002",
     signinCta: "Google \u3067\u7D9A\u884C",
@@ -1411,22 +1477,34 @@ ${text}
     uiLangLabel: "\u30A4\u30F3\u30BF\u30FC\u30D5\u30A7\u30FC\u30B9\u306E\u8A00\u8A9E",
     uiLangHint: "\u30DD\u30C3\u30D7\u30A2\u30C3\u30D7\u3001\u3053\u306E\u30DA\u30FC\u30B8\u3001\u30D5\u30ED\u30FC\u30C6\u30A3\u30F3\u30B0\u30D0\u30FC\u306B\u9069\u7528\u3055\u308C\u307E\u3059\u3002\u5439\u304D\u66FF\u3048\u8A00\u8A9E\u306F\u5225\u306B\u9078\u3073\u307E\u3059\u3002",
     uiLangAuto: "\u30D6\u30E9\u30A6\u30B6\u306E\u8A00\u8A9E",
-    proTransLabel: "Pro \u6587\u8108\u5BFE\u5FDC\u7FFB\u8A33",
-    translationPro: "\u7FFB\u8A33\uFF1APro\uFF08\u6587\u8108\u5BFE\u5FDC\uFF09",
+    proTransLabel: "Pro\u6587\u8108\u7FFB\u8A33\uFF08\u30D9\u30FC\u30BF\u7248\uFF09",
+    translationPro: "\u7FFB\u8A33\uFF1APro\u6587\u8108\uFF08\u30D9\u30FC\u30BF\u7248\uFF09",
     proVoiceLabel: "Pro \u30CB\u30E5\u30FC\u30E9\u30EB\u97F3\u58F0",
     launchCta: "\u3053\u306E\u30DA\u30FC\u30B8\u3067\u5439\u304D\u66FF\u3048\u3092\u958B\u59CB",
     titleGoPro: "Pro \u30D7\u30E9\u30F3\u3092\u89E3\u653E",
     titlePreview: "\u58F0\u306E\u30D7\u30EC\u30D3\u30E5\u30FC\u3092\u518D\u751F",
     titleAutoPause: "\u97F3\u58F0\u304C\u9045\u308C\u3059\u304E\u305F\u3068\u304D\u3001\u6587\u3092\u98DB\u3070\u3059\u4EE3\u308F\u308A\u306B\u52D5\u753B\u3092\u6570\u79D2\u4E00\u6642\u505C\u6B62\u3057\u307E\u3059",
     titleLocalOnly: "Chrome \u306E\u30ED\u30FC\u30AB\u30EB\u7FFB\u8A33\u306E\u307F\u3092\u4F7F\u7528\uFF1A\u30C6\u30AD\u30B9\u30C8\u306F\u7AEF\u672B\u306E\u5916\u306B\u51FA\u307E\u305B\u3093\u3002\u5229\u7528\u3067\u304D\u306A\u3044\u3068\u304D\u306F\u30AA\u30F3\u30E9\u30A4\u30F3\u306B\u884C\u304B\u305A\u5F85\u6A5F\u3057\u307E\u3059\u3002",
-    titleProTrans: "Voxylio \u30AF\u30E9\u30A6\u30C9\u7D4C\u7531\u3067\u524D\u5F8C\u306E\u6587\u8108\u3092\u8E0F\u307E\u3048\u3066\u7FFB\u8A33\uFF08\u6708\u9593\u67A0\uFF09\u3002\u4F7F\u3044\u5207\u3063\u3066\u3082\u5439\u304D\u66FF\u3048\u306F\u30ED\u30FC\u30AB\u30EB\u3067\u7D9A\u304D\u307E\u3059\u3002",
+    titleProTrans: "Voxylio \u30AF\u30E9\u30A6\u30C9\u7D4C\u7531\u3067\u524D\u5F8C\u306E\u6587\u8108\u3092\u8E0F\u307E\u3048\u3066\u7FFB\u8A33\uFF08\u6708\u9593\u67A0\uFF09\u3002\u4F7F\u3044\u5207\u3063\u3066\u3082\u5439\u304D\u66FF\u3048\u306F\u30ED\u30FC\u30AB\u30EB\u3067\u7D9A\u304D\u307E\u3059\u3002 \u30D9\u30FC\u30BF\u6A5F\u80FD\uFF1A\u54C1\u8CEA\u306F\u52D5\u753B\u306B\u3088\u3063\u3066\u307E\u3060\u3070\u3089\u3064\u304F\u3053\u3068\u304C\u3042\u308A\u307E\u3059\u3002",
     titleProVoice: "Aura-2 \u30CB\u30E5\u30FC\u30E9\u30EB\u97F3\u58F0\uFF087\u8A00\u8A9E\uFF1AEN ES DE FR NL IT JA\uFF09\u3002\u4ED6\u306E\u8A00\u8A9E\u3084\u67A0\u3092\u4F7F\u3044\u5207\u3063\u305F\u5834\u5408\u306F\u30ED\u30FC\u30AB\u30EB\u97F3\u58F0\u304C\u5F15\u304D\u7D99\u304E\u307E\u3059\u3002",
     titleRetry: "\u52D5\u753B\u30FB\u5B57\u5E55\u30FB\u7FFB\u8A33\u306E\u691C\u51FA\u3092\u3084\u308A\u76F4\u3057\u307E\u3059",
     titleDiag: "\u4E0D\u5177\u5408\u5831\u544A\u306B\u6DFB\u3048\u308B\u6280\u8853\u8A3A\u65AD\u3092\u30B3\u30D4\u30FC\u3057\u307E\u3059",
     titleReset: "\u3059\u3079\u3066\u306E\u8A2D\u5B9A\u3092\u65E2\u5B9A\u5024\u306B\u623B\u3057\u307E\u3059",
     titleOptions: "\u7FFB\u8A33\u30D7\u30ED\u30D0\u30A4\u30C0\u30FC\u3001API \u30AD\u30FC\u3001\u7121\u52B9\u5316\u30B5\u30A4\u30C8",
     titleAccount: "\u30B5\u30A4\u30C8\u3067 Voxylio \u30A2\u30AB\u30A6\u30F3\u30C8\u3092\u7BA1\u7406",
-    optKeepTerms: "\u6280\u8853\u7528\u8A9E\u3092\u82F1\u8A9E\u306E\u307E\u307E\u6B8B\u3059\uFF08commit\u3001build\u3001prompt\u2026\uFF09"
+    optKeepTerms: "\u6280\u8853\u7528\u8A9E\u3092\u82F1\u8A9E\u306E\u307E\u307E\u6B8B\u3059\uFF08commit\u3001build\u3001prompt\u2026\uFF09",
+    quotaTitle: "Pro\u6B8B\u91CF",
+    quotaTrans: "AI\u7FFB\u8A33\uFF08\u30D9\u30FC\u30BF\u7248\uFF09",
+    quotaVoice: "\u30CB\u30E5\u30FC\u30E9\u30EB\u97F3\u58F0",
+    quotaResets: "{date}\u306B\u30EA\u30BB\u30C3\u30C8",
+    statusProSite: "\u3053\u306E\u30B5\u30A4\u30C8\u306FPro\u5C02\u7528\u3067\u3059\u3002\u7121\u6599\u30D7\u30E9\u30F3\uFF1AYouTube\u3001Netflix\u3001Prime Video\u3001Disney+\u3001Twitch\u3002",
+    statusTrialNote: "\u30D5\u30EB\u4F53\u9A13\u4E2D\uFF1A\u3053\u306E\u30B5\u30A4\u30C8\u306F\u3042\u3068$COUNT$\u65E5\u5229\u7528\u3067\u304D\u307E\u3059",
+    proAudioLabel: "\u5B57\u5E55\u306A\u3057\u52D5\u753B\u306EPro\u5439\u304D\u66FF\u3048\uFF08\u30D9\u30FC\u30BF\u7248\uFF09",
+    titleProAudio: "\u5B57\u5E55\u304C\u307E\u3063\u305F\u304F\u306A\u3044\u52D5\u753B\uFF1F\u97F3\u58F0\u3092\u30E9\u30A4\u30D6\u3067\u6587\u5B57\u8D77\u3053\u3057\uFF08\u670860\u5206\uFF09\u3057\u3001\u901A\u5E38\u3069\u304A\u308A\u5439\u304D\u66FF\u3048\u307E\u3059\u3002\u30ED\u30FC\u30AB\u30EB\u306E\u4EE3\u66FF\u306A\u3057\uFF1A\u5206\u6570\u3092\u4F7F\u3044\u5207\u308B\u3068\u6B21\u306E\u30B5\u30A4\u30AF\u30EB\u307E\u3067\u5F85\u6A5F\u3057\u307E\u3059\u3002 \u30D9\u30FC\u30BF\u6A5F\u80FD\uFF1A\u6587\u5B57\u8D77\u3053\u3057\u306E\u54C1\u8CEA\u306F\u5909\u52D5\u3059\u308B\u3053\u3068\u304C\u3042\u308A\u307E\u3059\u3002",
+    quotaAudio: "\u30D7\u30EC\u30DF\u30A2\u30E0\u97F3\u58F0\uFF08\u30D9\u30FC\u30BF\u7248\uFF09",
+    statusAudioLive: "\u5B57\u5E55\u306A\u3057\uFF1A\u97F3\u58F0\u3092\u30E9\u30A4\u30D6\u3067\u6587\u5B57\u8D77\u3053\u3057\u4E2D\uFF08\u30D9\u30FC\u30BF\u7248\uFF09 \u2014 \u6570\u79D2\u5F8C\u306B\u5439\u304D\u66FF\u3048\u304C\u59CB\u307E\u308A\u307E\u3059\u3002",
+    statusAudioQuota: "\u4ECA\u6708\u306E\u30D7\u30EC\u30DF\u30A2\u30E0\u97F3\u58F0\u306E\u5206\u6570\u3092\u4F7F\u3044\u5207\u308A\u307E\u3057\u305F \u2014 \u5B57\u5E55\u306A\u3057\u5439\u304D\u66FF\u3048\uFF08\u30D9\u30FC\u30BF\u7248\uFF09\u306F\u6B21\u306E\u30B5\u30A4\u30AF\u30EB\u3067\u518D\u958B\u3057\u307E\u3059\u3002",
+    statusAudioUnavailable: "\u3053\u306E\u30D7\u30EC\u30FC\u30E4\u30FC\u306E\u97F3\u58F0\u306F\u30AD\u30E3\u30D7\u30C1\u30E3\u3067\u304D\u307E\u305B\u3093\uFF08\u30B5\u30A4\u30C8\u4FDD\u8B77\uFF09\u2014 \u3053\u3053\u3067\u306F\u5B57\u5E55\u306A\u3057\u5439\u304D\u66FF\u3048\uFF08\u30D9\u30FC\u30BF\u7248\uFF09\u306F\u52D5\u4F5C\u3057\u307E\u305B\u3093\u3002"
   };
 
   // src/messages/ko.json
@@ -1458,7 +1536,7 @@ ${text}
     goPro: "Pro \uC2DC\uC791",
     manage: "\uAD00\uB9AC",
     accountNoteNotLinked: "\uB85C\uADF8\uC778\uD558\uBA74 \uB354\uBE59\uC774 \uD65C\uC131\uD654\uB429\uB2C8\uB2E4.",
-    accountNoteFree: "\uBB38\uB9E5 \uC778\uC2DD \uBC88\uC5ED\uACFC \uC790\uC5F0\uC2A4\uB7EC\uC6B4 \uC2E0\uACBD\uB9DD \uC74C\uC131\uC744 \uC7A0\uAE08 \uD574\uC81C\uD558\uC138\uC694.",
+    accountNoteFree: "\uBB38\uB9E5 \uBC88\uC5ED(\uBCA0\uD0C0)\uACFC \uC790\uC5F0\uC2A4\uB7EC\uC6B4 \uC2E0\uACBD\uB9DD \uC74C\uC131\uC744 \uC7A0\uAE08 \uD574\uC81C\uD558\uC138\uC694.",
     accountNotePro: "Voxylio\uB97C \uC751\uC6D0\uD574 \uC8FC\uC154\uC11C \uAC10\uC0AC\uD569\uB2C8\uB2E4.",
     accountNoteProCanceled: "\uAE30\uAC04 \uC885\uB8CC\uAE4C\uC9C0 \uAD6C\uB3C5 \uC720\uD6A8.",
     statusSearching: "\uB3D9\uC601\uC0C1\uC744 \uCC3E\uB294 \uC911\u2026",
@@ -1507,7 +1585,7 @@ ${text}
     optBackupHint: "\uB0B4\uBCF4\uB0B4\uAE30\uC5D0\uB294 API \uD0A4\uAC00 \uD3EC\uD568\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.",
     optPrivacy: "\uAC1C\uC778\uC815\uBCF4",
     optSaved: "\uC800\uC7A5\uB428 \u2713",
-    proBanner: "\u2726 \uBB38\uB9E5 \uC778\uC2DD \uBC88\uC5ED\uACFC \uC2E0\uACBD\uB9DD \uC74C\uC131",
+    proBanner: "\u2726 \uBB38\uB9E5 \uBC88\uC5ED(\uBCA0\uD0C0)\uACFC \uC2E0\uACBD\uB9DD \uC74C\uC131",
     signinTitle: "\uB85C\uADF8\uC778\uD558\uACE0 \uB354\uBE59\uC744 \uC2DC\uC791\uD558\uC138\uC694",
     signinText: "Google \uACC4\uC815\uC73C\uB85C \uBB34\uB8CC. \uB354\uBE59\uACFC \uC124\uC815\uC740 \uAE30\uAE30\uC5D0 \uB0A8\uC2B5\uB2C8\uB2E4.",
     signinCta: "Google\uB85C \uACC4\uC18D",
@@ -1578,22 +1656,34 @@ ${text}
     uiLangLabel: "\uC778\uD130\uD398\uC774\uC2A4 \uC5B8\uC5B4",
     uiLangHint: "\uD31D\uC5C5, \uC774 \uD398\uC774\uC9C0, \uD50C\uB85C\uD305 \uBC14\uC5D0 \uC801\uC6A9\uB429\uB2C8\uB2E4. \uB354\uBE59 \uC5B8\uC5B4\uB294 \uB530\uB85C \uC120\uD0DD\uD569\uB2C8\uB2E4.",
     uiLangAuto: "\uBE0C\uB77C\uC6B0\uC800 \uC5B8\uC5B4",
-    proTransLabel: "Pro \uBB38\uB9E5 \uC778\uC2DD \uBC88\uC5ED",
-    translationPro: "\uBC88\uC5ED: Pro(\uBB38\uB9E5 \uC778\uC2DD)",
+    proTransLabel: "Pro \uBB38\uB9E5 \uBC88\uC5ED (\uBCA0\uD0C0)",
+    translationPro: "\uBC88\uC5ED: Pro \uBB38\uB9E5 (\uBCA0\uD0C0)",
     proVoiceLabel: "Pro \uC2E0\uACBD\uB9DD \uC74C\uC131",
     launchCta: "\uC774 \uD398\uC774\uC9C0\uC5D0\uC11C \uB354\uBE59 \uC2DC\uC791",
     titleGoPro: "Pro \uD50C\uB79C \uC7A0\uAE08 \uD574\uC81C",
     titlePreview: "\uBAA9\uC18C\uB9AC \uBBF8\uB9AC\uB4E3\uAE30",
     titleAutoPause: "\uC74C\uC131\uC774 \uB108\uBB34 \uB4A4\uCC98\uC9C0\uBA74 \uBB38\uC7A5\uC744 \uAC74\uB108\uB6F0\uB294 \uB300\uC2E0 \uC601\uC0C1\uC744 \uBA87 \uCD08 \uC77C\uC2DC\uC815\uC9C0\uD569\uB2C8\uB2E4",
     titleLocalOnly: "Chrome \uB85C\uCEEC \uBC88\uC5ED\uB9CC \uC0AC\uC6A9: \uD14D\uC2A4\uD2B8\uAC00 \uAE30\uAE30\uB97C \uB5A0\uB098\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4. \uC0AC\uC6A9\uD560 \uC218 \uC5C6\uC73C\uBA74 \uC628\uB77C\uC778\uC73C\uB85C \uAC00\uB294 \uB300\uC2E0 \uAE30\uB2E4\uB9BD\uB2C8\uB2E4.",
-    titleProTrans: "Voxylio \uD074\uB77C\uC6B0\uB4DC\uB85C \uC8FC\uBCC0 \uBB38\uC7A5\uC758 \uBB38\uB9E5\uAE4C\uC9C0 \uBC18\uC601\uD574 \uBC88\uC5ED(\uC6D4\uAC04 \uC0AC\uC6A9\uB7C9). \uC18C\uC9C4\uB3FC\uB3C4 \uB354\uBE59\uC740 \uB85C\uCEEC\uB85C \uACC4\uC18D\uB429\uB2C8\uB2E4.",
+    titleProTrans: "Voxylio \uD074\uB77C\uC6B0\uB4DC\uB85C \uC8FC\uBCC0 \uBB38\uC7A5\uC758 \uBB38\uB9E5\uAE4C\uC9C0 \uBC18\uC601\uD574 \uBC88\uC5ED(\uC6D4\uAC04 \uC0AC\uC6A9\uB7C9). \uC18C\uC9C4\uB3FC\uB3C4 \uB354\uBE59\uC740 \uB85C\uCEEC\uB85C \uACC4\uC18D\uB429\uB2C8\uB2E4. \uBCA0\uD0C0 \uAE30\uB2A5: \uC601\uC0C1\uC5D0 \uB530\uB77C \uD488\uC9C8\uC774 \uC544\uC9C1 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC2B5\uB2C8\uB2E4.",
     titleProVoice: "Aura-2 \uC2E0\uACBD\uB9DD \uC74C\uC131(7\uAC1C \uC5B8\uC5B4: EN ES DE FR NL IT JA). \uB2E4\uB978 \uC5B8\uC5B4\uB098 \uC0AC\uC6A9\uB7C9 \uC18C\uC9C4 \uC2DC \uB85C\uCEEC \uC74C\uC131\uC774 \uC774\uC5B4\uBC1B\uC2B5\uB2C8\uB2E4.",
     titleRetry: "\uC601\uC0C1\xB7\uC790\uB9C9\xB7\uBC88\uC5ED \uAC10\uC9C0\uB97C \uB2E4\uC2DC \uC2E4\uD589\uD569\uB2C8\uB2E4",
     titleDiag: "\uBC84\uADF8 \uC2E0\uACE0\uC5D0 \uCCA8\uBD80\uD560 \uAE30\uC220 \uC9C4\uB2E8\uC744 \uBCF5\uC0AC\uD569\uB2C8\uB2E4",
     titleReset: "\uBAA8\uB4E0 \uC124\uC815\uC744 \uAE30\uBCF8\uAC12\uC73C\uB85C \uB418\uB3CC\uB9BD\uB2C8\uB2E4",
     titleOptions: "\uBC88\uC5ED \uC81C\uACF5\uC790, API \uD0A4, \uBE44\uD65C\uC131\uD654\uD55C \uC0AC\uC774\uD2B8",
     titleAccount: "\uC0AC\uC774\uD2B8\uC5D0\uC11C Voxylio \uACC4\uC815 \uAD00\uB9AC",
-    optKeepTerms: "\uAE30\uC220 \uC6A9\uC5B4\uB97C \uC601\uC5B4\uB85C \uC720\uC9C0(commit, build, prompt\u2026)"
+    optKeepTerms: "\uAE30\uC220 \uC6A9\uC5B4\uB97C \uC601\uC5B4\uB85C \uC720\uC9C0(commit, build, prompt\u2026)",
+    quotaTitle: "\uB0A8\uC740 Pro \uD55C\uB3C4",
+    quotaTrans: "AI \uBC88\uC5ED (\uBCA0\uD0C0)",
+    quotaVoice: "\uC2E0\uACBD\uB9DD \uC74C\uC131",
+    quotaResets: "{date}\uC5D0 \uCD08\uAE30\uD654",
+    statusProSite: "\uC774 \uC0AC\uC774\uD2B8\uB294 Pro \uC804\uC6A9\uC785\uB2C8\uB2E4. \uBB34\uB8CC \uD50C\uB79C: YouTube, Netflix, Prime Video, Disney+, Twitch.",
+    statusTrialNote: "\uC804\uCCB4 \uCCB4\uD5D8: \uC774 \uC0AC\uC774\uD2B8\uB294 $COUNT$\uC77C \uB354 \uC774\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4",
+    proAudioLabel: "\uC790\uB9C9 \uC5C6\uB294 \uC601\uC0C1 Pro \uB354\uBE59 (\uBCA0\uD0C0)",
+    titleProAudio: "\uC790\uB9C9\uC774 \uC804\uD600 \uC5C6\uB294 \uC601\uC0C1\uC778\uAC00\uC694? \uC624\uB514\uC624\uB97C \uC2E4\uC2DC\uAC04\uC73C\uB85C \uC804\uC0AC(\uC6D4 60\uBD84)\uD55C \uB4A4 \uD3C9\uC18C\uCC98\uB7FC \uB354\uBE59\uD569\uB2C8\uB2E4. \uB85C\uCEEC \uB300\uCCB4 \uC5C6\uC74C: \uBD84\uC744 \uB2E4 \uC4F0\uBA74 \uB2E4\uC74C \uC8FC\uAE30\uAE4C\uC9C0 \uAE30\uB2E4\uB9BD\uB2C8\uB2E4. \uBCA0\uD0C0 \uAE30\uB2A5: \uC804\uC0AC \uD488\uC9C8\uC740 \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC2B5\uB2C8\uB2E4.",
+    quotaAudio: "\uD504\uB9AC\uBBF8\uC5C4 \uC624\uB514\uC624 (\uBCA0\uD0C0)",
+    statusAudioLive: "\uC790\uB9C9 \uC5C6\uC74C: \uC624\uB514\uC624\uB97C \uC2E4\uC2DC\uAC04 \uC804\uC0AC \uC911(\uBCA0\uD0C0) \u2014 \uBA87 \uCD08 \uD6C4 \uB354\uBE59\uC774 \uC2DC\uC791\uB429\uB2C8\uB2E4.",
+    statusAudioQuota: "\uC774\uBC88 \uB2EC \uD504\uB9AC\uBBF8\uC5C4 \uC624\uB514\uC624 \uBD84\uC744 \uBAA8\uB450 \uC0AC\uC6A9\uD588\uC2B5\uB2C8\uB2E4 \u2014 \uC790\uB9C9 \uC5C6\uB294 \uB354\uBE59(\uBCA0\uD0C0)\uC740 \uB2E4\uC74C \uC8FC\uAE30\uC5D0 \uC7AC\uAC1C\uB429\uB2C8\uB2E4.",
+    statusAudioUnavailable: "\uC774 \uD50C\uB808\uC774\uC5B4\uC758 \uC624\uB514\uC624\uB97C \uCEA1\uCC98\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4(\uC0AC\uC774\uD2B8 \uBCF4\uD638) \u2014 \uC5EC\uAE30\uC11C\uB294 \uC790\uB9C9 \uC5C6\uB294 \uB354\uBE59(\uBCA0\uD0C0)\uC774 \uC791\uB3D9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."
   };
 
   // src/messages/zh-CN.json
@@ -1625,7 +1715,7 @@ ${text}
     goPro: "\u5347\u7EA7 Pro",
     manage: "\u7BA1\u7406",
     accountNoteNotLinked: "\u767B\u5F55\u540E\u5373\u53EF\u542F\u7528\u914D\u97F3\u3002",
-    accountNoteFree: "\u89E3\u9501\u4E0A\u4E0B\u6587\u7FFB\u8BD1\u4E0E\u81EA\u7136\u7684\u795E\u7ECF\u8BED\u97F3\u3002",
+    accountNoteFree: "\u89E3\u9501\u4E0A\u4E0B\u6587\u7FFB\u8BD1\uFF08\u6D4B\u8BD5\u7248\uFF09\u548C\u81EA\u7136\u7684\u795E\u7ECF\u8BED\u97F3\u3002",
     accountNotePro: "\u611F\u8C22\u4F60\u652F\u6301 Voxylio\u3002",
     accountNoteProCanceled: "\u8BA2\u9605\u6709\u6548\u671F\u81F3\u672C\u671F\u7ED3\u675F\u3002",
     statusSearching: "\u6B63\u5728\u5BFB\u627E\u89C6\u9891\u2026",
@@ -1674,7 +1764,7 @@ ${text}
     optBackupHint: "\u5BFC\u51FA\u5185\u5BB9\u7EDD\u4E0D\u5305\u542B API \u5BC6\u94A5\u3002",
     optPrivacy: "\u9690\u79C1",
     optSaved: "\u5DF2\u4FDD\u5B58 \u2713",
-    proBanner: "\u2726 \u4E0A\u4E0B\u6587\u7FFB\u8BD1\u4E0E\u795E\u7ECF\u8BED\u97F3",
+    proBanner: "\u2726 \u4E0A\u4E0B\u6587\u7FFB\u8BD1\uFF08\u6D4B\u8BD5\u7248\uFF09\u4E0E\u795E\u7ECF\u8BED\u97F3",
     signinTitle: "\u767B\u5F55\u4EE5\u542F\u7528\u914D\u97F3",
     signinText: "\u7528 Google \u8D26\u6237\u5373\u53EF\uFF0C\u514D\u8D39\u3002\u914D\u97F3\u548C\u8BBE\u7F6E\u90FD\u7559\u5728\u4F60\u7684\u8BBE\u5907\u4E0A\u3002",
     signinCta: "\u7528 Google \u7EE7\u7EED",
@@ -1745,22 +1835,34 @@ ${text}
     uiLangLabel: "\u754C\u9762\u8BED\u8A00",
     uiLangHint: "\u4F5C\u7528\u4E8E\u5F39\u7A97\u3001\u672C\u9875\u9762\u548C\u60AC\u6D6E\u6761\u3002\u914D\u97F3\u8BED\u8A00\u53E6\u884C\u9009\u62E9\u3002",
     uiLangAuto: "\u6D4F\u89C8\u5668\u8BED\u8A00",
-    proTransLabel: "Pro \u4E0A\u4E0B\u6587\u7FFB\u8BD1",
-    translationPro: "\u7FFB\u8BD1\uFF1APro\uFF08\u7ED3\u5408\u4E0A\u4E0B\u6587\uFF09",
+    proTransLabel: "Pro \u4E0A\u4E0B\u6587\u7FFB\u8BD1\uFF08\u6D4B\u8BD5\u7248\uFF09",
+    translationPro: "\u7FFB\u8BD1\uFF1APro \u4E0A\u4E0B\u6587\uFF08\u6D4B\u8BD5\u7248\uFF09",
     proVoiceLabel: "Pro \u795E\u7ECF\u8BED\u97F3",
     launchCta: "\u5728\u6B64\u9875\u9762\u5F00\u59CB\u914D\u97F3",
     titleGoPro: "\u89E3\u9501 Pro \u8BA1\u5212",
     titlePreview: "\u8BD5\u542C\u8FD9\u4E2A\u58F0\u97F3",
     titleAutoPause: "\u5F53\u8BED\u97F3\u843D\u540E\u592A\u591A\u65F6\uFF0C\u6682\u505C\u89C6\u9891\u51E0\u79D2\uFF0C\u800C\u4E0D\u662F\u8DF3\u8FC7\u53E5\u5B50",
     titleLocalOnly: "\u4EC5\u4F7F\u7528 Chrome \u672C\u5730\u7FFB\u8BD1\uFF1A\u4EFB\u4F55\u6587\u672C\u90FD\u4E0D\u4F1A\u79BB\u5F00\u4F60\u7684\u8BBE\u5907\u3002\u4E0D\u53EF\u7528\u65F6\uFF0C\u914D\u97F3\u4F1A\u7B49\u5F85\u800C\u4E0D\u662F\u8054\u7F51\u3002",
-    titleProTrans: "\u901A\u8FC7 Voxylio \u4E91\u7AEF\u7ED3\u5408\u4E0A\u4E0B\u6587\u7FFB\u8BD1\uFF08\u6708\u5EA6\u7528\u91CF\uFF09\u3002\u7528\u5B8C\u540E\u914D\u97F3\u7EE7\u7EED\u5728\u672C\u5730\u8FDB\u884C\u3002",
+    titleProTrans: "\u901A\u8FC7 Voxylio \u4E91\u7AEF\u7ED3\u5408\u4E0A\u4E0B\u6587\u7FFB\u8BD1\uFF08\u6708\u5EA6\u7528\u91CF\uFF09\u3002\u7528\u5B8C\u540E\u914D\u97F3\u7EE7\u7EED\u5728\u672C\u5730\u8FDB\u884C\u3002 \u6D4B\u8BD5\u7248\u529F\u80FD\uFF1A\u8D28\u91CF\u5728\u4E0D\u540C\u89C6\u9891\u95F4\u4ECD\u53EF\u80FD\u6709\u6240\u5DEE\u5F02\u3002",
     titleProVoice: "Aura-2 \u795E\u7ECF\u8BED\u97F3\uFF087 \u79CD\u8BED\u8A00\uFF1AEN ES DE FR NL IT JA\uFF09\u3002\u5176\u4ED6\u8BED\u8A00\u6216\u7528\u91CF\u8017\u5C3D\u65F6\uFF0C\u672C\u5730\u8BED\u97F3\u63A5\u624B\u3002",
     titleRetry: "\u91CD\u65B0\u68C0\u6D4B\u89C6\u9891\u3001\u5B57\u5E55\u548C\u7FFB\u8BD1",
     titleDiag: "\u590D\u5236\u6280\u672F\u8BCA\u65AD\uFF0C\u4FBF\u4E8E\u9644\u5728\u53CD\u9988\u4E2D",
     titleReset: "\u6062\u590D\u6240\u6709\u9ED8\u8BA4\u8BBE\u7F6E",
     titleOptions: "\u7FFB\u8BD1\u670D\u52A1\u5546\u3001API \u5BC6\u94A5\u3001\u5DF2\u505C\u7528\u7F51\u7AD9",
     titleAccount: "\u5728\u7F51\u7AD9\u4E0A\u7BA1\u7406\u4F60\u7684 Voxylio \u8D26\u53F7",
-    optKeepTerms: "\u4FDD\u7559\u82F1\u6587\u6280\u672F\u672F\u8BED\uFF08commit\u3001build\u3001prompt\u2026\uFF09"
+    optKeepTerms: "\u4FDD\u7559\u82F1\u6587\u6280\u672F\u672F\u8BED\uFF08commit\u3001build\u3001prompt\u2026\uFF09",
+    quotaTitle: "\u5269\u4F59 Pro \u989D\u5EA6",
+    quotaTrans: "AI \u7FFB\u8BD1\uFF08\u6D4B\u8BD5\u7248\uFF09",
+    quotaVoice: "\u795E\u7ECF\u8BED\u97F3",
+    quotaResets: "{date}\u91CD\u7F6E",
+    statusProSite: "\u6B64\u7F51\u7AD9\u4E3A Pro \u4E13\u4EAB\u3002\u514D\u8D39\u7248\uFF1AYouTube\u3001Netflix\u3001Prime Video\u3001Disney+ \u548C Twitch\u3002",
+    statusTrialNote: "\u5B8C\u6574\u8BD5\u7528\uFF1A\u6B64\u7F51\u7AD9\u8FD8\u53EF\u4F7F\u7528 $COUNT$ \u5929",
+    proAudioLabel: "\u65E0\u5B57\u5E55\u89C6\u9891 Pro \u914D\u97F3\uFF08\u6D4B\u8BD5\u7248\uFF09",
+    titleProAudio: "\u89C6\u9891\u5B8C\u5168\u6CA1\u6709\u5B57\u5E55\uFF1F\u5176\u97F3\u9891\u5C06\u88AB\u5B9E\u65F6\u8F6C\u5199\uFF08\u6BCF\u6708 60 \u5206\u949F\uFF09\uFF0C\u7136\u540E\u6B63\u5E38\u914D\u97F3\u3002\u65E0\u672C\u5730\u56DE\u9000\uFF1A\u5206\u949F\u7528\u5B8C\u540E\uFF0C\u8BE5\u529F\u80FD\u7B49\u5F85\u4E0B\u4E00\u5468\u671F\u3002 \u6D4B\u8BD5\u7248\u529F\u80FD\uFF1A\u8F6C\u5199\u8D28\u91CF\u53EF\u80FD\u6709\u6240\u5DEE\u5F02\u3002",
+    quotaAudio: "\u9AD8\u7EA7\u97F3\u9891\uFF08\u6D4B\u8BD5\u7248\uFF09",
+    statusAudioLive: "\u65E0\u5B57\u5E55\uFF1A\u6B63\u5728\u5B9E\u65F6\u8F6C\u5199\u97F3\u9891\uFF08\u6D4B\u8BD5\u7248\uFF09 \u2014 \u914D\u97F3\u5C06\u5728\u51E0\u79D2\u540E\u5F00\u59CB\u3002",
+    statusAudioQuota: "\u672C\u6708\u9AD8\u7EA7\u97F3\u9891\u5206\u949F\u5DF2\u7528\u5B8C \u2014 \u65E0\u5B57\u5E55\u914D\u97F3\uFF08\u6D4B\u8BD5\u7248\uFF09\u5C06\u5728\u4E0B\u4E00\u5468\u671F\u6062\u590D\u3002",
+    statusAudioUnavailable: "\u65E0\u6CD5\u6355\u83B7\u6B64\u64AD\u653E\u5668\u7684\u97F3\u9891\uFF08\u7AD9\u70B9\u4FDD\u62A4\uFF09\u2014 \u65E0\u5B57\u5E55\u914D\u97F3\uFF08\u6D4B\u8BD5\u7248\uFF09\u5728\u6B64\u65E0\u6CD5\u5DE5\u4F5C\u3002"
   };
 
   // src/messages/zh-TW.json
@@ -1792,7 +1894,7 @@ ${text}
     goPro: "\u5347\u7D1A Pro",
     manage: "\u7BA1\u7406",
     accountNoteNotLinked: "\u767B\u5165\u5F8C\u5373\u53EF\u555F\u7528\u914D\u97F3\u3002",
-    accountNoteFree: "\u89E3\u9396\u4E0A\u4E0B\u6587\u7FFB\u8B6F\u8207\u81EA\u7136\u7684\u795E\u7D93\u8A9E\u97F3\u3002",
+    accountNoteFree: "\u89E3\u9396\u4E0A\u4E0B\u6587\u7FFB\u8B6F\uFF08\u6E2C\u8A66\u7248\uFF09\u548C\u81EA\u7136\u7684\u795E\u7D93\u8A9E\u97F3\u3002",
     accountNotePro: "\u611F\u8B1D\u4F60\u652F\u6301 Voxylio\u3002",
     accountNoteProCanceled: "\u8A02\u95B1\u6709\u6548\u81F3\u672C\u671F\u7D50\u675F\u3002",
     statusSearching: "\u6B63\u5728\u5C0B\u627E\u5F71\u7247\u2026",
@@ -1841,7 +1943,7 @@ ${text}
     optBackupHint: "\u532F\u51FA\u5167\u5BB9\u7D55\u4E0D\u5305\u542B API \u91D1\u9470\u3002",
     optPrivacy: "\u96B1\u79C1",
     optSaved: "\u5DF2\u5132\u5B58 \u2713",
-    proBanner: "\u2726 \u4E0A\u4E0B\u6587\u7FFB\u8B6F\u8207\u795E\u7D93\u8A9E\u97F3",
+    proBanner: "\u2726 \u4E0A\u4E0B\u6587\u7FFB\u8B6F\uFF08\u6E2C\u8A66\u7248\uFF09\u8207\u795E\u7D93\u8A9E\u97F3",
     signinTitle: "\u767B\u5165\u4EE5\u555F\u7528\u914D\u97F3",
     signinText: "\u7528 Google \u5E33\u6236\u5373\u53EF\uFF0C\u514D\u8CBB\u3002\u914D\u97F3\u8207\u8A2D\u5B9A\u90FD\u7559\u5728\u4F60\u7684\u88DD\u7F6E\u4E0A\u3002",
     signinCta: "\u7528 Google \u7E7C\u7E8C",
@@ -1912,22 +2014,34 @@ ${text}
     uiLangLabel: "\u4ECB\u9762\u8A9E\u8A00",
     uiLangHint: "\u5957\u7528\u65BC\u5F48\u51FA\u8996\u7A97\u3001\u6B64\u9801\u9762\u8207\u61F8\u6D6E\u5217\u3002\u914D\u97F3\u8A9E\u8A00\u53E6\u884C\u9078\u64C7\u3002",
     uiLangAuto: "\u700F\u89BD\u5668\u8A9E\u8A00",
-    proTransLabel: "Pro \u4E0A\u4E0B\u6587\u7FFB\u8B6F",
-    translationPro: "\u7FFB\u8B6F\uFF1APro\uFF08\u7D50\u5408\u4E0A\u4E0B\u6587\uFF09",
+    proTransLabel: "Pro \u4E0A\u4E0B\u6587\u7FFB\u8B6F\uFF08\u6E2C\u8A66\u7248\uFF09",
+    translationPro: "\u7FFB\u8B6F\uFF1APro \u4E0A\u4E0B\u6587\uFF08\u6E2C\u8A66\u7248\uFF09",
     proVoiceLabel: "Pro \u795E\u7D93\u8A9E\u97F3",
     launchCta: "\u5728\u6B64\u9801\u9762\u958B\u59CB\u914D\u97F3",
     titleGoPro: "\u89E3\u9396 Pro \u65B9\u6848",
     titlePreview: "\u8A66\u807D\u9019\u500B\u8072\u97F3",
     titleAutoPause: "\u7576\u8A9E\u97F3\u843D\u5F8C\u592A\u591A\u6642\uFF0C\u66AB\u505C\u5F71\u7247\u5E7E\u79D2\uFF0C\u800C\u4E0D\u662F\u8DF3\u904E\u53E5\u5B50",
     titleLocalOnly: "\u50C5\u4F7F\u7528 Chrome \u672C\u6A5F\u7FFB\u8B6F\uFF1A\u4EFB\u4F55\u6587\u5B57\u90FD\u4E0D\u6703\u96E2\u958B\u4F60\u7684\u88DD\u7F6E\u3002\u7121\u6CD5\u4F7F\u7528\u6642\uFF0C\u914D\u97F3\u6703\u7B49\u5F85\u800C\u4E0D\u662F\u9023\u7DDA\u3002",
-    titleProTrans: "\u900F\u904E Voxylio \u96F2\u7AEF\u7D50\u5408\u4E0A\u4E0B\u6587\u7FFB\u8B6F\uFF08\u6BCF\u6708\u7528\u91CF\uFF09\u3002\u7528\u5B8C\u5F8C\u914D\u97F3\u7E7C\u7E8C\u5728\u672C\u6A5F\u9032\u884C\u3002",
+    titleProTrans: "\u900F\u904E Voxylio \u96F2\u7AEF\u7D50\u5408\u4E0A\u4E0B\u6587\u7FFB\u8B6F\uFF08\u6BCF\u6708\u7528\u91CF\uFF09\u3002\u7528\u5B8C\u5F8C\u914D\u97F3\u7E7C\u7E8C\u5728\u672C\u6A5F\u9032\u884C\u3002 \u6E2C\u8A66\u7248\u529F\u80FD\uFF1A\u54C1\u8CEA\u5728\u4E0D\u540C\u5F71\u7247\u9593\u4ECD\u53EF\u80FD\u6709\u6240\u5DEE\u7570\u3002",
     titleProVoice: "Aura-2 \u795E\u7D93\u8A9E\u97F3\uFF087 \u7A2E\u8A9E\u8A00\uFF1AEN ES DE FR NL IT JA\uFF09\u3002\u5176\u4ED6\u8A9E\u8A00\u6216\u7528\u91CF\u8017\u76E1\u6642\uFF0C\u672C\u6A5F\u8A9E\u97F3\u63A5\u624B\u3002",
     titleRetry: "\u91CD\u65B0\u5075\u6E2C\u5F71\u7247\u3001\u5B57\u5E55\u8207\u7FFB\u8B6F",
     titleDiag: "\u8907\u88FD\u6280\u8853\u8A3A\u65B7\uFF0C\u65B9\u4FBF\u9644\u5728\u56DE\u5831\u4E2D",
     titleReset: "\u6062\u5FA9\u6240\u6709\u9810\u8A2D\u8A2D\u5B9A",
     titleOptions: "\u7FFB\u8B6F\u670D\u52D9\u5546\u3001API \u91D1\u9470\u3001\u5DF2\u505C\u7528\u7DB2\u7AD9",
     titleAccount: "\u5728\u7DB2\u7AD9\u4E0A\u7BA1\u7406\u4F60\u7684 Voxylio \u5E33\u865F",
-    optKeepTerms: "\u4FDD\u7559\u82F1\u6587\u6280\u8853\u8853\u8A9E\uFF08commit\u3001build\u3001prompt\u2026\uFF09"
+    optKeepTerms: "\u4FDD\u7559\u82F1\u6587\u6280\u8853\u8853\u8A9E\uFF08commit\u3001build\u3001prompt\u2026\uFF09",
+    quotaTitle: "\u5269\u9918 Pro \u984D\u5EA6",
+    quotaTrans: "AI \u7FFB\u8B6F\uFF08\u6E2C\u8A66\u7248\uFF09",
+    quotaVoice: "\u795E\u7D93\u8A9E\u97F3",
+    quotaResets: "{date}\u91CD\u7F6E",
+    statusProSite: "\u6B64\u7DB2\u7AD9\u70BA Pro \u5C08\u5C6C\u3002\u514D\u8CBB\u7248\uFF1AYouTube\u3001Netflix\u3001Prime Video\u3001Disney+ \u548C Twitch\u3002",
+    statusTrialNote: "\u5B8C\u6574\u8A66\u7528\uFF1A\u6B64\u7DB2\u7AD9\u9084\u53EF\u4F7F\u7528 $COUNT$ \u5929",
+    proAudioLabel: "\u7121\u5B57\u5E55\u5F71\u7247 Pro \u914D\u97F3\uFF08\u6E2C\u8A66\u7248\uFF09",
+    titleProAudio: "\u5F71\u7247\u5B8C\u5168\u6C92\u6709\u5B57\u5E55\uFF1F\u5176\u97F3\u8A0A\u5C07\u88AB\u5373\u6642\u8F49\u5BEB\uFF08\u6BCF\u6708 60 \u5206\u9418\uFF09\uFF0C\u7136\u5F8C\u6B63\u5E38\u914D\u97F3\u3002\u7121\u672C\u6A5F\u56DE\u9000\uFF1A\u5206\u9418\u7528\u5B8C\u5F8C\uFF0C\u8A72\u529F\u80FD\u7B49\u5F85\u4E0B\u4E00\u9031\u671F\u3002 \u6E2C\u8A66\u7248\u529F\u80FD\uFF1A\u8F49\u5BEB\u54C1\u8CEA\u53EF\u80FD\u6709\u6240\u5DEE\u7570\u3002",
+    quotaAudio: "\u9032\u968E\u97F3\u8A0A\uFF08\u6E2C\u8A66\u7248\uFF09",
+    statusAudioLive: "\u7121\u5B57\u5E55\uFF1A\u6B63\u5728\u5373\u6642\u8F49\u5BEB\u97F3\u8A0A\uFF08\u6E2C\u8A66\u7248\uFF09 \u2014 \u914D\u97F3\u5C07\u5728\u5E7E\u79D2\u5F8C\u958B\u59CB\u3002",
+    statusAudioQuota: "\u672C\u6708\u9032\u968E\u97F3\u8A0A\u5206\u9418\u5DF2\u7528\u5B8C \u2014 \u7121\u5B57\u5E55\u914D\u97F3\uFF08\u6E2C\u8A66\u7248\uFF09\u5C07\u5728\u4E0B\u4E00\u9031\u671F\u6062\u5FA9\u3002",
+    statusAudioUnavailable: "\u7121\u6CD5\u64F7\u53D6\u6B64\u64AD\u653E\u5668\u7684\u97F3\u8A0A\uFF08\u7DB2\u7AD9\u4FDD\u8B77\uFF09\u2014 \u7121\u5B57\u5E55\u914D\u97F3\uFF08\u6E2C\u8A66\u7248\uFF09\u5728\u6B64\u7121\u6CD5\u904B\u4F5C\u3002"
   };
 
   // src/messages/pt-BR.json
@@ -1959,7 +2073,7 @@ ${text}
     goPro: "Assinar o Pro",
     manage: "Gerenciar",
     accountNoteNotLinked: "Entre para ativar a dublagem.",
-    accountNoteFree: "Desbloqueie a tradu\xE7\xE3o contextual e as vozes neurais naturais.",
+    accountNoteFree: "Desbloqueie a tradu\xE7\xE3o contextual (beta) e as vozes neurais naturais.",
     accountNotePro: "Obrigado por apoiar o Voxylio.",
     accountNoteProCanceled: "Assinatura ativa at\xE9 o fim do per\xEDodo.",
     statusSearching: "Procurando um v\xEDdeo\u2026",
@@ -2008,7 +2122,7 @@ ${text}
     optBackupHint: "A exporta\xE7\xE3o nunca cont\xE9m chaves de API.",
     optPrivacy: "Privacidade",
     optSaved: "Salvo \u2713",
-    proBanner: "\u2726 Tradu\xE7\xE3o contextual e vozes neurais",
+    proBanner: "\u2726 Tradu\xE7\xE3o contextual (beta) e vozes neurais",
     signinTitle: "Entre para ativar a dublagem",
     signinText: "Gr\xE1tis com uma conta Google. A dublagem e seus ajustes ficam no seu dispositivo.",
     signinCta: "Continuar com o Google",
@@ -2079,22 +2193,34 @@ ${text}
     uiLangLabel: "Idioma da interface",
     uiLangHint: "Vale para o popup, esta p\xE1gina e a barra flutuante. Os idiomas de dublagem s\xE3o escolhidos \xE0 parte.",
     uiLangAuto: "Idioma do navegador",
-    proTransLabel: "Tradu\xE7\xE3o contextual Pro",
-    translationPro: "Tradu\xE7\xE3o: Pro (contextual)",
+    proTransLabel: "Tradu\xE7\xE3o contextual Pro (beta)",
+    translationPro: "Tradu\xE7\xE3o: Pro contextual (beta)",
     proVoiceLabel: "Voz neural Pro",
     launchCta: "Iniciar a dublagem nesta p\xE1gina",
     titleGoPro: "Desbloquear o plano Pro",
     titlePreview: "Ouvir uma pr\xE9via da voz",
     titleAutoPause: "Pausa o v\xEDdeo por alguns segundos quando a voz fica muito atrasada, em vez de pular frases",
     titleLocalOnly: "Usa apenas a tradu\xE7\xE3o local do Chrome: nenhum texto sai do seu dispositivo. Se estiver indispon\xEDvel, a dublagem espera em vez de ir para a internet.",
-    titleProTrans: "Traduz com o contexto das frases vizinhas pela nuvem Voxylio (volume mensal). Se acabar, a dublagem continua no local.",
+    titleProTrans: "Traduz com o contexto das frases vizinhas pela nuvem Voxylio (volume mensal). Se acabar, a dublagem continua no local. Recurso em beta: a qualidade ainda pode variar de um v\xEDdeo para outro.",
     titleProVoice: "Voz neural Aura-2 (7 idiomas: EN ES DE FR NL IT JA). Para outros idiomas, ou com o volume esgotado, a voz local assume.",
     titleRetry: "Reexecuta a detec\xE7\xE3o do v\xEDdeo, das legendas e da tradu\xE7\xE3o",
     titleDiag: "Copia um diagn\xF3stico t\xE9cnico para anexar a um relat\xF3rio",
     titleReset: "Restaura todas as configura\xE7\xF5es padr\xE3o",
     titleOptions: "Provedores de tradu\xE7\xE3o, chaves de API, sites desativados",
     titleAccount: "Gerenciar sua conta Voxylio no site",
-    optKeepTerms: "Manter termos t\xE9cnicos em ingl\xEAs (commit, build, prompt\u2026)"
+    optKeepTerms: "Manter termos t\xE9cnicos em ingl\xEAs (commit, build, prompt\u2026)",
+    quotaTitle: "Cota Pro restante",
+    quotaTrans: "Tradu\xE7\xE3o IA (beta)",
+    quotaVoice: "Voz neural",
+    quotaResets: "Renovada em {date}",
+    statusProSite: "Este site \xE9 exclusivo do Pro. Plano gratuito: YouTube, Netflix, Prime Video, Disney+ e Twitch.",
+    statusTrialNote: "Teste completo: este site continua liberado por mais $COUNT$ dia(s)",
+    proAudioLabel: "Dublagem sem legendas Pro (beta)",
+    titleProAudio: "V\xEDdeo sem nenhuma legenda? O \xE1udio \xE9 transcrito ao vivo (60 min/m\xEAs) e depois dublado normalmente. Sem fallback local: minutos esgotados, o recurso espera o pr\xF3ximo ciclo. Recurso em beta: a qualidade da transcri\xE7\xE3o pode variar.",
+    quotaAudio: "\xC1udio Premium (beta)",
+    statusAudioLive: "Sem legendas: transcrevendo o \xE1udio ao vivo (beta) \u2014 a dublagem chega em alguns segundos.",
+    statusAudioQuota: "Minutos de \xC1udio Premium esgotados neste m\xEAs \u2014 a dublagem sem legendas (beta) volta no pr\xF3ximo ciclo.",
+    statusAudioUnavailable: "N\xE3o \xE9 poss\xEDvel capturar o \xE1udio deste player (prote\xE7\xE3o do site) \u2014 a dublagem sem legendas (beta) n\xE3o funciona aqui."
   };
 
   // src/i18n.js
@@ -2583,6 +2709,54 @@ ${text}
       url: `https://voxylio.lndev.me/${lang}/account?from=extension`
     });
   };
+  function fmtInt(n) {
+    try {
+      return new Intl.NumberFormat(uiLangResolved).format(n);
+    } catch (e) {
+      return String(n);
+    }
+  }
+  function renderAcctQuota(ent) {
+    const box = $("acctQuota");
+    const rows = [
+      ["acctQuotaTransVal", "acctQuotaTransFill", ent && ent.cloudCharsRemaining, ent && ent.cloudCharsTotal, "chars"],
+      ["acctQuotaVoiceVal", "acctQuotaVoiceFill", ent && ent.ttsCharsRemaining, ent && ent.ttsCharsTotal, "chars"],
+      ["acctQuotaAudioVal", "acctQuotaAudioFill", ent && ent.audioSecondsRemaining, ent && ent.audioSecondsTotal, "minutes"]
+    ];
+    const has = !!ent && ent.plan === "pro" && rows.some(([, , , total]) => typeof total === "number" && total > 0);
+    box.hidden = !has;
+    if (!has) return;
+    const audioOn = !!(ent && typeof ent.audioSecondsTotal === "number" && ent.audioSecondsTotal > 0);
+    $("acctQuotaAudioItem").hidden = !audioOn;
+    for (const [valId, fillId, remaining, total, unit] of rows) {
+      const tot = typeof total === "number" ? total : 0;
+      if (tot <= 0) continue;
+      const rem = Math.max(0, Math.min(tot, typeof remaining === "number" ? remaining : 0));
+      const pct = tot > 0 ? Math.round(rem / tot * 100) : 0;
+      $(valId).textContent = unit === "minutes" ? Math.floor(rem / 60) + " / " + Math.floor(tot / 60) + " min" : fmtInt(rem) + " / " + fmtInt(tot);
+      const fill = $(fillId);
+      fill.style.width = pct + "%";
+      fill.classList.toggle("low", pct > 0 && pct <= 20);
+      fill.classList.toggle("out", pct === 0);
+    }
+    const resets = $("acctQuotaResets");
+    if (ent.quotaResetsAt) {
+      try {
+        const date = new Date(ent.quotaResetsAt).toLocaleDateString(uiLangResolved, {
+          day: "numeric",
+          month: "long"
+        });
+        resets.textContent = (t("quotaResets") || "Se r\xE9initialise le {date}").replace(
+          "{date}",
+          date
+        );
+      } catch (e) {
+        resets.textContent = "";
+      }
+    } else {
+      resets.textContent = "";
+    }
+  }
   async function renderAccount() {
     const plan = $("acctPlan");
     const cta = $("acctCta");
@@ -2592,6 +2766,7 @@ ${text}
       const linked = !!(ent && ent.linked);
       $("acctEmail").textContent = linked && ent.email || "";
       signout.hidden = !linked;
+      renderAcctQuota(linked ? ent : null);
       if (!linked) {
         plan.textContent = t("accountNotLinked") || "Non connect\xE9";
         plan.classList.remove("pro");
@@ -2609,6 +2784,7 @@ ${text}
       plan.textContent = t("accountNotLinked") || "Non connect\xE9";
       signout.hidden = true;
       cta.textContent = t("signIn") || "Se connecter";
+      $("acctQuota").hidden = true;
     }
     renderStats();
   }
