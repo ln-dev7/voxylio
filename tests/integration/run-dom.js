@@ -21,6 +21,7 @@ const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromi
     <div id="player">
       <video id="v" style="width:800px;height:450px;background:#111"></video>
       <div class="ytp-caption-window-container"></div>
+      <button class="ytp-subtitles-button" aria-pressed="false" aria-label="Subtitles/closed captions"></button>
     </div>
   </body></html>`;
 
@@ -83,26 +84,36 @@ const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromi
         box.appendChild(seg);
       }
     };
-    const feed = [
-      [600, () => show('Welcome to')],
-      [1000, () => show('Welcome to the accelerated')],
-      [1400, () => show('Welcome to the accelerated coding course.')],
-      [3400, () => show('')],
-      [3800, () => show('Now we explore the playground together.')],
-      [6200, () => show('')],
-    ];
-    for (const [ms, fn] of feed) setTimeout(fn, ms);
+    // Captions are OFF like a real player: nothing renders until the CC
+    // button is pressed — which the extension itself must do (auto-CC).
+    const btn = document.querySelector('.ytp-subtitles-button');
+    window.__ccClicked = false;
+    btn.addEventListener('click', () => {
+      window.__ccClicked = true;
+      btn.setAttribute('aria-pressed', 'true');
+      const feed = [
+        [600, () => show('Welcome to')],
+        [1000, () => show('Welcome to the accelerated')],
+        [1400, () => show('Welcome to the accelerated coding course.')],
+        [3400, () => show('')],
+        [3800, () => show('Now we explore the playground together.')],
+        [6200, () => show('')],
+      ];
+      for (const [ms, fn] of feed) setTimeout(fn, ms);
+    });
     v.dispatchEvent(new Event('play'));
   });
 
-  await page.waitForTimeout(9000);
-  const result = await page.evaluate(() => ({ spoken: window.__spoken }));
+  await page.waitForTimeout(10500);
+  const result = await page.evaluate(() => ({ spoken: window.__spoken, ccClicked: window.__ccClicked }));
   await browser.close();
 
+  console.log('auto-CC clicked:', result.ccClicked);
   console.log('spoken:', result.spoken.length);
   result.spoken.forEach((s) => console.log('  ' + s));
 
   const fails = [];
+  if (!result.ccClicked) fails.push('extension did not auto-enable the captions');
   if (result.spoken.length < 2) fails.push('expected both sentences to be dubbed');
   if (!result.spoken.every((s) => s.startsWith('[fr]'))) fails.push('untranslated speech');
   const first = result.spoken.filter((s) => s.includes('accelerated'));

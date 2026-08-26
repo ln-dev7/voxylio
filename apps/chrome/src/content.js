@@ -201,24 +201,67 @@ import { makeT, resolveUiLang } from "./i18n.js";
     ctl.addDomCue(video.currentTime, text);
   }
 
-  // On YouTube, if dubbing is wanted but the player's captions are OFF,
-  // switch them on ourselves (one programmatic click on the CC button —
-  // the same long-stable control the user would press). Only when the
-  // button reports captions available; once per watch URL. Other players
-  // keep the guidance message: their caption menus are too fragile to
-  // drive blindly.
+  // If dubbing is wanted but the player's captions are OFF, switch them
+  // on ourselves whenever it is safe to do so:
+  //  - standard players (textTracks) never even get here — harvesting
+  //    already force-loads their tracks invisibly (mode "hidden");
+  //  - known DOM sites use their dedicated toggle (YouTube's CC button);
+  //  - anywhere else, a generic pass looks for a caption TOGGLE button
+  //    (aria-pressed, caption-ish label, no menu popup) and presses it —
+  //    the same single click the user would make. Menu-based pickers
+  //    (Netflix…) are never driven blindly; the popup guidance covers
+  //    them.
+  const CC_LABEL =
+    /\b(cc|sous-?titres?|subtitles?|captions?|untertitel|sottotitoli|leyendas?|legendas?|subt[ií]tulos?)\b|字幕|자막/i;
   let ccClickedFor = "";
+
+  function ccToggleCandidate() {
+    if (domSite && domSite.cc) {
+      const btn = document.querySelector(domSite.cc);
+      if (
+        btn &&
+        btn.getAttribute("aria-pressed") !== "true" &&
+        btn.getAttribute("aria-disabled") !== "true"
+      )
+        return btn;
+      return null;
+    }
+    // Generic: strict toggles only — a button with aria-pressed="false",
+    // a caption-ish accessible label, and no popup semantics.
+    for (const btn of document.querySelectorAll('button[aria-pressed="false"]')) {
+      if (btn.getAttribute("aria-haspopup") || btn.hasAttribute("aria-expanded"))
+        continue;
+      if (btn.getAttribute("aria-disabled") === "true" || btn.disabled) continue;
+      const label = (
+        btn.getAttribute("aria-label") ||
+        btn.title ||
+        btn.textContent ||
+        ""
+      ).trim();
+      if (label && label.length <= 60 && CC_LABEL.test(label)) return btn;
+    }
+    return null;
+  }
+
   function maybeEnableSiteCaptions() {
-    if (!domSite || domSite.id !== "youtube") return;
     if (!settings.enabled || !accountLinked || siteDisabled()) return;
     if (domLastText) return; // captions already flowing
-    const ctl = primaryVideo && controllers.get(primaryVideo);
+    const video = primaryVideo;
+    const ctl = video && controllers.get(video);
     if (!ctl || ctl.cues.length > 0) return;
+    // Standard subtitle tracks exist: harvesting handles them silently —
+    // never flash the site's own captions on screen for nothing.
+    try {
+      if (
+        Array.from(video.textTracks || []).some(
+          (t) => t.kind === "subtitles" || t.kind === "captions",
+        )
+      )
+        return;
+    } catch (e) {}
     if (ccClickedFor === location.href) return;
-    const btn = document.querySelector(".ytp-subtitles-button");
+    const btn = ccToggleCandidate();
     if (!btn) return;
-    if (btn.getAttribute("aria-pressed") === "true") return; // already on
-    if (btn.getAttribute("aria-disabled") === "true") return; // none exist
     ccClickedFor = location.href;
     try {
       btn.click();

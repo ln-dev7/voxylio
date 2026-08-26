@@ -10,6 +10,8 @@ export const DOM_CAPTION_SITES = [
     host: /(^|\.)youtube(-nocookie)?\.com$|(^|\.)youtu\.be$/,
     container: ".ytp-caption-window-container",
     segment: ".ytp-caption-segment",
+    // Simple on/off toggle: safe to click programmatically.
+    cc: ".ytp-subtitles-button",
   },
   {
     id: "netflix",

@@ -561,7 +561,9 @@
       id: "youtube",
       host: /(^|\.)youtube(-nocookie)?\.com$|(^|\.)youtu\.be$/,
       container: ".ytp-caption-window-container",
-      segment: ".ytp-caption-segment"
+      segment: ".ytp-caption-segment",
+      // Simple on/off toggle: safe to click programmatically.
+      cc: ".ytp-subtitles-button"
     },
     {
       id: "netflix",
@@ -2512,18 +2514,40 @@
       domLastText = text;
       ctl.addDomCue(video.currentTime, text);
     }
+    const CC_LABEL = /\b(cc|sous-?titres?|subtitles?|captions?|untertitel|sottotitoli|leyendas?|legendas?|subt[ií]tulos?)\b|字幕|자막/i;
     let ccClickedFor = "";
+    function ccToggleCandidate() {
+      if (domSite && domSite.cc) {
+        const btn = document.querySelector(domSite.cc);
+        if (btn && btn.getAttribute("aria-pressed") !== "true" && btn.getAttribute("aria-disabled") !== "true")
+          return btn;
+        return null;
+      }
+      for (const btn of document.querySelectorAll('button[aria-pressed="false"]')) {
+        if (btn.getAttribute("aria-haspopup") || btn.hasAttribute("aria-expanded"))
+          continue;
+        if (btn.getAttribute("aria-disabled") === "true" || btn.disabled) continue;
+        const label = (btn.getAttribute("aria-label") || btn.title || btn.textContent || "").trim();
+        if (label && label.length <= 60 && CC_LABEL.test(label)) return btn;
+      }
+      return null;
+    }
     function maybeEnableSiteCaptions() {
-      if (!domSite || domSite.id !== "youtube") return;
       if (!settings.enabled || !accountLinked || siteDisabled()) return;
       if (domLastText) return;
-      const ctl = primaryVideo && controllers.get(primaryVideo);
+      const video = primaryVideo;
+      const ctl = video && controllers.get(video);
       if (!ctl || ctl.cues.length > 0) return;
+      try {
+        if (Array.from(video.textTracks || []).some(
+          (t) => t.kind === "subtitles" || t.kind === "captions"
+        ))
+          return;
+      } catch (e) {
+      }
       if (ccClickedFor === location.href) return;
-      const btn = document.querySelector(".ytp-subtitles-button");
+      const btn = ccToggleCandidate();
       if (!btn) return;
-      if (btn.getAttribute("aria-pressed") === "true") return;
-      if (btn.getAttribute("aria-disabled") === "true") return;
       ccClickedFor = location.href;
       try {
         btn.click();
