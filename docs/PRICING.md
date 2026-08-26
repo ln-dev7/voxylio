@@ -118,6 +118,22 @@ without. Cloud budget target stays ≈ $2/subscriber/month on average.
 - Keys are NEVER in the extension; the backend can mint short-lived
   Deepgram tokens if direct streaming is ever needed.
 
+Math check with 2026 pay-as-you-go prices (verified 2026-08-26):
+Nova-3 streaming $0.0077/min ⇒ $0.46/h; Aura-2 $30/1M chars ×
+~28-34k spoken chars per video-hour ⇒ $0.85-1.00/h; Flash-Lite
+translation ≈ $0.03/h ⇒ **full chain ≈ $1.35-1.50 per dubbed hour**.
+Net revenue after Polar (5% + 50¢, +1.5% intl cards): monthly ≈ $7.00,
+yearly ≈ $5.41/mo. Absolute worst case with EVERY meter maxed (60 min
+audio ≈ $1.50 + 100k TTS chars $3.00 + 1.5M trad chars ≈ $0.40 ≈
+**$4.90/mo**) stays under both nets — the always-net-positive rule
+holds at 100% utilization. 90 min/mo would break it on yearly
+(−$0.85): do NOT raise the minutes without raising the price or the
+Growth-tier Deepgram rates. Real average utilization is expected far
+lower; publish as « beta, may evolve », measure, then adjust.
+Honesty note for the copy, when it ships: no-subtitle dubbing has NO
+local fallback — minutes out means the feature pauses until reset
+(unlike every text feature, which falls back to the local engine).
+
 ## Owner update (2026-08-26) — repositioning in progress
 
 Three decisions taken in conversation, recorded here so the copy and
