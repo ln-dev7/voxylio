@@ -21,10 +21,10 @@
     "ctaGithub": "Voir sur GitHub",
     "note": "Fonctionne sur les vidéos dont le lecteur expose une piste de sous-titres — le cas de la plupart des plateformes de cours.",
     "ticks": {
-      "free": "Gratuit",
-      "local": "100 % local",
+      "free": "Gratuit et illimité",
+      "local": "Local d'abord",
       "noCard": "Sans carte bancaire",
-      "noQuota": "Sans quota"
+      "noQuota": "70+ langues"
     }
   },
   "Features": {
@@ -196,7 +196,7 @@
     "rows": {
       "price": {
         "label": "Prix",
-        "us": "Gratuit, heures illimitées",
+        "us": "Gratuit et illimité (moteur local) — Pro en option",
         "them": "19–129 $/mois, quotas d’heures"
       },
       "accuracy": {
@@ -344,14 +344,15 @@
       "name": "Pro",
       "tagline": "Les fonctions qui demandent un serveur",
       "cta": "Passer Pro",
-      "badge": "Soutenez le projet",
+      "badge": "Recommandé",
       "features": {
         "f1": "Traduction IA contextuelle, plus fidèle — volume mensuel généreux",
         "f2": "Voix neurales naturelles en 7 langues — la voix locale prend le relais ailleurs",
         "f3": "Accès anticipé aux nouvelles langues et plateformes",
         "f4": "Support prioritaire",
         "f5": "Un même compte sur tous vos navigateurs"
-      }
+      },
+      "quota": "Volume mensuel : 1 500 000 caractères de traduction IA + 100 000 caractères de voix neurale — puis le moteur local prend le relais automatiquement."
     },
     "billedYearly": "facturé 69,99 $/an",
     "modal": {

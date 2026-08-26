@@ -33,10 +33,6 @@ const ORDERED = [
 const PAIRS = [
   ["en", "fr"],
   ["ja", "en"],
-  ["zh", "fr"],
-  ["es", "de"],
-  ["ar", "fr"],
-  ["hi", "en"],
 ] as const;
 
 /** ReactBits "CountUp": the number climbs when it enters the viewport. */

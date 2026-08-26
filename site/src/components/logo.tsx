@@ -2,8 +2,8 @@
 export function Logo({ size = 28 }: { size?: number }) {
   return (
     <span
-      className="grid shrink-0 place-items-center rounded-full bg-primary"
-      style={{ width: size, height: size }}
+      className="grid shrink-0 place-items-center rounded-full"
+      style={{ width: size, height: size, backgroundColor: "#1ed760" }}
       aria-hidden="true"
     >
       <svg

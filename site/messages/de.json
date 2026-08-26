@@ -21,10 +21,10 @@
     "ctaGithub": "Auf GitHub ansehen",
     "note": "Funktioniert bei Videos, deren Player eine Untertitelspur bereitstellt — die meisten Kursplattformen tun das.",
     "ticks": {
-      "free": "Kostenlos",
-      "local": "100 % lokal",
+      "free": "Kostenlos & unbegrenzt",
+      "local": "Lokal zuerst",
       "noCard": "Ohne Kreditkarte",
-      "noQuota": "Ohne Limits"
+      "noQuota": "70+ Sprachen"
     }
   },
   "Features": {
@@ -196,7 +196,7 @@
     "rows": {
       "price": {
         "label": "Preis",
-        "us": "Kostenlos, unbegrenzte Stunden",
+        "us": "Kostenlos und unbegrenzt (lokale Engine) — Pro optional",
         "them": "19–129 $/Monat, Stundenkontingente"
       },
       "accuracy": {
@@ -345,14 +345,15 @@
       "name": "Pro",
       "tagline": "Die Funktionen, die einen Server brauchen",
       "cta": "Pro holen",
-      "badge": "Projekt unterstützen",
+      "badge": "Empfohlen",
       "features": {
         "f1": "Kontextbewusste KI-Übersetzung, treffender — großzügiges Monatskontingent",
         "f2": "Natürliche neuronale Stimmen in 7 Sprachen — sonst übernimmt die lokale Stimme",
         "f3": "Früher Zugang zu neuen Sprachen und Plattformen",
         "f4": "Bevorzugter Support",
         "f5": "Ein Konto für alle deine Browser"
-      }
+      },
+      "quota": "Monatskontingent: 1.500.000 Zeichen KI-Übersetzung + 100.000 Zeichen neuronale Stimme — danach übernimmt automatisch die lokale Engine."
     },
     "modal": {
       "trigger": "So funktionieren die Preise",

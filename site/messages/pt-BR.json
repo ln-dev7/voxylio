@@ -21,10 +21,10 @@
     "ctaGithub": "Ver no GitHub",
     "note": "Funciona com vídeos cujo player expõe uma trilha de legendas — a maioria das plataformas de cursos expõe.",
     "ticks": {
-      "free": "Grátis",
-      "local": "100% local",
+      "free": "Grátis e ilimitado",
+      "local": "Local primeiro",
       "noCard": "Sem cartão de crédito",
-      "noQuota": "Sem limites"
+      "noQuota": "70+ idiomas"
     }
   },
   "Features": {
@@ -196,7 +196,7 @@
     "rows": {
       "price": {
         "label": "Preço",
-        "us": "Grátis, horas ilimitadas",
+        "us": "Grátis e ilimitado (motor local) — Pro opcional",
         "them": "US$ 19–129/mês, cotas por hora"
       },
       "accuracy": {
@@ -345,14 +345,15 @@
       "name": "Pro",
       "tagline": "Os recursos que precisam de um servidor",
       "cta": "Assinar o Pro",
-      "badge": "Apoie o projeto",
+      "badge": "Recomendado",
       "features": {
         "f1": "Tradução IA contextual, mais fiel — generoso volume mensal",
         "f2": "Vozes neurais naturais em 7 idiomas — a voz local assume nos demais",
         "f3": "Acesso antecipado a novos idiomas e plataformas",
         "f4": "Suporte prioritário",
         "f5": "Uma só conta em todos os seus navegadores"
-      }
+      },
+      "quota": "Volume mensal: 1.500.000 caracteres de tradução IA + 100.000 caracteres de voz neural — depois o motor local assume automaticamente."
     },
     "modal": {
       "trigger": "Como funcionam os preços",

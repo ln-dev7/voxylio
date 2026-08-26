@@ -139,10 +139,11 @@ export function Pricing() {
             <button
               type="button"
               onClick={() => setCadence("monthly")}
+              aria-pressed={cadence === "monthly"}
               className={cn(
                 "cursor-pointer rounded-full px-4 py-1.5 text-xs font-medium transition-colors",
                 cadence === "monthly"
-                  ? "bg-background text-foreground shadow-sm"
+                  ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
@@ -151,15 +152,23 @@ export function Pricing() {
             <button
               type="button"
               onClick={() => setCadence("yearly")}
+              aria-pressed={cadence === "yearly"}
               className={cn(
                 "inline-flex cursor-pointer items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-medium transition-colors",
                 cadence === "yearly"
-                  ? "bg-background text-foreground shadow-sm"
+                  ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
               {t("yearly")}
-              <span className="rounded-full bg-primary/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+              <span
+                className={cn(
+                  "rounded-full px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
+                  cadence === "yearly"
+                    ? "bg-primary-foreground/20 text-primary-foreground"
+                    : "bg-primary/15 text-primary",
+                )}
+              >
                 −27%
               </span>
             </button>
@@ -241,6 +250,9 @@ export function Pricing() {
                 </li>
               ))}
             </ul>
+            <p className="border-t border-border pt-4 text-[11.5px] leading-relaxed text-muted-foreground">
+              {t("pro.quota")}
+            </p>
           </article>
         </div>
 

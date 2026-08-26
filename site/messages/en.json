@@ -21,10 +21,10 @@
     "ctaGithub": "View on GitHub",
     "note": "Works on videos whose player exposes a subtitle track — most course platforms do.",
     "ticks": {
-      "free": "Free",
-      "local": "100% local",
+      "free": "Free & unlimited",
+      "local": "Local-first",
       "noCard": "No credit card",
-      "noQuota": "No quota"
+      "noQuota": "70+ languages"
     }
   },
   "Features": {
@@ -196,7 +196,7 @@
     "rows": {
       "price": {
         "label": "Price",
-        "us": "Free, unlimited hours",
+        "us": "Free and unlimited (local engine) — Pro optional",
         "them": "$19–129/month, hour quotas"
       },
       "accuracy": {
@@ -344,14 +344,15 @@
       "name": "Pro",
       "tagline": "The features that need a server",
       "cta": "Go Pro",
-      "badge": "Support the project",
+      "badge": "Recommended",
       "features": {
         "f1": "Context-aware AI translation, more faithful — generous monthly allowance",
         "f2": "Natural neural voices in 7 languages — local voice takes over elsewhere",
         "f3": "Early access to new languages and platforms",
         "f4": "Priority support",
         "f5": "One account across all your browsers"
-      }
+      },
+      "quota": "Monthly allowance: 1,500,000 characters of AI translation + 100,000 characters of neural speech — then the local engine takes over automatically."
     },
     "billedYearly": "billed at $69.99/year",
     "modal": {
