@@ -149,5 +149,17 @@
  "proTransLabel": "Pro 文脈対応翻訳",
  "translationPro": "翻訳：Pro（文脈対応）",
  "proVoiceLabel": "Pro ニューラル音声",
- "launchCta": "このページで吹き替えを開始"
+ "launchCta": "このページで吹き替えを開始",
+ "titleGoPro": "Pro プランを解放",
+ "titlePreview": "声のプレビューを再生",
+ "titleAutoPause": "音声が遅れすぎたとき、文を飛ばす代わりに動画を数秒一時停止します",
+ "titleLocalOnly": "Chrome のローカル翻訳のみを使用：テキストは端末の外に出ません。利用できないときはオンラインに行かず待機します。",
+ "titleProTrans": "Voxylio クラウド経由で前後の文脈を踏まえて翻訳（月間枠）。使い切っても吹き替えはローカルで続きます。",
+ "titleProVoice": "Aura-2 ニューラル音声（7言語：EN ES DE FR NL IT JA）。他の言語や枠を使い切った場合はローカル音声が引き継ぎます。",
+ "titleRetry": "動画・字幕・翻訳の検出をやり直します",
+ "titleDiag": "不具合報告に添える技術診断をコピーします",
+ "titleReset": "すべての設定を既定値に戻します",
+ "titleOptions": "翻訳プロバイダー、API キー、無効化サイト",
+ "titleAccount": "サイトで Voxylio アカウントを管理",
+ "optKeepTerms": "技術用語を英語のまま残す（commit、build、prompt…）"
 }

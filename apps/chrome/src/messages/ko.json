@@ -149,5 +149,17 @@
  "proTransLabel": "Pro 문맥 인식 번역",
  "translationPro": "번역: Pro(문맥 인식)",
  "proVoiceLabel": "Pro 신경망 음성",
- "launchCta": "이 페이지에서 더빙 시작"
+ "launchCta": "이 페이지에서 더빙 시작",
+ "titleGoPro": "Pro 플랜 잠금 해제",
+ "titlePreview": "목소리 미리듣기",
+ "titleAutoPause": "음성이 너무 뒤처지면 문장을 건너뛰는 대신 영상을 몇 초 일시정지합니다",
+ "titleLocalOnly": "Chrome 로컬 번역만 사용: 텍스트가 기기를 떠나지 않습니다. 사용할 수 없으면 온라인으로 가는 대신 기다립니다.",
+ "titleProTrans": "Voxylio 클라우드로 주변 문장의 문맥까지 반영해 번역(월간 사용량). 소진돼도 더빙은 로컬로 계속됩니다.",
+ "titleProVoice": "Aura-2 신경망 음성(7개 언어: EN ES DE FR NL IT JA). 다른 언어나 사용량 소진 시 로컬 음성이 이어받습니다.",
+ "titleRetry": "영상·자막·번역 감지를 다시 실행합니다",
+ "titleDiag": "버그 신고에 첨부할 기술 진단을 복사합니다",
+ "titleReset": "모든 설정을 기본값으로 되돌립니다",
+ "titleOptions": "번역 제공자, API 키, 비활성화한 사이트",
+ "titleAccount": "사이트에서 Voxylio 계정 관리",
+ "optKeepTerms": "기술 용어를 영어로 유지(commit, build, prompt…)"
 }

@@ -149,5 +149,17 @@
  "proTransLabel": "Traduction contextuelle Pro",
  "translationPro": "Traduction : Pro (contextuelle)",
  "proVoiceLabel": "Voix neurale Pro",
- "launchCta": "Lancer le doublage sur cette page"
+ "launchCta": "Lancer le doublage sur cette page",
+ "titleGoPro": "Débloquer le plan Pro",
+ "titlePreview": "Écouter un aperçu de la voix",
+ "titleAutoPause": "Met la vidéo en pause quelques secondes quand la voix prend trop de retard, au lieu de sauter des phrases",
+ "titleLocalOnly": "N'utilise que la traduction locale de Chrome : aucun texte ne quitte votre appareil. Si elle est indisponible, le doublage attend au lieu de passer en ligne.",
+ "titleProTrans": "Traduit avec le contexte des phrases voisines via le cloud Voxylio (volume mensuel). En cas de volume épuisé, le doublage continue en local.",
+ "titleProVoice": "Voix neurale Aura-2 (7 langues : EN ES DE FR NL IT JA). Pour les autres langues ou si le volume est épuisé, la voix locale prend le relais.",
+ "titleRetry": "Relance la détection de la vidéo, des sous-titres et de la traduction",
+ "titleDiag": "Copie un diagnostic technique à joindre à un signalement",
+ "titleReset": "Rétablit tous les réglages par défaut",
+ "titleOptions": "Fournisseurs de traduction, clés API, sites désactivés",
+ "titleAccount": "Gérer votre compte Voxylio sur le site",
+ "optKeepTerms": "Préserver les termes techniques en anglais (commit, build, prompt…)"
 }

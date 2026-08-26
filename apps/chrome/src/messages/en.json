@@ -149,5 +149,17 @@
  "proTransLabel": "Pro contextual translation",
  "translationPro": "Translation: Pro (contextual)",
  "proVoiceLabel": "Pro neural voice",
- "launchCta": "Start dubbing on this page"
+ "launchCta": "Start dubbing on this page",
+ "titleGoPro": "Unlock the Pro plan",
+ "titlePreview": "Play a voice preview",
+ "titleAutoPause": "Pauses the video for a few seconds when the voice falls too far behind, instead of skipping lines",
+ "titleLocalOnly": "Uses only Chrome's local translation: no text leaves your device. When it is unavailable, dubbing waits instead of going online.",
+ "titleProTrans": "Translates with the context of nearby sentences through the Voxylio cloud (monthly allowance). When it runs out, dubbing continues locally.",
+ "titleProVoice": "Aura-2 neural voice (7 languages: EN ES DE FR NL IT JA). For other languages, or when the allowance runs out, the local voice takes over.",
+ "titleRetry": "Re-runs detection of the video, subtitles and translation",
+ "titleDiag": "Copies a technical report to attach to a bug report",
+ "titleReset": "Restores all default settings",
+ "titleOptions": "Translation providers, API keys, disabled sites",
+ "titleAccount": "Manage your Voxylio account on the site",
+ "optKeepTerms": "Keep technical terms in English (commit, build, prompt…)"
 }

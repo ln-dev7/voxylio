@@ -149,5 +149,17 @@
  "proTransLabel": "Kontextbewusste Pro-Übersetzung",
  "translationPro": "Übersetzung: Pro (kontextbewusst)",
  "proVoiceLabel": "Neuronale Pro-Stimme",
- "launchCta": "Synchronisation auf dieser Seite starten"
+ "launchCta": "Synchronisation auf dieser Seite starten",
+ "titleGoPro": "Pro-Plan freischalten",
+ "titlePreview": "Stimmprobe abspielen",
+ "titleAutoPause": "Pausiert das Video für ein paar Sekunden, wenn die Stimme zu weit zurückfällt, statt Sätze zu überspringen",
+ "titleLocalOnly": "Nutzt nur Chromes lokale Übersetzung: kein Text verlässt dein Gerät. Ist sie nicht verfügbar, wartet die Synchronisation, statt online zu gehen.",
+ "titleProTrans": "Übersetzt mit dem Kontext der Nachbarsätze über die Voxylio-Cloud (Monatskontingent). Ist es aufgebraucht, geht es lokal weiter.",
+ "titleProVoice": "Neuronale Aura-2-Stimme (7 Sprachen: EN ES DE FR NL IT JA). Für andere Sprachen oder bei erschöpftem Kontingent übernimmt die lokale Stimme.",
+ "titleRetry": "Startet die Erkennung von Video, Untertiteln und Übersetzung neu",
+ "titleDiag": "Kopiert einen technischen Bericht für eine Fehlermeldung",
+ "titleReset": "Stellt alle Standardeinstellungen wieder her",
+ "titleOptions": "Übersetzungsanbieter, API-Schlüssel, deaktivierte Seiten",
+ "titleAccount": "Dein Voxylio-Konto auf der Website verwalten",
+ "optKeepTerms": "Technische Begriffe auf Englisch lassen (commit, build, prompt…)"
 }

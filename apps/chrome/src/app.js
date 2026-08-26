@@ -20,6 +20,7 @@ import { makeT, resolveUiLang, UI_LANGS, UI_LANG_LABELS } from "./i18n.js";
 
 const $ = (id) => document.getElementById(id);
 let t = () => "";
+let uiLangResolved = "en";
 
 function applyI18n() {
   for (const el of document.querySelectorAll("[data-i18n]")) {
@@ -30,6 +31,11 @@ function applyI18n() {
     const msg = t(el.dataset.i18nPlaceholder);
     if (msg) el.placeholder = msg;
   }
+  for (const el of document.querySelectorAll("[data-i18n-title]")) {
+    const msg = t(el.dataset.i18nTitle);
+    if (msg) el.title = msg;
+  }
+  document.documentElement.lang = uiLangResolved || "en";
 }
 
 let settings = { ...DEFAULTS };
@@ -166,6 +172,7 @@ function transcriptFileBase(s) {
 function initHistory() {
   $("sessionSearch").addEventListener("input", renderSessions);
   $("segFilter").addEventListener("input", renderTranscript);
+  $("voiceSearch").addEventListener("input", renderVoiceGrid);
   $("tsToggle").addEventListener("change", (e) => {
     document.body.classList.toggle("no-ts", !e.target.checked);
   });
@@ -412,6 +419,10 @@ function initSettings() {
   $("provider").addEventListener("change", (e) => {
     chrome.storage.sync.set(validateSettings({ provider: e.target.value }));
   });
+  $("keepTermsBox").checked = !!settings.keepTerms;
+  $("keepTermsBox").addEventListener("change", (e) => {
+    chrome.storage.sync.set(validateSettings({ keepTerms: e.target.checked }));
+  });
   $("deeplKey").addEventListener("change", (e) => {
     chrome.storage.local.set({ deeplKey: e.target.value.trim() });
   });
@@ -493,7 +504,10 @@ function initSettings() {
 // ---------------------------------------------------------------- account
 
 const openAccount = () => {
-  chrome.tabs.create({ url: "https://voxylio.lndev.me/fr/account?from=extension" });
+  const lang = resolveUiLang(settings.uiLang, navigator.language);
+  chrome.tabs.create({
+    url: `https://voxylio.lndev.me/${lang}/account?from=extension`,
+  });
 };
 
 async function renderAccount() {
@@ -615,7 +629,8 @@ async function init() {
   const migrated = migrateSettings(raw);
   settings = migrated.settings;
   if (migrated.changed) chrome.storage.sync.set(settings);
-  t = makeT(resolveUiLang(settings.uiLang, navigator.language));
+  uiLangResolved = resolveUiLang(settings.uiLang, navigator.language);
+  t = makeT(uiLangResolved);
   applyI18n();
   try {
     $("version").textContent = "Voxylio v" + chrome.runtime.getManifest().version;
@@ -650,7 +665,7 @@ async function init() {
     deeplKey: "",
     googleKey: "",
   });
-  journal = localData.journal || [];
+  journal = Array.isArray(localData.journal) ? localData.journal : [];
   usageStats = localData.usageStats;
   $("deeplKey").value = localData.deeplKey;
   $("googleKey").value = localData.googleKey;
@@ -691,7 +706,9 @@ async function init() {
     }
     if (area !== "local") return;
     if (changes.journal) {
-      journal = changes.journal.newValue || [];
+      journal = Array.isArray(changes.journal.newValue)
+        ? changes.journal.newValue
+        : [];
       renderSessions();
       renderTranscript();
     }

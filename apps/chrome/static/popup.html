@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" style="color-scheme: dark">
+<html lang="en" style="color-scheme: dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="theme-color" content="#121212" />
@@ -507,10 +507,10 @@
     <p class="signin-note" data-i18n="signinNote">Aucune carte demandée.</p>
   </div>
 
-  <main id="mainUi">
+  <main id="mainUi" hidden>
   <div class="pro-banner" id="proBanner" hidden>
     <span class="pro-banner-text" data-i18n="proBanner">✦ Traduction contextuelle et voix neurales</span>
-    <button id="proBannerBtn" class="pro-banner-cta" data-i18n="goPro" title="Débloquer le plan Pro">Passer Pro</button>
+    <button id="proBannerBtn" class="pro-banner-cta" data-i18n="goPro" data-i18n-title="titleGoPro" title="Débloquer le plan Pro">Passer Pro</button>
   </div>
 
   <button id="launchBtn" class="launch-btn" hidden>
@@ -539,7 +539,7 @@
     <label class="field-label" for="voice" data-i18n="voiceLabel">Voix</label>
     <div class="voice-row">
       <select id="voice"><option value="" data-i18n="voiceAuto">Automatique</option></select>
-      <button id="preview" class="icon-btn" title="Écouter un aperçu de la voix" aria-label="Écouter un aperçu de la voix">▶</button>
+      <button id="preview" class="icon-btn" data-i18n-title="titlePreview" title="Écouter un aperçu de la voix" aria-label="Écouter un aperçu de la voix">▶</button>
     </div>
   </div>
 
@@ -560,7 +560,7 @@
   </div>
 
   <div class="field overlay-row">
-    <label class="field-label" for="autoPause" style="margin: 0" title="Met la vidéo en pause quelques secondes quand la voix prend trop de retard, au lieu de sauter des phrases" data-i18n="autoPauseLabel">Pause auto si la voix est en retard</label>
+    <label class="field-label" for="autoPause" style="margin: 0" data-i18n-title="titleAutoPause" title="Met la vidéo en pause quelques secondes quand la voix prend trop de retard, au lieu de sauter des phrases" data-i18n="autoPauseLabel">Pause auto si la voix est en retard</label>
     <label class="switch switch-sm" aria-label="Mettre la vidéo en pause quand le doublage est en retard">
       <input type="checkbox" id="autoPause" />
       <span class="slider-toggle" aria-hidden="true"></span>
@@ -568,7 +568,7 @@
   </div>
 
   <div class="field overlay-row" style="margin-top: 10px">
-    <label class="field-label" for="localOnly" style="margin: 0" title="N’utilise que la traduction locale de Chrome : aucun texte ne quitte votre appareil. Si elle est indisponible, le doublage attend au lieu de passer en ligne." data-i18n="localOnlyLabel">Mode strictement local</label>
+    <label class="field-label" for="localOnly" style="margin: 0" data-i18n-title="titleLocalOnly" title="N’utilise que la traduction locale de Chrome : aucun texte ne quitte votre appareil. Si elle est indisponible, le doublage attend au lieu de passer en ligne." data-i18n="localOnlyLabel">Mode strictement local</label>
     <label class="switch switch-sm" aria-label="Utiliser uniquement la traduction locale">
       <input type="checkbox" id="localOnly" />
       <span class="slider-toggle" aria-hidden="true"></span>
@@ -576,7 +576,7 @@
   </div>
 
   <div class="field overlay-row" style="margin-top: 10px" id="proTransRow" hidden>
-    <label class="field-label" for="proTrans" style="margin: 0; color: var(--accent)" title="Traduit avec le contexte des phrases voisines via le cloud Voxylio (quota mensuel). En cas de quota épuisé, le doublage continue en local." data-i18n="proTransLabel">Traduction contextuelle Pro</label>
+    <label class="field-label" for="proTrans" style="margin: 0; color: var(--accent)" data-i18n-title="titleProTrans" title="Traduit avec le contexte des phrases voisines via le cloud Voxylio (quota mensuel). En cas de quota épuisé, le doublage continue en local." data-i18n="proTransLabel">Traduction contextuelle Pro</label>
     <label class="switch switch-sm" aria-label="Traduction contextuelle Pro">
       <input type="checkbox" id="proTrans" />
       <span class="slider-toggle" aria-hidden="true"></span>
@@ -584,7 +584,7 @@
   </div>
 
   <div class="field overlay-row" style="margin-top: 10px" id="proVoiceRow" hidden>
-    <label class="field-label" for="proVoice" style="margin: 0; color: var(--accent)" title="Voix neurale Aura-2 (7 langues : EN ES DE FR NL IT JA). Pour les autres langues ou si le quota est épuisé, la voix locale prend le relais." data-i18n="proVoiceLabel">Voix neurale Pro</label>
+    <label class="field-label" for="proVoice" style="margin: 0; color: var(--accent)" data-i18n-title="titleProVoice" title="Voix neurale Aura-2 (7 langues : EN ES DE FR NL IT JA). Pour les autres langues ou si le quota est épuisé, la voix locale prend le relais." data-i18n="proVoiceLabel">Voix neurale Pro</label>
     <label class="switch switch-sm" aria-label="Voix neurale Pro">
       <input type="checkbox" id="proVoice" />
       <span class="slider-toggle" aria-hidden="true"></span>
@@ -608,10 +608,10 @@
   </div>
 
   <div class="actions">
-    <button id="retry" class="action-btn" data-i18n="retry" title="Relance la détection de la vidéo, des sous-titres et de la traduction">Réessayer</button>
-    <button id="diag" class="action-btn" data-i18n="diag" title="Copie un diagnostic technique à joindre à un signalement">Diagnostic</button>
-    <button id="reset" class="action-btn" data-i18n="reset" title="Rétablit tous les réglages par défaut">Réinitialiser</button>
-    <button id="optionsBtn" class="action-btn" data-i18n="options" title="Fournisseurs de traduction, clés API, sites désactivés">Options</button>
+    <button id="retry" class="action-btn" data-i18n="retry" data-i18n-title="titleRetry" title="Relance la détection de la vidéo, des sous-titres et de la traduction">Réessayer</button>
+    <button id="diag" class="action-btn" data-i18n="diag" data-i18n-title="titleDiag" title="Copie un diagnostic technique à joindre à un signalement">Diagnostic</button>
+    <button id="reset" class="action-btn" data-i18n="reset" data-i18n-title="titleReset" title="Rétablit tous les réglages par défaut">Réinitialiser</button>
+    <button id="optionsBtn" class="action-btn" data-i18n="options" data-i18n-title="titleOptions" title="Fournisseurs de traduction, clés API, sites désactivés">Options</button>
   </div>
 
   <div class="links-row">
@@ -627,7 +627,7 @@
         <span class="account-plan" id="accountPlan">…</span>
         <span class="account-email" id="accountEmail" hidden></span>
       </div>
-      <button id="accountBtn" class="account-cta" title="Gérer votre compte Voxylio sur le site">Se connecter</button>
+      <button id="accountBtn" class="account-cta" data-i18n-title="titleAccount" title="Gérer votre compte Voxylio sur le site">Se connecter</button>
     </div>
     <p class="account-note" id="accountNote">Connecte-toi pour activer le doublage.</p>
     <button id="signoutBtn" class="account-signout" data-i18n="signOut" hidden>Se déconnecter</button>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" style="color-scheme: dark">
+<html lang="en" style="color-scheme: dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -450,6 +450,10 @@
             <label for="googleKey" data-i18n="optGoogleKey">Clé Google Cloud</label>
             <input type="password" id="googleKey" autocomplete="off" placeholder="AIza…" />
           </div>
+          <label class="row" style="gap:10px;cursor:pointer;margin-top:10px">
+            <input type="checkbox" id="keepTermsBox" style="accent-color: var(--accent, #1ed760)" />
+            <span data-i18n="optKeepTerms">Préserver les termes techniques en anglais (commit, build, prompt…)</span>
+          </label>
           <p class="hint" data-i18n="optKeyStored">
             Les clés sont enregistrées dès la saisie, uniquement sur cet
             appareil.

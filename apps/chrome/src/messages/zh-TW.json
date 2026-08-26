@@ -149,5 +149,17 @@
  "proTransLabel": "Pro 上下文翻譯",
  "translationPro": "翻譯：Pro（結合上下文）",
  "proVoiceLabel": "Pro 神經語音",
- "launchCta": "在此頁面開始配音"
+ "launchCta": "在此頁面開始配音",
+ "titleGoPro": "解鎖 Pro 方案",
+ "titlePreview": "試聽這個聲音",
+ "titleAutoPause": "當語音落後太多時，暫停影片幾秒，而不是跳過句子",
+ "titleLocalOnly": "僅使用 Chrome 本機翻譯：任何文字都不會離開你的裝置。無法使用時，配音會等待而不是連線。",
+ "titleProTrans": "透過 Voxylio 雲端結合上下文翻譯（每月用量）。用完後配音繼續在本機進行。",
+ "titleProVoice": "Aura-2 神經語音（7 種語言：EN ES DE FR NL IT JA）。其他語言或用量耗盡時，本機語音接手。",
+ "titleRetry": "重新偵測影片、字幕與翻譯",
+ "titleDiag": "複製技術診斷，方便附在回報中",
+ "titleReset": "恢復所有預設設定",
+ "titleOptions": "翻譯服務商、API 金鑰、已停用網站",
+ "titleAccount": "在網站上管理你的 Voxylio 帳號",
+ "optKeepTerms": "保留英文技術術語（commit、build、prompt…）"
 }

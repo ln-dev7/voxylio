@@ -271,6 +271,18 @@ const SITE_ORIGIN = "https://voxylio.lndev.me";
 const CHECK_MS = 24 * 60 * 60 * 1000;
 const GRACE_MS = 72 * 60 * 60 * 1000;
 
+function clearProFlags() {
+  try {
+    chrome.storage.sync.get({ proTranslation: false, proVoice: false }, (v) => {
+      if (v && (v.proTranslation || v.proVoice)) {
+        chrome.storage.sync.set({ proTranslation: false, proVoice: false });
+      }
+    });
+  } catch (e) {
+    /* storage unavailable: harmless */
+  }
+}
+
 function getLocal(keys) {
   return new Promise((resolve) => chrome.storage.local.get(keys, resolve));
 }
@@ -294,6 +306,7 @@ async function refreshEntitlements(force) {
       // Token revoked server-side (new device linked, or sign-out):
       // unlink cleanly and fall back to free.
       chrome.storage.local.remove(["accountToken", "entitlements"]);
+      clearProFlags();
       return { plan: "free", status: "none", linked: false };
     }
     if (!res.ok) throw new Error("HTTP " + res.status);
@@ -306,6 +319,10 @@ async function refreshEntitlements(force) {
       checkedAt: Date.now(),
     };
     chrome.storage.local.set({ entitlements: ent });
+    // A lapsed plan must not leave the Pro toggles latched on: the rows
+    // hide in the popup and each video would silently pay 403+cooldown
+    // cycles. Not Pro ⇒ flags off.
+    if (ent.plan !== "pro") clearProFlags();
     return { ...ent, linked: true };
   } catch (e) {
     // Offline: keep the last known plan within the grace window, never

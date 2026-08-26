@@ -23,6 +23,7 @@ const $ = (id) => document.getElementById(id);
 // i18n: bundled packs (user choice > browser language > English); the
 // French markup text is only a pre-init fallback.
 let t = () => "";
+let uiLangResolved = "en";
 
 function applyI18n() {
   for (const el of document.querySelectorAll("[data-i18n]")) {
@@ -31,8 +32,12 @@ function applyI18n() {
   }
   for (const el of document.querySelectorAll("[data-i18n-title]")) {
     const msg = t(el.dataset.i18nTitle);
-    if (msg) el.title = msg;
+    if (msg) {
+      el.title = msg;
+      if (el.hasAttribute("aria-label")) el.setAttribute("aria-label", msg);
+    }
   }
+  document.documentElement.lang = uiLangResolved || "en";
 }
 
 function save(patch) {
@@ -309,7 +314,8 @@ async function refreshAccount() {
 
 async function init() {
   settings = await chrome.storage.sync.get(DEFAULTS);
-  t = makeT(resolveUiLang(settings.uiLang, navigator.language));
+  uiLangResolved = resolveUiLang(settings.uiLang, navigator.language);
+  t = makeT(uiLangResolved);
   applyI18n();
   populateLanguageSelects();
   render(settings);
@@ -427,7 +433,10 @@ async function init() {
   // the popup collapses to the sign-in card.
   refreshAccount();
   const openAccount = () => {
-    chrome.tabs.create({ url: "https://voxylio.lndev.me/fr/account?from=extension" });
+    const lang = resolveUiLang(settings.uiLang, navigator.language);
+    chrome.tabs.create({
+      url: `https://voxylio.lndev.me/${lang}/account?from=extension`,
+    });
   };
   $("accountBtn").addEventListener("click", openAccount);
   $("proBannerBtn").addEventListener("click", openAccount);
