@@ -281,6 +281,14 @@ import { makeT, resolveUiLang } from "./i18n.js";
       const s = (el.textContent || "").replace(/\s+/g, " ").trim();
       if (s) parts.push(s);
     }
+    // Some players (edX) swap plain text straight into the container,
+    // with no segment children — and a site update can retire a segment
+    // class at any time. Reading the container's own text keeps those
+    // working instead of going silent.
+    if (parts.length === 0) {
+      const s = (domCapContainer.textContent || "").replace(/\s+/g, " ").trim();
+      if (s) parts.push(s);
+    }
     return parts.join(" ").trim();
   }
 

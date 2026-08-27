@@ -67,3 +67,24 @@ test("udemy is a DOM-caption site (its player exposes no track)", () => {
   assert.equal(domCaptionSiteFor("udemy.com")?.id, "udemy");
   assert.equal(domCaptionSiteFor("coursera.org"), null);
 });
+
+test("2026-08 sweep: DOM-caption players resolve, native ones stay null", () => {
+  const cases = {
+    "www.hulu.com": "hulu",
+    "play.hbomax.com": "hbomax",
+    "www.max.com": "hbomax",
+    "www.peacocktv.com": "peacock",
+    "www.dailymotion.com": "dailymotion",
+    "www.viki.com": "viki",
+    "www.linkedin.com": "linkedin",
+    "www.skillshare.com": "skillshare",
+    "learning.edx.org": "edx",
+  };
+  for (const [host, id] of Object.entries(cases)) {
+    assert.equal(domCaptionSiteFor(host)?.id, id, host);
+  }
+  // Native-track or unsupported players must NOT get a DOM config.
+  for (const host of ["vimeo.com", "coursera.org", "crunchyroll.com", "tv.apple.com"]) {
+    assert.equal(domCaptionSiteFor(host), null, host);
+  }
+});
