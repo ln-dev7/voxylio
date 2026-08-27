@@ -276,6 +276,8 @@
       "items": {
         "sites": "Neue Player: Udemy, Hulu, HBO Max, Peacock, Dailymotion, Viki, LinkedIn Learning, Skillshare und edX — ihre Bildschirm-Untertitel speisen die Vertonung.",
         "lookahead": "Auf Udemy lädt die komplette Untertitelspur vorab mit echten Timings — Übersetzung und Stimme stehen vor jedem Satz bereit, wie auf YouTube.",
+        "ytdub": "YouTube: Ist die Standard-Tonspur bereits eine automatische Vertonung in deiner Sprache, warnt Voxylio, statt darüber zu sprechen — keine zwei Stimmen mehr gleichzeitig.",
+        "steady": "Stabilere Engine: Die Spracherkennung braucht jetzt einen Konsens, bevor sie etwas stummschalten kann, und die Übersetzung erholt sich nach einem Netzwerkproblem binnen Sekunden — kein Verstummen mehr mitten im Video.",
         "hint": "Klarere Hinweise: das Popup schlägt erst vor, Untertitel (CC) einzuschalten, bevor es einen Player abschreibt.",
         "updater": "Ein „Nach Updates suchen“-Button im Hub wendet ein wartendes Update sofort an (Chrome und Edge).",
         "fix": "Pro-Schalter erscheinen nicht mehr auf Gratis-Konten."

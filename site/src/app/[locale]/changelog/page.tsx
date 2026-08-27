@@ -31,6 +31,8 @@ const RELEASES: Array<{
     items: [
       { key: "sites", tag: "new" },
       { key: "lookahead", tag: "new" },
+      { key: "ytdub", tag: "new" },
+      { key: "steady", tag: "improved" },
       { key: "hint", tag: "improved" },
       { key: "updater", tag: "new" },
       { key: "fix", tag: "improved" },

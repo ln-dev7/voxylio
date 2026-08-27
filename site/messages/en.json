@@ -276,6 +276,8 @@
       "items": {
         "sites": "New players supported: Udemy, Hulu, HBO Max, Peacock, Dailymotion, Viki, LinkedIn Learning, Skillshare and edX — their on-screen captions feed the dubbing.",
         "lookahead": "On Udemy the lecture's full caption track loads upfront with real timings — translation and voice are ready before each sentence, like on YouTube.",
+        "ytdub": "YouTube: when the video's default audio track is already an automatic dub in your language, Voxylio warns you instead of speaking over it — no more two voices at once.",
+        "steady": "Steadier engine: language detection now needs consensus before it can mute anything, and translation recovers within seconds after a network hiccup — no more going silent mid-video.",
         "hint": "Clearer guidance: the popup now suggests turning captions (CC) on before concluding a player has none.",
         "updater": "A “Check for updates” button in the hub applies a pending update instantly (Chrome and Edge).",
         "fix": "Pro-only toggles no longer show up on free accounts."

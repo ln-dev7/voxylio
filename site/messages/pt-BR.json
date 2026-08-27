@@ -276,6 +276,8 @@
       "items": {
         "sites": "Novos players: Udemy, Hulu, HBO Max, Peacock, Dailymotion, Viki, LinkedIn Learning, Skillshare e edX — as legendas na tela alimentam a dublagem.",
         "lookahead": "Na Udemy a trilha completa de legendas carrega antecipadamente com os tempos reais — tradução e voz prontas antes de cada frase, como no YouTube.",
+        "ytdub": "YouTube: quando a faixa de áudio padrão já é uma dublagem automática no seu idioma, o Voxylio avisa em vez de falar por cima — chega de duas vozes ao mesmo tempo.",
+        "steady": "Motor mais estável: a detecção de idioma agora exige consenso antes de silenciar qualquer coisa, e a tradução se recupera em segundos após uma falha de rede — chega de silêncio no meio do vídeo.",
         "hint": "Orientação mais clara: o popup sugere ativar as legendas (CC) antes de concluir que um player não as tem.",
         "updater": "Um botão “Buscar atualizações” no hub aplica uma atualização pendente na hora (Chrome e Edge).",
         "fix": "Os ajustes exclusivos do Pro não aparecem mais em contas gratuitas."

@@ -276,6 +276,8 @@
       "items": {
         "sites": "Nuovi player supportati: Udemy, Hulu, HBO Max, Peacock, Dailymotion, Viki, LinkedIn Learning, Skillshare ed edX — i loro sottotitoli sullo schermo alimentano il doppiaggio.",
         "lookahead": "Su Udemy la traccia sottotitoli completa si carica in anticipo con i tempi reali — traduzione e voce pronte prima di ogni frase, come su YouTube.",
+        "ytdub": "YouTube: se la traccia audio predefinita è già un doppiaggio automatico nella tua lingua, Voxylio ti avvisa invece di parlarci sopra — basta due voci insieme.",
+        "steady": "Motore più stabile: il rilevamento della lingua ora richiede un consenso prima di poter silenziare qualcosa, e la traduzione si riprende in pochi secondi dopo un intoppo di rete — niente più silenzi a metà video.",
         "hint": "Indicazioni più chiare: il popup suggerisce di attivare i sottotitoli (CC) prima di concludere che un player non ne abbia.",
         "updater": "Un pulsante «Cerca aggiornamenti» nell'hub applica subito un aggiornamento in attesa (Chrome ed Edge).",
         "fix": "Le impostazioni riservate a Pro non compaiono più sugli account gratuiti."

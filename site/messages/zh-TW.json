@@ -276,6 +276,8 @@
       "items": {
         "sites": "新支援的播放器：Udemy、Hulu、HBO Max、Peacock、Dailymotion、Viki、LinkedIn Learning、Skillshare 和 edX — 螢幕字幕直接用於配音。",
         "lookahead": "在 Udemy 上會提前載入整條字幕軌（含準確時間軸）— 與 YouTube 一樣，每句話之前翻譯和語音都已就緒。",
+        "ytdub": "YouTube：當預設音軌已是你語言的自動配音時，Voxylio 會提醒你而不是疊加朗讀 — 不再出現雙重聲音。",
+        "steady": "引擎更穩定：語言偵測需要多次一致才能靜音任何內容，網路故障後翻譯幾秒內恢復 — 不再出現影片中途靜音。",
         "hint": "更清楚的引導：彈出視窗會先建議開啟字幕（CC），而不是直接判定播放器沒有字幕。",
         "updater": "中心新增「檢查更新」按鈕，可立即套用等待中的更新（Chrome 與 Edge）。",
         "fix": "Pro 專屬設定不再出現在免費帳戶中。"
