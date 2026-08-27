@@ -7,7 +7,13 @@
 //
 // The single version source is apps/chrome/static/manifest.json.
 import { execSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+} from "node:fs";
 import { join, resolve } from "node:path";
 
 const ROOT = resolve(new URL("..", import.meta.url).pathname);
@@ -70,4 +76,25 @@ if (arg && !targets[arg]) {
 }
 const list = arg ? [arg] : ["chrome", "edge", "firefox"];
 for (const t of list) targets[t]();
+
+// Keep only the two most recent versions in dist-store — older zips are
+// re-buildable from git history and just pile up (owner request).
+function pruneOldVersions() {
+  const zips = readdirSync(OUT).filter((f) =>
+    /^voxylio-[a-z]+-\d+\.\d+\.\d+\.zip$/.test(f),
+  );
+  const versions = [...new Set(zips.map((f) => f.match(/(\d+\.\d+\.\d+)/)[1]))];
+  versions.sort((a, b) => {
+    const pa = a.split(".").map(Number);
+    const pb = b.split(".").map(Number);
+    return pa[0] - pb[0] || pa[1] - pb[1] || pa[2] - pb[2];
+  });
+  for (const v of versions.slice(0, -2)) {
+    for (const f of zips.filter((z) => z.includes(`-${v}.`))) {
+      rmSync(join(OUT, f), { force: true });
+      console.log("pruned", f);
+    }
+  }
+}
+pruneOldVersions();
 console.log(`\nRelease ${VERSION} packaged in dist-store/ — upload manually.`);

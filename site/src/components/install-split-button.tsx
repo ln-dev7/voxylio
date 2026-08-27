@@ -49,8 +49,8 @@ export function InstallSplitButton() {
           <img src={primary.logo} alt="" className="size-5" />
           {t("addTo", { browser: primary.name })}
         </a>
-        {/* the divider between the two segments */}
-        <span aria-hidden="true" className="w-px self-stretch bg-black/20" />
+        {/* the divider between the two segments — dark green, not black */}
+        <span aria-hidden="true" className="w-px self-stretch bg-green-800" />
         <button
           type="button"
           aria-haspopup="menu"

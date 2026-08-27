@@ -1,9 +1,19 @@
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
 import { SpotlightCard } from "@/components/spotlight-card";
 import { BROWSERS } from "@/lib/browsers";
 
 const STEPS = ["store", "signin", "play"] as const;
+
+// Each live store button wears its browser's brand color (owner request).
+const BTN_STYLES: Record<string, string> = {
+  chrome:
+    "bg-[#4285F4] hover:bg-[#3367D6] shadow-[0_0_40px_rgba(66,133,244,0.25)] hover:shadow-[0_0_60px_rgba(66,133,244,0.4)]",
+  edge: "bg-[#0078D4] hover:bg-[#106EBE] shadow-[0_0_40px_rgba(0,120,212,0.25)] hover:shadow-[0_0_60px_rgba(0,120,212,0.4)]",
+  firefox:
+    "bg-[#FF7139] hover:bg-[#E8602A] shadow-[0_0_40px_rgba(255,113,57,0.25)] hover:shadow-[0_0_60px_rgba(255,113,57,0.4)]",
+  safari:
+    "bg-[#007AFF] hover:bg-[#0066D6] shadow-[0_0_40px_rgba(0,122,255,0.25)] hover:shadow-[0_0_60px_rgba(0,122,255,0.4)]",
+};
 
 export function Install() {
   const t = useTranslations("Install");
@@ -39,18 +49,17 @@ export function Install() {
         <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
           {BROWSERS.map((b) =>
             b.url ? (
-              <Button
+              <a
                 key={b.key}
-                asChild
-                size="lg"
-                className="h-12 rounded-full px-6 text-[15px] shadow-[0_0_40px_rgba(30,215,96,0.25)] transition-shadow hover:shadow-[0_0_60px_rgba(30,215,96,0.4)]"
+                href={b.url}
+                target="_blank"
+                rel="noreferrer"
+                className={`inline-flex h-12 items-center gap-2.5 rounded-full px-6 text-[15px] font-medium text-white transition-all ${BTN_STYLES[b.key] ?? ""}`}
               >
-                <a href={b.url} target="_blank" rel="noreferrer">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={b.logo} alt="" className="size-5" />
-                  {t("addTo", { browser: b.name })}
-                </a>
-              </Button>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={b.logo} alt="" className="size-5" />
+                {t("addTo", { browser: b.name })}
+              </a>
             ) : (
               <div
                 key={b.key}
