@@ -8,11 +8,11 @@ const STEPS = ["store", "signin", "play"] as const;
 const BTN_STYLES: Record<string, string> = {
   chrome:
     "bg-[#4285F4] hover:bg-[#3367D6] shadow-[0_0_40px_rgba(66,133,244,0.25)] hover:shadow-[0_0_60px_rgba(66,133,244,0.4)]",
-  edge: "bg-[#0078D4] hover:bg-[#106EBE] shadow-[0_0_40px_rgba(0,120,212,0.25)] hover:shadow-[0_0_60px_rgba(0,120,212,0.4)]",
+  edge: "bg-[#0E9F6E] hover:bg-[#0B815A] shadow-[0_0_40px_rgba(14,159,110,0.25)] hover:shadow-[0_0_60px_rgba(14,159,110,0.4)]",
   firefox:
     "bg-[#FF7139] hover:bg-[#E8602A] shadow-[0_0_40px_rgba(255,113,57,0.25)] hover:shadow-[0_0_60px_rgba(255,113,57,0.4)]",
   safari:
-    "bg-[#007AFF] hover:bg-[#0066D6] shadow-[0_0_40px_rgba(0,122,255,0.25)] hover:shadow-[0_0_60px_rgba(0,122,255,0.4)]",
+    "bg-[#0891B2] hover:bg-[#0E7490] shadow-[0_0_40px_rgba(8,145,178,0.25)] hover:shadow-[0_0_60px_rgba(8,145,178,0.4)]",
 };
 
 export function Install() {
