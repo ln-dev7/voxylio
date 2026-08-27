@@ -50,7 +50,7 @@ export function InstallSplitButton() {
           {t("addTo", { browser: primary.name })}
         </a>
         {/* the divider between the two segments — dark green, not black */}
-        <span aria-hidden="true" className="w-px self-stretch bg-green-500" />
+        <span aria-hidden="true" className="w-px self-stretch dark:bg-green-500 bg-green-600" />
         <button
           type="button"
           aria-haspopup="menu"
