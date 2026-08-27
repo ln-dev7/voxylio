@@ -532,6 +532,8 @@ import { makeT, resolveUiLang } from "./i18n.js";
   // finally lets us STOP dubbing a video already in the target language
   // when no track metadata and no local detector exist.
   let providerDetectedSource = "";
+  let providerDetectCandidate = "";
+  let providerDetectVotes = 0;
 
   // The chain epoch is part of the cache key: switching provider, toggling
   // Pro or editing the glossary must re-translate — a cached gtx line
@@ -611,8 +613,21 @@ import { makeT, resolveUiLang } from "./i18n.js";
       translationMode =
         res.kind === "pro" ? "pro" : res.kind === "local" ? "local" : "cloud";
       lastTranslateError = "";
-      if (res.detected && !providerDetectedSource)
-        providerDetectedSource = res.detected.toLowerCase().split("-")[0];
+      if (res.detected && !providerDetectedSource) {
+        // Latch only after consecutive agreeing reports — and when the
+        // report EQUALS the target language, demand one more: on pages
+        // that show auto-translated captions (common for non-English
+        // locales), a single such reading used to mute the pipeline for
+        // good (field report 2026-08-27).
+        const d = res.detected.toLowerCase().split("-")[0];
+        if (d === providerDetectCandidate) providerDetectVotes += 1;
+        else {
+          providerDetectCandidate = d;
+          providerDetectVotes = 1;
+        }
+        const needed = d === settings.targetLang ? 3 : 2;
+        if (providerDetectVotes >= needed) providerDetectedSource = d;
+      }
       return res.text;
     } catch (e) {
       if (!fromPrefetch) {
@@ -1521,7 +1536,17 @@ import { makeT, resolveUiLang } from "./i18n.js";
         const results = await detector.detect(parts.join(" "));
         const best = results && results[0];
         if (best && best.confidence > 0.5) {
-          ctl.detectedSource = (best.detectedLanguage || "").split("-")[0];
+          const d = (best.detectedLanguage || "").split("-")[0];
+          if (d === settings.targetLang) {
+            // Saying "source == target" silences the dub entirely — on
+            // pages showing auto-translated captions one sample said
+            // exactly that (field report 2026-08-27). Demand two
+            // agreeing samples before such a verdict sticks.
+            ctl.detectTargetVotes = (ctl.detectTargetVotes || 0) + 1;
+            if (ctl.detectTargetVotes >= 2) ctl.detectedSource = d;
+          } else {
+            ctl.detectedSource = d;
+          }
         }
       } catch (e) {
         /* detection is best-effort */
@@ -1953,8 +1978,13 @@ import { makeT, resolveUiLang } from "./i18n.js";
       const gen = ctl.generation; // work is void if this changes
       const target = settings.targetLang; // language at trigger time
       const source = effectiveSource();
-      // Video already in the target language: nothing to dub.
-      if (source !== "auto" && source === target) return;
+      // Video already in the target language: nothing to dub. Release
+      // the reservation taken above — a later corrected detection (or a
+      // popup Retry) must be able to schedule this group again.
+      if (source !== "auto" && source === target) {
+        ctl.scheduledIds.delete(group.id);
+        return;
+      }
 
       // Reuse an identical in-flight translation; never translate two
       // versions of the same group concurrently.
@@ -3393,12 +3423,16 @@ import { makeT, resolveUiLang } from "./i18n.js";
         if (c.audioState === "failed") c.audioState = "idle";
         c.audioStarts = 0;
         c.audioRetryAt = 0;
+        c.detectedSource = "";
+        c.detectTargetVotes = 0;
         c.fullFlush();
       }
       builtinBroken = false;
       lastTranslateError = "";
       proBatchBroken = false;
       providerDetectedSource = "";
+      providerDetectCandidate = "";
+      providerDetectVotes = 0;
       scanDirty = true;
       scan();
       sendResponse({ ok: true });
@@ -3469,10 +3503,18 @@ import { makeT, resolveUiLang } from "./i18n.js";
           }
         }
       }
+      const pcs = primaryVideo && controllers.get(primaryVideo);
       return {
         version: manifestVersion(),
         page: location.hostname,
         state,
+        // Language pipeline internals (diagnostics: which source the
+        // engine believes in, and where that belief came from).
+        trackLang: (pcs && pcs.trackLang) || "",
+        detectedSource: (pcs && pcs.detectedSource) || "",
+        providerDetectedSource,
+        ytStatic: (pcs && pcs.ytStatic) || null,
+        queueDepth: pcs ? pcs.queue.length : 0,
         signinRequired: !accountLinked,
         siteFree: isFreeSite(location.hostname),
         trialDaysLeft: trialDaysLeft(accountTrialEndsAt, Date.now()),

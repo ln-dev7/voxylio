@@ -22,6 +22,11 @@ export const READY_TIMEOUT_MS = 2500;
 export const ATTEMPT_TIMEOUT_MS = 8000;
 export const COOLDOWN_MS = 60_000;
 export const FAILURES_BEFORE_COOLDOWN = 2;
+// Half-open probe: during a cooldown, one line per this interval still
+// tries the cooling provider — a recovered backend must not stay silent
+// for the whole cooldown (field report 2026-08-27: rolling 60 s
+// blackouts on fresh profiles whose only leg is the online provider).
+export const PROBE_MS = 10_000;
 
 function withTimeout(promise, ms, fallbackValue) {
   if (!(ms > 0) || ms === Infinity) return promise;
@@ -46,6 +51,7 @@ export function createTranslatorChain(providers, opts = {}) {
     attemptTimeoutMs = ATTEMPT_TIMEOUT_MS,
     cooldownMs = COOLDOWN_MS,
     failuresBeforeCooldown = FAILURES_BEFORE_COOLDOWN,
+    probeMs = PROBE_MS,
     now = () => Date.now(),
     pairState = new Map(), // "providerId:source->target" -> { failures, readyMisses, coolUntil }
   } = opts;
@@ -61,8 +67,18 @@ export function createTranslatorChain(providers, opts = {}) {
   }
 
   function inCooldown(id, source, target) {
-    const s = pairState.get(stateKey(id, source, target));
-    return !!s && s.coolUntil > now();
+    const key = stateKey(id, source, target);
+    const s = pairState.get(key);
+    if (!s || s.coolUntil <= now()) return false;
+    // Half-open: let one probe line through per probeMs. On success
+    // recordSuccess clears the whole state; on failure the probe counts
+    // like any failure and the pair re-cools.
+    if (now() - (s.lastProbeAt || 0) >= probeMs) {
+      s.lastProbeAt = now();
+      pairState.set(key, s);
+      return false;
+    }
+    return true;
   }
 
   function recordFailure(id, source, target) {

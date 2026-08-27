@@ -696,6 +696,7 @@
   var ATTEMPT_TIMEOUT_MS = 8e3;
   var COOLDOWN_MS = 6e4;
   var FAILURES_BEFORE_COOLDOWN = 2;
+  var PROBE_MS = 1e4;
   function withTimeout(promise, ms, fallbackValue) {
     if (!(ms > 0) || ms === Infinity) return promise;
     let timer;
@@ -711,6 +712,7 @@
       attemptTimeoutMs = ATTEMPT_TIMEOUT_MS,
       cooldownMs = COOLDOWN_MS,
       failuresBeforeCooldown = FAILURES_BEFORE_COOLDOWN,
+      probeMs = PROBE_MS,
       now = () => Date.now(),
       pairState = /* @__PURE__ */ new Map()
       // "providerId:source->target" -> { failures, readyMisses, coolUntil }
@@ -723,8 +725,15 @@
       return pairState.get(key) ?? { failures: 0, readyMisses: 0, coolUntil: 0 };
     }
     function inCooldown(id, source, target) {
-      const s = pairState.get(stateKey(id, source, target));
-      return !!s && s.coolUntil > now();
+      const key = stateKey(id, source, target);
+      const s = pairState.get(key);
+      if (!s || s.coolUntil <= now()) return false;
+      if (now() - (s.lastProbeAt || 0) >= probeMs) {
+        s.lastProbeAt = now();
+        pairState.set(key, s);
+        return false;
+      }
+      return true;
     }
     function recordFailure(id, source, target) {
       const key = stateKey(id, source, target);
@@ -3575,6 +3584,8 @@
     let lastTranslateError = "";
     let proBatchBroken = false;
     let providerDetectedSource = "";
+    let providerDetectCandidate = "";
+    let providerDetectVotes = 0;
     let chainEpoch = 0;
     function cacheKey(source, target, text) {
       return chainEpoch + "|" + source + "->" + target + "::" + text;
@@ -3629,8 +3640,16 @@
         const res = await chain.translate(text, source, target, opts);
         translationMode = res.kind === "pro" ? "pro" : res.kind === "local" ? "local" : "cloud";
         lastTranslateError = "";
-        if (res.detected && !providerDetectedSource)
-          providerDetectedSource = res.detected.toLowerCase().split("-")[0];
+        if (res.detected && !providerDetectedSource) {
+          const d = res.detected.toLowerCase().split("-")[0];
+          if (d === providerDetectCandidate) providerDetectVotes += 1;
+          else {
+            providerDetectCandidate = d;
+            providerDetectVotes = 1;
+          }
+          const needed = d === settings.targetLang ? 3 : 2;
+          if (providerDetectVotes >= needed) providerDetectedSource = d;
+        }
         return res.text;
       } catch (e) {
         if (!fromPrefetch) {
@@ -4373,7 +4392,13 @@
           const results = await detector.detect(parts.join(" "));
           const best = results && results[0];
           if (best && best.confidence > 0.5) {
-            ctl.detectedSource = (best.detectedLanguage || "").split("-")[0];
+            const d = (best.detectedLanguage || "").split("-")[0];
+            if (d === settings.targetLang) {
+              ctl.detectTargetVotes = (ctl.detectTargetVotes || 0) + 1;
+              if (ctl.detectTargetVotes >= 2) ctl.detectedSource = d;
+            } else {
+              ctl.detectedSource = d;
+            }
           }
         } catch (e) {
         } finally {
@@ -4700,7 +4725,10 @@
         const gen = ctl.generation;
         const target = settings.targetLang;
         const source = effectiveSource();
-        if (source !== "auto" && source === target) return;
+        if (source !== "auto" && source === target) {
+          ctl.scheduledIds.delete(group.id);
+          return;
+        }
         let entry = ctl.inFlight.get(group.id);
         if (!entry || entry.version !== group.version) {
           entry = {
@@ -5861,12 +5889,16 @@
           if (c.audioState === "failed") c.audioState = "idle";
           c.audioStarts = 0;
           c.audioRetryAt = 0;
+          c.detectedSource = "";
+          c.detectTargetVotes = 0;
           c.fullFlush();
         }
         builtinBroken = false;
         lastTranslateError = "";
         proBatchBroken = false;
         providerDetectedSource = "";
+        providerDetectCandidate = "";
+        providerDetectVotes = 0;
         scanDirty = true;
         scan();
         sendResponse({ ok: true });
@@ -5928,10 +5960,18 @@
             }
           }
         }
+        const pcs = primaryVideo && controllers.get(primaryVideo);
         return {
           version: manifestVersion(),
           page: location.hostname,
           state,
+          // Language pipeline internals (diagnostics: which source the
+          // engine believes in, and where that belief came from).
+          trackLang: pcs && pcs.trackLang || "",
+          detectedSource: pcs && pcs.detectedSource || "",
+          providerDetectedSource,
+          ytStatic: pcs && pcs.ytStatic || null,
+          queueDepth: pcs ? pcs.queue.length : 0,
           signinRequired: !accountLinked,
           siteFree: isFreeSite(location.hostname),
           trialDaysLeft: trialDaysLeft(accountTrialEndsAt, Date.now()),

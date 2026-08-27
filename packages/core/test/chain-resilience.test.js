@@ -94,3 +94,30 @@ test("detected source is surfaced when the provider reports it", async () => {
   assert.equal(res.text, "bonjour");
   assert.equal(res.detected, "en");
 });
+
+test("half-open probe: one line per probe window rides a cooling pair, success un-cools it", async () => {
+  let clock = 0;
+  let behave = false;
+  const flaky = {
+    id: "gtx", kind: "cloud",
+    ready: async () => ({
+      translate: async () => { if (!behave) throw new Error("429"); return "ok"; },
+    }),
+  };
+  const chain = createTranslatorChain([flaky], {
+    cooldownMs: 60_000, failuresBeforeCooldown: 2, probeMs: 10_000, now: () => clock,
+  });
+  await assert.rejects(chain.translate("a", "en", "fr")); // failure 1
+  await assert.rejects(chain.translate("b", "en", "fr")); // failure 2 → cooldown
+  clock += 1000; // inside cooldown, inside probe window: fully skipped
+  await assert.rejects(chain.translate("c", "en", "fr"), /cooling down/);
+  clock += 10_000; // probe window elapsed: one probe goes through (and fails)
+  await assert.rejects(chain.translate("d", "en", "fr"), /429/);
+  clock += 500; // right after a failed probe: skipped again
+  await assert.rejects(chain.translate("e", "en", "fr"), /cooling down/);
+  behave = true;
+  clock += 10_000; // next probe succeeds → state cleared
+  assert.equal((await chain.translate("f", "en", "fr")).text, "ok");
+  clock += 100; // and the pair serves normally again, no probe gating
+  assert.equal((await chain.translate("g", "en", "fr")).text, "ok");
+});
