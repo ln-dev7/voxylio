@@ -270,6 +270,16 @@
   "Changelog": {
     "title": "업데이트 내역",
     "subtitle": "Voxylio의 모든 버전, 그리고 달라지는 점.",
+    "v181": {
+      "date": "2026년 8월",
+      "summary": "플레이어 업데이트: 화면의 자막을 바로 읽을 수 있는 플랫폼이 9개 늘었습니다.",
+      "items": {
+        "sites": "새로 지원: Udemy, Hulu, HBO Max, Peacock, Dailymotion, Viki, LinkedIn Learning, Skillshare, edX — 화면 자막이 더빙에 사용됩니다.",
+        "hint": "더 명확한 안내: 플레이어에 자막이 없다고 결론짓기 전에 먼저 자막(CC)을 켜도록 안내합니다.",
+        "updater": "허브의 '업데이트 확인' 버튼으로 대기 중인 업데이트를 즉시 적용합니다 (Chrome·Edge).",
+        "fix": "Pro 전용 설정이 무료 계정에 더 이상 표시되지 않습니다."
+      }
+    },
     "latest": "최신 버전",
     "store": "Chrome Web Store 공개 중",
     "tagNew": "신규",

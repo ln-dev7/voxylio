@@ -270,6 +270,16 @@
   "Changelog": {
     "title": "更新日誌",
     "subtitle": "Voxylio 的每個版本，以及它為你帶來的改變。",
+    "v181": {
+      "date": "2026年8月",
+      "summary": "播放器更新：新增 9 個平台，Voxylio 可直接讀取其螢幕字幕。",
+      "items": {
+        "sites": "新支援的播放器：Udemy、Hulu、HBO Max、Peacock、Dailymotion、Viki、LinkedIn Learning、Skillshare 和 edX — 螢幕字幕直接用於配音。",
+        "hint": "更清楚的引導：彈出視窗會先建議開啟字幕（CC），而不是直接判定播放器沒有字幕。",
+        "updater": "中心新增「檢查更新」按鈕，可立即套用等待中的更新（Chrome 與 Edge）。",
+        "fix": "Pro 專屬設定不再出現在免費帳戶中。"
+      }
+    },
     "latest": "最新版本",
     "store": "已在 Chrome Web Store 上架",
     "tagNew": "新增",

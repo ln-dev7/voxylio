@@ -270,6 +270,16 @@
   "Changelog": {
     "title": "Novità",
     "subtitle": "Ogni versione di Voxylio e cosa cambia per te.",
+    "v181": {
+      "date": "Agosto 2026",
+      "summary": "L'aggiornamento dei player: altre nove piattaforme di cui Voxylio legge ora i sottotitoli direttamente dallo schermo.",
+      "items": {
+        "sites": "Nuovi player supportati: Udemy, Hulu, HBO Max, Peacock, Dailymotion, Viki, LinkedIn Learning, Skillshare ed edX — i loro sottotitoli sullo schermo alimentano il doppiaggio.",
+        "hint": "Indicazioni più chiare: il popup suggerisce di attivare i sottotitoli (CC) prima di concludere che un player non ne abbia.",
+        "updater": "Un pulsante «Cerca aggiornamenti» nell'hub applica subito un aggiornamento in attesa (Chrome ed Edge).",
+        "fix": "Le impostazioni riservate a Pro non compaiono più sugli account gratuiti."
+      }
+    },
     "latest": "Ultima versione",
     "store": "Disponibile sul Chrome Web Store",
     "tagNew": "Nuovo",

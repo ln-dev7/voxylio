@@ -270,6 +270,16 @@
   "Changelog": {
     "title": "Novedades",
     "subtitle": "Cada versión de Voxylio y lo que cambia para ti.",
+    "v181": {
+      "date": "Agosto de 2026",
+      "summary": "La actualización de reproductores: nueve plataformas más cuyos subtítulos Voxylio lee ahora directamente de la pantalla.",
+      "items": {
+        "sites": "Nuevos reproductores: Udemy, Hulu, HBO Max, Peacock, Dailymotion, Viki, LinkedIn Learning, Skillshare y edX — sus subtítulos en pantalla alimentan el doblaje.",
+        "hint": "Mejor guía: el popup sugiere activar los subtítulos (CC) antes de concluir que un reproductor no tiene.",
+        "updater": "Un botón «Buscar actualizaciones» en el hub aplica una actualización pendiente al instante (Chrome y Edge).",
+        "fix": "Los ajustes exclusivos de Pro ya no aparecen en cuentas gratuitas."
+      }
+    },
     "latest": "Última versión",
     "store": "Ya en la Chrome Web Store",
     "tagNew": "Nuevo",

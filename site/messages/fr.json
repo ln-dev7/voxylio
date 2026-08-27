@@ -270,6 +270,16 @@
   "Changelog": {
     "title": "Nouveautés",
     "subtitle": "Chaque version de Voxylio, et ce qu'elle change pour vous.",
+    "v181": {
+      "date": "Août 2026",
+      "summary": "La mise à jour des lecteurs : neuf plateformes de plus dont Voxylio lit désormais les sous-titres directement à l'écran.",
+      "items": {
+        "sites": "Nouveaux lecteurs pris en charge : Udemy, Hulu, HBO Max, Peacock, Dailymotion, Viki, LinkedIn Learning, Skillshare et edX — leurs sous-titres à l'écran alimentent le doublage.",
+        "hint": "Guidage plus clair : le popup suggère d'activer les sous-titres (CC) avant de conclure qu'un lecteur n'en a pas.",
+        "updater": "Un bouton « Vérifier les mises à jour » dans le hub applique une mise à jour en attente instantanément (Chrome et Edge).",
+        "fix": "Les réglages réservés au Pro n'apparaissent plus sur un compte gratuit."
+      }
+    },
     "latest": "Dernière version",
     "store": "En ligne sur le Chrome Web Store",
     "tagNew": "Nouveau",

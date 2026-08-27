@@ -20,14 +20,25 @@ type Tag = "new" | "improved" | "pro";
 // Text lives in messages (Changelog.*); this is only the shape.
 const RELEASES: Array<{
   version: string;
-  id: "v180" | "v171" | "v170" | "v151";
+  id: "v181" | "v180" | "v171" | "v170" | "v151";
   badges?: Array<"latest" | "store" | "review">;
   items: Array<{ key: string; tag: Tag }>;
 }> = [
   {
+    version: "1.8.1",
+    id: "v181",
+    badges: ["latest", "review"],
+    items: [
+      { key: "sites", tag: "new" },
+      { key: "hint", tag: "improved" },
+      { key: "updater", tag: "new" },
+      { key: "fix", tag: "improved" },
+    ],
+  },
+  {
     version: "1.8.0",
     id: "v180",
-    badges: ["latest", "store"],
+    badges: ["store"],
     items: [
       { key: "trial", tag: "new" },
       { key: "freeSites", tag: "improved" },

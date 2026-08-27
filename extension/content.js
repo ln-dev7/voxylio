@@ -855,6 +855,66 @@
       host: /(^|\.)udemy\.com$/,
       container: "[class*='captions-display--captions-container']",
       segment: "[data-purpose='captions-cue-text']"
+    },
+    // The entries below come from the 2026-08 sweep of players that draw
+    // captions in the DOM without exposing textTracks (sources: Firefox
+    // Picture-in-Picture site wrappers, asbplayer, per-site userscripts).
+    // A wrong selector fails safe: no cues, the popup keeps its guidance.
+    {
+      id: "hulu",
+      host: /(^|\.)hulu\.com$/,
+      container: ".ClosedCaption",
+      segment: ".CaptionBox"
+    },
+    {
+      id: "hbomax",
+      host: /(^|\.)hbomax\.com$|(^|\.)max\.com$/,
+      container: "[data-testid='CueBoxContainer']",
+      segment: "span"
+    },
+    {
+      id: "peacock",
+      host: /(^|\.)peacocktv\.com$/,
+      container: "[data-t='subtitles'], [data-t-subtitles='true']",
+      segment: ".video-player__subtitles__line"
+    },
+    {
+      id: "dailymotion",
+      host: /(^|\.)dailymotion\.com$/,
+      container: ".subtitles",
+      segment: ".subtitles-text"
+    },
+    {
+      // Viki runs video.js in emulated-track mode: the video element's
+      // textTracks stay empty and cues render into the vjs display div.
+      id: "viki",
+      host: /(^|\.)viki\.com$/,
+      container: ".vjs-text-track-display",
+      segment: ".vjs-text-track-cue"
+    },
+    {
+      // LinkedIn Learning and Skillshare are video.js too. When a vjs
+      // player uses NATIVE tracks the display div stays empty (the native
+      // pipeline feeds us instead), so this entry can never double-feed.
+      id: "linkedin",
+      host: /(^|\.)linkedin\.com$/,
+      container: ".vjs-text-track-display",
+      segment: ".vjs-text-track-cue"
+    },
+    {
+      id: "skillshare",
+      host: /(^|\.)skillshare\.com$/,
+      container: ".vjs-text-track-display",
+      segment: ".vjs-text-track-cue"
+    },
+    {
+      // edX swaps plain text inside .closed-captions with no child
+      // segments — the harvester falls back to the container's own text
+      // when the segment selector matches nothing.
+      id: "edx",
+      host: /(^|\.)edx\.org$/,
+      container: ".closed-captions",
+      segment: "span"
     }
   ];
   function domCaptionSiteFor(hostname) {
@@ -3308,6 +3368,10 @@
       const parts = [];
       for (const el of domCapContainer.querySelectorAll(domSite.segment)) {
         const s = (el.textContent || "").replace(/\s+/g, " ").trim();
+        if (s) parts.push(s);
+      }
+      if (parts.length === 0) {
+        const s = (domCapContainer.textContent || "").replace(/\s+/g, " ").trim();
         if (s) parts.push(s);
       }
       return parts.join(" ").trim();
