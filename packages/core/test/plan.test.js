@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { isFreeSite, planGate, trialDaysLeft } from "../src/plan.js";
+import { domCaptionSiteFor } from "../src/sites.js";
 
 test("isFreeSite: the five platforms and their subdomains, nothing else", () => {
   for (const h of [
@@ -59,4 +60,10 @@ test("trialDaysLeft: ceil of remaining days, null when over or absent", () => {
   assert.equal(trialDaysLeft("2026-08-26T18:00:00Z", NOW), 1);
   assert.equal(trialDaysLeft(PAST, NOW), null);
   assert.equal(trialDaysLeft(null, NOW), null);
+});
+
+test("udemy is a DOM-caption site (its player exposes no track)", () => {
+  assert.equal(domCaptionSiteFor("www.udemy.com")?.id, "udemy");
+  assert.equal(domCaptionSiteFor("udemy.com")?.id, "udemy");
+  assert.equal(domCaptionSiteFor("coursera.org"), null);
 });

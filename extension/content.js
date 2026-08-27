@@ -844,6 +844,17 @@
       host: /(^|\.)twitch\.tv$/,
       container: "[data-a-target='player-captions-container']",
       segment: "span"
+    },
+    {
+      // Udemy renders captions in its own overlay (Shaka-style); the video
+      // element exposes no track. `data-purpose` attributes are Udemy's
+      // stable hooks — the container class is CSS-module-hashed, so match
+      // its stable prefix. No `cc`: their captions button opens a language
+      // menu, not a toggle — never click it programmatically.
+      id: "udemy",
+      host: /(^|\.)udemy\.com$/,
+      container: "[class*='captions-display--captions-container']",
+      segment: "[data-purpose='captions-cue-text']"
     }
   ];
   function domCaptionSiteFor(hostname) {
