@@ -35,7 +35,7 @@
   "statusLinesReady": "$COUNT$ fala(s) pronta(s)",
   "statusSpeaking": "voz ativa",
   "statusSubsLoading": "Trilha de legendas detectada — reproduza alguns segundos para carregar as falas.",
-  "statusNoSubs": "Este player não expõe suas legendas — a dublagem não é possível neste vídeo.",
+  "statusNoSubs": "Nenhuma legenda detectada — confira se as legendas (CC) estão ativadas no player. Se ele não oferecer nenhuma, a dublagem não é possível neste vídeo.",
   "statusEnableSubs": "Ative as legendas (CC) no player: o Voxylio as lê ao vivo neste site.",
   "statusNoVoice": "Nenhuma voz instalada para este idioma. No Mac: Ajustes do Sistema → Acessibilidade → Conteúdo falado.",
   "statusLocalUnavailable": "Tradução local indisponível (modo estrito ativo). O Chrome pode estar baixando o modelo — tente de novo em instantes.",

@@ -35,7 +35,7 @@
   "statusLinesReady": "$COUNT$ Zeile(n) bereit",
   "statusSpeaking": "Stimme aktiv",
   "statusSubsLoading": "Untertitelspur erkannt — ein paar Sekunden abspielen, um die Zeilen zu laden.",
-  "statusNoSubs": "Dieser Player gibt seine Untertitel nicht frei — Synchronisation ist bei diesem Video nicht möglich.",
+  "statusNoSubs": "Keine Untertitel erkannt — stell sicher, dass Untertitel (CC) im Player aktiviert sind. Bietet der Player keine an, ist die Vertonung bei diesem Video nicht möglich.",
   "statusEnableSubs": "Schalte die Untertitel (CC) im Player ein: Voxylio liest sie auf dieser Seite live mit.",
   "statusNoVoice": "Keine Stimme für diese Sprache installiert. Auf dem Mac: Systemeinstellungen → Bedienungshilfen → Gesprochene Inhalte.",
   "statusLocalUnavailable": "Lokale Übersetzung nicht verfügbar (strikter Modus aktiv). Chrome lädt eventuell gerade sein Modell — versuch es gleich noch einmal.",

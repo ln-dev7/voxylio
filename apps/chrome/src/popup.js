@@ -174,7 +174,7 @@ function statusFragment(resp) {
       add(line(t("statusSubsLoading") || "Piste de sous-titres détectée — lance la lecture quelques secondes pour charger les répliques.", "warn"));
       break;
     case "no-subs":
-      add(line(t("statusNoSubs") || "Ce lecteur n’expose pas ses sous-titres — le doublage n’est pas possible sur cette vidéo.", "warn"));
+      add(line(t("statusNoSubs") || "Aucun sous-titre détecté — assure-toi que les sous-titres (CC) sont activés dans le lecteur. S'il n'en propose pas, le doublage n'est pas possible sur cette vidéo.", "warn"));
       break;
     case "enable-subs":
       add(line(t("statusEnableSubs") || "Active les sous-titres (CC) dans le lecteur : Voxylio les lit en direct sur ce site.", "warn"));

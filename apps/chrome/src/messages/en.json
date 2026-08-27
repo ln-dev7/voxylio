@@ -35,7 +35,7 @@
   "statusLinesReady": "$COUNT$ line(s) ready",
   "statusSpeaking": "speaking",
   "statusSubsLoading": "Subtitle track detected — play for a few seconds to load the lines.",
-  "statusNoSubs": "This player does not expose its subtitles — dubbing is not possible on this video.",
+  "statusNoSubs": "No subtitles detected — make sure captions (CC) are turned on in the player. If the player has none to offer, dubbing is not possible on this video.",
   "statusNoVoice": "No voice installed for this language. On Mac: System Settings → Accessibility → Spoken Content.",
   "statusLocalUnavailable": "Local translation unavailable (strict mode on). Chrome may be downloading its model — retry in a moment.",
   "statusTranslateError": "Translation temporarily unavailable — retrying automatically.",

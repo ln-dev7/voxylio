@@ -35,7 +35,7 @@
   "statusLinesReady": "$COUNT$ línea(s) lista(s)",
   "statusSpeaking": "voz activa",
   "statusSubsLoading": "Pista de subtítulos detectada — reproduce unos segundos para cargar las líneas.",
-  "statusNoSubs": "Este reproductor no expone sus subtítulos — el doblaje no es posible en este vídeo.",
+  "statusNoSubs": "No se detectan subtítulos — asegúrate de activar los subtítulos (CC) en el reproductor. Si no ofrece ninguno, el doblaje no es posible en este vídeo.",
   "statusEnableSubs": "Activa los subtítulos (CC) en el reproductor: Voxylio los lee en directo en este sitio.",
   "statusNoVoice": "No hay ninguna voz instalada para este idioma. En Mac: Ajustes del Sistema → Accesibilidad → Contenido hablado.",
   "statusLocalUnavailable": "Traducción local no disponible (modo estricto activo). Chrome puede estar descargando su modelo — reinténtalo en un momento.",

@@ -35,7 +35,7 @@
   "statusLinesReady": "$COUNT$ réplique(s) prête(s)",
   "statusSpeaking": "voix en cours",
   "statusSubsLoading": "Piste de sous-titres détectée — lance la lecture quelques secondes pour charger les répliques.",
-  "statusNoSubs": "Ce lecteur n’expose pas ses sous-titres — le doublage n’est pas possible sur cette vidéo.",
+  "statusNoSubs": "Aucun sous-titre détecté — assure-toi que les sous-titres (CC) sont activés dans le lecteur. S'il n'en propose pas, le doublage n'est pas possible sur cette vidéo.",
   "statusNoVoice": "Aucune voix installée pour cette langue. Sur Mac : Réglages Système → Accessibilité → Contenu énoncé.",
   "statusLocalUnavailable": "Traduction locale indisponible (mode strict actif). Chrome télécharge peut-être son modèle — réessaie dans un instant.",
   "statusTranslateError": "Traduction temporairement indisponible — nouvelle tentative automatique.",

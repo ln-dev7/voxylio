@@ -35,7 +35,7 @@
   "statusLinesReady": "$COUNT$ 句台詞已就緒",
   "statusSpeaking": "語音播放中",
   "statusSubsLoading": "偵測到字幕軌 — 播放幾秒即可載入台詞。",
-  "statusNoSubs": "此播放器未公開其字幕 — 這部影片無法配音。",
+  "statusNoSubs": "未偵測到字幕 — 請確認播放器已開啟字幕（CC）。若播放器未提供字幕，則無法為此影片配音。",
   "statusEnableSubs": "請在播放器中開啟字幕（CC）：在此網站上，Voxylio 會即時讀取字幕。",
   "statusNoVoice": "未安裝此語言的聲音。Mac：系統設定 → 輔助使用 → 朗讀內容。",
   "statusLocalUnavailable": "本機翻譯無法使用（嚴格模式開啟）。Chrome 可能正在下載模型 — 請稍後再試。",

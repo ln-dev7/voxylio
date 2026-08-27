@@ -35,7 +35,7 @@
   "statusLinesReady": "$COUNT$ battuta/e pronte",
   "statusSpeaking": "voce attiva",
   "statusSubsLoading": "Traccia di sottotitoli rilevata — riproduci qualche secondo per caricare le battute.",
-  "statusNoSubs": "Questo player non espone i suoi sottotitoli — il doppiaggio non è possibile su questo video.",
+  "statusNoSubs": "Nessun sottotitolo rilevato — assicurati che i sottotitoli (CC) siano attivi nel player. Se non ne offre, il doppiaggio non è possibile su questo video.",
   "statusEnableSubs": "Attiva i sottotitoli (CC) nel player: Voxylio li legge in diretta su questo sito.",
   "statusNoVoice": "Nessuna voce installata per questa lingua. Su Mac: Impostazioni di Sistema → Accessibilità → Contenuto letto.",
   "statusLocalUnavailable": "Traduzione locale non disponibile (modalità rigorosa attiva). Chrome potrebbe stare scaricando il modello — riprova tra poco.",
