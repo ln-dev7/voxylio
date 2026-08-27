@@ -9,7 +9,7 @@ asbplayer, yt-dlp extractors, per-site userscripts.
 
 | Site | Container | Segment | Notes |
 | --- | --- | --- | --- |
-| Udemy | `[class*='captions-display--captions-container']` | `[data-purpose='captions-cue-text']` | `data-purpose` = stable hooks; classes hashed |
+| Udemy | `[class*='--captions-container--']` | `[data-purpose='captions-cue-text']` | owner-verified DOM 2026-08: module prefix is `captions-display-module--`; match the stable middle |
 | Hulu | `.ClosedCaption` | `.CaptionBox` | live TV uses another tree — not covered |
 | HBO Max | `[data-testid='CueBoxContainer']` | `span` | classes hashed, only data-testid stable |
 | Peacock | `[data-t='subtitles'], [data-t-subtitles='true']` | `.video-player__subtitles__line` | also NOW TV/SkyShowtime family |
@@ -44,6 +44,10 @@ lookahead instead of live DOM harvesting:
 
 - **Udemy**: `/api-2.0/...lectures/{id}?fields[lecture]=asset&fields[asset]=captions`
   → `asset.captions[].url` (VTT, per-locale, `source:"auto"` flags autogen).
+  DOM transcript panel (owner-verified): `[data-purpose='transcript-panel']`,
+  cues `p[data-purpose='transcript-cue']` (the active one becomes
+  `transcript-cue-active`) — no timing attributes, and the panel is only
+  in the DOM while open, so the VTT API is the right lookahead source.
 - **Pluralsight**: `app.pluralsight.com/transcript/api/v1/caption/json/{clipId}/{lang}`.
 - **LinkedIn Learning**: `/learning-api/detailedCourses?...&courseSlug={slug}`
   → `transcript` lines `{transcriptStartAt, caption}` (csrf-token header

@@ -853,7 +853,10 @@
       // menu, not a toggle — never click it programmatically.
       id: "udemy",
       host: /(^|\.)udemy\.com$/,
-      container: "[class*='captions-display--captions-container']",
+      // Real 2026 markup: class "captions-display-module--captions-container--xxx"
+      // (owner-verified DOM). Match the stable middle of the CSS-module name
+      // so a prefix rename never breaks it again.
+      container: "[class*='--captions-container--']",
       segment: "[data-purpose='captions-cue-text']"
     },
     // The entries below come from the 2026-08 sweep of players that draw
