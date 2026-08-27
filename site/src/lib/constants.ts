@@ -6,6 +6,7 @@ export const SITE_URL = "https://voxylio.lndev.me";
 // Chrome listing (same ID the account-link fallback uses).
 export const CHROME_STORE_URL =
   "https://chromewebstore.google.com/detail/hahcpbcjfdanjncobfcdeidodfggggkp";
-export const EDGE_STORE_URL = "";
+export const EDGE_STORE_URL =
+  "https://microsoftedge.microsoft.com/addons/detail/voxylio-%E2%80%94-doublage-multil/nonohjcbhelhdjgejbadibgkjjfbkepj";
 export const FIREFOX_STORE_URL = "";
 export const SAFARI_STORE_URL = "";
