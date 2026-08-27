@@ -10,14 +10,14 @@ asbplayer, yt-dlp extractors, per-site userscripts.
 | Site | Container | Segment | Notes |
 | --- | --- | --- | --- |
 | Udemy | `[class*='--captions-container--']` | `[data-purpose='captions-cue-text']` | owner-verified DOM 2026-08: module prefix is `captions-display-module--`; match the stable middle |
-| Hulu | `.ClosedCaption` | `.CaptionBox` | live TV uses another tree — not covered |
-| HBO Max | `[data-testid='CueBoxContainer']` | `span` | classes hashed, only data-testid stable |
-| Peacock | `[data-t='subtitles'], [data-t-subtitles='true']` | `.video-player__subtitles__line` | also NOW TV/SkyShowtime family |
-| Dailymotion | `.subtitles` | `.subtitles-text` | |
+| Hulu | `.ClosedCaption` | `.CaptionBox` | verified against Firefox PiP main 2026-08; live TV uses `#inband-closed-caption` — not covered |
+| HBO Max | `[data-testid='CueBoxContainer']` | `span` | verified against Firefox PiP main 2026-08; current player host is play.hbomax.com (covered); span drift covered by container-text fallback |
+| Peacock | `[data-t='subtitles'], [data-t-subtitles='true']` | `.video-player__subtitles__line` | container verified vs Firefox PiP main; the line class is NOT in Mozilla's source — container-text fallback is the likely read path |
+| Dailymotion | `.subtitles` | `div` | verified against Firefox PiP main 2026-08 (reads div children) |
 | Viki | `.vjs-text-track-display` | `.vjs-text-track-cue` | video.js emulated tracks |
 | LinkedIn Learning | `.vjs-text-track-display` | `.vjs-text-track-cue` | video.js; safe either mode (native mode leaves the display div empty) |
 | Skillshare | `.vjs-text-track-display` | `.vjs-text-track-cue` | sources from 2022 — verify on current site |
-| edX | `.closed-captions` | `span` | plain text swap: relies on the container-text fallback |
+| edX | `.closed-captions.is-visible` | `span` | plain-text swap: container-text fallback is the read path; `.is-visible` avoids stale hidden text (Firefox edx wrapper does the same) |
 
 The harvester falls back to the container's own text when the segment
 selector matches nothing (shipped with this sweep) — a retired segment

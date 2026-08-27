@@ -77,7 +77,9 @@ export const DOM_CAPTION_SITES = [
     id: "dailymotion",
     host: /(^|\.)dailymotion\.com$/,
     container: ".subtitles",
-    segment: ".subtitles-text",
+    // Firefox PiP (main, 2026-08) reads the container's div children;
+    // ".subtitles-text" only appears as their mutation filter.
+    segment: "div",
   },
   {
     // Viki runs video.js in emulated-track mode: the video element's
@@ -108,7 +110,9 @@ export const DOM_CAPTION_SITES = [
     // when the segment selector matches nothing.
     id: "edx",
     host: /(^|\.)edx\.org$/,
-    container: ".closed-captions",
+    // ".is-visible" so hidden captions are never read as stale text —
+    // same guard Firefox's dedicated edx wrapper uses.
+    container: ".closed-captions.is-visible",
     segment: "span",
   },
 ];
