@@ -173,5 +173,10 @@
   "quotaAudio": "Premium Audio (Beta)",
   "statusAudioLive": "Keine Untertitel: Der Ton wird live transkribiert (Beta) — das Dubbing folgt in wenigen Sekunden.",
   "statusAudioQuota": "Premium-Audio-Minuten für diesen Monat aufgebraucht — Dubbing ohne Untertitel (Beta) geht im nächsten Zyklus weiter.",
-  "statusAudioUnavailable": "Der Ton dieses Players lässt sich nicht erfassen (Seitenschutz) — Dubbing ohne Untertitel (Beta) funktioniert hier nicht."
+  "statusAudioUnavailable": "Der Ton dieses Players lässt sich nicht erfassen (Seitenschutz) — Dubbing ohne Untertitel (Beta) funktioniert hier nicht.",
+  "btnCheckUpdate": "Nach Updates suchen",
+  "updChecking": "Wird geprüft…",
+  "updFound": "Update gefunden — Neustart…",
+  "updNone": "Aktuell ✓",
+  "updThrottled": "Versuch es in ein paar Minuten erneut"
 }

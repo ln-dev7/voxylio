@@ -173,5 +173,10 @@
   "quotaAudio": "高级音频（测试版）",
   "statusAudioLive": "无字幕：正在实时转写音频（测试版） — 配音将在几秒后开始。",
   "statusAudioQuota": "本月高级音频分钟已用完 — 无字幕配音（测试版）将在下一周期恢复。",
-  "statusAudioUnavailable": "无法捕获此播放器的音频（站点保护）— 无字幕配音（测试版）在此无法工作。"
+  "statusAudioUnavailable": "无法捕获此播放器的音频（站点保护）— 无字幕配音（测试版）在此无法工作。",
+  "btnCheckUpdate": "检查更新",
+  "updChecking": "正在检查…",
+  "updFound": "发现更新 — 正在重启…",
+  "updNone": "已是最新 ✓",
+  "updThrottled": "请几分钟后再试"
 }

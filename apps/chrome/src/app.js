@@ -710,6 +710,44 @@ async function init() {
     $("version").textContent = "Voxylio v" + chrome.runtime.getManifest().version;
   } catch (e) {}
 
+  // "Check for updates" — Chromium only: Firefox and Safari don't have
+  // requestUpdateCheck, so the button stays hidden there. On success the
+  // update is already downloaded; reload() applies it immediately.
+  const upd = $("checkUpd");
+  if (
+    upd &&
+    chrome.runtime &&
+    typeof chrome.runtime.requestUpdateCheck === "function"
+  ) {
+    upd.hidden = false;
+    let updBusy = false;
+    upd.addEventListener("click", async () => {
+      if (updBusy) return;
+      updBusy = true;
+      upd.textContent = t("updChecking") || "Vérification…";
+      try {
+        const res = await chrome.runtime.requestUpdateCheck();
+        const status = res && (res.status || res[0]);
+        if (status === "update_available") {
+          upd.textContent =
+            t("updFound") || "Mise à jour trouvée — redémarrage…";
+          setTimeout(() => chrome.runtime.reload(), 1200);
+          return;
+        }
+        upd.textContent =
+          status === "throttled"
+            ? t("updThrottled") || "Réessaie dans quelques minutes"
+            : t("updNone") || "À jour ✓";
+      } catch (e) {
+        upd.textContent = t("updThrottled") || "Réessaie dans quelques minutes";
+      }
+      setTimeout(() => {
+        upd.textContent = t("btnCheckUpdate") || "Vérifier les mises à jour";
+        updBusy = false;
+      }, 3000);
+    });
+  }
+
   // Interface-language selector (auto = browser language).
   const uiSel = $("uiLang");
   for (const code of UI_LANGS) {

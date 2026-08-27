@@ -173,5 +173,10 @@
   "quotaAudio": "Audio Premium (bêta)",
   "statusAudioLive": "Aucun sous-titre : transcription en direct de l'audio (bêta) — le doublage suit dans quelques secondes.",
   "statusAudioQuota": "Minutes Premium Audio épuisées pour ce mois — le doublage sans sous-titres (bêta) reprend au prochain cycle.",
-  "statusAudioUnavailable": "Impossible de capturer l'audio de ce lecteur (protection du site) — le doublage sans sous-titres (bêta) ne peut pas fonctionner ici."
+  "statusAudioUnavailable": "Impossible de capturer l'audio de ce lecteur (protection du site) — le doublage sans sous-titres (bêta) ne peut pas fonctionner ici.",
+  "btnCheckUpdate": "Vérifier les mises à jour",
+  "updChecking": "Vérification…",
+  "updFound": "Mise à jour trouvée — redémarrage…",
+  "updNone": "À jour ✓",
+  "updThrottled": "Réessaie dans quelques minutes"
 }

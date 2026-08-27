@@ -84,6 +84,20 @@
       color: var(--text-faint);
       padding: 0 12px 4px;
     }
+    .side .check-upd {
+      margin: 0 12px 10px;
+      padding: 0;
+      border: 0;
+      background: none;
+      font: inherit;
+      font-size: 10.5px;
+      color: var(--text-faint);
+      text-align: left;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .side .check-upd:hover { color: var(--text); }
 
     /* ---- main ---- */
     main { flex: 1; min-width: 0; height: 100vh; overflow-y: auto; }
@@ -342,6 +356,9 @@
     </button>
     <div class="spacer"></div>
     <span class="version" id="version"></span>
+    <button class="check-upd" id="checkUpd" data-i18n="btnCheckUpdate" hidden>
+      Vérifier les mises à jour
+    </button>
   </aside>
 
   <main>

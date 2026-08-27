@@ -437,7 +437,12 @@
     quotaAudio: "Premium Audio (beta)",
     statusAudioLive: "No subtitles: transcribing the audio live (beta) \u2014 dubbing follows in a few seconds.",
     statusAudioQuota: "Premium Audio minutes exhausted for this month \u2014 no-subtitle dubbing (beta) resumes next cycle.",
-    statusAudioUnavailable: "This player's audio can't be captured (site protection) \u2014 no-subtitle dubbing (beta) can't work here."
+    statusAudioUnavailable: "This player's audio can't be captured (site protection) \u2014 no-subtitle dubbing (beta) can't work here.",
+    btnCheckUpdate: "Check for updates",
+    updChecking: "Checking\u2026",
+    updFound: "Update found \u2014 restarting\u2026",
+    updNone: "Up to date \u2713",
+    updThrottled: "Try again in a few minutes"
   };
 
   // src/messages/fr.json
@@ -616,7 +621,12 @@
     quotaAudio: "Audio Premium (b\xEAta)",
     statusAudioLive: "Aucun sous-titre : transcription en direct de l'audio (b\xEAta) \u2014 le doublage suit dans quelques secondes.",
     statusAudioQuota: "Minutes Premium Audio \xE9puis\xE9es pour ce mois \u2014 le doublage sans sous-titres (b\xEAta) reprend au prochain cycle.",
-    statusAudioUnavailable: "Impossible de capturer l'audio de ce lecteur (protection du site) \u2014 le doublage sans sous-titres (b\xEAta) ne peut pas fonctionner ici."
+    statusAudioUnavailable: "Impossible de capturer l'audio de ce lecteur (protection du site) \u2014 le doublage sans sous-titres (b\xEAta) ne peut pas fonctionner ici.",
+    btnCheckUpdate: "V\xE9rifier les mises \xE0 jour",
+    updChecking: "V\xE9rification\u2026",
+    updFound: "Mise \xE0 jour trouv\xE9e \u2014 red\xE9marrage\u2026",
+    updNone: "\xC0 jour \u2713",
+    updThrottled: "R\xE9essaie dans quelques minutes"
   };
 
   // src/messages/es.json
@@ -795,7 +805,12 @@
     quotaAudio: "Audio Premium (beta)",
     statusAudioLive: "Sin subt\xEDtulos: transcribiendo el audio en directo (beta) \u2014 el doblaje llega en unos segundos.",
     statusAudioQuota: "Minutos de Audio Premium agotados este mes \u2014 el doblaje sin subt\xEDtulos (beta) vuelve el pr\xF3ximo ciclo.",
-    statusAudioUnavailable: "No se puede capturar el audio de este reproductor (protecci\xF3n del sitio) \u2014 el doblaje sin subt\xEDtulos (beta) no puede funcionar aqu\xED."
+    statusAudioUnavailable: "No se puede capturar el audio de este reproductor (protecci\xF3n del sitio) \u2014 el doblaje sin subt\xEDtulos (beta) no puede funcionar aqu\xED.",
+    btnCheckUpdate: "Buscar actualizaciones",
+    updChecking: "Comprobando\u2026",
+    updFound: "Actualizaci\xF3n encontrada \u2014 reiniciando\u2026",
+    updNone: "Actualizado \u2713",
+    updThrottled: "Int\xE9ntalo de nuevo en unos minutos"
   };
 
   // src/messages/de.json
@@ -974,7 +989,12 @@
     quotaAudio: "Premium Audio (Beta)",
     statusAudioLive: "Keine Untertitel: Der Ton wird live transkribiert (Beta) \u2014 das Dubbing folgt in wenigen Sekunden.",
     statusAudioQuota: "Premium-Audio-Minuten f\xFCr diesen Monat aufgebraucht \u2014 Dubbing ohne Untertitel (Beta) geht im n\xE4chsten Zyklus weiter.",
-    statusAudioUnavailable: "Der Ton dieses Players l\xE4sst sich nicht erfassen (Seitenschutz) \u2014 Dubbing ohne Untertitel (Beta) funktioniert hier nicht."
+    statusAudioUnavailable: "Der Ton dieses Players l\xE4sst sich nicht erfassen (Seitenschutz) \u2014 Dubbing ohne Untertitel (Beta) funktioniert hier nicht.",
+    btnCheckUpdate: "Nach Updates suchen",
+    updChecking: "Wird gepr\xFCft\u2026",
+    updFound: "Update gefunden \u2014 Neustart\u2026",
+    updNone: "Aktuell \u2713",
+    updThrottled: "Versuch es in ein paar Minuten erneut"
   };
 
   // src/messages/it.json
@@ -1153,7 +1173,12 @@
     quotaAudio: "Audio Premium (beta)",
     statusAudioLive: "Nessun sottotitolo: trascrizione dell'audio in diretta (beta) \u2014 il doppiaggio arriva tra pochi secondi.",
     statusAudioQuota: "Minuti di Audio Premium esauriti per questo mese \u2014 il doppiaggio senza sottotitoli (beta) riprende al prossimo ciclo.",
-    statusAudioUnavailable: "Impossibile catturare l'audio di questo player (protezione del sito) \u2014 il doppiaggio senza sottotitoli (beta) non pu\xF2 funzionare qui."
+    statusAudioUnavailable: "Impossibile catturare l'audio di questo player (protezione del sito) \u2014 il doppiaggio senza sottotitoli (beta) non pu\xF2 funzionare qui.",
+    btnCheckUpdate: "Cerca aggiornamenti",
+    updChecking: "Controllo\u2026",
+    updFound: "Aggiornamento trovato \u2014 riavvio\u2026",
+    updNone: "Aggiornato \u2713",
+    updThrottled: "Riprova tra qualche minuto"
   };
 
   // src/messages/ja.json
@@ -1332,7 +1357,12 @@
     quotaAudio: "\u30D7\u30EC\u30DF\u30A2\u30E0\u97F3\u58F0\uFF08\u30D9\u30FC\u30BF\u7248\uFF09",
     statusAudioLive: "\u5B57\u5E55\u306A\u3057\uFF1A\u97F3\u58F0\u3092\u30E9\u30A4\u30D6\u3067\u6587\u5B57\u8D77\u3053\u3057\u4E2D\uFF08\u30D9\u30FC\u30BF\u7248\uFF09 \u2014 \u6570\u79D2\u5F8C\u306B\u5439\u304D\u66FF\u3048\u304C\u59CB\u307E\u308A\u307E\u3059\u3002",
     statusAudioQuota: "\u4ECA\u6708\u306E\u30D7\u30EC\u30DF\u30A2\u30E0\u97F3\u58F0\u306E\u5206\u6570\u3092\u4F7F\u3044\u5207\u308A\u307E\u3057\u305F \u2014 \u5B57\u5E55\u306A\u3057\u5439\u304D\u66FF\u3048\uFF08\u30D9\u30FC\u30BF\u7248\uFF09\u306F\u6B21\u306E\u30B5\u30A4\u30AF\u30EB\u3067\u518D\u958B\u3057\u307E\u3059\u3002",
-    statusAudioUnavailable: "\u3053\u306E\u30D7\u30EC\u30FC\u30E4\u30FC\u306E\u97F3\u58F0\u306F\u30AD\u30E3\u30D7\u30C1\u30E3\u3067\u304D\u307E\u305B\u3093\uFF08\u30B5\u30A4\u30C8\u4FDD\u8B77\uFF09\u2014 \u3053\u3053\u3067\u306F\u5B57\u5E55\u306A\u3057\u5439\u304D\u66FF\u3048\uFF08\u30D9\u30FC\u30BF\u7248\uFF09\u306F\u52D5\u4F5C\u3057\u307E\u305B\u3093\u3002"
+    statusAudioUnavailable: "\u3053\u306E\u30D7\u30EC\u30FC\u30E4\u30FC\u306E\u97F3\u58F0\u306F\u30AD\u30E3\u30D7\u30C1\u30E3\u3067\u304D\u307E\u305B\u3093\uFF08\u30B5\u30A4\u30C8\u4FDD\u8B77\uFF09\u2014 \u3053\u3053\u3067\u306F\u5B57\u5E55\u306A\u3057\u5439\u304D\u66FF\u3048\uFF08\u30D9\u30FC\u30BF\u7248\uFF09\u306F\u52D5\u4F5C\u3057\u307E\u305B\u3093\u3002",
+    btnCheckUpdate: "\u66F4\u65B0\u3092\u78BA\u8A8D",
+    updChecking: "\u78BA\u8A8D\u4E2D\u2026",
+    updFound: "\u66F4\u65B0\u304C\u898B\u3064\u304B\u308A\u307E\u3057\u305F \u2014 \u518D\u8D77\u52D5\u3057\u307E\u3059\u2026",
+    updNone: "\u6700\u65B0\u3067\u3059 \u2713",
+    updThrottled: "\u6570\u5206\u5F8C\u306B\u3082\u3046\u4E00\u5EA6\u304A\u8A66\u3057\u304F\u3060\u3055\u3044"
   };
 
   // src/messages/ko.json
@@ -1511,7 +1541,12 @@
     quotaAudio: "\uD504\uB9AC\uBBF8\uC5C4 \uC624\uB514\uC624 (\uBCA0\uD0C0)",
     statusAudioLive: "\uC790\uB9C9 \uC5C6\uC74C: \uC624\uB514\uC624\uB97C \uC2E4\uC2DC\uAC04 \uC804\uC0AC \uC911(\uBCA0\uD0C0) \u2014 \uBA87 \uCD08 \uD6C4 \uB354\uBE59\uC774 \uC2DC\uC791\uB429\uB2C8\uB2E4.",
     statusAudioQuota: "\uC774\uBC88 \uB2EC \uD504\uB9AC\uBBF8\uC5C4 \uC624\uB514\uC624 \uBD84\uC744 \uBAA8\uB450 \uC0AC\uC6A9\uD588\uC2B5\uB2C8\uB2E4 \u2014 \uC790\uB9C9 \uC5C6\uB294 \uB354\uBE59(\uBCA0\uD0C0)\uC740 \uB2E4\uC74C \uC8FC\uAE30\uC5D0 \uC7AC\uAC1C\uB429\uB2C8\uB2E4.",
-    statusAudioUnavailable: "\uC774 \uD50C\uB808\uC774\uC5B4\uC758 \uC624\uB514\uC624\uB97C \uCEA1\uCC98\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4(\uC0AC\uC774\uD2B8 \uBCF4\uD638) \u2014 \uC5EC\uAE30\uC11C\uB294 \uC790\uB9C9 \uC5C6\uB294 \uB354\uBE59(\uBCA0\uD0C0)\uC774 \uC791\uB3D9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."
+    statusAudioUnavailable: "\uC774 \uD50C\uB808\uC774\uC5B4\uC758 \uC624\uB514\uC624\uB97C \uCEA1\uCC98\uD560 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4(\uC0AC\uC774\uD2B8 \uBCF4\uD638) \u2014 \uC5EC\uAE30\uC11C\uB294 \uC790\uB9C9 \uC5C6\uB294 \uB354\uBE59(\uBCA0\uD0C0)\uC774 \uC791\uB3D9\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.",
+    btnCheckUpdate: "\uC5C5\uB370\uC774\uD2B8 \uD655\uC778",
+    updChecking: "\uD655\uC778 \uC911\u2026",
+    updFound: "\uC5C5\uB370\uC774\uD2B8 \uBC1C\uACAC \u2014 \uB2E4\uC2DC \uC2DC\uC791\uD569\uB2C8\uB2E4\u2026",
+    updNone: "\uCD5C\uC2E0 \uC0C1\uD0DC \u2713",
+    updThrottled: "\uBA87 \uBD84 \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uC138\uC694"
   };
 
   // src/messages/zh-CN.json
@@ -1690,7 +1725,12 @@
     quotaAudio: "\u9AD8\u7EA7\u97F3\u9891\uFF08\u6D4B\u8BD5\u7248\uFF09",
     statusAudioLive: "\u65E0\u5B57\u5E55\uFF1A\u6B63\u5728\u5B9E\u65F6\u8F6C\u5199\u97F3\u9891\uFF08\u6D4B\u8BD5\u7248\uFF09 \u2014 \u914D\u97F3\u5C06\u5728\u51E0\u79D2\u540E\u5F00\u59CB\u3002",
     statusAudioQuota: "\u672C\u6708\u9AD8\u7EA7\u97F3\u9891\u5206\u949F\u5DF2\u7528\u5B8C \u2014 \u65E0\u5B57\u5E55\u914D\u97F3\uFF08\u6D4B\u8BD5\u7248\uFF09\u5C06\u5728\u4E0B\u4E00\u5468\u671F\u6062\u590D\u3002",
-    statusAudioUnavailable: "\u65E0\u6CD5\u6355\u83B7\u6B64\u64AD\u653E\u5668\u7684\u97F3\u9891\uFF08\u7AD9\u70B9\u4FDD\u62A4\uFF09\u2014 \u65E0\u5B57\u5E55\u914D\u97F3\uFF08\u6D4B\u8BD5\u7248\uFF09\u5728\u6B64\u65E0\u6CD5\u5DE5\u4F5C\u3002"
+    statusAudioUnavailable: "\u65E0\u6CD5\u6355\u83B7\u6B64\u64AD\u653E\u5668\u7684\u97F3\u9891\uFF08\u7AD9\u70B9\u4FDD\u62A4\uFF09\u2014 \u65E0\u5B57\u5E55\u914D\u97F3\uFF08\u6D4B\u8BD5\u7248\uFF09\u5728\u6B64\u65E0\u6CD5\u5DE5\u4F5C\u3002",
+    btnCheckUpdate: "\u68C0\u67E5\u66F4\u65B0",
+    updChecking: "\u6B63\u5728\u68C0\u67E5\u2026",
+    updFound: "\u53D1\u73B0\u66F4\u65B0 \u2014 \u6B63\u5728\u91CD\u542F\u2026",
+    updNone: "\u5DF2\u662F\u6700\u65B0 \u2713",
+    updThrottled: "\u8BF7\u51E0\u5206\u949F\u540E\u518D\u8BD5"
   };
 
   // src/messages/zh-TW.json
@@ -1869,7 +1909,12 @@
     quotaAudio: "\u9032\u968E\u97F3\u8A0A\uFF08\u6E2C\u8A66\u7248\uFF09",
     statusAudioLive: "\u7121\u5B57\u5E55\uFF1A\u6B63\u5728\u5373\u6642\u8F49\u5BEB\u97F3\u8A0A\uFF08\u6E2C\u8A66\u7248\uFF09 \u2014 \u914D\u97F3\u5C07\u5728\u5E7E\u79D2\u5F8C\u958B\u59CB\u3002",
     statusAudioQuota: "\u672C\u6708\u9032\u968E\u97F3\u8A0A\u5206\u9418\u5DF2\u7528\u5B8C \u2014 \u7121\u5B57\u5E55\u914D\u97F3\uFF08\u6E2C\u8A66\u7248\uFF09\u5C07\u5728\u4E0B\u4E00\u9031\u671F\u6062\u5FA9\u3002",
-    statusAudioUnavailable: "\u7121\u6CD5\u64F7\u53D6\u6B64\u64AD\u653E\u5668\u7684\u97F3\u8A0A\uFF08\u7DB2\u7AD9\u4FDD\u8B77\uFF09\u2014 \u7121\u5B57\u5E55\u914D\u97F3\uFF08\u6E2C\u8A66\u7248\uFF09\u5728\u6B64\u7121\u6CD5\u904B\u4F5C\u3002"
+    statusAudioUnavailable: "\u7121\u6CD5\u64F7\u53D6\u6B64\u64AD\u653E\u5668\u7684\u97F3\u8A0A\uFF08\u7DB2\u7AD9\u4FDD\u8B77\uFF09\u2014 \u7121\u5B57\u5E55\u914D\u97F3\uFF08\u6E2C\u8A66\u7248\uFF09\u5728\u6B64\u7121\u6CD5\u904B\u4F5C\u3002",
+    btnCheckUpdate: "\u6AA2\u67E5\u66F4\u65B0",
+    updChecking: "\u6B63\u5728\u6AA2\u67E5\u2026",
+    updFound: "\u767C\u73FE\u66F4\u65B0 \u2014 \u6B63\u5728\u91CD\u65B0\u555F\u52D5\u2026",
+    updNone: "\u5DF2\u662F\u6700\u65B0 \u2713",
+    updThrottled: "\u8ACB\u5E7E\u5206\u9418\u5F8C\u518D\u8A66"
   };
 
   // src/messages/pt-BR.json
@@ -2048,7 +2093,12 @@
     quotaAudio: "\xC1udio Premium (beta)",
     statusAudioLive: "Sem legendas: transcrevendo o \xE1udio ao vivo (beta) \u2014 a dublagem chega em alguns segundos.",
     statusAudioQuota: "Minutos de \xC1udio Premium esgotados neste m\xEAs \u2014 a dublagem sem legendas (beta) volta no pr\xF3ximo ciclo.",
-    statusAudioUnavailable: "N\xE3o \xE9 poss\xEDvel capturar o \xE1udio deste player (prote\xE7\xE3o do site) \u2014 a dublagem sem legendas (beta) n\xE3o funciona aqui."
+    statusAudioUnavailable: "N\xE3o \xE9 poss\xEDvel capturar o \xE1udio deste player (prote\xE7\xE3o do site) \u2014 a dublagem sem legendas (beta) n\xE3o funciona aqui.",
+    btnCheckUpdate: "Buscar atualiza\xE7\xF5es",
+    updChecking: "Verificando\u2026",
+    updFound: "Atualiza\xE7\xE3o encontrada \u2014 reiniciando\u2026",
+    updNone: "Atualizado \u2713",
+    updThrottled: "Tente de novo em alguns minutos"
   };
 
   // src/i18n.js

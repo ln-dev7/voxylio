@@ -173,5 +173,10 @@
   "quotaAudio": "Audio Premium (beta)",
   "statusAudioLive": "Sin subtítulos: transcribiendo el audio en directo (beta) — el doblaje llega en unos segundos.",
   "statusAudioQuota": "Minutos de Audio Premium agotados este mes — el doblaje sin subtítulos (beta) vuelve el próximo ciclo.",
-  "statusAudioUnavailable": "No se puede capturar el audio de este reproductor (protección del sitio) — el doblaje sin subtítulos (beta) no puede funcionar aquí."
+  "statusAudioUnavailable": "No se puede capturar el audio de este reproductor (protección del sitio) — el doblaje sin subtítulos (beta) no puede funcionar aquí.",
+  "btnCheckUpdate": "Buscar actualizaciones",
+  "updChecking": "Comprobando…",
+  "updFound": "Actualización encontrada — reiniciando…",
+  "updNone": "Actualizado ✓",
+  "updThrottled": "Inténtalo de nuevo en unos minutos"
 }

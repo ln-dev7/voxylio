@@ -173,5 +173,10 @@
   "quotaAudio": "進階音訊（測試版）",
   "statusAudioLive": "無字幕：正在即時轉寫音訊（測試版） — 配音將在幾秒後開始。",
   "statusAudioQuota": "本月進階音訊分鐘已用完 — 無字幕配音（測試版）將在下一週期恢復。",
-  "statusAudioUnavailable": "無法擷取此播放器的音訊（網站保護）— 無字幕配音（測試版）在此無法運作。"
+  "statusAudioUnavailable": "無法擷取此播放器的音訊（網站保護）— 無字幕配音（測試版）在此無法運作。",
+  "btnCheckUpdate": "檢查更新",
+  "updChecking": "正在檢查…",
+  "updFound": "發現更新 — 正在重新啟動…",
+  "updNone": "已是最新 ✓",
+  "updThrottled": "請幾分鐘後再試"
 }

@@ -173,5 +173,10 @@
   "quotaAudio": "Premium Audio (beta)",
   "statusAudioLive": "No subtitles: transcribing the audio live (beta) — dubbing follows in a few seconds.",
   "statusAudioQuota": "Premium Audio minutes exhausted for this month — no-subtitle dubbing (beta) resumes next cycle.",
-  "statusAudioUnavailable": "This player's audio can't be captured (site protection) — no-subtitle dubbing (beta) can't work here."
+  "statusAudioUnavailable": "This player's audio can't be captured (site protection) — no-subtitle dubbing (beta) can't work here.",
+  "btnCheckUpdate": "Check for updates",
+  "updChecking": "Checking…",
+  "updFound": "Update found — restarting…",
+  "updNone": "Up to date ✓",
+  "updThrottled": "Try again in a few minutes"
 }
