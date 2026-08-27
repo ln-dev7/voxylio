@@ -929,6 +929,37 @@
     return start + Math.min(7, Math.max(1.5, words / 2.5));
   }
 
+  // ../../packages/core/src/udemy.js
+  function udemyLectureId(href) {
+    const m = /\/lecture\/(\d+)/.exec(String(href || ""));
+    return m ? Number(m[1]) : 0;
+  }
+  function udemyCourseId(moduleArgs) {
+    if (!moduleArgs) return 0;
+    try {
+      const d = typeof moduleArgs === "string" ? JSON.parse(moduleArgs) : moduleArgs;
+      const n = Number(d.courseId || d.course_id || 0);
+      if (Number.isFinite(n) && n > 0) return n;
+    } catch (e) {
+    }
+    const m = /"course_?[iI]d"\s*:\s*(\d+)/.exec(String(moduleArgs));
+    return m ? Number(m[1]) : 0;
+  }
+  function udemyCaptionsUrl(courseId, lectureId) {
+    return `/api-2.0/users/me/subscribed-courses/${courseId}/lectures/${lectureId}?fields[lecture]=asset&fields[asset]=captions`;
+  }
+  function udemyCaptionTracks(payload) {
+    const caps = payload && payload.asset && payload.asset.captions;
+    if (!Array.isArray(caps)) return [];
+    return caps.filter((c) => c && typeof c.url === "string" && c.url).map((c) => ({
+      languageCode: String(
+        c.locale && c.locale.locale || c.video_label || ""
+      ).replace("_", "-"),
+      kind: c.source === "auto" ? "asr" : "",
+      url: c.url
+    }));
+  }
+
   // ../../packages/core/src/yt.js
   function extractCaptionTracks(html) {
     const h = String(html || "");
@@ -4051,6 +4082,56 @@
         }
       }
       ctl.ytHarvest = harvestYouTubeStatic;
+      async function harvestUdemyStatic() {
+        if (!domSite || domSite.id !== "udemy") return;
+        if (ctl.staticLoaded || ctl.ytFetching) return;
+        if (ctl.trackRetryAt && Date.now() < ctl.trackRetryAt) return;
+        const mk = ctl.mediaKey;
+        ctl.ytFetching = true;
+        try {
+          const lectureId = udemyLectureId(location.href);
+          const loader = document.querySelector(".ud-app-loader");
+          const courseId = udemyCourseId(
+            loader && loader.getAttribute("data-module-args")
+          );
+          if (!lectureId || !courseId) throw new Error("udemy ids not found");
+          const res = await fetch(udemyCaptionsUrl(courseId, lectureId), {
+            credentials: "same-origin",
+            headers: { Accept: "application/json" }
+          });
+          if (!res.ok) throw new Error("captions HTTP " + res.status);
+          const tracks = udemyCaptionTracks(await res.json());
+          if (ctl.mediaKey !== mk) return;
+          if (!tracks.length) {
+            ctl.staticLoaded = true;
+            ctl.ytStatic = "none";
+            return;
+          }
+          const wanted = settings.sourceLang !== "auto" ? settings.sourceLang : null;
+          const track = pickCaptionTrack(tracks, wanted, settings.targetLang);
+          const vres = await fetch(track.url);
+          if (!vres.ok) throw new Error("vtt HTTP " + vres.status);
+          const cues = parseVTT(await vres.text());
+          if (!cues.length) throw new Error("empty vtt");
+          if (ctl.mediaKey !== mk || !isAlive()) return;
+          adoptStaticCues(
+            cues,
+            String(track.languageCode || "").toLowerCase().split("-")[0]
+          );
+        } catch (e) {
+          if (ctl.mediaKey !== mk) return;
+          ctl.trackRetries = (ctl.trackRetries || 0) + 1;
+          if (ctl.trackRetries >= 2) {
+            ctl.staticLoaded = true;
+            ctl.ytStatic = "failed";
+          } else {
+            ctl.trackRetryAt = Date.now() + 4e3;
+          }
+        } finally {
+          ctl.ytFetching = false;
+        }
+      }
+      ctl.udemyHarvest = harvestUdemyStatic;
       function audioEligible() {
         if (!settings.proAudio || accountPlan !== "pro" || !ctl.active) return false;
         if (video.paused || video.seeking) return false;
@@ -4060,7 +4141,8 @@
         if (ctl.audioRetryAt && Date.now() < ctl.audioRetryAt) return false;
         if (ctl.audioFeed) return true;
         if (ctl.cues.length > 0 || domLastText) return false;
-        if (domSite && domSite.id === "youtube" && !ctl.staticLoaded) return false;
+        if (domSite && (domSite.id === "youtube" || domSite.id === "udemy") && !ctl.staticLoaded)
+          return false;
         if (ctl.ytStatic === "loaded") return false;
         try {
           if (Array.from(video.textTracks || []).some(
@@ -4717,6 +4799,7 @@
         ctl.lastTime = t;
         harvestTextTracks();
         harvestYouTubeStatic();
+        harvestUdemyStatic();
         if ((ctl.audioState === "live" || ctl.audioState === "starting") && (!settings.proAudio || accountPlan !== "pro")) {
           stopAudioFeed("idle");
         } else if ((ctl.audioCheckAt || 0) < Date.now()) {

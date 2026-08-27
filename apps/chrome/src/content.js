@@ -29,6 +29,10 @@ import {
   pickCaptionTrack,
   timedtextUrl,
   parseJson3,
+  udemyLectureId,
+  udemyCourseId,
+  udemyCaptionsUrl,
+  udemyCaptionTracks,
   isFreeSite,
   planGate,
   trialDaysLeft,
@@ -1177,6 +1181,66 @@ import { makeT, resolveUiLang } from "./i18n.js";
     }
     ctl.ytHarvest = harvestYouTubeStatic;
 
+    // Udemy twin of the YouTube loader: the lecture's full VTT (with
+    // real timings) is fetchable same-origin — grab it once and the
+    // whole video is known upfront. Any failure falls back to the DOM
+    // caption feed, which stays the safety net.
+    async function harvestUdemyStatic() {
+      if (!domSite || domSite.id !== "udemy") return;
+      if (ctl.staticLoaded || ctl.ytFetching) return;
+      if (ctl.trackRetryAt && Date.now() < ctl.trackRetryAt) return;
+      const mk = ctl.mediaKey; // abort if the video changes mid-fetch
+      ctl.ytFetching = true;
+      try {
+        const lectureId = udemyLectureId(location.href);
+        const loader = document.querySelector(".ud-app-loader");
+        const courseId = udemyCourseId(
+          loader && loader.getAttribute("data-module-args"),
+        );
+        if (!lectureId || !courseId) throw new Error("udemy ids not found");
+        const res = await fetch(udemyCaptionsUrl(courseId, lectureId), {
+          credentials: "same-origin",
+          headers: { Accept: "application/json" },
+        });
+        if (!res.ok) throw new Error("captions HTTP " + res.status);
+        const tracks = udemyCaptionTracks(await res.json());
+        if (ctl.mediaKey !== mk) return;
+        if (!tracks.length) {
+          // Lecture without caption files: permanent for this media —
+          // only the on-screen captions can feed us.
+          ctl.staticLoaded = true;
+          ctl.ytStatic = "none";
+          return;
+        }
+        const wanted =
+          settings.sourceLang !== "auto" ? settings.sourceLang : null;
+        const track = pickCaptionTrack(tracks, wanted, settings.targetLang);
+        // The VTT lives on Udemy's CDN (their player XHRs it from the
+        // page, so CORS allows the page origin — and us with it).
+        const vres = await fetch(track.url);
+        if (!vres.ok) throw new Error("vtt HTTP " + vres.status);
+        const cues = parseVTT(await vres.text());
+        if (!cues.length) throw new Error("empty vtt");
+        if (ctl.mediaKey !== mk || !isAlive()) return;
+        adoptStaticCues(
+          cues,
+          String(track.languageCode || "").toLowerCase().split("-")[0],
+        );
+      } catch (e) {
+        if (ctl.mediaKey !== mk) return;
+        ctl.trackRetries = (ctl.trackRetries || 0) + 1;
+        if (ctl.trackRetries >= 2) {
+          ctl.staticLoaded = true; // give up: DOM feed takes over
+          ctl.ytStatic = "failed";
+        } else {
+          ctl.trackRetryAt = Date.now() + 4000;
+        }
+      } finally {
+        ctl.ytFetching = false;
+      }
+    }
+    ctl.udemyHarvest = harvestUdemyStatic;
+
     // --- Premium Audio: no-subtitle dubbing (Pro, beta) -------------------
     // When a video exposes NO subtitles anywhere (no textTracks, no
     // <track>, no DOM captions, no YouTube static track), Pro accounts
@@ -1200,7 +1264,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
       // pause/seek/rate restart — our own cues must not disqualify us.
       if (ctl.audioFeed) return true;
       if (ctl.cues.length > 0 || domLastText) return false;
-      if (domSite && domSite.id === "youtube" && !ctl.staticLoaded) return false;
+      if (
+        domSite &&
+        (domSite.id === "youtube" || domSite.id === "udemy") &&
+        !ctl.staticLoaded
+      )
+        return false;
       if (ctl.ytStatic === "loaded") return false;
       try {
         if (
@@ -2037,6 +2106,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       // resume used to start from zero (no translations, no cloud audio).
       harvestTextTracks(); // HLS cues keep arriving
       harvestYouTubeStatic(); // async; no-op outside YouTube / once done
+      harvestUdemyStatic(); // same contract, for Udemy lectures
       // Premium Audio: engage (throttled) when no subtitle feed exists;
       // stand down live if the toggle or the plan dropped mid-session.
       if (

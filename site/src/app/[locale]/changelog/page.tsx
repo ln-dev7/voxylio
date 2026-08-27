@@ -30,6 +30,7 @@ const RELEASES: Array<{
     badges: ["latest", "review"],
     items: [
       { key: "sites", tag: "new" },
+      { key: "lookahead", tag: "new" },
       { key: "hint", tag: "improved" },
       { key: "updater", tag: "new" },
       { key: "fix", tag: "improved" },

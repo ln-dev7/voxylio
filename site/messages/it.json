@@ -275,6 +275,7 @@
       "summary": "L'aggiornamento dei player: altre nove piattaforme di cui Voxylio legge ora i sottotitoli direttamente dallo schermo.",
       "items": {
         "sites": "Nuovi player supportati: Udemy, Hulu, HBO Max, Peacock, Dailymotion, Viki, LinkedIn Learning, Skillshare ed edX — i loro sottotitoli sullo schermo alimentano il doppiaggio.",
+        "lookahead": "Su Udemy la traccia sottotitoli completa si carica in anticipo con i tempi reali — traduzione e voce pronte prima di ogni frase, come su YouTube.",
         "hint": "Indicazioni più chiare: il popup suggerisce di attivare i sottotitoli (CC) prima di concludere che un player non ne abbia.",
         "updater": "Un pulsante «Cerca aggiornamenti» nell'hub applica subito un aggiornamento in attesa (Chrome ed Edge).",
         "fix": "Le impostazioni riservate a Pro non compaiono più sugli account gratuiti."

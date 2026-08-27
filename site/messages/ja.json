@@ -275,6 +275,7 @@
       "summary": "プレーヤー対応アップデート：画面上の字幕を直接読み取れるプラットフォームが9つ増えました。",
       "items": {
         "sites": "新対応プレーヤー：Udemy、Hulu、HBO Max、Peacock、Dailymotion、Viki、LinkedIn Learning、Skillshare、edX — 画面上の字幕が吹き替えに使われます。",
+        "lookahead": "Udemy では講義の字幕トラック全体を正確なタイミング付きで先読みします — YouTube と同様、各文の前に翻訳と音声が準備されます。",
         "hint": "案内を改善：プレーヤーに字幕がないと判断する前に、まず字幕（CC）をオンにするよう促します。",
         "updater": "ハブの「更新を確認」ボタンで、待機中の更新をすぐに適用できます（Chrome・Edge）。",
         "fix": "Pro 専用の設定が無料アカウントに表示されなくなりました。"

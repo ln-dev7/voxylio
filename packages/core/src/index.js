@@ -55,6 +55,12 @@ export {
 } from "./translation.js";
 export { DOM_CAPTION_SITES, domCaptionSiteFor, domCueEnd } from "./sites.js";
 export {
+  udemyLectureId,
+  udemyCourseId,
+  udemyCaptionsUrl,
+  udemyCaptionTracks,
+} from "./udemy.js";
+export {
   extractCaptionTracks,
   pickCaptionTrack,
   timedtextUrl,

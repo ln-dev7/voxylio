@@ -275,6 +275,7 @@
       "summary": "The players update: nine more platforms whose captions Voxylio now reads straight from the screen.",
       "items": {
         "sites": "New players supported: Udemy, Hulu, HBO Max, Peacock, Dailymotion, Viki, LinkedIn Learning, Skillshare and edX — their on-screen captions feed the dubbing.",
+        "lookahead": "On Udemy the lecture's full caption track loads upfront with real timings — translation and voice are ready before each sentence, like on YouTube.",
         "hint": "Clearer guidance: the popup now suggests turning captions (CC) on before concluding a player has none.",
         "updater": "A “Check for updates” button in the hub applies a pending update instantly (Chrome and Edge).",
         "fix": "Pro-only toggles no longer show up on free accounts."

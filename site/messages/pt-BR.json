@@ -275,6 +275,7 @@
       "summary": "A atualização dos players: mais nove plataformas cujas legendas o Voxylio agora lê direto da tela.",
       "items": {
         "sites": "Novos players: Udemy, Hulu, HBO Max, Peacock, Dailymotion, Viki, LinkedIn Learning, Skillshare e edX — as legendas na tela alimentam a dublagem.",
+        "lookahead": "Na Udemy a trilha completa de legendas carrega antecipadamente com os tempos reais — tradução e voz prontas antes de cada frase, como no YouTube.",
         "hint": "Orientação mais clara: o popup sugere ativar as legendas (CC) antes de concluir que um player não as tem.",
         "updater": "Um botão “Buscar atualizações” no hub aplica uma atualização pendente na hora (Chrome e Edge).",
         "fix": "Os ajustes exclusivos do Pro não aparecem mais em contas gratuitas."
