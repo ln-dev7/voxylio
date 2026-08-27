@@ -349,7 +349,9 @@
     "usageVoice": "Neuronale Stimme",
     "usageResets": "Kontingent wird am {date} zurückgesetzt",
     "usageFallback": "Ist ein Kontingent aufgebraucht, übernimmt automatisch die lokale Engine — das Dubbing stoppt nie.",
-    "usageAudio": "Premium Audio (Beta, Min.)"
+    "usageAudio": "Premium Audio (Beta, Min.)",
+    "trialActive": "Kostenlose Testphase — alle Websites freigeschaltet bis {date} (noch {days} Tage).",
+    "trialOver": "Testphase am {date} beendet — der Gratis-Plan deckt YouTube, Netflix, Prime Video, Disney+ und Twitch ab."
   },
   "Pricing": {
     "title": "Ein einfacher, ehrlicher Preis",

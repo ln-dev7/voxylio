@@ -349,7 +349,9 @@
     "usageVoice": "ニューラル音声",
     "usageResets": "クォータは{date}にリセットされます",
     "usageFallback": "クォータを使い切っても、ローカルエンジンが自動的に引き継ぐため、吹き替えが止まることはありません。",
-    "usageAudio": "プレミアム音声（ベータ版・分）"
+    "usageAudio": "プレミアム音声（ベータ版・分）",
+    "trialActive": "無料トライアル中 — {date} まですべてのサイトが利用できます（残り {days} 日）。",
+    "trialOver": "トライアルは {date} に終了しました — 無料プランは YouTube、Netflix、Prime Video、Disney+、Twitch に対応します。"
   },
   "Pricing": {
     "title": "シンプルで正直な料金",

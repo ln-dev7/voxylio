@@ -18,6 +18,7 @@ type Entitlement = {
   audioSecondsRemaining?: number;
   audioSecondsTotal?: number;
   quotaResetsAt?: string | null;
+  trialEndsAt?: string | null;
 };
 
 /** One labeled meter: CONSUMED / total — the bar starts empty and
@@ -281,6 +282,33 @@ export function AccountView() {
                     })}
                   </p>
                 )}
+                {/* Free plan: the trial window, live or already over */}
+                {!pro &&
+                  ent?.trialEndsAt &&
+                  (new Date(ent.trialEndsAt) > new Date() ? (
+                    <p className="mt-1 text-xs font-medium text-primary">
+                      {t("trialActive", {
+                        date: new Date(ent.trialEndsAt).toLocaleDateString(
+                          locale,
+                        ),
+                        days: Math.max(
+                          1,
+                          Math.ceil(
+                            (new Date(ent.trialEndsAt).getTime() - Date.now()) /
+                              86_400_000,
+                          ),
+                        ),
+                      })}
+                    </p>
+                  ) : (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {t("trialOver", {
+                        date: new Date(ent.trialEndsAt).toLocaleDateString(
+                          locale,
+                        ),
+                      })}
+                    </p>
+                  ))}
               </div>
               {pro ? (
                 <Button

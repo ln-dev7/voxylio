@@ -349,7 +349,9 @@
     "usageVoice": "신경망 음성",
     "usageResets": "한도는 {date}에 초기화됩니다",
     "usageFallback": "한도를 모두 사용해도 로컬 엔진이 자동으로 이어받아 더빙은 멈추지 않습니다.",
-    "usageAudio": "프리미엄 오디오 (베타, 분)"
+    "usageAudio": "프리미엄 오디오 (베타, 분)",
+    "trialActive": "무료 체험 중 — {date}까지 모든 사이트 이용 가능 (남은 {days}일).",
+    "trialOver": "체험이 {date}에 종료되었습니다 — 무료 플랜은 YouTube, Netflix, Prime Video, Disney+, Twitch를 지원합니다."
   },
   "Pricing": {
     "title": "단순하고 정직한 가격",

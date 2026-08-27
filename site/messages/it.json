@@ -349,7 +349,9 @@
     "usageVoice": "Voce neurale",
     "usageResets": "La quota si azzera il {date}",
     "usageFallback": "Quando una quota si esaurisce, il motore locale subentra automaticamente — il doppiaggio non si ferma mai.",
-    "usageAudio": "Audio Premium (beta, min)"
+    "usageAudio": "Audio Premium (beta, min)",
+    "trialActive": "Prova gratuita — tutti i siti sbloccati fino al {date} ({days} giorni rimasti).",
+    "trialOver": "Prova terminata il {date} — il piano gratuito copre YouTube, Netflix, Prime Video, Disney+ e Twitch."
   },
   "Pricing": {
     "title": "Un prezzo semplice e onesto",

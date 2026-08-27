@@ -3,6 +3,8 @@
 //   cd site
 //   node scripts/reset-quota.mjs leonelngoya@gmail.com            # fresh meters (all periods)
 //   node scripts/reset-quota.mjs leonelngoya@gmail.com --all      # same (kept for habit)
+//   node scripts/reset-quota.mjs leonelngoya@gmail.com --trial    # + fresh trial window
+//   node scripts/reset-quota.mjs --trial-all                      # fresh trial for EVERY user
 //   node scripts/reset-quota.mjs leonelngoya@gmail.com --trial    # + restart the full trial
 //   node scripts/reset-quota.mjs leonelngoya@gmail.com --dry      # show, change nothing
 //   node scripts/reset-quota.mjs --list                           # who exists in our tables
@@ -52,9 +54,10 @@ const TRIAL = args.includes("--trial");
 const DRY = args.includes("--dry");
 const LIST = args.includes("--list");
 
-if (!target && !LIST) {
+const TRIAL_ALL = args.includes("--trial-all");
+if (!target && !LIST && !TRIAL_ALL) {
   console.error(
-    "usage: node scripts/reset-quota.mjs <email|user-id> [--all] [--trial] [--dry] | --list",
+    "usage: node scripts/reset-quota.mjs <email|user-id> [--all] [--trial] [--dry] | --list | --trial-all",
   );
   process.exit(1);
 }
@@ -114,6 +117,24 @@ async function resolveUser(t) {
 }
 
 try {
+  if (TRIAL_ALL) {
+    // Clear every trial stamp: each user gets a fresh TRIAL_DAYS window,
+    // restamped at their next sign-in / entitlements call.
+    if (DRY) {
+      const n = await client.query(
+        "select count(*)::int as n from entitlement where trial_started_at is not null",
+      );
+      console.log(`--dry: would reset the trial of ${n.rows[0].n} user(s).`);
+      process.exit(0);
+    }
+    const r = await client.query(
+      "update entitlement set trial_started_at = null where trial_started_at is not null",
+    );
+    console.log(
+      `Trial reset for ${r.rowCount} user(s) — restamps at their next sign-in.`,
+    );
+    process.exit(0);
+  }
   if (LIST) {
     const r = await client.query(`
       select e.user_id,

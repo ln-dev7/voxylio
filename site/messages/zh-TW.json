@@ -349,7 +349,9 @@
     "usageVoice": "神經語音",
     "usageResets": "額度將於{date}重置",
     "usageFallback": "額度用完後，本地引擎會自動接手——配音永不中斷。",
-    "usageAudio": "進階音訊（測試版·分鐘）"
+    "usageAudio": "進階音訊（測試版·分鐘）",
+    "trialActive": "免費試用中 — 所有網站解鎖至 {date}（剩餘 {days} 天）。",
+    "trialOver": "試用已於 {date} 結束 — 免費方案支援 YouTube、Netflix、Prime Video、Disney+ 和 Twitch。"
   },
   "Pricing": {
     "title": "簡單而誠實的價格",
