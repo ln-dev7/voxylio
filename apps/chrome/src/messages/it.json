@@ -178,5 +178,6 @@
   "updChecking": "Controllo…",
   "updFound": "Aggiornamento trovato — riavvio…",
   "updNone": "Aggiornato ✓",
-  "updThrottled": "Riprova tra qualche minuto"
+  "updThrottled": "Riprova tra qualche minuto",
+  "statusYtDubbed": "YouTube sta già doppiando questo video nella tua lingua (traccia audio automatica): senti due voci. Nel player: ⚙️ → Traccia audio → scegli la versione originale, poi ricarica la pagina."
 }

@@ -178,5 +178,6 @@
   "updChecking": "正在检查…",
   "updFound": "发现更新 — 正在重启…",
   "updNone": "已是最新 ✓",
-  "updThrottled": "请几分钟后再试"
+  "updThrottled": "请几分钟后再试",
+  "statusYtDubbed": "YouTube 已将此视频自动配音为你的语言（自动音轨）— 你会听到两个声音。请在播放器中：⚙️ → 音轨 → 选择原始版本，然后刷新页面。"
 }

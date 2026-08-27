@@ -167,6 +167,15 @@ function statusFragment(resp) {
         // Same visual line as the ready counter.
         ready.after(line(" · 🔊 " + (t("statusSpeaking") || "voix en cours"), "ok"));
       }
+      if (resp.ytDubbedDefault) {
+        add(
+          line(
+            t("statusYtDubbed") ||
+              "YouTube double déjà cette vidéo dans ta langue (piste audio automatique) — tu entends deux voix. Dans le lecteur : ⚙️ → Piste audio → choisis la version originale, puis recharge la page.",
+            "warn",
+          ),
+        );
+      }
       add(line(translationLine(resp)));
       break;
     }

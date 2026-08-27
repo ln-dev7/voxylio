@@ -110,3 +110,42 @@ export function parseJson3(data) {
   }
   return cues;
 }
+
+
+/**
+ * Audio tracks advertised by the watch page. YouTube now serves
+ * AUTO-DUBBED audio tracks and picks one as default from the viewer's
+ * locale — a French viewer often lands on "French (auto-dubbed)". Each
+ * adaptive format carries `"audioTrack":{...,"id":"fr.4",
+ * "audioIsDefault":true}`; the id's prefix is the language.
+ */
+export function extractAudioTracks(html) {
+  const out = new Map();
+  const re = /"audioTrack":\{([^}]*)\}/g;
+  let m;
+  while ((m = re.exec(String(html || "")))) {
+    const body = m[1];
+    const id = /"id":"([^"]+)"/.exec(body);
+    if (!id) continue;
+    const isDefault = /"audioIsDefault":true/.test(body);
+    const lang = id[1].split(".")[0].toLowerCase().split("-")[0];
+    const prev = out.get(id[1]);
+    if (!prev || isDefault) out.set(id[1], { id: id[1], lang, isDefault });
+  }
+  return [...out.values()];
+}
+
+/**
+ * True when the page's DEFAULT audio track is in `targetLang` while the
+ * video has other language tracks — i.e. YouTube is already dubbing this
+ * video into the user's language. Speaking over that gives every
+ * sentence twice (owner-heard, 2026-08-27): the popup warns instead.
+ */
+export function isDefaultDubbed(tracks, targetLang) {
+  if (!Array.isArray(tracks) || tracks.length < 2) return false;
+  const langs = new Set(tracks.map((t) => t.lang));
+  if (langs.size < 2) return false;
+  const def = tracks.find((t) => t.isDefault);
+  const base = String(targetLang || "").toLowerCase().split("-")[0];
+  return !!def && !!base && def.lang === base;
+}

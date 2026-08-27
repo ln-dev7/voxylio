@@ -178,5 +178,6 @@
   "updChecking": "Comprobando…",
   "updFound": "Actualización encontrada — reiniciando…",
   "updNone": "Actualizado ✓",
-  "updThrottled": "Inténtalo de nuevo en unos minutos"
+  "updThrottled": "Inténtalo de nuevo en unos minutos",
+  "statusYtDubbed": "YouTube ya dobla este vídeo a tu idioma (pista de audio automática): oyes dos voces. En el reproductor: ⚙️ → Pista de audio → elige la versión original y recarga la página."
 }

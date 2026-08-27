@@ -29,6 +29,8 @@ import {
   pickCaptionTrack,
   timedtextUrl,
   parseJson3,
+  extractAudioTracks,
+  isDefaultDubbed,
   udemyLectureId,
   udemyCourseId,
   udemyCaptionsUrl,
@@ -1156,7 +1158,18 @@ import { makeT, resolveUiLang } from "./i18n.js";
       try {
         const pageRes = await fetch(location.href, { credentials: "same-origin" });
         if (!pageRes.ok) throw new Error("page HTTP " + pageRes.status);
-        const tracks = extractCaptionTracks(await pageRes.text());
+        const pageHtml = await pageRes.text();
+        // YouTube auto-dubbing: when the DEFAULT audio track already is
+        // the user's target language, Voxylio would speak on top of
+        // YouTube's own dub — every sentence heard twice (owner-heard,
+        // 2026-08-27). Detect it so the popup can say what to do.
+        try {
+          ctl.ytDubbedDefault = isDefaultDubbed(
+            extractAudioTracks(pageHtml),
+            settings.targetLang,
+          );
+        } catch (e) {}
+        const tracks = extractCaptionTracks(pageHtml);
         if (ctl.mediaKey !== mk) return;
         if (!tracks.length) {
           // No caption tracks on this video: permanent for this media —
@@ -3514,6 +3527,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
         detectedSource: (pcs && pcs.detectedSource) || "",
         providerDetectedSource,
         ytStatic: (pcs && pcs.ytStatic) || null,
+        ytDubbedDefault: !!(pcs && pcs.ytDubbedDefault),
         queueDepth: pcs ? pcs.queue.length : 0,
         signinRequired: !accountLinked,
         siteFree: isFreeSite(location.hostname),

@@ -5,6 +5,8 @@ import {
   pickCaptionTrack,
   timedtextUrl,
   parseJson3,
+  extractAudioTracks,
+  isDefaultDubbed,
 } from "../src/yt.js";
 
 // A realistic slice of a watch page: nested name objects (the exact
@@ -70,4 +72,21 @@ test("parseJson3 builds cues, skips append/newline events", () => {
   assert.strictEqual(cues[1].text, "Line two here");
   assert.strictEqual(cues[1].end, cues[1].start + 3); // default duration
   assert.deepStrictEqual(parseJson3(null), []);
+});
+
+test("extractAudioTracks + isDefaultDubbed: yt auto-dub default in target", () => {
+  const html =
+    '..."audioTrack":{"displayName":"English (original)","id":"en.4","audioIsDefault":false}...' +
+    '..."audioTrack":{"displayName":"French (auto-dubbed)","id":"fr.3","audioIsDefault":true}...' +
+    '..."audioTrack":{"displayName":"French (auto-dubbed)","id":"fr.3","audioIsDefault":true}...';
+  const tracks = extractAudioTracks(html);
+  assert.equal(tracks.length, 2); // deduped by id
+  assert.equal(isDefaultDubbed(tracks, "fr"), true);
+  assert.equal(isDefaultDubbed(tracks, "de"), false);
+  // Single-language videos never count, whatever the default flag.
+  assert.equal(
+    isDefaultDubbed(extractAudioTracks('"audioTrack":{"id":"en.4","audioIsDefault":true}'), "en"),
+    false,
+  );
+  assert.equal(isDefaultDubbed([], "fr"), false);
 });

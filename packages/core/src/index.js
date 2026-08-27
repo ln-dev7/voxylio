@@ -65,6 +65,8 @@ export {
   pickCaptionTrack,
   timedtextUrl,
   parseJson3,
+  extractAudioTracks,
+  isDefaultDubbed,
 } from "./yt.js";
 export { isFreeSite, planGate, trialDaysLeft } from "./plan.js";
 export {

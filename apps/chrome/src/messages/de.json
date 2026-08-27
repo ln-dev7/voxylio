@@ -178,5 +178,6 @@
   "updChecking": "Wird geprüft…",
   "updFound": "Update gefunden — Neustart…",
   "updNone": "Aktuell ✓",
-  "updThrottled": "Versuch es in ein paar Minuten erneut"
+  "updThrottled": "Versuch es in ein paar Minuten erneut",
+  "statusYtDubbed": "YouTube vertont dieses Video bereits in deiner Sprache (automatische Tonspur) — du hörst zwei Stimmen. Im Player: ⚙️ → Audiotrack → Originalversion wählen, dann Seite neu laden."
 }
