@@ -27,7 +27,7 @@ const RELEASES: Array<{
   {
     version: "1.8.1",
     id: "v181",
-    badges: ["latest", "review"],
+    badges: ["latest", "store"],
     items: [
       { key: "sites", tag: "new" },
       { key: "lookahead", tag: "new" },
@@ -41,7 +41,6 @@ const RELEASES: Array<{
   {
     version: "1.8.0",
     id: "v180",
-    badges: ["store"],
     items: [
       { key: "trial", tag: "new" },
       { key: "freeSites", tag: "improved" },
