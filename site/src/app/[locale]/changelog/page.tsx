@@ -27,7 +27,7 @@ const RELEASES: Array<{
   {
     version: "1.8.0",
     id: "v180",
-    badges: ["latest", "review"],
+    badges: ["latest", "store"],
     items: [
       { key: "trial", tag: "new" },
       { key: "freeSites", tag: "improved" },
@@ -61,7 +61,6 @@ const RELEASES: Array<{
   {
     version: "1.5.1",
     id: "v151",
-    badges: ["store"],
     items: [
       { key: "sentences", tag: "new" },
       { key: "languages", tag: "new" },
