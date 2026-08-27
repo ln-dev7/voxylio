@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { GitHubIcon } from "@/components/github-icon";
 import { Aurora } from "@/components/aurora";
 import { DubDemo } from "@/components/dub-demo";
-import { CHROME_STORE_URL, GITHUB_URL } from "@/lib/constants";
+import { GITHUB_URL } from "@/lib/constants";
+import { InstallSplitButton } from "@/components/install-split-button";
 
 export function Hero() {
   const t = useTranslations("Hero");
@@ -27,17 +28,7 @@ export function Hero() {
           </p>
 
           <div className="mt-9 flex animate-in fade-in slide-in-from-bottom-2 flex-wrap items-center justify-center gap-3 duration-1000">
-            <Button
-              asChild
-              size="lg"
-              className="h-12 rounded-full px-7 text-[15px] shadow-[0_0_40px_rgba(30,215,96,0.25)] transition-shadow hover:shadow-[0_0_60px_rgba(30,215,96,0.4)]"
-            >
-              <a href={CHROME_STORE_URL} target="_blank" rel="noreferrer">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logos/chrome.svg" alt="" className="size-5" />
-                {t("ctaInstall")}
-              </a>
-            </Button>
+            <InstallSplitButton />
             <Button
               asChild
               size="lg"

@@ -100,7 +100,8 @@
       }
     },
     "addTo": "Ajouter à {browser}",
-    "soon": "Bientôt disponible"
+    "soon": "Bientôt disponible",
+    "more": "Autres navigateurs"
   },
   "Faq": {
     "title": "Questions fréquentes",

@@ -100,7 +100,8 @@
       }
     },
     "addTo": "Add to {browser}",
-    "soon": "Coming soon"
+    "soon": "Coming soon",
+    "more": "Other browsers"
   },
   "Faq": {
     "title": "Frequently asked questions",
