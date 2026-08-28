@@ -110,6 +110,10 @@
         "question": "Su quali siti funziona?",
         "answer": "Qualsiasi sito il cui player esponga una traccia sottotitoli — più i sottotitoli sullo schermo di YouTube, Netflix, Prime Video, Disney+ e Twitch, che Voxylio legge direttamente dalla pagina. Se sono disattivati, spesso può attivarli per te. Nel piano gratuito il doppiaggio copre YouTube, Netflix, Prime Video, Disney+ e Twitch — la prova di {days} giorni e il Pro sbloccano tutti gli altri siti."
       },
+      "browsers": {
+        "question": "Funziona su Brave, Opera o Arc?",
+        "answer": "Sì — qualsiasi browser basato su Chromium installa Voxylio direttamente dal Chrome Web Store: apri la scheda in Brave, Opera o Arc e premi Aggiungi. Il doppiaggio si comporta allo stesso modo ovunque; se il browser non include la traduzione locale di Chrome, Voxylio passa automaticamente alla traduzione online."
+      },
       "cost": {
         "question": "È davvero gratis?",
         "answer": "Sì — su YouTube, Netflix, Prime Video, Disney+ e Twitch il piano gratuito è illimitato: la traduzione gira sul dispositivo con l'API integrata di Chrome (138+) e la voce usa quelle di sistema. Ogni nuovo account parte inoltre con una prova di {days} giorni che sblocca tutti i siti. Senza carta, senza chiave API."

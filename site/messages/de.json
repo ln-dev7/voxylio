@@ -110,6 +110,10 @@
         "question": "Auf welchen Seiten funktioniert es?",
         "answer": "Jede Website, deren Player eine Untertitelspur bereitstellt — plus die eingeblendeten Untertitel von YouTube, Netflix, Prime Video, Disney+ und Twitch, die Voxylio direkt von der Seite liest. Sind sie ausgeschaltet, kann es sie oft für dich aktivieren. Im Gratis-Plan deckt das Dubbing YouTube, Netflix, Prime Video, Disney+ und Twitch ab — der {days}-Tage-Test und Pro schalten alle anderen Seiten frei."
       },
+      "browsers": {
+        "question": "Funktioniert es in Brave, Opera oder Arc?",
+        "answer": "Ja — jeder Chromium-basierte Browser installiert Voxylio direkt aus dem Chrome Web Store: Öffne die Seite in Brave, Opera oder Arc und klicke auf Hinzufügen. Die Vertonung verhält sich überall gleich; fehlt Chromes lokale Übersetzung, wechselt Voxylio automatisch zur Online-Übersetzung."
+      },
       "cost": {
         "question": "Ist es wirklich kostenlos?",
         "answer": "Ja — auf YouTube, Netflix, Prime Video, Disney+ und Twitch ist der Gratis-Plan unbegrenzt: Die Übersetzung läuft auf dem Gerät mit Chromes integrierter API (Chrome 138+), die Stimme kommt vom System. Jedes neue Konto startet zudem mit einem {days}-Tage-Test, der alle Seiten freischaltet. Keine Karte, kein API-Schlüssel."

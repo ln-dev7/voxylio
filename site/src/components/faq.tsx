@@ -6,7 +6,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const ITEMS = ["sites", "cost", "trial", "account", "pro", "quota", "glossary", "voice", "offline", "privacy", "youtube", "cancel"] as const;
+const ITEMS = ["sites", "browsers", "cost", "trial", "account", "pro", "quota", "glossary", "voice", "offline", "privacy", "youtube", "cancel"] as const;
 
 // `days` mirrors the server's TRIAL_DAYS so every answer mentioning
 // the trial interpolates the real value.

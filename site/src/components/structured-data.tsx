@@ -6,6 +6,7 @@ import { SITE_URL, CHROME_STORE_URL } from "@/lib/constants";
 // what the page doesn't show).
 const FAQ_ITEMS = [
   "sites",
+  "browsers",
   "cost",
   "trial",
   "account",

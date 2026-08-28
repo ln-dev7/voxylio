@@ -110,6 +110,10 @@
         "question": "支持哪些网站？",
         "answer": "任何播放器提供字幕轨道的网站 — 还有 YouTube、Netflix、Prime Video、Disney+、Twitch 的屏幕字幕，Voxylio 直接从页面读取。如果字幕是关闭的，它通常还能帮你打开。免费版的配音覆盖 YouTube、Netflix、Prime Video、Disney+ 和 Twitch — {days} 天试用和 Pro 解锁其余所有网站。"
       },
+      "browsers": {
+        "question": "在 Brave、Opera 或 Arc 上能用吗？",
+        "answer": "可以 — 任何基于 Chromium 的浏览器都能直接从 Chrome 应用商店安装 Voxylio：在 Brave、Opera 或 Arc 中打开商店页面点击添加即可。配音在各浏览器中表现一致；如果浏览器没有 Chrome 的本地翻译，Voxylio 会自动切换到在线翻译。"
+      },
       "cost": {
         "question": "真的免费吗？",
         "answer": "是的 — 在 YouTube、Netflix、Prime Video、Disney+ 和 Twitch 上，免费版不限量：翻译通过 Chrome 内置 API（Chrome 138+）在设备上运行，语音使用系统声音。每个新账号还有 {days} 天试用，期间解锁所有网站。无需银行卡、无需 API 密钥。"

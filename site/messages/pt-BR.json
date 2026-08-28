@@ -110,6 +110,10 @@
         "question": "Em quais sites funciona?",
         "answer": "Qualquer site cujo player exponha uma trilha de legendas — mais as legendas na tela do YouTube, Netflix, Prime Video, Disney+ e Twitch, que o Voxylio lê direto da página. Se estiverem desligadas, muitas vezes ele consegue ativá-las para você. No plano gratuito, a dublagem cobre YouTube, Netflix, Prime Video, Disney+ e Twitch — o teste de {days} dias e o Pro desbloqueiam todos os outros sites."
       },
+      "browsers": {
+        "question": "Funciona no Brave, Opera ou Arc?",
+        "answer": "Sim — qualquer navegador baseado em Chromium instala o Voxylio direto da Chrome Web Store: abra a página no Brave, Opera ou Arc e clique em Adicionar. A dublagem se comporta igual em todos; se o navegador não tiver a tradução local do Chrome, o Voxylio usa automaticamente a tradução online."
+      },
       "cost": {
         "question": "É grátis mesmo?",
         "answer": "Sim — no YouTube, Netflix, Prime Video, Disney+ e Twitch, o plano gratuito é ilimitado: a tradução roda no dispositivo com a API integrada do Chrome (138+) e a voz usa as do sistema. Cada conta nova também começa com um teste de {days} dias que desbloqueia todos os sites. Sem cartão, sem chave de API."

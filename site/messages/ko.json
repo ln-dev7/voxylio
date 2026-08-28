@@ -110,6 +110,10 @@
         "question": "어떤 사이트에서 작동하나요?",
         "answer": "플레이어가 자막 트랙을 제공하는 모든 사이트에 더해, YouTube·Netflix·Prime Video·Disney+·Twitch의 화면 자막도 페이지에서 직접 읽습니다. 자막이 꺼져 있어도 대개 자동으로 켤 수 있습니다. 무료 플랜의 더빙은 YouTube, Netflix, Prime Video, Disney+, Twitch를 지원하며, {days}일 체험과 Pro가 그 외 모든 사이트를 잠금 해제합니다."
       },
+      "browsers": {
+        "question": "Brave, Opera, Arc에서도 작동하나요?",
+        "answer": "네 — Chromium 기반 브라우저라면 Chrome 웹 스토어에서 바로 설치할 수 있습니다. Brave, Opera, Arc에서 스토어 페이지를 열고 추가를 누르면 됩니다. 더빙 동작은 어디서나 같으며, Chrome의 로컬 번역이 없는 브라우저에서는 자동으로 온라인 번역으로 전환됩니다."
+      },
       "cost": {
         "question": "정말 무료인가요?",
         "answer": "네 — YouTube, Netflix, Prime Video, Disney+, Twitch에서 무료 플랜은 무제한입니다: 번역은 Chrome 내장 API(Chrome 138+)로 기기에서 실행되고, 음성은 시스템 음성을 사용합니다. 또한 새 계정은 모든 사이트가 열리는 {days}일 체험으로 시작합니다. 카드도, API 키도 필요 없습니다."

@@ -110,6 +110,10 @@
         "question": "どのサイトで動きますか？",
         "answer": "プレーヤーが字幕トラックを公開しているあらゆるサイトに加え、YouTube・Netflix・Prime Video・Disney+・Twitch の画面上の字幕もページから直接読み取ります。字幕がオフでも、多くの場合は自動でオンにできます。無料プランの吹き替え対象は YouTube、Netflix、Prime Video、Disney+、Twitch です — {days}日間の体験と Pro が他のすべてのサイトをアンロックします。"
       },
+      "browsers": {
+        "question": "Brave、Opera、Arc でも使えますか？",
+        "answer": "はい — Chromium ベースのブラウザなら Chrome ウェブストアから直接インストールできます。Brave、Opera、Arc でストアページを開いて「追加」を押すだけです。吹き替えの動作はどれも同じで、Chrome のローカル翻訳がないブラウザでは自動的にオンライン翻訳に切り替わります。"
+      },
       "cost": {
         "question": "本当に無料ですか？",
         "answer": "はい — YouTube、Netflix、Prime Video、Disney+、Twitch では無料プランは無制限です：翻訳は Chrome 内蔵 API（Chrome 138+）で端末上で行われ、音声はシステムの音声を使います。さらに新規アカウントは、すべてのサイトが使える{days}日間の体験付きで始まります。カードも API キーも不要。"
