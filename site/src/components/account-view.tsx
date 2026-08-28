@@ -194,8 +194,24 @@ export function AccountView() {
   const [buying, setBuying] = useState(false);
   useEffect(() => {
     if (!session || buying || !ent || ent.plan === "pro") return;
-    const buy = new URLSearchParams(window.location.search).get("buy");
+    let buy = new URLSearchParams(window.location.search).get("buy");
+    // Safety net: if the OAuth provider dropped our callback URL (and
+    // its ?buy=), the intent saved at sign-in click still resumes the
+    // checkout — within 15 minutes only, never as a stale surprise.
+    if (!buy) {
+      try {
+        const raw = localStorage.getItem("vx-buy-intent");
+        if (raw) {
+          const d = JSON.parse(raw) as { plan?: string; at?: number };
+          if (d.at && Date.now() - d.at < 15 * 60_000) buy = d.plan ?? null;
+          localStorage.removeItem("vx-buy-intent");
+        }
+      } catch (e) {}
+    }
     if (buy === "pro" || buy === "pro-yearly") {
+      try {
+        localStorage.removeItem("vx-buy-intent");
+      } catch (e) {}
       setBuying(true);
       window.location.href = `/api/checkout?plan=${buy}`;
     }
@@ -243,12 +259,27 @@ export function AccountView() {
           <Button
             size="lg"
             className="mt-8 h-12 rounded-full border border-border bg-card px-6 text-[15px] font-medium text-foreground shadow-sm hover:bg-accent"
-            onClick={() =>
+            onClick={() => {
+              // Keep the purchase intent through the OAuth round-trip:
+              // absolute callback (relative ones can be dropped by the
+              // provider — field report 2026-08-28: sign-in landed on
+              // the home page and the checkout never resumed) AND a
+              // local note the account page can resume from.
+              const search = window.location.search;
+              const buy = new URLSearchParams(search).get("buy");
+              if (buy) {
+                try {
+                  localStorage.setItem(
+                    "vx-buy-intent",
+                    JSON.stringify({ plan: buy, at: Date.now() }),
+                  );
+                } catch (e) {}
+              }
               authClient.signIn.social({
                 provider: "google",
-                callbackURL: `/${locale}/account${window.location.search}`,
-              })
-            }
+                callbackURL: `${window.location.origin}/${locale}/account${search}`,
+              });
+            }}
           >
             <GoogleIcon className="size-5" />
             {t("signInGoogle")}

@@ -22,6 +22,20 @@ export function SiteHeader() {
     { key: "how-it-works", href: { pathname: "/", hash: "how-it-works" }, label: t("howItWorks") },
   ] as const;
 
+  // Clicking an anchor for the CURRENT page is a no-op for the router
+  // (same URL): a second click on "Pricing" from /en#pricing scrolled
+  // nowhere. When the target section exists on this page, scroll to it
+  // ourselves; on other pages (/privacy…) the normal navigation runs.
+  const goHash =
+    (hash: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+      const el = document.getElementById(hash);
+      if (!el) return; // not on the home page: let the Link navigate
+      e.preventDefault();
+      el.scrollIntoView({ behavior: "smooth" });
+      history.replaceState(null, "", `#${hash}`);
+      setOpen(false);
+    };
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/70 backdrop-blur-xl">
       <div className="relative mx-auto flex h-16 w-full max-w-6xl items-center px-4 sm:px-6">
@@ -38,6 +52,7 @@ export function SiteHeader() {
             <Link
               key={item.key}
               href={item.href}
+              onClick={goHash(item.href.hash)}
               className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             >
               {item.label}
@@ -77,7 +92,10 @@ export function SiteHeader() {
             size="sm"
             className="hidden rounded-full px-4 lg:inline-flex"
           >
-            <Link href={{ pathname: "/", hash: "install" }}>
+            <Link
+              href={{ pathname: "/", hash: "install" }}
+              onClick={goHash("install")}
+            >
               <Download data-slot="icon" />
               {t("install")}
             </Link>
@@ -108,7 +126,7 @@ export function SiteHeader() {
               <Link
                 key={item.key}
                 href={item.href}
-                onClick={() => setOpen(false)}
+                onClick={goHash(item.href.hash)}
                 className="rounded-lg px-3 py-3 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               >
                 {item.label}
@@ -125,7 +143,7 @@ export function SiteHeader() {
               <Button asChild size="sm" className="flex-1 rounded-full">
                 <Link
                   href={{ pathname: "/", hash: "install" }}
-                  onClick={() => setOpen(false)}
+                  onClick={goHash("install")}
                 >
                   <Download data-slot="icon" />
                   {t("install")}
