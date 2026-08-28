@@ -339,7 +339,7 @@ export function AccountView() {
                     </p>
                   ))}
               </div>
-              {pro ? (
+              {pro && (
                 <Button
                   variant="outline"
                   className="rounded-full bg-card"
@@ -349,28 +349,34 @@ export function AccountView() {
                 >
                   {t("manage")}
                 </Button>
-              ) : (
-                <div className="flex flex-col items-end gap-1.5">
-                  <Button
-                    className="rounded-full"
-                    onClick={() => {
-                      window.location.href = "/api/checkout?plan=pro";
-                    }}
-                  >
-                    {t("upgrade")}
-                  </Button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      window.location.href = "/api/checkout?plan=pro-yearly";
-                    }}
-                    className="cursor-pointer text-xs text-muted-foreground transition-colors hover:text-primary"
-                  >
-                    {t("upgradeYearly")}
-                  </button>
-                </div>
               )}
             </div>
+            {/* Free plan: both billing options side by side, right under
+                the trial line — the yearly one carries the −42% badge. */}
+            {!pro && (
+              <div className="mt-4 flex flex-wrap items-center gap-2.5">
+                <Button
+                  variant="outline"
+                  className="rounded-full bg-card"
+                  onClick={() => {
+                    window.location.href = "/api/checkout?plan=pro";
+                  }}
+                >
+                  {t("upgrade")}
+                </Button>
+                <Button
+                  className="rounded-full"
+                  onClick={() => {
+                    window.location.href = "/api/checkout?plan=pro-yearly";
+                  }}
+                >
+                  {t("upgradeYearly")}
+                  <span className="rounded-full bg-primary-foreground/15 px-1.5 py-px text-[11px] font-bold">
+                    −42%
+                  </span>
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Pro cloud usage: remaining monthly characters, per meter */}

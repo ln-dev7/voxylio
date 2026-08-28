@@ -360,7 +360,7 @@
     "extensionMissing": "このブラウザにVoxylioがインストールされていません。",
     "extensionError": "拡張機能に接続できませんでした。Voxylioをインストール済みのChromeでこのページを開いてください。",
     "checkoutSuccess": "お支払いを受領しました — Proプランは数秒で有効になります。",
-    "upgradeYearly": "または $69.99/年（−42%）",
+    "upgradeYearly": "Proにする — $69.99/年",
     "usageTitle": "今月のPro使用状況",
     "usageTrans": "AI翻訳（ベータ版）",
     "usageVoice": "ニューラル音声",
