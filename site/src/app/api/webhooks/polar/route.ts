@@ -1,5 +1,7 @@
 import { Webhooks } from "@polar-sh/nextjs";
 import { db, schema } from "@/db";
+import { polar } from "@/lib/polar";
+import { lookupUserIdByEmail } from "@/lib/entitlement";
 
 /**
  * Polar webhook target (configure in Polar: format Raw, event
@@ -11,7 +13,27 @@ export const POST = Webhooks({
   webhookSecret: process.env.POLAR_WEBHOOK_SECRET ?? "",
   onCustomerStateChanged: async (payload) => {
     const state = payload.data;
-    const userId = state.externalId;
+
+    // A customer that existed in Polar BEFORE we sent external ids
+    // (early tests, manual creation) is matched by email at checkout
+    // and keeps `external_id: null` — the checkout's externalCustomerId
+    // does not overwrite it. Fall back to the email (unique in auth),
+    // then write the external id back to Polar so every later event
+    // carries it. This exact gap once left a paid account on "free".
+    let userId = state.externalId;
+    if (!userId && state.email) {
+      userId = await lookupUserIdByEmail(state.email);
+      if (userId) {
+        try {
+          await polar.customers.update({
+            id: state.id,
+            customerUpdate: { externalId: userId },
+          });
+        } catch {
+          /* self-heal only — the upsert below is what matters */
+        }
+      }
+    }
     if (!userId) return;
 
     const subs = state.activeSubscriptions ?? [];

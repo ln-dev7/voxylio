@@ -59,6 +59,45 @@ export async function lookupUserEmail(userId: string): Promise<string | null> {
   return null;
 }
 
+/**
+ * Reverse lookup for the Polar webhook: a customer that existed in
+ * Polar before we started sending external ids (or was created by
+ * hand) delivers `external_id: null` — the payer's email is then the
+ * only key back to the account. Auth guarantees email uniqueness, and
+ * the same probed table serves both directions. Never throws.
+ */
+export async function lookupUserIdByEmail(
+  email: string,
+): Promise<string | null> {
+  const tryOne = async (table: string) => {
+    const r = await db.execute(
+      sql
+        .raw(`select id from ${table} where lower(email) = `)
+        .append(sql`lower(${email}) limit 1`),
+    );
+    return (r.rows?.[0] as { id?: string } | undefined)?.id ?? null;
+  };
+  if (emailTable === null) return null;
+  if (emailTable) {
+    try {
+      return await tryOne(emailTable);
+    } catch {
+      emailTable = undefined;
+    }
+  }
+  for (const table of EMAIL_TABLES) {
+    try {
+      const id = await tryOne(table);
+      emailTable = table;
+      return id;
+    } catch {
+      /* table absent: next candidate */
+    }
+  }
+  emailTable = null;
+  return null;
+}
+
 export async function readEntitlementSafe(
   userId: string,
 ): Promise<SafeEntitlement | null> {

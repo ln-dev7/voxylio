@@ -177,15 +177,13 @@ export function AccountView() {
   useEffect(() => {
     if (!session) return;
     loadEntitlements();
-    // After a checkout, the webhook can lag by a few seconds: poll twice.
+    // After a checkout, the webhook can lag: poll for up to ~30s.
     if (new URLSearchParams(window.location.search).get("checkout") === "success") {
       setJustPaid(true);
-      const t1 = setTimeout(loadEntitlements, 3000);
-      const t2 = setTimeout(loadEntitlements, 8000);
-      return () => {
-        clearTimeout(t1);
-        clearTimeout(t2);
-      };
+      const timers = [3000, 8000, 15000, 30000].map((ms) =>
+        setTimeout(loadEntitlements, ms),
+      );
+      return () => timers.forEach(clearTimeout);
     }
   }, [session?.user.id, loadEntitlements]); // eslint-disable-line react-hooks/exhaustive-deps
 
