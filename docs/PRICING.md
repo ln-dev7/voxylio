@@ -52,7 +52,7 @@ the public FSL source remains the personal-use escape hatch (every release conve
 | Cross-device history sync | No | Yes |
 | Priority support | No | Yes |
 
-Prices: **$7.99/mo, $69.99/yr (−27%)** — both configured in Polar.
+Prices: **$9.99/mo, $69.99/yr (−42%)** — both configured in Polar.
 Add-on packs come later and their prices are NOT published until the
 real cost per cloud hour is measured (see "Two meters" below); the cloud
 budget per subscriber should average ≈ $2/mo to protect margin.
@@ -264,3 +264,24 @@ Only what pricing decisions need: dubbing activations, cloud usage,
 quota exhaustion, most-used Pro feature, trial-free conversion (site
 demo → checkout), cancellations. Nothing about watched content beyond
 what the user already stores locally.
+
+
+## Decision — 2026-08-28: monthly raised to $9.99 (yearly untouched)
+
+Owner decision, taken with zero paying users besides the owner (no
+grandfathering needed; new Polar prices apply to new subscribers).
+
+- Monthly $7.99 → **$9.99**; yearly stays **$69.99**. Displayed yearly
+  discount goes −27% → **−42%** without changing yearly revenue or the
+  quota math (the yearly net ~$5.41/mo remains the binding case for
+  quota ceilings).
+- Rationale: the consumer-app annual-anchor pattern (Headspace sells the
+  year at ~5.4 monthly prices, Tinder at ~4) — the anchor is the monthly
+  price, the yearly is where retention economics live. Sources are in
+  the 2026-08-28 research (Subscription Index: annual ≈ monthly × median
+  retention + 1–2 months; Fungies/ProfitWell: annual cohorts churn
+  6–12%/yr vs 46–63% monthly).
+- A deeper yearly cut (~$49.99, −58%) is an option ONLY after 2–3 months
+  of real data show (a) median monthly retention ≤ 4 months and (b)
+  average Pro COGS well below the $4.90/mo worst case. Until then the
+  quota costs put a hard floor under the yearly price.

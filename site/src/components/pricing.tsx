@@ -182,7 +182,7 @@ export function Pricing({ days = 3 }: { days?: number }) {
                     : "bg-primary/15 text-primary",
                 )}
               >
-                −27%
+                −42%
               </span>
             </button>
           </div>

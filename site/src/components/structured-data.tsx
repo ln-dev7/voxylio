@@ -75,7 +75,7 @@ export async function StructuredData({
           {
             "@type": "Offer",
             name: "Pro",
-            price: "7.99",
+            price: "9.99",
             priceCurrency: "USD",
           },
         ],

@@ -15,7 +15,7 @@ Voxylio runs on Chrome, Edge, Firefox and Safari (macOS). Free features run loca
 
 ## Facts
 
-- Pricing: Free plan (major platforms) and Pro at $7.99/month or $69.99/year
+- Pricing: Free plan (major platforms) and Pro at $9.99/month or $69.99/year
 - Languages: dubs into 65+ languages; site and extension are localized in 10
 - The extension sells nothing in-app; Pro is purchased on voxylio.lndev.me
 - Developer: Leonel Ngoya (lndev) — https://lndev.me

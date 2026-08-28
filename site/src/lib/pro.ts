@@ -74,8 +74,9 @@ export function trialDays(): number {
 }
 
 // Premium Audio (no-subtitle dubbing): minutes of live transcription
-// per month. 60 min at $7.99 is the ceiling the 2026 provider prices
-// support — see the math check in docs/PRICING.md before raising it.
+// per month. 60 min is the ceiling the 2026 provider prices support at
+// the YEARLY plan's net ($69.99 → ~$5.41/mo — the binding case; the
+// $9.99 monthly has more headroom). See docs/PRICING.md before raising.
 const DEFAULT_MONTHLY_AUDIO_MIN = 60;
 
 export function proMonthlyAudioSeconds(): number {
