@@ -176,7 +176,8 @@
       "privacy": "Privacidad",
       "changelog": "Novedades",
       "terms": "Términos",
-      "contact": "Contacto"
+      "contact": "Contacto",
+      "sites": "Sitios compatibles"
     },
     "theme": {
       "label": "Tema",
@@ -443,5 +444,25 @@
       "title": "Pregunta rápida",
       "description": "Escríbenos en X para cualquier cosa corta."
     }
+  },
+  "Sites": {
+    "title": "Sitios compatibles",
+    "intro": "Voxylio dobla los vídeos de cualquier sitio cuyo reproductor exponga una pista de subtítulos. Además, lee los subtítulos en pantalla de 17 plataformas verificadas directamente de la página — esta es la lista completa.",
+    "freeTitle": "Plataformas gratuitas",
+    "freeIntro": "El doblaje en estas cinco plataformas es gratis para siempre — sin necesidad de cuenta.",
+    "badgeFree": "Gratis",
+    "proTitle": "Todos los demás sitios",
+    "proIntro": "Verificados y funcionando — desbloqueados durante la prueba de {days} días y después con Pro.",
+    "badgePro": "Prueba y Pro",
+    "noteYt": "Funciona con subtítulos normales y generados automáticamente. Si YouTube ya dobla el vídeo automáticamente, Voxylio te avisa.",
+    "noteUdemy": "Las transcripciones del curso se cargan automáticamente — los subtítulos pueden incluso quedarse ocultos.",
+    "anyTitle": "Cualquier reproductor con subtítulos",
+    "anyBody": "Más allá de esta lista, Voxylio funciona allí donde el reproductor publica una pista de texto (WebVTT o similar) — como la mayoría de plataformas de cursos, academias corporativas y sitios de medios. Si los subtítulos existen en el menú del reproductor, el doblaje tiene todo lo que necesita.",
+    "hint": "Consejo: activa los subtítulos una vez en el reproductor — Voxylio los capta al instante y baja el audio original mientras habla.",
+    "notTitle": "Se sabe que no funciona",
+    "notBody": "Crunchyroll dibuja sus subtítulos dentro de la imagen del vídeo (canvas), así que no hay texto que Voxylio pueda leer. Los reproductores con DRM que no exponen ninguna pista están en la misma situación.",
+    "missing": "¿Falta un sitio en esta página? <contact>Dímelo</contact> — cada versión añade sitios verificados.",
+    "cta": "Añadir a Chrome — gratis",
+    "ctaPricing": "Ver precios"
   }
 }

@@ -176,7 +176,8 @@
       "privacy": "Privacy",
       "changelog": "Novità",
       "terms": "Termini",
-      "contact": "Contatti"
+      "contact": "Contatti",
+      "sites": "Siti supportati"
     },
     "theme": {
       "label": "Tema",
@@ -443,5 +444,25 @@
       "title": "Domanda veloce",
       "description": "Scrivici su X per qualsiasi cosa breve."
     }
+  },
+  "Sites": {
+    "title": "Siti supportati",
+    "intro": "Voxylio doppia i video di qualsiasi sito il cui player esponga una traccia di sottotitoli. In più legge i sottotitoli a schermo di 17 piattaforme verificate direttamente dalla pagina — ecco l'elenco completo.",
+    "freeTitle": "Piattaforme gratuite",
+    "freeIntro": "Il doppiaggio su queste cinque piattaforme è gratuito per sempre — senza bisogno di account.",
+    "badgeFree": "Gratis",
+    "proTitle": "Tutti gli altri siti",
+    "proIntro": "Verificati e funzionanti — sbloccati durante la prova di {days} giorni e poi con Pro.",
+    "badgePro": "Prova e Pro",
+    "noteYt": "Funziona con i sottotitoli normali e con quelli generati automaticamente. Se YouTube doppia già il video, Voxylio te lo segnala.",
+    "noteUdemy": "Le trascrizioni del corso vengono caricate automaticamente — i sottotitoli possono persino restare nascosti.",
+    "anyTitle": "Qualsiasi player con sottotitoli",
+    "anyBody": "Oltre a questo elenco, Voxylio funziona ovunque il player pubblichi una traccia di testo (WebVTT o simile) — come la maggior parte delle piattaforme di corsi, academy aziendali e siti media. Se i sottotitoli esistono nel menu del player, il doppiaggio ha tutto ciò che gli serve.",
+    "hint": "Suggerimento: attiva una volta i sottotitoli nel player — Voxylio li rileva all'istante e abbassa l'audio originale mentre parla.",
+    "notTitle": "Noti per non funzionare",
+    "notBody": "Crunchyroll disegna i sottotitoli dentro l'immagine del video (canvas), quindi non c'è testo che Voxylio possa leggere. I player protetti da DRM che non espongono alcuna traccia sono nella stessa situazione.",
+    "missing": "Manca un sito in questa pagina? <contact>Dimmelo</contact> — ogni versione aggiunge siti verificati.",
+    "cta": "Aggiungi a Chrome — gratis",
+    "ctaPricing": "Vedi i prezzi"
   }
 }

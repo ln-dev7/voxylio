@@ -7,6 +7,7 @@ Voxylio runs on Chrome, Edge, Firefox and Safari (macOS). Free features run loca
 ## Pages
 
 - [Home](https://voxylio.lndev.me/en): what Voxylio does, how it works, pricing, install steps, FAQ
+- [Supported sites](https://voxylio.lndev.me/en/sites): the verified platform list — 5 free (YouTube, Netflix, Prime Video, Disney+, Twitch), 12 more with trial/Pro (Udemy, Coursera, Vimeo, Hulu, HBO Max, Peacock, Dailymotion, Viki, LinkedIn Learning, Skillshare, edX, Khan Academy), plus any player exposing a subtitle track; Crunchyroll is not supported (canvas captions)
 - [Changelog](https://voxylio.lndev.me/en/changelog): release history
 - [Privacy](https://voxylio.lndev.me/en/privacy): privacy policy
 - [Contact](https://voxylio.lndev.me/en/contact): reach the developer (email, GitHub issues, X)

@@ -176,7 +176,8 @@
       "privacy": "Privacy",
       "changelog": "Changelog",
       "terms": "Terms",
-      "contact": "Contact"
+      "contact": "Contact",
+      "sites": "Supported sites"
     },
     "theme": {
       "label": "Theme",
@@ -443,5 +444,25 @@
       "title": "Quick question",
       "description": "Ping us on X for anything short."
     }
+  },
+  "Sites": {
+    "title": "Supported sites",
+    "intro": "Voxylio dubs videos on any site whose player exposes a subtitle track. On top of that, it reads the on-screen captions of 17 verified platforms directly from the page — here is the full list.",
+    "freeTitle": "Free platforms",
+    "freeIntro": "Dubbing on these five platforms is free, forever — no account needed.",
+    "badgeFree": "Free",
+    "proTitle": "Every other site",
+    "proIntro": "Verified and working — unlocked during the {days}-day trial, then with Pro.",
+    "badgePro": "Trial & Pro",
+    "noteYt": "Works with regular and auto-generated captions. If YouTube already auto-dubs the video, Voxylio tells you.",
+    "noteUdemy": "Course transcripts are loaded automatically — captions can even stay hidden.",
+    "anyTitle": "Any player with subtitles",
+    "anyBody": "Beyond this list, Voxylio works wherever the player publishes a text track (WebVTT or similar) — most course platforms, corporate academies and media sites do. If subtitles exist in the player menu, dubbing has everything it needs.",
+    "hint": "Tip: turn subtitles on in the player once — Voxylio picks them up instantly and lowers the original audio while it speaks.",
+    "notTitle": "Known not to work",
+    "notBody": "Crunchyroll draws its subtitles inside the video image (canvas), so there is no text for Voxylio to read. DRM-protected players that expose no track at all are in the same situation.",
+    "missing": "A site missing from this page? <contact>Tell me</contact> — verified sites are added in every release.",
+    "cta": "Add to Chrome — free",
+    "ctaPricing": "See pricing"
   }
 }

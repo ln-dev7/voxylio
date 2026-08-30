@@ -77,6 +77,14 @@ export function SiteFooter() {
               ))}
               <li>
                 <Link
+                  href="/sites"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t("links.sites")}
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/changelog"
                   className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >

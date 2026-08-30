@@ -176,7 +176,8 @@
       "privacy": "Privacidade",
       "changelog": "Novidades",
       "terms": "Termos",
-      "contact": "Contato"
+      "contact": "Contato",
+      "sites": "Sites compatíveis"
     },
     "theme": {
       "label": "Tema",
@@ -443,5 +444,25 @@
       "title": "Pergunta rápida",
       "description": "Fale conosco no X para qualquer coisa curta."
     }
+  },
+  "Sites": {
+    "title": "Sites compatíveis",
+    "intro": "O Voxylio dubla os vídeos de qualquer site cujo player exponha uma faixa de legendas. Além disso, lê as legendas na tela de 17 plataformas verificadas direto da página — aqui está a lista completa.",
+    "freeTitle": "Plataformas gratuitas",
+    "freeIntro": "A dublagem nessas cinco plataformas é grátis para sempre — sem precisar de conta.",
+    "badgeFree": "Grátis",
+    "proTitle": "Todos os outros sites",
+    "proIntro": "Verificados e funcionando — liberados durante o teste de {days} dias e depois com o Pro.",
+    "badgePro": "Teste e Pro",
+    "noteYt": "Funciona com legendas normais e geradas automaticamente. Se o YouTube já dubla o vídeo automaticamente, o Voxylio avisa.",
+    "noteUdemy": "As transcrições do curso são carregadas automaticamente — as legendas podem até ficar ocultas.",
+    "anyTitle": "Qualquer player com legendas",
+    "anyBody": "Além desta lista, o Voxylio funciona onde o player publica uma faixa de texto (WebVTT ou similar) — caso da maioria das plataformas de cursos, academias corporativas e sites de mídia. Se as legendas existem no menu do player, a dublagem tem tudo de que precisa.",
+    "hint": "Dica: ative as legendas uma vez no player — o Voxylio as capta na hora e abaixa o áudio original enquanto fala.",
+    "notTitle": "Sabidamente incompatíveis",
+    "notBody": "O Crunchyroll desenha as legendas dentro da imagem do vídeo (canvas), então não há texto para o Voxylio ler. Players protegidos por DRM que não expõem nenhuma faixa estão na mesma situação.",
+    "missing": "Falta um site nesta página? <contact>Me conte</contact> — sites verificados são adicionados a cada versão.",
+    "cta": "Adicionar ao Chrome — grátis",
+    "ctaPricing": "Ver preços"
   }
 }

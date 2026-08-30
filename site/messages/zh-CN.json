@@ -176,7 +176,8 @@
       "privacy": "隐私",
       "changelog": "更新日志",
       "terms": "服务条款",
-      "contact": "联系我们"
+      "contact": "联系我们",
+      "sites": "支持的网站"
     },
     "theme": {
       "label": "主题",
@@ -443,5 +444,25 @@
       "title": "简短提问",
       "description": "简短内容欢迎在 X 上联系我们。"
     }
+  },
+  "Sites": {
+    "title": "支持的网站",
+    "intro": "只要播放器提供字幕轨道，Voxylio 就能为该网站的视频配音。此外，它还能直接从页面读取 17 个已验证平台的屏幕字幕 — 完整列表如下。",
+    "freeTitle": "免费平台",
+    "freeIntro": "在这五个平台上配音永久免费 — 无需账号。",
+    "badgeFree": "免费",
+    "proTitle": "其他所有网站",
+    "proIntro": "已验证可用 — 在 {days} 天试用期内解锁，之后通过 Pro 使用。",
+    "badgePro": "试用与 Pro",
+    "noteYt": "支持普通字幕和自动生成字幕。如果 YouTube 已自动配音该视频，Voxylio 会提醒你。",
+    "noteUdemy": "课程字幕稿会自动加载 — 甚至可以不开启字幕。",
+    "anyTitle": "任何带字幕的播放器",
+    "anyBody": "除此列表之外，只要播放器发布文本轨道（WebVTT 或类似格式），Voxylio 就能工作 — 大多数课程平台、企业学院和媒体网站都是如此。只要播放器菜单里有字幕，配音所需的一切就都齐了。",
+    "hint": "提示：在播放器中开启一次字幕 — Voxylio 会立即读取，并在朗读时降低原声音量。",
+    "notTitle": "已知不可用",
+    "notBody": "Crunchyroll 将字幕绘制在视频画面内（canvas），Voxylio 没有可读取的文本。完全不提供轨道的 DRM 保护播放器也是同样情况。",
+    "missing": "这个页面漏了某个网站？<contact>告诉我</contact> — 每个版本都会加入新的已验证网站。",
+    "cta": "添加至 Chrome — 免费",
+    "ctaPricing": "查看价格"
   }
 }

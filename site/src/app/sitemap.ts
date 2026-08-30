@@ -22,6 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }));
   return [
     ...localized(""),
+    ...localized("/sites"),
     ...localized("/changelog"),
     ...localized("/privacy"),
     ...localized("/terms"),

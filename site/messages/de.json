@@ -176,7 +176,8 @@
       "privacy": "Datenschutz",
       "changelog": "Neuheiten",
       "terms": "Nutzungsbedingungen",
-      "contact": "Kontakt"
+      "contact": "Kontakt",
+      "sites": "Unterstützte Websites"
     },
     "theme": {
       "label": "Design",
@@ -443,5 +444,25 @@
       "title": "Kurze Frage",
       "description": "Schreib uns auf X für alles Kurze."
     }
+  },
+  "Sites": {
+    "title": "Unterstützte Websites",
+    "intro": "Voxylio synchronisiert Videos auf jeder Website, deren Player eine Untertitelspur bereitstellt. Zusätzlich liest es die eingeblendeten Untertitel von 17 verifizierten Plattformen direkt von der Seite — hier die vollständige Liste.",
+    "freeTitle": "Kostenlose Plattformen",
+    "freeIntro": "Das Dubbing auf diesen fünf Plattformen ist für immer kostenlos — ganz ohne Konto.",
+    "badgeFree": "Kostenlos",
+    "proTitle": "Alle anderen Websites",
+    "proIntro": "Verifiziert und funktionsfähig — freigeschaltet während der {days}-tägigen Testphase, danach mit Pro.",
+    "badgePro": "Test & Pro",
+    "noteYt": "Funktioniert mit normalen und automatisch erzeugten Untertiteln. Falls YouTube das Video bereits automatisch synchronisiert, sagt Voxylio Bescheid.",
+    "noteUdemy": "Kurs-Transkripte werden automatisch geladen — die Untertitel können sogar ausgeblendet bleiben.",
+    "anyTitle": "Jeder Player mit Untertiteln",
+    "anyBody": "Über diese Liste hinaus funktioniert Voxylio überall dort, wo der Player eine Textspur veröffentlicht (WebVTT oder ähnlich) — wie bei den meisten Kursplattformen, internen Akademien und Medienseiten. Gibt es Untertitel im Player-Menü, hat das Dubbing alles, was es braucht.",
+    "hint": "Tipp: Untertitel einmal im Player aktivieren — Voxylio übernimmt sie sofort und senkt die Originaltonspur ab, während es spricht.",
+    "notTitle": "Funktioniert (noch) nicht",
+    "notBody": "Crunchyroll zeichnet seine Untertitel direkt ins Videobild (Canvas) — es gibt keinen Text, den Voxylio lesen könnte. DRM-geschützte Player ohne jede Spur sind im selben Fall.",
+    "missing": "Fehlt eine Website auf dieser Seite? <contact>Sag mir Bescheid</contact> — verifizierte Websites kommen mit jedem Release dazu.",
+    "cta": "Zu Chrome hinzufügen — kostenlos",
+    "ctaPricing": "Preise ansehen"
   }
 }
