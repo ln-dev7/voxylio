@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { pageMeta } from "@/lib/seo";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { GITHUB_URL } from "@/lib/constants";
@@ -11,7 +12,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Privacy" });
-  return { title: `${t("title")} — Voxylio` };
+  return pageMeta({
+    locale,
+    path: "/privacy",
+    title: `${t("title")} — Voxylio`,
+    description: t("intro"),
+  });
 }
 
 const SECTIONS = ["p1", "p2", "p3", "p4", "p5"] as const;

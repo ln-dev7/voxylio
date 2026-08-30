@@ -78,6 +78,12 @@ export async function StructuredData({
             price: "9.99",
             priceCurrency: "USD",
           },
+          {
+            "@type": "Offer",
+            name: "Pro (yearly)",
+            price: "69.99",
+            priceCurrency: "USD",
+          },
         ],
         publisher: { "@id": `${SITE_URL}/#organization` },
       },

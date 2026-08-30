@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { pageMeta } from "@/lib/seo";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Aurora } from "@/components/aurora";
@@ -12,7 +13,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Changelog" });
-  return { title: `${t("title")} — Voxylio`, description: t("subtitle") };
+  return pageMeta({
+    locale,
+    path: "/changelog",
+    title: `${t("title")} — Voxylio`,
+    description: t("subtitle"),
+  });
 }
 
 type Tag = "new" | "improved" | "pro";

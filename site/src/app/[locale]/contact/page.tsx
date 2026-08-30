@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { pageMeta } from "@/lib/seo";
 import { Mail, Bug, MessageCircle } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -16,7 +17,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Contact" });
-  return { title: `${t("title")} — Voxylio`, description: t("subtitle") };
+  return pageMeta({
+    locale,
+    path: "/contact",
+    title: `${t("title")} — Voxylio`,
+    description: t("subtitle"),
+  });
 }
 
 export default async function ContactPage({

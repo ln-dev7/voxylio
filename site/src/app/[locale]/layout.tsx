@@ -8,20 +8,6 @@ import { SITE_URL } from "@/lib/constants";
 import { ThemeProvider } from "@/components/theme-provider";
 import "../globals.css";
 
-// og:locale per supported language (was en_US for everything non-French).
-const OG_LOCALES: Record<string, string> = {
-  en: "en_US",
-  fr: "fr_FR",
-  de: "de_DE",
-  es: "es_ES",
-  it: "it_IT",
-  ja: "ja_JP",
-  ko: "ko_KR",
-  "pt-BR": "pt_BR",
-  "zh-CN": "zh_CN",
-  "zh-TW": "zh_TW",
-};
-
 // Self-hosted fonts: Inter for body, Space Grotesk for display type
 const inter = localFont({
   src: "../fonts/InterVariable.woff2",
@@ -46,33 +32,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Meta" });
+  // Canonical/hreflang/OG live on each PAGE (lib/seo.ts pageMeta): an
+  // `alternates` set here is inherited verbatim by every subpage, which
+  // once gave /en/changelog a canonical of /en — the homepage.
   return {
     metadataBase: new URL(SITE_URL),
     title: t("title"),
     description: t("description"),
-    alternates: {
-      canonical: `/${locale}`,
-      languages: {
-        ...Object.fromEntries(routing.locales.map((l) => [l, `/${l}`])),
-        // Fallback for unmatched languages (seo-audit: x-default required).
-        "x-default": `/${routing.defaultLocale}`,
-      },
-    },
-    openGraph: {
-      type: "website",
-      url: `/${locale}`,
-      siteName: "Voxylio",
-      title: t("title"),
-      description: t("description"),
-      locale: OG_LOCALES[locale] ?? "en_US",
-      images: [{ url: "/og.png", width: 1200, height: 630, alt: "Voxylio" }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: t("title"),
-      description: t("description"),
-      images: ["/og.png"],
-    },
   };
 }
 

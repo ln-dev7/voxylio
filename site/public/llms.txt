@@ -9,6 +9,7 @@ Voxylio runs on Chrome, Edge, Firefox and Safari (macOS). Free features run loca
 - [Home](https://voxylio.lndev.me/en): what Voxylio does, how it works, pricing, install steps, FAQ
 - [Changelog](https://voxylio.lndev.me/en/changelog): release history
 - [Privacy](https://voxylio.lndev.me/en/privacy): privacy policy
+- [Contact](https://voxylio.lndev.me/en/contact): reach the developer (email, GitHub issues, X)
 - [Terms](https://voxylio.lndev.me/en/terms): terms of service
 - [Chrome Web Store listing](https://chromewebstore.google.com/detail/hahcpbcjfdanjncobfcdeidodfggggkp): install for Chrome
 - [Source code](https://github.com/ln-dev7/voxylio): monorepo (extension + site)

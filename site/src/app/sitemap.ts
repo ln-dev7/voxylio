@@ -5,8 +5,9 @@ import { routing } from "@/i18n/routing";
 export default function sitemap(): MetadataRoute.Sitemap {
   const localized = (path: string): MetadataRoute.Sitemap =>
     routing.locales.map((locale) => ({
+      // No lastModified: stamping build time on every URL is a false
+      // freshness signal Google learns to distrust (seo-audit).
       url: `${SITE_URL}/${locale}${path}`,
-      lastModified: new Date(),
       changeFrequency: "weekly",
       priority:
         (locale === routing.defaultLocale ? 1 : 0.9) * (path ? 0.7 : 1),
