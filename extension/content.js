@@ -128,6 +128,9 @@
   function mergeRollup(last, start, end, text) {
     if (!last) return null;
     if (start > last.end + 0.6) return null;
+    if (last.text.length > GROUP_MAX_LEN * 3 && endsSentence(last.text) || last.text.length > 2e3) {
+      return null;
+    }
     if (text.startsWith(last.text) || last.text.startsWith(text)) {
       return {
         text: text.length > last.text.length ? text : last.text,
@@ -143,9 +146,21 @@
       }
       const re = /\S+/g;
       const starts = [];
+      const tokens = [];
       let m;
-      while ((m = re.exec(last.text)) !== null) starts.push(m.index);
-      const cutIdx = starts[starts.length - overlap] ?? 0;
+      while ((m = re.exec(last.text)) !== null) {
+        starts.push(m.index);
+        tokens.push(m[0]);
+      }
+      let cutIdx = 0;
+      let consumed = 0;
+      for (let i = tokens.length - 1; i >= 0; i--) {
+        consumed += normalizeWords(tokens[i]).length;
+        if (consumed >= overlap) {
+          cutIdx = starts[i];
+          break;
+        }
+      }
       const head = last.text.slice(0, cutIdx).trimEnd();
       const merged = head ? head + " " + text : text;
       return {
@@ -219,8 +234,8 @@
   ];
   var escapeRe = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   var TERM_RE = new RegExp(
-    "\\b(" + PROTECTED_TERMS.map(escapeRe).join("|") + ")\\b",
-    "gi"
+    "(?<![\\p{L}\\p{N}])(" + PROTECTED_TERMS.map(escapeRe).join("|") + ")(?![\\p{L}\\p{N}])",
+    "giu"
   );
   function compileGlossary(entries) {
     const list = [];
@@ -259,12 +274,12 @@
     return { protectedText: out, found };
   }
   function restoreTerms(text, found) {
-    const seen = (text.match(/⟦\s*\d+\s*⟧/g) || []).length;
-    const restored = text.replace(
-      /⟦\s*(\d+)\s*⟧/g,
-      (_, i) => found[Number(i)] ?? ""
-    );
-    const ok = seen === found.length && !/⟦|⟧/.test(restored);
+    const indices = [];
+    const restored = text.replace(/⟦\s*(\d+)\s*⟧/g, (_, i) => {
+      indices.push(Number(i));
+      return found[Number(i)] ?? "";
+    });
+    const ok = indices.length === found.length && !/⟦|⟧/.test(restored) && new Set(indices).size === found.length && indices.every((i) => i >= 0 && i < found.length);
     return { restored, ok };
   }
 
@@ -742,6 +757,7 @@
       if (s.failures >= failuresBeforeCooldown) {
         s.coolUntil = now() + cooldownMs;
         s.failures = 0;
+        s.lastProbeAt = now();
       }
       pairState.set(key, s);
     }
@@ -752,6 +768,7 @@
       if (s.readyMisses >= 2) {
         s.coolUntil = now() + cooldownMs;
         s.readyMisses = 0;
+        s.lastProbeAt = now();
       }
       pairState.set(key, s);
     }
@@ -938,7 +955,7 @@
     return DOM_CAPTION_SITES.find((s) => s.host.test(h)) || null;
   }
   function domCueEnd(start, text) {
-    const words = String(text || "").split(/\s+/).filter(Boolean).length;
+    const words = estimateWords(String(text || ""));
     return start + Math.min(7, Math.max(1.5, words / 2.5));
   }
 
@@ -1084,7 +1101,7 @@
   }
   function planGate({ plan, trialEndsAt, now, hostname }) {
     if (plan === "pro") return { allowed: true, reason: "pro" };
-    const t = typeof now === "number" ? now : Date.parse(now || "") || 0;
+    const t = typeof now === "number" ? now : Date.parse(now || "") || Date.now();
     const end = trialEndsAt ? Date.parse(trialEndsAt) : NaN;
     if (Number.isFinite(end) && t < end) return { allowed: true, reason: "trial" };
     if (isFreeSite(hostname)) return { allowed: true, reason: "freeSite" };
@@ -1580,7 +1597,8 @@
     updFound: "Update found \u2014 restarting\u2026",
     updNone: "Up to date \u2713",
     updThrottled: "Try again in a few minutes",
-    statusYtDubbed: "YouTube is already dubbing this video into your language (automatic audio track) \u2014 you are hearing two voices. In the player: \u2699\uFE0F \u2192 Audio track \u2192 pick the original version, then reload the page."
+    statusYtDubbed: "YouTube is already dubbing this video into your language (automatic audio track) \u2014 you are hearing two voices. In the player: \u2699\uFE0F \u2192 Audio track \u2192 pick the original version, then reload the page.",
+    toggleDub: "Enable dubbing"
   };
 
   // src/messages/fr.json
@@ -1765,7 +1783,8 @@
     updFound: "Mise \xE0 jour trouv\xE9e \u2014 red\xE9marrage\u2026",
     updNone: "\xC0 jour \u2713",
     updThrottled: "R\xE9essaie dans quelques minutes",
-    statusYtDubbed: "YouTube double d\xE9j\xE0 cette vid\xE9o dans ta langue (piste audio automatique) \u2014 tu entends deux voix. Dans le lecteur : \u2699\uFE0F \u2192 Piste audio \u2192 choisis la version originale, puis recharge la page."
+    statusYtDubbed: "YouTube double d\xE9j\xE0 cette vid\xE9o dans ta langue (piste audio automatique) \u2014 tu entends deux voix. Dans le lecteur : \u2699\uFE0F \u2192 Piste audio \u2192 choisis la version originale, puis recharge la page.",
+    toggleDub: "Activer le doublage"
   };
 
   // src/messages/es.json
@@ -1950,7 +1969,8 @@
     updFound: "Actualizaci\xF3n encontrada \u2014 reiniciando\u2026",
     updNone: "Actualizado \u2713",
     updThrottled: "Int\xE9ntalo de nuevo en unos minutos",
-    statusYtDubbed: "YouTube ya dobla este v\xEDdeo a tu idioma (pista de audio autom\xE1tica): oyes dos voces. En el reproductor: \u2699\uFE0F \u2192 Pista de audio \u2192 elige la versi\xF3n original y recarga la p\xE1gina."
+    statusYtDubbed: "YouTube ya dobla este v\xEDdeo a tu idioma (pista de audio autom\xE1tica): oyes dos voces. En el reproductor: \u2699\uFE0F \u2192 Pista de audio \u2192 elige la versi\xF3n original y recarga la p\xE1gina.",
+    toggleDub: "Activar el doblaje"
   };
 
   // src/messages/de.json
@@ -2135,7 +2155,8 @@
     updFound: "Update gefunden \u2014 Neustart\u2026",
     updNone: "Aktuell \u2713",
     updThrottled: "Versuch es in ein paar Minuten erneut",
-    statusYtDubbed: "YouTube vertont dieses Video bereits in deiner Sprache (automatische Tonspur) \u2014 du h\xF6rst zwei Stimmen. Im Player: \u2699\uFE0F \u2192 Audiotrack \u2192 Originalversion w\xE4hlen, dann Seite neu laden."
+    statusYtDubbed: "YouTube vertont dieses Video bereits in deiner Sprache (automatische Tonspur) \u2014 du h\xF6rst zwei Stimmen. Im Player: \u2699\uFE0F \u2192 Audiotrack \u2192 Originalversion w\xE4hlen, dann Seite neu laden.",
+    toggleDub: "Dubbing aktivieren"
   };
 
   // src/messages/it.json
@@ -2320,7 +2341,8 @@
     updFound: "Aggiornamento trovato \u2014 riavvio\u2026",
     updNone: "Aggiornato \u2713",
     updThrottled: "Riprova tra qualche minuto",
-    statusYtDubbed: "YouTube sta gi\xE0 doppiando questo video nella tua lingua (traccia audio automatica): senti due voci. Nel player: \u2699\uFE0F \u2192 Traccia audio \u2192 scegli la versione originale, poi ricarica la pagina."
+    statusYtDubbed: "YouTube sta gi\xE0 doppiando questo video nella tua lingua (traccia audio automatica): senti due voci. Nel player: \u2699\uFE0F \u2192 Traccia audio \u2192 scegli la versione originale, poi ricarica la pagina.",
+    toggleDub: "Attiva il doppiaggio"
   };
 
   // src/messages/ja.json
@@ -2505,7 +2527,8 @@
     updFound: "\u66F4\u65B0\u304C\u898B\u3064\u304B\u308A\u307E\u3057\u305F \u2014 \u518D\u8D77\u52D5\u3057\u307E\u3059\u2026",
     updNone: "\u6700\u65B0\u3067\u3059 \u2713",
     updThrottled: "\u6570\u5206\u5F8C\u306B\u3082\u3046\u4E00\u5EA6\u304A\u8A66\u3057\u304F\u3060\u3055\u3044",
-    statusYtDubbed: "YouTube \u304C\u3053\u306E\u52D5\u753B\u3092\u3059\u3067\u306B\u3042\u306A\u305F\u306E\u8A00\u8A9E\u306B\u5439\u304D\u66FF\u3048\u3066\u3044\u307E\u3059\uFF08\u81EA\u52D5\u97F3\u58F0\u30C8\u30E9\u30C3\u30AF\uFF09\u2014 2 \u3064\u306E\u58F0\u304C\u91CD\u306A\u3063\u3066\u3044\u307E\u3059\u3002\u30D7\u30EC\u30FC\u30E4\u30FC\u306E \u2699\uFE0F \u2192 \u97F3\u58F0\u30C8\u30E9\u30C3\u30AF \u2192 \u30AA\u30EA\u30B8\u30CA\u30EB\u3092\u9078\u3073\u3001\u30DA\u30FC\u30B8\u3092\u518D\u8AAD\u307F\u8FBC\u307F\u3057\u3066\u304F\u3060\u3055\u3044\u3002"
+    statusYtDubbed: "YouTube \u304C\u3053\u306E\u52D5\u753B\u3092\u3059\u3067\u306B\u3042\u306A\u305F\u306E\u8A00\u8A9E\u306B\u5439\u304D\u66FF\u3048\u3066\u3044\u307E\u3059\uFF08\u81EA\u52D5\u97F3\u58F0\u30C8\u30E9\u30C3\u30AF\uFF09\u2014 2 \u3064\u306E\u58F0\u304C\u91CD\u306A\u3063\u3066\u3044\u307E\u3059\u3002\u30D7\u30EC\u30FC\u30E4\u30FC\u306E \u2699\uFE0F \u2192 \u97F3\u58F0\u30C8\u30E9\u30C3\u30AF \u2192 \u30AA\u30EA\u30B8\u30CA\u30EB\u3092\u9078\u3073\u3001\u30DA\u30FC\u30B8\u3092\u518D\u8AAD\u307F\u8FBC\u307F\u3057\u3066\u304F\u3060\u3055\u3044\u3002",
+    toggleDub: "\u5439\u304D\u66FF\u3048\u3092\u6709\u52B9\u306B\u3059\u308B"
   };
 
   // src/messages/ko.json
@@ -2690,7 +2713,8 @@
     updFound: "\uC5C5\uB370\uC774\uD2B8 \uBC1C\uACAC \u2014 \uB2E4\uC2DC \uC2DC\uC791\uD569\uB2C8\uB2E4\u2026",
     updNone: "\uCD5C\uC2E0 \uC0C1\uD0DC \u2713",
     updThrottled: "\uBA87 \uBD84 \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uC138\uC694",
-    statusYtDubbed: "YouTube\uAC00 \uC774\uBBF8 \uC774 \uB3D9\uC601\uC0C1\uC744 \uB0B4 \uC5B8\uC5B4\uB85C \uB354\uBE59\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4(\uC790\uB3D9 \uC624\uB514\uC624 \uD2B8\uB799) \u2014 \uB450 \uBAA9\uC18C\uB9AC\uAC00 \uACB9\uCCD0 \uB4E4\uB9BD\uB2C8\uB2E4. \uD50C\uB808\uC774\uC5B4\uC5D0\uC11C \u2699\uFE0F \u2192 \uC624\uB514\uC624 \uD2B8\uB799 \u2192 \uC6D0\uBCF8\uC744 \uC120\uD0DD\uD55C \uB4A4 \uD398\uC774\uC9C0\uB97C \uC0C8\uB85C\uACE0\uCE68\uD558\uC138\uC694."
+    statusYtDubbed: "YouTube\uAC00 \uC774\uBBF8 \uC774 \uB3D9\uC601\uC0C1\uC744 \uB0B4 \uC5B8\uC5B4\uB85C \uB354\uBE59\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4(\uC790\uB3D9 \uC624\uB514\uC624 \uD2B8\uB799) \u2014 \uB450 \uBAA9\uC18C\uB9AC\uAC00 \uACB9\uCCD0 \uB4E4\uB9BD\uB2C8\uB2E4. \uD50C\uB808\uC774\uC5B4\uC5D0\uC11C \u2699\uFE0F \u2192 \uC624\uB514\uC624 \uD2B8\uB799 \u2192 \uC6D0\uBCF8\uC744 \uC120\uD0DD\uD55C \uB4A4 \uD398\uC774\uC9C0\uB97C \uC0C8\uB85C\uACE0\uCE68\uD558\uC138\uC694.",
+    toggleDub: "\uB354\uBE59 \uCF1C\uAE30"
   };
 
   // src/messages/zh-CN.json
@@ -2875,7 +2899,8 @@
     updFound: "\u53D1\u73B0\u66F4\u65B0 \u2014 \u6B63\u5728\u91CD\u542F\u2026",
     updNone: "\u5DF2\u662F\u6700\u65B0 \u2713",
     updThrottled: "\u8BF7\u51E0\u5206\u949F\u540E\u518D\u8BD5",
-    statusYtDubbed: "YouTube \u5DF2\u5C06\u6B64\u89C6\u9891\u81EA\u52A8\u914D\u97F3\u4E3A\u4F60\u7684\u8BED\u8A00\uFF08\u81EA\u52A8\u97F3\u8F68\uFF09\u2014 \u4F60\u4F1A\u542C\u5230\u4E24\u4E2A\u58F0\u97F3\u3002\u8BF7\u5728\u64AD\u653E\u5668\u4E2D\uFF1A\u2699\uFE0F \u2192 \u97F3\u8F68 \u2192 \u9009\u62E9\u539F\u59CB\u7248\u672C\uFF0C\u7136\u540E\u5237\u65B0\u9875\u9762\u3002"
+    statusYtDubbed: "YouTube \u5DF2\u5C06\u6B64\u89C6\u9891\u81EA\u52A8\u914D\u97F3\u4E3A\u4F60\u7684\u8BED\u8A00\uFF08\u81EA\u52A8\u97F3\u8F68\uFF09\u2014 \u4F60\u4F1A\u542C\u5230\u4E24\u4E2A\u58F0\u97F3\u3002\u8BF7\u5728\u64AD\u653E\u5668\u4E2D\uFF1A\u2699\uFE0F \u2192 \u97F3\u8F68 \u2192 \u9009\u62E9\u539F\u59CB\u7248\u672C\uFF0C\u7136\u540E\u5237\u65B0\u9875\u9762\u3002",
+    toggleDub: "\u542F\u7528\u914D\u97F3"
   };
 
   // src/messages/zh-TW.json
@@ -3060,7 +3085,8 @@
     updFound: "\u767C\u73FE\u66F4\u65B0 \u2014 \u6B63\u5728\u91CD\u65B0\u555F\u52D5\u2026",
     updNone: "\u5DF2\u662F\u6700\u65B0 \u2713",
     updThrottled: "\u8ACB\u5E7E\u5206\u9418\u5F8C\u518D\u8A66",
-    statusYtDubbed: "YouTube \u5DF2\u5C07\u6B64\u5F71\u7247\u81EA\u52D5\u914D\u97F3\u70BA\u4F60\u7684\u8A9E\u8A00\uFF08\u81EA\u52D5\u97F3\u8ECC\uFF09\u2014 \u4F60\u6703\u807D\u5230\u5169\u500B\u8072\u97F3\u3002\u8ACB\u5728\u64AD\u653E\u5668\u4E2D\uFF1A\u2699\uFE0F \u2192 \u97F3\u8ECC \u2192 \u9078\u64C7\u539F\u59CB\u7248\u672C\uFF0C\u7136\u5F8C\u91CD\u65B0\u6574\u7406\u9801\u9762\u3002"
+    statusYtDubbed: "YouTube \u5DF2\u5C07\u6B64\u5F71\u7247\u81EA\u52D5\u914D\u97F3\u70BA\u4F60\u7684\u8A9E\u8A00\uFF08\u81EA\u52D5\u97F3\u8ECC\uFF09\u2014 \u4F60\u6703\u807D\u5230\u5169\u500B\u8072\u97F3\u3002\u8ACB\u5728\u64AD\u653E\u5668\u4E2D\uFF1A\u2699\uFE0F \u2192 \u97F3\u8ECC \u2192 \u9078\u64C7\u539F\u59CB\u7248\u672C\uFF0C\u7136\u5F8C\u91CD\u65B0\u6574\u7406\u9801\u9762\u3002",
+    toggleDub: "\u555F\u7528\u914D\u97F3"
   };
 
   // src/messages/pt-BR.json
@@ -3245,7 +3271,8 @@
     updFound: "Atualiza\xE7\xE3o encontrada \u2014 reiniciando\u2026",
     updNone: "Atualizado \u2713",
     updThrottled: "Tente de novo em alguns minutos",
-    statusYtDubbed: "O YouTube j\xE1 dubla este v\xEDdeo no seu idioma (faixa de \xE1udio autom\xE1tica) \u2014 voc\xEA ouve duas vozes. No player: \u2699\uFE0F \u2192 Faixa de \xE1udio \u2192 escolha a vers\xE3o original e recarregue a p\xE1gina."
+    statusYtDubbed: "O YouTube j\xE1 dubla este v\xEDdeo no seu idioma (faixa de \xE1udio autom\xE1tica) \u2014 voc\xEA ouve duas vozes. No player: \u2699\uFE0F \u2192 Faixa de \xE1udio \u2192 escolha a vers\xE3o original e recarregue a p\xE1gina.",
+    toggleDub: "Ativar a dublagem"
   };
 
   // src/i18n.js
@@ -3291,8 +3318,10 @@
 
   // src/content.js
   (() => {
-    if (window.__voxylioInjected) return;
+    const hb = window.__voxylioHeartbeat || 0;
+    if (window.__voxylioInjected && Date.now() - hb < 8e3) return;
     window.__voxylioInjected = true;
+    window.__voxylioHeartbeat = Date.now();
     const DEFAULTS2 = { ...DEFAULTS };
     const settings = { ...DEFAULTS2 };
     let glossaryMatcher = null;
@@ -3373,7 +3402,7 @@
       }
     }
     recheckAccount();
-    const ACCOUNT_HOSTS = ["voxylio.lndev.me", "localhost", "127.0.0.1"];
+    const ACCOUNT_HOSTS = ["voxylio.lndev.me"];
     if (ACCOUNT_HOSTS.includes(location.hostname) && window === window.top) {
       window.addEventListener("message", (event) => {
         if (event.source !== window || event.origin !== location.origin) return;
@@ -3837,6 +3866,9 @@
     function resetPageFeed() {
       domLastText = "";
       journalSession = null;
+      providerDetectedSource = "";
+      providerDetectCandidate = "";
+      providerDetectVotes = 0;
     }
     function collectVideos() {
       const out = /* @__PURE__ */ new Set();
@@ -4057,7 +4089,7 @@
         if (!el || !el.src) return;
         ctl.staticLoaded = true;
         try {
-          const res = await fetch(el.src, { credentials: "include" });
+          const res = await fetch(el.src, { credentials: "same-origin" });
           if (!res.ok) throw new Error("HTTP " + res.status);
           const cues = parseVTT(await res.text());
           for (const c of cues) addCue(c.start, c.end, c.text);
@@ -4632,14 +4664,20 @@
         };
         a.onended = finish;
         a.onerror = () => {
+          cloudVoiceDownUntil = Date.now() + 6e4;
           if (ctl.cloudAudio === a) ctl.cloudAudio = null;
-          if (ctl.currentUtterance === token) ctl.currentUtterance = null;
+          if (ctl.currentUtterance === token) {
+            ctl.currentUtterance = null;
+            speakLocal(text, cueDur, id, extras);
+            return;
+          }
           drainQueue();
         };
         try {
           await a.play();
         } catch (e) {
-          cloudVoiceDownUntil = Date.now() + 6e4;
+          if (!(e && e.name === "AbortError"))
+            cloudVoiceDownUntil = Date.now() + 6e4;
           if (ctl.cloudAudio === a) ctl.cloudAudio = null;
           if (ctl.currentUtterance === token) {
             ctl.currentUtterance = null;
@@ -4653,7 +4691,10 @@
           if (!ctl.voicesGraceUntil)
             ctl.voicesGraceUntil = performance.now() + 1500;
           if (performance.now() < ctl.voicesGraceUntil) {
-            if (id) ctl.spokenIds.delete(id);
+            if (id) {
+              ctl.spokenIds.delete(id);
+              ctl.scheduledIds.add(id);
+            }
             ctl.queue.unshift({
               text,
               dur: cueDur,
@@ -4738,6 +4779,10 @@
         if (!q) return;
         if (!ctl.autoPaused && q.start > t + 0.25) return;
         ctl.queue.shift();
+        if (q.id && ctl.spokenIds.has(q.id)) {
+          ctl.scheduledIds.delete(q.id);
+          return drainQueue();
+        }
         const late = t - q.start > 0.8;
         const dur = late ? Math.max(1.2, Math.min(q.dur || 1.2, q.end - t)) : q.dur || Math.max(0.6, q.end - t);
         speak(q.text, dur, q.id, q);
@@ -4897,6 +4942,7 @@
           const engineIdle = !speechSynthesis.speaking && !speechSynthesis.pending;
           if (engineIdle && age > 1500 || age > 45e3) {
             if (age > 45e3) {
+              u._vxCancelled = true;
               try {
                 speechSynthesis.cancel();
               } catch (e) {
@@ -5212,9 +5258,11 @@
         ctl.inFlight.clear();
         ctl.lastDomCue = null;
         ctl.detectedSource = null;
+        ctl.detectTargetVotes = 0;
         ctl.trackLang = "";
         ctl.staticLoaded = false;
         ctl.ytStatic = null;
+        ctl.ytDubbedDefault = false;
         ctl.trackRetryAt = 0;
         ctl.trackRetries = 0;
         ctl.lastTime = -1;
@@ -5253,6 +5301,9 @@
         }
       };
       ctl.harvest = () => {
+        const mk = location.href.split("#")[0] + "|" + (video.currentSrc || "");
+        if (ctl.mediaKey && ctl.mediaKey !== mk) resetForNewMedia();
+        ctl.mediaKey = mk;
         harvestTextTracks();
         harvestTrackElements();
         rebuildGroups();
@@ -5864,15 +5915,20 @@
     }
     let scanDirty = true;
     let lastFullScan = 0;
+    let scanObserver = null;
     try {
-      new MutationObserver((muts) => {
+      scanObserver = new MutationObserver((muts) => {
         for (const m of muts) {
           if (m.addedNodes && m.addedNodes.length) {
             scanDirty = true;
             break;
           }
         }
-      }).observe(document.documentElement, { childList: true, subtree: true });
+      });
+      scanObserver.observe(document.documentElement, {
+        childList: true,
+        subtree: true
+      });
     } catch (e) {
     }
     function scheduledScan() {
@@ -5897,13 +5953,29 @@
       destroyOverlay();
       clearInterval(scanTimer);
       document.removeEventListener("visibilitychange", onVisibility);
+      if (scanObserver) {
+        try {
+          scanObserver.disconnect();
+        } catch (e) {
+        }
+        scanObserver = null;
+      }
+      if (domCapObserver) {
+        try {
+          domCapObserver.disconnect();
+        } catch (e) {
+        }
+        domCapObserver = null;
+      }
       window.__voxylioInjected = false;
+      window.__voxylioHeartbeat = 0;
     }
     function guardedScheduledScan() {
       if (!isAlive()) {
         teardownAll();
         return;
       }
+      window.__voxylioHeartbeat = Date.now();
       scheduledScan();
     }
     function onVisibility() {
@@ -5926,6 +5998,7 @@
         for (const c of controllers.values()) {
           c.staticLoaded = false;
           c.trackRetryAt = 0;
+          c.trackRetries = 0;
           c.lastCueCount = -1;
           if (c.audioState === "failed") c.audioState = "idle";
           c.audioStarts = 0;
@@ -5968,18 +6041,20 @@
             });
           }
         }
-        const targetVoices = voices.filter(
-          (v) => (v.lang || "").toLowerCase().startsWith(settings.targetLang)
-        );
-        const hasSubTracks = tracks.some(
+        const targetVoices = voicesForTarget();
+        const pcs = primaryVideo && controllers.get(primaryVideo);
+        const readyCues = pcs ? pcs.cues.length : nCues;
+        const primarySubTracks = pcs ? Array.from(pcs.video.textTracks || []).some(
           (t) => t.kind === "subtitles" || t.kind === "captions"
-        );
+        ) : tracks.some((t) => t.kind === "subtitles" || t.kind === "captions");
+        const hasSubTracks = primarySubTracks;
         let state = "no-video";
         if (siteDisabled()) state = "site-disabled";
         else if (accountLinked && !sitePlanAllowed()) state = "pro-site";
         else if (controllers.size > 0) {
-          if (nCues > 0) {
-            if (targetVoices.length === 0) state = "no-voice";
+          if (readyCues > 0) {
+            if (targetVoices.length === 0 && !cloudVoiceActive())
+              state = "no-voice";
             else if (translationMode === "none" && lastTranslateError)
               state = settings.cloudFallback ? "translate-error" : "local-unavailable";
             else state = "ready";
@@ -6001,7 +6076,6 @@
             }
           }
         }
-        const pcs = primaryVideo && controllers.get(primaryVideo);
         return {
           version: manifestVersion(),
           page: location.hostname,

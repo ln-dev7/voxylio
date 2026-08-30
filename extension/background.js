@@ -238,13 +238,20 @@
       audioApi({ op: "usage", seconds: msg.seconds }).then(sendResponse).catch((e) => sendResponse({ ok: false, error: String(e && e.message) }));
       return true;
     }
-    if (msg && msg.type === "voxylio:link-relay" && typeof msg.token === "string" && msg.token.startsWith("vxt_")) {
+    const relayFromSite = (() => {
+      try {
+        return !!_sender && typeof _sender.url === "string" && new URL(_sender.url).origin === SITE_ORIGIN;
+      } catch (e) {
+        return false;
+      }
+    })();
+    if (msg && msg.type === "voxylio:link-relay" && relayFromSite && typeof msg.token === "string" && msg.token.startsWith("vxt_")) {
       chrome.storage.local.set({ accountToken: msg.token }, () => {
         refreshEntitlements(true).then((ent) => sendResponse({ ok: true, plan: ent.plan })).catch(() => sendResponse({ ok: true, plan: "free" }));
       });
       return true;
     }
-    if (msg && msg.type === "voxylio:unlink-relay") {
+    if (msg && msg.type === "voxylio:unlink-relay" && relayFromSite) {
       chrome.storage.local.remove(
         ["accountToken", "entitlements"],
         () => sendResponse({ ok: true })
@@ -258,11 +265,18 @@
   var GRACE_MS = 72 * 60 * 60 * 1e3;
   function clearProFlags() {
     try {
-      chrome.storage.sync.get({ proTranslation: false, proVoice: false }, (v) => {
-        if (v && (v.proTranslation || v.proVoice)) {
-          chrome.storage.sync.set({ proTranslation: false, proVoice: false });
+      chrome.storage.sync.get(
+        { proTranslation: false, proVoice: false, proAudio: false },
+        (v) => {
+          if (v && (v.proTranslation || v.proVoice || v.proAudio)) {
+            chrome.storage.sync.set({
+              proTranslation: false,
+              proVoice: false,
+              proAudio: false
+            });
+          }
         }
-      });
+      );
     } catch (e) {
     }
   }
@@ -475,20 +489,21 @@
     }
     return { audio: btoa(bin), mime };
   }
-  chrome.runtime.onMessageExternal.addListener((msg, sender, sendResponse) => {
-    if (!sender.url || !sender.url.startsWith(SITE_ORIGIN + "/")) return;
-    if (msg && msg.type === "voxylio:link" && typeof msg.token === "string" && msg.token.startsWith("vxt_")) {
-      chrome.storage.local.set({ accountToken: msg.token }, () => {
-        refreshEntitlements(true).then((ent) => sendResponse({ ok: true, plan: ent.plan })).catch(() => sendResponse({ ok: true, plan: "free" }));
-      });
-      return true;
-    }
-    if (msg && msg.type === "voxylio:unlink") {
-      chrome.storage.local.remove(
-        ["accountToken", "entitlements"],
-        () => sendResponse({ ok: true })
-      );
-      return true;
-    }
-  });
+  if (chrome.runtime.onMessageExternal)
+    chrome.runtime.onMessageExternal.addListener((msg, sender, sendResponse) => {
+      if (!sender.url || !sender.url.startsWith(SITE_ORIGIN + "/")) return;
+      if (msg && msg.type === "voxylio:link" && typeof msg.token === "string" && msg.token.startsWith("vxt_")) {
+        chrome.storage.local.set({ accountToken: msg.token }, () => {
+          refreshEntitlements(true).then((ent) => sendResponse({ ok: true, plan: ent.plan })).catch(() => sendResponse({ ok: true, plan: "free" }));
+        });
+        return true;
+      }
+      if (msg && msg.type === "voxylio:unlink") {
+        chrome.storage.local.remove(
+          ["accountToken", "entitlements"],
+          () => sendResponse({ ok: true })
+        );
+        return true;
+      }
+    });
 })();

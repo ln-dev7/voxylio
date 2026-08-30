@@ -254,9 +254,24 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   // Relayed by the content script running on the Voxylio site (the page
   // itself cannot know the ID of a load-unpacked copy). Internal messages
   // only ever come from our own extension contexts.
+  // Token-mutating relays: defense in depth — only honor them when the
+  // relaying content script actually runs on the account site (any
+  // injected frame could otherwise set/clear the session).
+  const relayFromSite = (() => {
+    try {
+      return (
+        !!_sender &&
+        typeof _sender.url === "string" &&
+        new URL(_sender.url).origin === SITE_ORIGIN
+      );
+    } catch (e) {
+      return false;
+    }
+  })();
   if (
     msg &&
     msg.type === "voxylio:link-relay" &&
+    relayFromSite &&
     typeof msg.token === "string" &&
     msg.token.startsWith("vxt_")
   ) {
@@ -267,7 +282,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     });
     return true;
   }
-  if (msg && msg.type === "voxylio:unlink-relay") {
+  if (msg && msg.type === "voxylio:unlink-relay" && relayFromSite) {
     chrome.storage.local.remove(["accountToken", "entitlements"], () =>
       sendResponse({ ok: true }),
     );
@@ -290,11 +305,21 @@ const GRACE_MS = 72 * 60 * 60 * 1000;
 
 function clearProFlags() {
   try {
-    chrome.storage.sync.get({ proTranslation: false, proVoice: false }, (v) => {
-      if (v && (v.proTranslation || v.proVoice)) {
-        chrome.storage.sync.set({ proTranslation: false, proVoice: false });
-      }
-    });
+    // ALL Pro flags, proAudio included: a lapsed plan with proAudio left
+    // on kept every subtitle-less video hammering /api/pro/audio into
+    // 403/cooldown cycles — the exact loop this reset exists to prevent.
+    chrome.storage.sync.get(
+      { proTranslation: false, proVoice: false, proAudio: false },
+      (v) => {
+        if (v && (v.proTranslation || v.proVoice || v.proAudio)) {
+          chrome.storage.sync.set({
+            proTranslation: false,
+            proVoice: false,
+            proAudio: false,
+          });
+        }
+      },
+    );
   } catch (e) {
     /* storage unavailable: harmless */
   }
@@ -555,6 +580,10 @@ async function speakPro(msg) {
   return { audio: btoa(bin), mime };
 }
 
+// Firefox/Safari WebExtension runtimes may not expose onMessageExternal
+// (the content-script relay covers those browsers): guard, or this last
+// top-level statement throws on every worker start.
+if (chrome.runtime.onMessageExternal)
 chrome.runtime.onMessageExternal.addListener((msg, sender, sendResponse) => {
   if (!sender.url || !sender.url.startsWith(SITE_ORIGIN + "/")) return;
   if (

@@ -66,8 +66,16 @@ import { makeT, resolveUiLang } from "./i18n.js";
 
 
 (() => {
-  if (window.__voxylioInjected) return;
+  // Liveness-aware guard: after an extension update the ORPHANED script
+  // still holds the flag for up to ~3 s (until its next isAlive-gated
+  // timer tears it down). A plain boolean made a popup-triggered fresh
+  // injection in that window exit permanently — then the orphan cleared
+  // the flag and NOBODY was left. The heartbeat lets the newcomer take
+  // over when the flagged owner has stopped beating.
+  const hb = window.__voxylioHeartbeat || 0;
+  if (window.__voxylioInjected && Date.now() - hb < 8000) return;
   window.__voxylioInjected = true;
+  window.__voxylioHeartbeat = Date.now();
 
   // ---------------------------------------------------------------- settings
 
@@ -189,7 +197,11 @@ import { makeT, resolveUiLang } from "./i18n.js";
   // background. Unlike externally_connectable messaging this does not
   // depend on the extension ID the site was built with, so it works for
   // ANY installed copy — store build and load-unpacked alike.
-  const ACCOUNT_HOSTS = ["voxylio.lndev.me", "localhost", "127.0.0.1"];
+  // Production build trusts ONLY the real site: with localhost shipped,
+  // any local dev server a user visits could postMessage a vxt_ token and
+  // silently replace (or clear) their Voxylio session. Local testing:
+  // add "localhost" back in a dev build.
+  const ACCOUNT_HOSTS = ["voxylio.lndev.me"];
   if (ACCOUNT_HOSTS.includes(location.hostname) && window === window.top) {
     window.addEventListener("message", (event) => {
       if (event.source !== window || event.origin !== location.origin) return;
@@ -833,6 +845,13 @@ import { makeT, resolveUiLang } from "./i18n.js";
   function resetPageFeed() {
     domLastText = "";
     journalSession = null;
+    // The provider-detection latch is per-MEDIA knowledge, not per-page:
+    // left standing across an SPA navigation it kept effectiveSource()
+    // pinned to the previous video's language and silently muted dubbing
+    // on the next one while the popup still said "ready".
+    providerDetectedSource = "";
+    providerDetectCandidate = "";
+    providerDetectVotes = 0;
   }
 
 
@@ -1095,7 +1114,11 @@ import { makeT, resolveUiLang } from "./i18n.js";
       if (!el || !el.src) return;
       ctl.staticLoaded = true;
       try {
-        const res = await fetch(el.src, { credentials: "include" });
+        // same-origin, not include: a page-controlled <track src> must
+        // not make the extension fire credentialed requests at arbitrary
+        // cross-origin URLs (confused-deputy). Same-origin tracks keep
+        // their cookies; public subtitle CDNs need none.
+        const res = await fetch(el.src, { credentials: "same-origin" });
         if (!res.ok) throw new Error("HTTP " + res.status);
         // The parser accepts both WebVTT and SRT (comma decimals,
         // numeric counters) — whatever the file actually contains.
@@ -1813,16 +1836,29 @@ import { makeT, resolveUiLang } from "./i18n.js";
       };
       a.onended = finish;
       a.onerror = () => {
+        // Mid-playback decode/network failure: hold the local voice for
+        // a while (invariant: fall back per PASSAGE, not per line) and
+        // re-speak this sentence locally when the slot is still ours —
+        // the half-lost line used to just vanish.
+        cloudVoiceDownUntil = Date.now() + 60_000;
         if (ctl.cloudAudio === a) ctl.cloudAudio = null;
-        if (ctl.currentUtterance === token) ctl.currentUtterance = null;
+        if (ctl.currentUtterance === token) {
+          ctl.currentUtterance = null;
+          speakLocal(text, cueDur, id, extras);
+          return;
+        }
         drainQueue();
       };
       try {
         await a.play();
       } catch (e) {
         // Autoplay refusal or decode error: same sentence, local voice —
-        // and hold local afterwards (voice consistency).
-        cloudVoiceDownUntil = Date.now() + 60_000;
+        // and hold local afterwards (voice consistency). EXCEPT
+        // AbortError: that is our own hardStop pausing the element (user
+        // pause) — 60 s of local voice for a non-failure swapped voices
+        // needlessly.
+        if (!(e && e.name === "AbortError"))
+          cloudVoiceDownUntil = Date.now() + 60_000;
         if (ctl.cloudAudio === a) ctl.cloudAudio = null;
         if (ctl.currentUtterance === token) {
           ctl.currentUtterance = null;
@@ -1840,7 +1876,14 @@ import { makeT, resolveUiLang } from "./i18n.js";
         if (!ctl.voicesGraceUntil)
           ctl.voicesGraceUntil = performance.now() + 1500;
         if (performance.now() < ctl.voicesGraceUntil) {
-          if (id) ctl.spokenIds.delete(id);
+          if (id) {
+            ctl.spokenIds.delete(id);
+            // Keep the group marked as scheduled while it waits in the
+            // queue: unspoken AND unscheduled, the 150 ms scheduler
+            // re-entered it every tick and stacked duplicate copies —
+            // the first line was spoken 2-3 times once voices arrived.
+            ctl.scheduledIds.add(id);
+          }
           ctl.queue.unshift({
             text,
             dur: cueDur,
@@ -1951,6 +1994,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
       // calls drainQueue every 150 ms, so gated lines start on time.)
       if (!ctl.autoPaused && q.start > t + 0.25) return;
       ctl.queue.shift();
+      // Defensive exactly-once: a queued copy of a group that was voiced
+      // (or definitively skipped) through another path must never play.
+      if (q.id && ctl.spokenIds.has(q.id)) {
+        ctl.scheduledIds.delete(q.id);
+        return drainQueue();
+      }
       // A line that WAITED in the queue paces against the time actually
       // remaining (with a small floor): it must compress or it overruns
       // the next line. On-time lines keep their full window.
@@ -2192,6 +2241,11 @@ import { makeT, resolveUiLang } from "./i18n.js";
           // OVERLAPPED two utterances. The 45 s ceiling frees a truly
           // hung utterance (network voice died mid-line).
           if (age > 45000) {
+            // Mark BEFORE cancel: the onend Chrome fires for a cancelled
+            // utterance must not book ~45 s of phantom speech into the
+            // usage stats nor drag the localWps calibration to the floor
+            // (invariant: cancelled utterances count nothing).
+            u._vxCancelled = true;
             try {
               speechSynthesis.cancel();
             } catch (e) {}
@@ -2610,9 +2664,16 @@ import { makeT, resolveUiLang } from "./i18n.js";
       ctl.inFlight.clear();
       ctl.lastDomCue = null;
       ctl.detectedSource = null;
+      // Without this, two votes earned on the PREVIOUS video let a single
+      // stray target-language reading mute the new one instantly —
+      // defeating the very protection the counter implements.
+      ctl.detectTargetVotes = 0;
       ctl.trackLang = "";
       ctl.staticLoaded = false;
       ctl.ytStatic = null;
+      // The "YouTube already dubs this video" warning belongs to the old
+      // video; cleared here, re-learned when the new page HTML is read.
+      ctl.ytDubbedDefault = false;
       ctl.trackRetryAt = 0;
       ctl.trackRetries = 0;
       ctl.lastTime = -1;
@@ -2668,6 +2729,13 @@ import { makeT, resolveUiLang } from "./i18n.js";
     // Passive harvesting: the subtitle track is read even while dubbing is
     // off, so the popup always shows the real state.
     ctl.harvest = () => {
+      // Passive identity check: cues harvested BEFORE the first
+      // activation must not survive an SPA navigation — episode 1's
+      // lines once played over episode 2 when dubbing was only enabled
+      // after the jump (tick() maintains mediaKey only while active).
+      const mk = location.href.split("#")[0] + "|" + (video.currentSrc || "");
+      if (ctl.mediaKey && ctl.mediaKey !== mk) resetForNewMedia();
+      ctl.mediaKey = mk;
       harvestTextTracks();
       harvestTrackElements();
       rebuildGroups();
@@ -3353,15 +3421,20 @@ import { makeT, resolveUiLang } from "./i18n.js";
   // inside existing shadow roots (invisible to the observer).
   let scanDirty = true;
   let lastFullScan = 0;
+  let scanObserver = null;
   try {
-    new MutationObserver((muts) => {
+    scanObserver = new MutationObserver((muts) => {
       for (const m of muts) {
         if (m.addedNodes && m.addedNodes.length) {
           scanDirty = true;
           break;
         }
       }
-    }).observe(document.documentElement, { childList: true, subtree: true });
+    });
+    scanObserver.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
   } catch (e) {
     /* observer unavailable: the slow fallback still covers us */
   }
@@ -3393,7 +3466,22 @@ import { makeT, resolveUiLang } from "./i18n.js";
     destroyOverlay();
     clearInterval(scanTimer);
     document.removeEventListener("visibilitychange", onVisibility);
+    // Both page-level observers must stop, or the orphan keeps running
+    // its callbacks on every DOM mutation for the life of the page.
+    if (scanObserver) {
+      try {
+        scanObserver.disconnect();
+      } catch (e) {}
+      scanObserver = null;
+    }
+    if (domCapObserver) {
+      try {
+        domCapObserver.disconnect();
+      } catch (e) {}
+      domCapObserver = null;
+    }
     window.__voxylioInjected = false;
+    window.__voxylioHeartbeat = 0;
   }
 
   function guardedScheduledScan() {
@@ -3401,6 +3489,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       teardownAll();
       return;
     }
+    window.__voxylioHeartbeat = Date.now(); // injection guard liveness
     scheduledScan();
   }
 
@@ -3430,6 +3519,9 @@ import { makeT, resolveUiLang } from "./i18n.js";
       for (const c of controllers.values()) {
         c.staticLoaded = false;
         c.trackRetryAt = 0;
+        // Also the counter, or (despite the comment above the harvest
+        // caps) a Retry only ever bought ONE further static attempt.
+        c.trackRetries = 0;
         c.lastCueCount = -1;
         // Premium Audio: a capture/socket failure gets a fresh chance;
         // an exhausted quota does not (it is a monthly fact).
@@ -3477,19 +3569,32 @@ import { makeT, resolveUiLang } from "./i18n.js";
           });
         }
       }
-      const targetVoices = voices.filter((v) =>
-        (v.lang || "").toLowerCase().startsWith(settings.targetLang)
-      );
-      const hasSubTracks = tracks.some(
-        (t) => t.kind === "subtitles" || t.kind === "captions"
-      );
+      // voicesForTarget honors the prefix aliases (no→nb, he→iw…): the
+      // bare startsWith filter reported "no voice installed" — with an
+      // empty voice list — while dubbing was audibly working.
+      const targetVoices = voicesForTarget();
+      // Readiness must reflect the video actually being dubbed: a muted
+      // preview/ad exposing captions once made the popup say "ready"
+      // while the primary player had nothing. Aggregates stay as
+      // diagnostics below.
+      const pcs = primaryVideo && controllers.get(primaryVideo);
+      const readyCues = pcs ? pcs.cues.length : nCues;
+      const primarySubTracks = pcs
+        ? Array.from(pcs.video.textTracks || []).some(
+            (t) => t.kind === "subtitles" || t.kind === "captions"
+          )
+        : tracks.some((t) => t.kind === "subtitles" || t.kind === "captions");
+      const hasSubTracks = primarySubTracks;
       // Single explicit state for the popup
       let state = "no-video";
       if (siteDisabled()) state = "site-disabled";
       else if (accountLinked && !sitePlanAllowed()) state = "pro-site";
       else if (controllers.size > 0) {
-        if (nCues > 0) {
-          if (targetVoices.length === 0) state = "no-voice";
+        if (readyCues > 0) {
+          // The cloud voice satisfies the requirement too (a Pro user on
+          // an Aura-2 language may have zero local voices installed).
+          if (targetVoices.length === 0 && !cloudVoiceActive())
+            state = "no-voice";
           else if (translationMode === "none" && lastTranslateError)
             state = settings.cloudFallback
               ? "translate-error"
@@ -3516,7 +3621,6 @@ import { makeT, resolveUiLang } from "./i18n.js";
           }
         }
       }
-      const pcs = primaryVideo && controllers.get(primaryVideo);
       return {
         version: manifestVersion(),
         page: location.hostname,

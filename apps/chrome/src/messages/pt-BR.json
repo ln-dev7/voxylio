@@ -179,5 +179,6 @@
   "updFound": "Atualização encontrada — reiniciando…",
   "updNone": "Atualizado ✓",
   "updThrottled": "Tente de novo em alguns minutos",
-  "statusYtDubbed": "O YouTube já dubla este vídeo no seu idioma (faixa de áudio automática) — você ouve duas vozes. No player: ⚙️ → Faixa de áudio → escolha a versão original e recarregue a página."
+  "statusYtDubbed": "O YouTube já dubla este vídeo no seu idioma (faixa de áudio automática) — você ouve duas vozes. No player: ⚙️ → Faixa de áudio → escolha a versão original e recarregue a página.",
+  "toggleDub": "Ativar a dublagem"
 }

@@ -540,7 +540,12 @@ function renderAcctQuota(ent) {
   // used — green, amber past 80 %, red when exhausted.
   for (const [valId, fillId, remaining, total, unit] of rows) {
     const tot = typeof total === "number" ? total : 0;
-    if (tot <= 0) continue;
+    if (tot <= 0) {
+      // Clear instead of skipping (same stale-meter fix as the popup).
+      $(valId).textContent = "";
+      $(fillId).style.width = "0%";
+      continue;
+    }
     const rem = Math.max(0, Math.min(tot, typeof remaining === "number" ? remaining : 0));
     const used = Math.max(0, tot - rem);
     const pct = tot > 0 ? Math.round((used / tot) * 100) : 0;
@@ -607,6 +612,9 @@ async function renderAccount() {
     }
   } catch (e) {
     plan.textContent = t("accountNotLinked") || "Non connecté";
+    // Clear the email too: "not linked" next to the previous session's
+    // address was contradictory UI.
+    $("acctEmail").textContent = "";
     signout.hidden = true;
     cta.textContent = t("signIn") || "Se connecter";
     $("acctQuota").hidden = true;
@@ -731,7 +739,27 @@ async function init() {
         if (status === "update_available") {
           upd.textContent =
             t("updFound") || "Mise à jour trouvée — redémarrage…";
-          setTimeout(() => chrome.runtime.reload(), 1200);
+          // requestUpdateCheck only reports availability — the CRX may
+          // still be downloading. Reload when onUpdateAvailable confirms
+          // it is staged; a fixed 1.2 s reload used to restart on the
+          // OLD version on slow connections. Fallback keeps the button
+          // usable if the event never lands this session.
+          let reloaded = false;
+          try {
+            chrome.runtime.onUpdateAvailable.addListener(() => {
+              reloaded = true;
+              chrome.runtime.reload();
+            });
+          } catch (e) {}
+          setTimeout(() => {
+            if (reloaded) return;
+            upd.textContent = t("updNone") || "À jour ✓";
+            setTimeout(() => {
+              upd.textContent =
+                t("btnCheckUpdate") || "Vérifier les mises à jour";
+              updBusy = false;
+            }, 3000);
+          }, 15000);
           return;
         }
         upd.textContent =

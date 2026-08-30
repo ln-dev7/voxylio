@@ -179,5 +179,6 @@
   "updFound": "Update found — restarting…",
   "updNone": "Up to date ✓",
   "updThrottled": "Try again in a few minutes",
-  "statusYtDubbed": "YouTube is already dubbing this video into your language (automatic audio track) — you are hearing two voices. In the player: ⚙️ → Audio track → pick the original version, then reload the page."
+  "statusYtDubbed": "YouTube is already dubbing this video into your language (automatic audio track) — you are hearing two voices. In the player: ⚙️ → Audio track → pick the original version, then reload the page.",
+  "toggleDub": "Enable dubbing"
 }

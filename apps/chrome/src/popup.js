@@ -279,7 +279,12 @@ async function refreshStatus() {
   try {
     const resp = await chrome.tabs.sendMessage(tabId, { type: "getStatus" });
     lastResp = resp;
-    status.replaceChildren(statusFragment(resp));
+    // aria-live="polite" + a rebuild every 1.5 s = the screen reader
+    // re-announcing an unchanged status forever. Only swap the nodes
+    // when the rendered text actually changed.
+    const frag = statusFragment(resp);
+    const nextText = frag.textContent;
+    if (status.textContent !== nextText) status.replaceChildren(frag);
     fillVoices(resp);
   } catch (e) {
     // First failure: the content script probably is not there yet —
@@ -360,7 +365,13 @@ function renderQuota(ent) {
   // the month is used — green, amber past 80 %, red when exhausted.
   for (const [valId, fillId, barId, remaining, total, unit] of rows) {
     const tot = typeof total === "number" ? total : 0;
-    if (tot <= 0) continue;
+    if (tot <= 0) {
+      // Clear instead of skipping: a meter whose total dropped to 0 kept
+      // showing the previous refresh's numbers.
+      $(valId).textContent = "";
+      $(fillId).style.width = "0%";
+      continue;
+    }
     const rem = Math.max(0, Math.min(tot, typeof remaining === "number" ? remaining : 0));
     const used = Math.max(0, tot - rem);
     const pct = tot > 0 ? Math.round((used / tot) * 100) : 0;

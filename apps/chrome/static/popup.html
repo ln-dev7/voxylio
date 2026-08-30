@@ -257,6 +257,7 @@
     /* explicit display beats the [hidden] UA rule — restore it, or the
        Pro-only rows show up on free accounts */
     .overlay-row[hidden] { display: none; }
+    .quota-row[hidden] { display: none; }
     .switch-sm { width: 38px; height: 22px; }
     .switch-sm .slider-toggle::before { width: 16px; height: 16px; }
     .switch-sm input:checked + .slider-toggle::before { transform: translateX(16px); }
@@ -544,7 +545,7 @@
         <path d="M8 1.9v1.8M8 12.3v1.8M1.9 8h1.8M12.3 8h1.8M3.7 3.7L5 5M11 11l1.3 1.3M12.3 3.7L11 5M5 11l-1.3 1.3"/>
       </svg>
     </button>
-    <label class="switch" aria-label="Activer le doublage">
+    <label class="switch" data-i18n-title="toggleDub" title="Activer le doublage" aria-label="Activer le doublage">
       <input type="checkbox" id="enabled" />
       <span class="slider-toggle" aria-hidden="true"></span>
     </label>
@@ -568,7 +569,7 @@
     <span data-i18n="launchCta">Lancer le doublage sur cette page</span>
   </button>
 
-  <div class="status" id="status" aria-live="polite">Recherche d’une vidéo…</div>
+  <div class="status" id="status" aria-live="polite" data-i18n="statusSearching">Recherche d’une vidéo…</div>
 
   <div class="lang-grid">
     <div class="field">
@@ -611,7 +612,7 @@
 
   <div class="field overlay-row">
     <label class="field-label" for="autoPause" style="margin: 0" data-i18n-title="titleAutoPause" title="Met la vidéo en pause quelques secondes quand la voix prend trop de retard, au lieu de sauter des phrases" data-i18n="autoPauseLabel">Pause auto si la voix est en retard</label>
-    <label class="switch switch-sm" aria-label="Mettre la vidéo en pause quand le doublage est en retard">
+    <label class="switch switch-sm">
       <input type="checkbox" id="autoPause" />
       <span class="slider-toggle" aria-hidden="true"></span>
     </label>
@@ -619,7 +620,7 @@
 
   <div class="field overlay-row" style="margin-top: 10px">
     <label class="field-label" for="localOnly" style="margin: 0" data-i18n-title="titleLocalOnly" title="N’utilise que la traduction locale de Chrome : aucun texte ne quitte votre appareil. Si elle est indisponible, le doublage attend au lieu de passer en ligne." data-i18n="localOnlyLabel">Mode strictement local</label>
-    <label class="switch switch-sm" aria-label="Utiliser uniquement la traduction locale">
+    <label class="switch switch-sm">
       <input type="checkbox" id="localOnly" />
       <span class="slider-toggle" aria-hidden="true"></span>
     </label>
@@ -627,7 +628,7 @@
 
   <div class="field overlay-row" style="margin-top: 10px" id="proTransRow" hidden>
     <label class="field-label" for="proTrans" style="margin: 0; color: var(--accent)" data-i18n-title="titleProTrans" title="Traduit avec le contexte des phrases voisines via le cloud Voxylio (quota mensuel). En cas de quota épuisé, le doublage continue en local. Fonction en bêta : la qualité peut encore varier selon les vidéos." data-i18n="proTransLabel">Traduction contextuelle Pro (bêta)</label>
-    <label class="switch switch-sm" aria-label="Traduction contextuelle Pro">
+    <label class="switch switch-sm">
       <input type="checkbox" id="proTrans" />
       <span class="slider-toggle" aria-hidden="true"></span>
     </label>
@@ -635,7 +636,7 @@
 
   <div class="field overlay-row" style="margin-top: 10px" id="proVoiceRow" hidden>
     <label class="field-label" for="proVoice" style="margin: 0; color: var(--accent)" data-i18n-title="titleProVoice" title="Voix neurale Aura-2 (7 langues : EN ES DE FR NL IT JA). Pour les autres langues ou si le quota est épuisé, la voix locale prend le relais." data-i18n="proVoiceLabel">Voix neurale Pro</label>
-    <label class="switch switch-sm" aria-label="Voix neurale Pro">
+    <label class="switch switch-sm">
       <input type="checkbox" id="proVoice" />
       <span class="slider-toggle" aria-hidden="true"></span>
     </label>
@@ -643,7 +644,7 @@
 
   <div class="field overlay-row" style="margin-top: 10px" id="proAudioRow" hidden>
     <label class="field-label" for="proAudio" style="margin: 0; color: var(--accent)" data-i18n-title="titleProAudio" title="Vidéo sans aucun sous-titre ? L'audio est transcrit en direct (60 min/mois) puis doublé normalement. Sans repli local : minutes épuisées, la fonction attend le prochain cycle." data-i18n="proAudioLabel">Doublage sans sous-titres Pro (bêta)</label>
-    <label class="switch switch-sm" aria-label="Doublage sans sous-titres Pro">
+    <label class="switch switch-sm">
       <input type="checkbox" id="proAudio" />
       <span class="slider-toggle" aria-hidden="true"></span>
     </label>
@@ -651,7 +652,7 @@
 
   <div class="field overlay-row" style="margin-top: 10px">
     <label class="field-label" for="subtitles" style="margin: 0" data-i18n="subtitlesLabel">Sous-titres traduits à l’écran</label>
-    <label class="switch switch-sm" aria-label="Afficher les sous-titres traduits sur la vidéo">
+    <label class="switch switch-sm">
       <input type="checkbox" id="subtitles" />
       <span class="slider-toggle" aria-hidden="true"></span>
     </label>
@@ -659,7 +660,7 @@
 
   <div class="field overlay-row" style="margin-top: 10px">
     <label class="field-label" for="overlay" style="margin: 0" data-i18n="overlayLabel">Menu flottant sur la page</label>
-    <label class="switch switch-sm" aria-label="Afficher le menu flottant sur la page">
+    <label class="switch switch-sm">
       <input type="checkbox" id="overlay" />
       <span class="slider-toggle" aria-hidden="true"></span>
     </label>
