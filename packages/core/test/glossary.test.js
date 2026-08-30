@@ -34,3 +34,24 @@ test("multi-word terms are protected as one unit", () => {
     ["code review", "pull request"]
   );
 });
+
+// --- 2026-08-30 inspection regressions ---
+
+test("builtin terms respect Unicode word boundaries (no mid-word match)", () => {
+  // With ASCII \b, "commité" matched its "commit" stem before the é.
+  const { protectedText } = protectTerms("j'ai commité le projet hier");
+  assert.equal(protectedText, "j'ai commité le projet hier");
+  // Standalone terms still protect.
+  const p2 = protectTerms("open a commit now");
+  assert.match(p2.protectedText, /⟦\s*0\s*⟧/);
+});
+
+test("restoreTerms rejects duplicated/dropped placeholder indices", () => {
+  const { protectedText, found } = protectTerms("deploy the build now, then debug it.");
+  assert.equal(found.length, 3);
+  // Translator duplicated ⟦0⟧ and dropped ⟦1⟧: same COUNT, wrong set.
+  const mangled = protectedText
+    .replace(/⟦\s*1\s*⟧/, "⟦0⟧");
+  const r = restoreTerms(mangled, found);
+  assert.equal(r.ok, false);
+});

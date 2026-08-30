@@ -3,6 +3,7 @@
 // caption container and feeds what appears as synthetic cues — the rest
 // of the pipeline (roll-up merge, sentence grouping, stability clock)
 // is unchanged. Selectors are the long-stable ones for each player.
+import { estimateWords } from "./pacing.js";
 
 export const DOM_CAPTION_SITES = [
   {
@@ -129,6 +130,11 @@ export function domCaptionSiteFor(hostname) {
  * the next caption replaces it.
  */
 export function domCueEnd(start, text) {
-  const words = String(text || "").split(/\s+/).filter(Boolean).length;
+  // estimateWords, not a whitespace split: CJK/Thai captions have no
+  // spaces, so a whole Japanese sentence used to count as 1 "word" and
+  // get the 1.5 s floor — splitting sentences into separate groups and
+  // forcing max catch-up pacing on every line (pacing.js fixed this
+  // class of bug already; reuse its estimator).
+  const words = estimateWords(String(text || ""));
   return start + Math.min(7, Math.max(1.5, words / 2.5));
 }

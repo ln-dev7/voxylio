@@ -63,6 +63,17 @@ export function wordOverlap(a, b, minWords = 2) {
 export function mergeRollup(last, start, end, text) {
   if (!last) return null;
   if (start > last.end + 0.6) return null;
+  // A cue must not grow forever: an uninterrupted roll-up monologue would
+  // otherwise become one giant, permanently-draft group (never spoken as
+  // long as it keeps changing, then voiced as a monster utterance). Close
+  // it at a sentence boundary once well past the group cap, and refuse
+  // outright at a hard ceiling even mid-sentence.
+  if (
+    (last.text.length > GROUP_MAX_LEN * 3 && endsSentence(last.text)) ||
+    last.text.length > 2000
+  ) {
+    return null;
+  }
 
   // Prefix relation (classic roll-up)
   if (text.startsWith(last.text) || last.text.startsWith(text)) {
@@ -84,11 +95,29 @@ export function mergeRollup(last, start, end, text) {
     // Replace last's overlapping tail with the FULL incoming text: the
     // incoming version of the shared words carries the richest
     // punctuation ("…de codage." vs "…de codage").
+    // The overlap is counted in NORMALIZED words (apostrophes and
+    // ellipses split: "don't" = 2 words) but the cut walks \S+ tokens
+    // ("don't" = 1 token) — so consume tokens from the end until they
+    // account for `overlap` normalized words, instead of cutting
+    // `overlap` tokens (which deleted extra words: "I said don't stop" +
+    // "don't stop now" once lost "said").
     const re = /\S+/g;
     const starts = [];
+    const tokens = [];
     let m;
-    while ((m = re.exec(last.text)) !== null) starts.push(m.index);
-    const cutIdx = starts[starts.length - overlap] ?? 0;
+    while ((m = re.exec(last.text)) !== null) {
+      starts.push(m.index);
+      tokens.push(m[0]);
+    }
+    let cutIdx = 0;
+    let consumed = 0;
+    for (let i = tokens.length - 1; i >= 0; i--) {
+      consumed += normalizeWords(tokens[i]).length;
+      if (consumed >= overlap) {
+        cutIdx = starts[i];
+        break;
+      }
+    }
     const head = last.text.slice(0, cutIdx).trimEnd();
     const merged = head ? head + " " + text : text;
     return {

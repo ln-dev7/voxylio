@@ -37,7 +37,10 @@ export function isFreeSite(hostname) {
  */
 export function planGate({ plan, trialEndsAt, now, hostname }) {
   if (plan === "pro") return { allowed: true, reason: "pro" };
-  const t = typeof now === "number" ? now : Date.parse(now || "") || 0;
+  // Default to the real clock (like trialDaysLeft): defaulting to epoch 0
+  // made ANY parseable trialEndsAt — even one expired years ago — read as
+  // an active trial for callers that omit `now`.
+  const t = typeof now === "number" ? now : Date.parse(now || "") || Date.now();
   const end = trialEndsAt ? Date.parse(trialEndsAt) : NaN;
   if (Number.isFinite(end) && t < end) return { allowed: true, reason: "trial" };
   if (isFreeSite(hostname)) return { allowed: true, reason: "freeSite" };

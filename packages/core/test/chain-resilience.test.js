@@ -121,3 +121,23 @@ test("half-open probe: one line per probe window rides a cooling pair, success u
   clock += 100; // and the pair serves normally again, no probe gating
   assert.equal((await chain.translate("g", "en", "fr")).text, "ok");
 });
+
+test("cooldown start anchors the probe window (no immediate probe on a real clock)", async () => {
+  // With lastProbeAt unset, the first inCooldown check after cooling let
+  // the very next line probe immediately whenever now() is large (any
+  // real clock). The stamp in recordFailure closes that.
+  let clock = 500_000;
+  const dead = {
+    id: "gtx", kind: "cloud",
+    ready: async () => ({ translate: async () => { throw new Error("429"); } }),
+  };
+  const chain = createTranslatorChain([dead], {
+    cooldownMs: 60_000, failuresBeforeCooldown: 2, probeMs: 10_000, now: () => clock,
+  });
+  await assert.rejects(chain.translate("a", "en", "fr"));
+  await assert.rejects(chain.translate("b", "en", "fr")); // → cooldown at t=500000
+  clock += 1_000;
+  await assert.rejects(chain.translate("c", "en", "fr"), /cooling down/);
+  clock += 9_500; // 10.5 s after cooling: window elapsed, one probe rides
+  await assert.rejects(chain.translate("d", "en", "fr"), /429/);
+});

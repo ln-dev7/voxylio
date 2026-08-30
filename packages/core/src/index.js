@@ -52,6 +52,8 @@ export {
   READY_TIMEOUT_MS,
   ATTEMPT_TIMEOUT_MS,
   COOLDOWN_MS,
+  FAILURES_BEFORE_COOLDOWN,
+  PROBE_MS,
 } from "./translation.js";
 export { DOM_CAPTION_SITES, domCaptionSiteFor, domCueEnd } from "./sites.js";
 export {

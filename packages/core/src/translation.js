@@ -88,6 +88,11 @@ export function createTranslatorChain(providers, opts = {}) {
     if (s.failures >= failuresBeforeCooldown) {
       s.coolUntil = now() + cooldownMs;
       s.failures = 0;
+      // Anchor the half-open window: without this stamp the FIRST
+      // inCooldown check after cooling sees lastProbeAt 0 and lets the
+      // very next line probe the just-declared-dead provider (a third
+      // consecutive multi-second stall on a real clock).
+      s.lastProbeAt = now();
     }
     pairState.set(key, s);
   }
@@ -103,6 +108,7 @@ export function createTranslatorChain(providers, opts = {}) {
     if (s.readyMisses >= 2) {
       s.coolUntil = now() + cooldownMs;
       s.readyMisses = 0;
+      s.lastProbeAt = now(); // same half-open anchoring as recordFailure
     }
     pairState.set(key, s);
   }

@@ -107,3 +107,11 @@ test("voiceByLang validates as a bounded lang→name map", () => {
   assert.equal(settings.voiceName, "Amélie");
   assert.deepEqual(DEFAULTS.voiceByLang, {});
 });
+
+test("SRT times never emit a four-digit millisecond field", () => {
+  // 59.9996 s: rounding ms alone printed "00:00:59,1000" (4-digit ms).
+  const session = S("x", 1, [{ t: 59.9996, src: "e", dst: "E" }]);
+  const srt = toSRT(session);
+  assert.match(srt, /00:01:00,000 --> 00:01:04,000/);
+  assert.doesNotMatch(srt, /,\d{4}/);
+});

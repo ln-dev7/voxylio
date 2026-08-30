@@ -48,3 +48,28 @@ test("mergeRollup refuses unrelated or distant cues", () => {
   assert.equal(mergeRollup(last, 2, 4, "A different sentence"), null);
   assert.equal(mergeRollup(null, 0, 2, "Anything"), null);
 });
+
+// --- 2026-08-30 inspection regressions ---
+
+test("mergeRollup: sliding-window cut counts normalized words, not tokens", () => {
+  // "don't" is ONE \S+ token but TWO normalized words (don, t): the old
+  // token-count cut deleted "said" here.
+  const last = { start: 0, end: 2, text: "I said don't stop" };
+  const r = mergeRollup(last, 2.2, 4, "don't stop now");
+  assert.equal(r.text, "I said don't stop now");
+});
+
+test("mergeRollup: French elision survives the stitch", () => {
+  const last = { start: 0, end: 2, text: "Voici l'histoire de ma vie" };
+  const r = mergeRollup(last, 2.2, 4, "l'histoire de ma vie entière");
+  assert.equal(r.text, "Voici l'histoire de ma vie entière");
+});
+
+test("mergeRollup: a finished long cue refuses to grow (bounded roll-up)", () => {
+  const long = "word ".repeat(180).trim() + "."; // > 3x GROUP_MAX_LEN, ends sentence
+  const last = { start: 0, end: 2, text: long };
+  assert.equal(mergeRollup(last, 2.1, 4, long + " and more"), null);
+  // A short finished cue still merges (prefix growth is normal roll-up).
+  const short = { start: 0, end: 2, text: "Hello there." };
+  assert.ok(mergeRollup(short, 2.1, 4, "Hello there. And more"));
+});

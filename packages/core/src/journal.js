@@ -62,11 +62,14 @@ export function fmtTime(sec) {
 }
 
 function fmtSrtTime(sec) {
-  const t = Math.max(0, Number(sec) || 0);
-  const h = String(Math.floor(t / 3600)).padStart(2, "0");
-  const m = String(Math.floor((t % 3600) / 60)).padStart(2, "0");
-  const s = String(Math.floor(t % 60)).padStart(2, "0");
-  const ms = String(Math.round((t % 1) * 1000)).padStart(3, "0");
+  // Round to integer milliseconds FIRST: rounding the fraction on its
+  // own turns 59.9996 into "59,1000" — a four-digit ms field strict SRT
+  // parsers reject.
+  const total = Math.round(Math.max(0, Number(sec) || 0) * 1000);
+  const h = String(Math.floor(total / 3_600_000)).padStart(2, "0");
+  const m = String(Math.floor((total % 3_600_000) / 60_000)).padStart(2, "0");
+  const s = String(Math.floor((total % 60_000) / 1000)).padStart(2, "0");
+  const ms = String(total % 1000).padStart(3, "0");
   return `${h}:${m}:${s},${ms}`;
 }
 

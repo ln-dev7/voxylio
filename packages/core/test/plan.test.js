@@ -88,3 +88,18 @@ test("2026-08 sweep: DOM-caption players resolve, native ones stay null", () => 
     assert.equal(domCaptionSiteFor(host), null, host);
   }
 });
+
+test("planGate without `now` uses the real clock (expired trial stays locked)", () => {
+  const past = new Date(Date.now() - 30 * 86400_000).toISOString();
+  const g = planGate({ plan: "free", trialEndsAt: past, hostname: "www.udemy.com" });
+  assert.equal(g.allowed, false);
+});
+
+test("domCueEnd estimates CJK durations without whitespace", async () => {
+  const { domCueEnd } = await import("../src/sites.js");
+  const ja = "これは長い日本語の字幕でスペースがありません";
+  // A ~22-char Japanese caption is several seconds of speech, not 1.5 s.
+  assert.ok(domCueEnd(10, ja) - 10 > 2, `got ${domCueEnd(10, ja) - 10}`);
+  // Short Latin text keeps the floor.
+  assert.equal(domCueEnd(10, "Hi."), 11.5);
+});

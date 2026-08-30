@@ -20,9 +20,15 @@ export const PROTECTED_TERMS = [
 
 const escapeRe = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+// Unicode lookarounds, not ASCII \b: with \b, accented letters count as
+// non-word so "commité" matched its "commit" stem mid-word and shielded
+// it ("j'ai ⟦0⟧é le build") — the exact bug compileGlossary already
+// fixed for user entries.
 const TERM_RE = new RegExp(
-  "\\b(" + PROTECTED_TERMS.map(escapeRe).join("|") + ")\\b",
-  "gi"
+  "(?<![\\p{L}\\p{N}])(" +
+    PROTECTED_TERMS.map(escapeRe).join("|") +
+    ")(?![\\p{L}\\p{N}])",
+  "giu"
 );
 
 /**
@@ -77,12 +83,18 @@ export function protectTerms(text, opts = {}) {
 }
 
 export function restoreTerms(text, found) {
-  const seen = (text.match(/⟦\s*\d+\s*⟧/g) || []).length;
-  const restored = text.replace(
-    /⟦\s*(\d+)\s*⟧/g,
-    (_, i) => found[Number(i)] ?? ""
-  );
-  // ok only if every placeholder survived translation intact
-  const ok = seen === found.length && !/⟦|⟧/.test(restored);
+  // Collect the actual indices: comparing COUNT alone let a translator
+  // that duplicated ⟦0⟧ and dropped ⟦1⟧ pass as ok — speaking a
+  // corrupted line instead of triggering the unprotected retry.
+  const indices = [];
+  const restored = text.replace(/⟦\s*(\d+)\s*⟧/g, (_, i) => {
+    indices.push(Number(i));
+    return found[Number(i)] ?? "";
+  });
+  const ok =
+    indices.length === found.length &&
+    !/⟦|⟧/.test(restored) &&
+    new Set(indices).size === found.length &&
+    indices.every((i) => i >= 0 && i < found.length);
   return { restored, ok };
 }
