@@ -3,6 +3,7 @@ import {
   SITE_URL,
   CHROME_STORE_URL,
   EDGE_STORE_URL,
+  FIREFOX_STORE_URL,
   GITHUB_URL,
 } from "@/lib/constants";
 
@@ -56,6 +57,7 @@ export async function StructuredData({
           GITHUB_URL,
           CHROME_STORE_URL,
           ...(EDGE_STORE_URL ? [EDGE_STORE_URL] : []),
+          ...(FIREFOX_STORE_URL ? [FIREFOX_STORE_URL] : []),
           "https://x.com/ln_dev7",
         ],
         founder: { "@id": `${SITE_URL}/#founder` },

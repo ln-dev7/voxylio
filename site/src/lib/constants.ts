@@ -8,5 +8,6 @@ export const CHROME_STORE_URL =
   "https://chromewebstore.google.com/detail/hahcpbcjfdanjncobfcdeidodfggggkp";
 export const EDGE_STORE_URL =
   "https://microsoftedge.microsoft.com/addons/detail/voxylio-%E2%80%94-doublage-multil/nonohjcbhelhdjgejbadibgkjjfbkepj";
-export const FIREFOX_STORE_URL = "";
+export const FIREFOX_STORE_URL =
+  "https://addons.mozilla.org/firefox/addon/voxylio-multilingual-dubbing/";
 export const SAFARI_STORE_URL = "";
