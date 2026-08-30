@@ -64,6 +64,15 @@ const targets = {
       "apps/*/dist/*",
       "*.zip",
       ".DS_Store",
+      // NEVER ship env files to reviewers: site/.env carries the live
+      // database and provider secrets (zip -r includes dotfiles).
+      ".env",
+      ".env.*",
+      "*/.env",
+      "*/.env.*",
+      // Reviewer bloat only — nothing needed to rebuild the extension.
+      "site/public/demo.*",
+      "*.tsbuildinfo",
     ]);
   },
 };

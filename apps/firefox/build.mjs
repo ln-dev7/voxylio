@@ -28,6 +28,10 @@ await buildExtension({
         },
       },
     };
+    // Firefox does not support externally_connectable (addons-linter
+    // warns on every submission); the content-script relay carries the
+    // account link there instead.
+    delete manifest.externally_connectable;
     return manifest;
   },
 });

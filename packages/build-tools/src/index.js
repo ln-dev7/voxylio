@@ -2,7 +2,15 @@
 // output directory and manifest overrides — the engine sources and static
 // assets stay single-sourced in apps/chrome.
 import { build } from "esbuild";
-import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 
 const BANNER =
@@ -24,6 +32,15 @@ export async function buildExtension({
   transformManifest,
 }) {
   mkdirSync(outDir, { recursive: true });
+  // Clean stale build outputs: a renamed entry/page once left its old
+  // files behind (options.html/options.js) and they shipped inside the
+  // Edge and Firefox store zips. Hand-authored .md docs (README/STORE in
+  // /extension) are the only files that legitimately live in an outDir
+  // without being produced by this build — keep those.
+  for (const name of readdirSync(outDir)) {
+    if (name.toLowerCase().endsWith(".md")) continue;
+    rmSync(join(outDir, name), { recursive: true, force: true });
+  }
 
   for (const entry of ["content.js", "background.js", "popup.js", "app.js"]) {
     if (!existsSync(join(srcDir, entry))) continue;

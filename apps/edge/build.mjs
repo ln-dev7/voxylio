@@ -12,11 +12,9 @@ await buildExtension({
   staticDir: join(chrome, "static"),
   outDir: join(here, "dist"),
   target: "chrome120", // Edge ≥ 120 tracks Chromium
-  transformManifest: (m) => ({
-    ...m,
-    // Edge Add-ons listing guidelines favor a plain short description.
-    description:
-      "Double en temps réel les vidéos sous-titrées : traduction locale, voix synchronisée avec la lecture. FR, ES, IT, DE, PT.",
-  }),
+  // Keep __MSG_appDesc__: the store listing text lives in Partner
+  // Center, and a hardcoded French description showed untranslated in
+  // edge://extensions for every non-French user.
+  transformManifest: (m) => ({ ...m }),
 });
 console.log("Edge extension built into apps/edge/dist");

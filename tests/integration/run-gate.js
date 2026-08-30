@@ -7,18 +7,9 @@ const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromi
 // Integration: the account gate. Signed out, the engine must stay silent
 // even with enabled:true; linking the account (storage.local change) must
 // unlock dubbing live, without a reload.
-const http = require('http');
 
 (async () => {
   const MIME = { '.html': 'text/html', '.vtt': 'text/vtt', '.webm': 'video/webm' };
-  const server = http.createServer((req, res) => {
-    const f = path.join(FIXTURES, req.url === '/' ? 'page.html' : req.url);
-    let data;
-    try { data = fs.readFileSync(f); } catch (e) { res.writeHead(404); res.end(); return; }
-    res.writeHead(200, { 'Content-Type': MIME[path.extname(f)] || 'application/octet-stream' });
-    res.end(data);
-  });
-  await new Promise((r) => server.listen(8975, r));
   const browser = await chromium.launch({
     ...(EXE ? { executablePath: EXE } : {}),
     args: ['--no-sandbox', '--autoplay-policy=no-user-gesture-required'],
@@ -76,7 +67,21 @@ const http = require('http');
     Object.defineProperty(window, 'speechSynthesis', { value: fake, configurable: true });
   });
 
-  await page.goto('http://localhost:8975/');
+  // The account bridge only trusts the REAL site hostname (localhost was
+  // removed from the shipped allowlist): serve the fixtures under it via
+  // route interception, exactly as production sees them.
+  await page.route('https://voxylio.lndev.me/**', (route) => {
+    const u = new URL(route.request().url());
+    const f = path.join(FIXTURES, u.pathname === '/' ? 'page.html' : u.pathname.slice(1));
+    let data;
+    try { data = fs.readFileSync(f); } catch (e) { return route.fulfill({ status: 404, body: '' }); }
+    return route.fulfill({
+      status: 200,
+      contentType: MIME[path.extname(f)] || 'application/octet-stream',
+      body: data,
+    });
+  });
+  await page.goto('https://voxylio.lndev.me/');
   await page.addScriptTag({ path: CONTENT });
   await page.evaluate(() => document.getElementById('v').play());
 
@@ -90,7 +95,6 @@ const http = require('http');
   await page.waitForTimeout(6000);
   const result = await page.evaluate(() => ({ spoken: window.__spoken, ack: window.__ack, t: document.getElementById('v').currentTime }));
   await browser.close();
-  server.close();
 
   console.log('locked phase spoken:', lockedCount);
   console.log('bridge ack:', JSON.stringify(result.ack));
