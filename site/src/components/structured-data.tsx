@@ -1,5 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { SITE_URL, CHROME_STORE_URL } from "@/lib/constants";
+import {
+  SITE_URL,
+  CHROME_STORE_URL,
+  EDGE_STORE_URL,
+  GITHUB_URL,
+} from "@/lib/constants";
 
 // The same FAQ entries the <Faq /> accordion renders — schema must
 // mirror visible content (schema skill: accuracy first, never mark up
@@ -45,7 +50,26 @@ export async function StructuredData({
         name: "Voxylio",
         url: SITE_URL,
         logo: `${SITE_URL}/logo.png`,
-        sameAs: ["https://github.com/ln-dev7/voxylio", CHROME_STORE_URL],
+        // Entity linking across platforms (seo-geo: sameAs is the
+        // strongest cheap signal for AI-search entity resolution).
+        sameAs: [
+          GITHUB_URL,
+          CHROME_STORE_URL,
+          ...(EDGE_STORE_URL ? [EDGE_STORE_URL] : []),
+          "https://x.com/ln_dev7",
+        ],
+        founder: { "@id": `${SITE_URL}/#founder` },
+      },
+      {
+        "@type": "Person",
+        "@id": `${SITE_URL}/#founder`,
+        name: "Leonel Ngoya",
+        url: "https://lndev.me",
+        sameAs: [
+          "https://github.com/ln-dev7",
+          "https://x.com/ln_dev7",
+          "https://lndev.me",
+        ],
       },
       {
         "@type": "WebSite",
@@ -86,6 +110,7 @@ export async function StructuredData({
           },
         ],
         publisher: { "@id": `${SITE_URL}/#organization` },
+        author: { "@id": `${SITE_URL}/#organization` },
       },
       {
         "@type": "FAQPage",
