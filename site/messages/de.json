@@ -275,6 +275,18 @@
   "Changelog": {
     "title": "Neuheiten",
     "subtitle": "Jede Voxylio-Version — und was sie für dich ändert.",
+    "v182": {
+      "date": "August 2026",
+      "summary": "Das Inspektions-Release: vollständige Prüfung von Engine, Popup und Paketierung — jeder Befund behoben.",
+      "items": {
+        "stitch": "Progressive Untertitel: Sätze mit Kontraktionen oder Elisionen (don’t, l’histoire) verlieren beim Verschieben des Untertitelfensters kein Wort mehr.",
+        "detect": "Ein Videowechsel auf derselben Seite setzt die Spracherkennung vollständig zurück — ein Video in deiner Sprache kann das nächste nicht mehr stummschalten.",
+        "once": "Der erste Satz wird nie mehr zweimal gesprochen, während der Browser noch seine Stimmen lädt.",
+        "cjk": "Korrektes Timing für Untertitel ohne Leerzeichen (Japanisch, Chinesisch, Thai): keine gehetzten, abgehackten Zeilen mehr.",
+        "cloud": "Pro-Stimme: Bricht eine Cloud-Zeile mitten in der Wiedergabe ab, wird sie sofort lokal nachgesprochen; Pausieren wechselt die Stimme nicht mehr für eine Minute.",
+        "polish": "Gehärtete Kontoverknüpfung, sauberere Kontingentanzeigen, lokalisierte Barrierefreiheits-Labels und ein Update-Button, der das Ende des Downloads abwartet."
+      }
+    },
     "v181": {
       "date": "August 2026",
       "summary": "Das Player-Update: neun weitere Plattformen, deren Untertitel Voxylio jetzt direkt vom Bildschirm liest.",

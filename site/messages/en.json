@@ -275,6 +275,18 @@
   "Changelog": {
     "title": "Changelog",
     "subtitle": "Every Voxylio release, and what it changes for you.",
+    "v182": {
+      "date": "August 2026",
+      "summary": "The inspection release: a full audit of the engine, popup and packaging — every finding fixed.",
+      "items": {
+        "stitch": "Progressive captions: sentences with contractions or elisions (don’t, l’histoire) no longer lose a word when the subtitle window slides.",
+        "detect": "Switching videos on the same page fully resets language detection — a video in your own language can no longer silence the next one.",
+        "once": "The first sentence is never spoken twice while the browser is still loading its voices.",
+        "cjk": "Correct timing for captions without spaces (Japanese, Chinese, Thai): no more rushed, chopped lines.",
+        "cloud": "Pro voice: if a cloud line fails mid-playback it is re-spoken locally at once, and pausing the video no longer swaps voices for a minute.",
+        "polish": "Hardened account link, cleaner quota meters, localized accessibility labels, and a smarter update button that waits for the update to finish downloading."
+      }
+    },
     "v181": {
       "date": "August 2026",
       "summary": "The players update: nine more platforms whose captions Voxylio now reads straight from the screen.",

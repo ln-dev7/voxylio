@@ -275,6 +275,18 @@
   "Changelog": {
     "title": "Novità",
     "subtitle": "Ogni versione di Voxylio e cosa cambia per te.",
+    "v182": {
+      "date": "Agosto 2026",
+      "summary": "La versione ispezione: audit completo di motore, popup e packaging — ogni anomalia corretta.",
+      "items": {
+        "stitch": "Sottotitoli progressivi: le frasi con contrazioni o elisioni (don’t, l’histoire) non perdono più una parola quando la finestra dei sottotitoli scorre.",
+        "detect": "Cambiare video nella stessa pagina azzera del tutto il rilevamento della lingua — un video nella tua lingua non può più ammutolire il successivo.",
+        "once": "La prima frase non viene mai più detta due volte mentre il browser sta ancora caricando le voci.",
+        "cjk": "Tempi corretti per i sottotitoli senza spazi (giapponese, cinese, thai): basta battute affrettate e tagliate.",
+        "cloud": "Voce Pro: se una battuta cloud fallisce a metà riproduzione viene subito ridetta in locale, e mettere in pausa il video non cambia più voce per un minuto.",
+        "polish": "Collegamento account irrobustito, contatori di quota più puliti, etichette di accessibilità tradotte e un pulsante di aggiornamento che attende la fine del download."
+      }
+    },
     "v181": {
       "date": "Agosto 2026",
       "summary": "L'aggiornamento dei player: altre nove piattaforme di cui Voxylio legge ora i sottotitoli direttamente dallo schermo.",

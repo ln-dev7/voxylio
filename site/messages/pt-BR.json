@@ -275,6 +275,18 @@
   "Changelog": {
     "title": "Novidades",
     "subtitle": "Cada versão do Voxylio e o que muda para você.",
+    "v182": {
+      "date": "Agosto de 2026",
+      "summary": "A versão de inspeção: auditoria completa do motor, do popup e do empacotamento — cada problema corrigido.",
+      "items": {
+        "stitch": "Legendas progressivas: frases com contrações ou elisões (don’t, l’histoire) não perdem mais uma palavra quando a janela de legendas desliza.",
+        "detect": "Trocar de vídeo na mesma página reinicia totalmente a detecção de idioma — um vídeo no seu idioma não silencia mais o seguinte.",
+        "once": "A primeira frase nunca mais é dita duas vezes enquanto o navegador ainda carrega as vozes.",
+        "cjk": "Tempo correto para legendas sem espaços (japonês, chinês, tailandês): chega de falas apressadas e cortadas.",
+        "cloud": "Voz Pro: se uma fala na nuvem falha no meio da reprodução ela é repetida localmente na hora, e pausar o vídeo não troca mais de voz por um minuto.",
+        "polish": "Vínculo de conta reforçado, medidores de cota mais limpos, rótulos de acessibilidade traduzidos e um botão de atualização que espera o download terminar."
+      }
+    },
     "v181": {
       "date": "Agosto de 2026",
       "summary": "A atualização dos players: mais nove plataformas cujas legendas o Voxylio agora lê direto da tela.",
