@@ -180,5 +180,6 @@
   "updNone": "已是最新 ✓",
   "updThrottled": "請幾分鐘後再試",
   "statusYtDubbed": "YouTube 已將此影片自動配音為你的語言（自動音軌）— 你會聽到兩個聲音。請在播放器中：⚙️ → 音軌 → 選擇原始版本，然後重新整理頁面。",
-  "toggleDub": "啟用配音"
+  "toggleDub": "啟用配音",
+  "btnDeleteAccount": "刪除我的帳號"
 }

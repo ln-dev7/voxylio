@@ -503,11 +503,19 @@ function initSettings() {
 
 // ---------------------------------------------------------------- account
 
-const openAccount = () => {
+// Safari build: the App Store forbids external-purchase CTAs, so the
+// account page is opened in a mode that hides every buy button.
+const accountUrl = (hash = "") => {
   const lang = resolveUiLang(settings.uiLang, navigator.language);
-  chrome.tabs.create({
-    url: `https://voxylio.lndev.me/${lang}/account?from=extension`,
-  });
+  return (
+    `https://voxylio.lndev.me/${lang}/account?from=extension` +
+    (IS_SAFARI ? "&ctx=safari" : "") +
+    hash
+  );
+};
+
+const openAccount = () => {
+  chrome.tabs.create({ url: accountUrl() });
 };
 
 function fmtInt(n) {
@@ -591,6 +599,9 @@ async function renderAccount() {
     const linked = !!(ent && ent.linked);
     $("acctEmail").textContent = (linked && ent.email) || "";
     signout.hidden = !linked;
+    // Account deletion entry (App Store 5.1.1(v)): a direct link to the
+    // site's deletion flow, shown whenever an account is linked.
+    $("acctDelete").hidden = !linked;
     renderAcctQuota(linked ? ent : null);
     cta.hidden = false;
     if (!linked) {
@@ -601,6 +612,9 @@ async function renderAccount() {
       plan.textContent = t("accountPro") || "Pro";
       plan.classList.add("pro");
       cta.textContent = t("manage") || "Gérer";
+      // Safari: "Manage" opens the Polar billing portal — an external
+      // payment surface the App Store forbids linking to.
+      if (IS_SAFARI) cta.hidden = true;
     } else if (IS_SAFARI) {
       plan.textContent = t("accountFree") || "Gratuit";
       plan.classList.remove("pro");
@@ -616,6 +630,7 @@ async function renderAccount() {
     // address was contradictory UI.
     $("acctEmail").textContent = "";
     signout.hidden = true;
+    $("acctDelete").hidden = true;
     cta.textContent = t("signIn") || "Se connecter";
     $("acctQuota").hidden = true;
   }
@@ -698,6 +713,9 @@ function renderStats() {
 
 function initAccount() {
   $("acctCta").addEventListener("click", openAccount);
+  $("acctDelete").addEventListener("click", () => {
+    chrome.tabs.create({ url: accountUrl("#delete") });
+  });
   $("acctSignout").addEventListener("click", async () => {
     await chrome.storage.local.remove(["accountToken", "entitlements"]);
     renderAccount();

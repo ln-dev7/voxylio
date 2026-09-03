@@ -180,5 +180,6 @@
   "updNone": "최신 상태 ✓",
   "updThrottled": "몇 분 후 다시 시도하세요",
   "statusYtDubbed": "YouTube가 이미 이 동영상을 내 언어로 더빙하고 있습니다(자동 오디오 트랙) — 두 목소리가 겹쳐 들립니다. 플레이어에서 ⚙️ → 오디오 트랙 → 원본을 선택한 뒤 페이지를 새로고침하세요.",
-  "toggleDub": "더빙 켜기"
+  "toggleDub": "더빙 켜기",
+  "btnDeleteAccount": "계정 삭제"
 }

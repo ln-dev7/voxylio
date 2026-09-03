@@ -180,5 +180,6 @@
   "updNone": "À jour ✓",
   "updThrottled": "Réessaie dans quelques minutes",
   "statusYtDubbed": "YouTube double déjà cette vidéo dans ta langue (piste audio automatique) — tu entends deux voix. Dans le lecteur : ⚙️ → Piste audio → choisis la version originale, puis recharge la page.",
-  "toggleDub": "Activer le doublage"
+  "toggleDub": "Activer le doublage",
+  "btnDeleteAccount": "Supprimer mon compte"
 }

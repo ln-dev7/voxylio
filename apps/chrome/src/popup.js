@@ -448,6 +448,8 @@ async function refreshAccount() {
       plan.classList.add("pro");
       btn.textContent = t("manage") || "Gérer";
       btn.classList.add("ghost");
+      // Safari: no link to the external billing portal (App Store rule).
+      if (IS_SAFARI) btn.hidden = true;
       note.textContent =
         ent.status === "canceled"
           ? t("accountNoteProCanceled") ||
@@ -606,7 +608,11 @@ async function init() {
   const openAccount = () => {
     const lang = resolveUiLang(settings.uiLang, navigator.language);
     chrome.tabs.create({
-      url: `https://voxylio.lndev.me/${lang}/account?from=extension`,
+      // Safari build: the account page hides every buy button (App
+      // Store external-purchase rule).
+      url:
+        `https://voxylio.lndev.me/${lang}/account?from=extension` +
+        (IS_SAFARI ? "&ctx=safari" : ""),
     });
   };
   $("accountBtn").addEventListener("click", openAccount);

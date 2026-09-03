@@ -444,7 +444,8 @@
     updNone: "Up to date \u2713",
     updThrottled: "Try again in a few minutes",
     statusYtDubbed: "YouTube is already dubbing this video into your language (automatic audio track) \u2014 you are hearing two voices. In the player: \u2699\uFE0F \u2192 Audio track \u2192 pick the original version, then reload the page.",
-    toggleDub: "Enable dubbing"
+    toggleDub: "Enable dubbing",
+    btnDeleteAccount: "Delete my account"
   };
 
   // src/messages/fr.json
@@ -630,7 +631,8 @@
     updNone: "\xC0 jour \u2713",
     updThrottled: "R\xE9essaie dans quelques minutes",
     statusYtDubbed: "YouTube double d\xE9j\xE0 cette vid\xE9o dans ta langue (piste audio automatique) \u2014 tu entends deux voix. Dans le lecteur : \u2699\uFE0F \u2192 Piste audio \u2192 choisis la version originale, puis recharge la page.",
-    toggleDub: "Activer le doublage"
+    toggleDub: "Activer le doublage",
+    btnDeleteAccount: "Supprimer mon compte"
   };
 
   // src/messages/es.json
@@ -816,7 +818,8 @@
     updNone: "Actualizado \u2713",
     updThrottled: "Int\xE9ntalo de nuevo en unos minutos",
     statusYtDubbed: "YouTube ya dobla este v\xEDdeo a tu idioma (pista de audio autom\xE1tica): oyes dos voces. En el reproductor: \u2699\uFE0F \u2192 Pista de audio \u2192 elige la versi\xF3n original y recarga la p\xE1gina.",
-    toggleDub: "Activar el doblaje"
+    toggleDub: "Activar el doblaje",
+    btnDeleteAccount: "Eliminar mi cuenta"
   };
 
   // src/messages/de.json
@@ -1002,7 +1005,8 @@
     updNone: "Aktuell \u2713",
     updThrottled: "Versuch es in ein paar Minuten erneut",
     statusYtDubbed: "YouTube vertont dieses Video bereits in deiner Sprache (automatische Tonspur) \u2014 du h\xF6rst zwei Stimmen. Im Player: \u2699\uFE0F \u2192 Audiotrack \u2192 Originalversion w\xE4hlen, dann Seite neu laden.",
-    toggleDub: "Dubbing aktivieren"
+    toggleDub: "Dubbing aktivieren",
+    btnDeleteAccount: "Mein Konto l\xF6schen"
   };
 
   // src/messages/it.json
@@ -1188,7 +1192,8 @@
     updNone: "Aggiornato \u2713",
     updThrottled: "Riprova tra qualche minuto",
     statusYtDubbed: "YouTube sta gi\xE0 doppiando questo video nella tua lingua (traccia audio automatica): senti due voci. Nel player: \u2699\uFE0F \u2192 Traccia audio \u2192 scegli la versione originale, poi ricarica la pagina.",
-    toggleDub: "Attiva il doppiaggio"
+    toggleDub: "Attiva il doppiaggio",
+    btnDeleteAccount: "Elimina il mio account"
   };
 
   // src/messages/ja.json
@@ -1374,7 +1379,8 @@
     updNone: "\u6700\u65B0\u3067\u3059 \u2713",
     updThrottled: "\u6570\u5206\u5F8C\u306B\u3082\u3046\u4E00\u5EA6\u304A\u8A66\u3057\u304F\u3060\u3055\u3044",
     statusYtDubbed: "YouTube \u304C\u3053\u306E\u52D5\u753B\u3092\u3059\u3067\u306B\u3042\u306A\u305F\u306E\u8A00\u8A9E\u306B\u5439\u304D\u66FF\u3048\u3066\u3044\u307E\u3059\uFF08\u81EA\u52D5\u97F3\u58F0\u30C8\u30E9\u30C3\u30AF\uFF09\u2014 2 \u3064\u306E\u58F0\u304C\u91CD\u306A\u3063\u3066\u3044\u307E\u3059\u3002\u30D7\u30EC\u30FC\u30E4\u30FC\u306E \u2699\uFE0F \u2192 \u97F3\u58F0\u30C8\u30E9\u30C3\u30AF \u2192 \u30AA\u30EA\u30B8\u30CA\u30EB\u3092\u9078\u3073\u3001\u30DA\u30FC\u30B8\u3092\u518D\u8AAD\u307F\u8FBC\u307F\u3057\u3066\u304F\u3060\u3055\u3044\u3002",
-    toggleDub: "\u5439\u304D\u66FF\u3048\u3092\u6709\u52B9\u306B\u3059\u308B"
+    toggleDub: "\u5439\u304D\u66FF\u3048\u3092\u6709\u52B9\u306B\u3059\u308B",
+    btnDeleteAccount: "\u30A2\u30AB\u30A6\u30F3\u30C8\u3092\u524A\u9664"
   };
 
   // src/messages/ko.json
@@ -1560,7 +1566,8 @@
     updNone: "\uCD5C\uC2E0 \uC0C1\uD0DC \u2713",
     updThrottled: "\uBA87 \uBD84 \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uC138\uC694",
     statusYtDubbed: "YouTube\uAC00 \uC774\uBBF8 \uC774 \uB3D9\uC601\uC0C1\uC744 \uB0B4 \uC5B8\uC5B4\uB85C \uB354\uBE59\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4(\uC790\uB3D9 \uC624\uB514\uC624 \uD2B8\uB799) \u2014 \uB450 \uBAA9\uC18C\uB9AC\uAC00 \uACB9\uCCD0 \uB4E4\uB9BD\uB2C8\uB2E4. \uD50C\uB808\uC774\uC5B4\uC5D0\uC11C \u2699\uFE0F \u2192 \uC624\uB514\uC624 \uD2B8\uB799 \u2192 \uC6D0\uBCF8\uC744 \uC120\uD0DD\uD55C \uB4A4 \uD398\uC774\uC9C0\uB97C \uC0C8\uB85C\uACE0\uCE68\uD558\uC138\uC694.",
-    toggleDub: "\uB354\uBE59 \uCF1C\uAE30"
+    toggleDub: "\uB354\uBE59 \uCF1C\uAE30",
+    btnDeleteAccount: "\uACC4\uC815 \uC0AD\uC81C"
   };
 
   // src/messages/zh-CN.json
@@ -1746,7 +1753,8 @@
     updNone: "\u5DF2\u662F\u6700\u65B0 \u2713",
     updThrottled: "\u8BF7\u51E0\u5206\u949F\u540E\u518D\u8BD5",
     statusYtDubbed: "YouTube \u5DF2\u5C06\u6B64\u89C6\u9891\u81EA\u52A8\u914D\u97F3\u4E3A\u4F60\u7684\u8BED\u8A00\uFF08\u81EA\u52A8\u97F3\u8F68\uFF09\u2014 \u4F60\u4F1A\u542C\u5230\u4E24\u4E2A\u58F0\u97F3\u3002\u8BF7\u5728\u64AD\u653E\u5668\u4E2D\uFF1A\u2699\uFE0F \u2192 \u97F3\u8F68 \u2192 \u9009\u62E9\u539F\u59CB\u7248\u672C\uFF0C\u7136\u540E\u5237\u65B0\u9875\u9762\u3002",
-    toggleDub: "\u542F\u7528\u914D\u97F3"
+    toggleDub: "\u542F\u7528\u914D\u97F3",
+    btnDeleteAccount: "\u5220\u9664\u6211\u7684\u8D26\u53F7"
   };
 
   // src/messages/zh-TW.json
@@ -1932,7 +1940,8 @@
     updNone: "\u5DF2\u662F\u6700\u65B0 \u2713",
     updThrottled: "\u8ACB\u5E7E\u5206\u9418\u5F8C\u518D\u8A66",
     statusYtDubbed: "YouTube \u5DF2\u5C07\u6B64\u5F71\u7247\u81EA\u52D5\u914D\u97F3\u70BA\u4F60\u7684\u8A9E\u8A00\uFF08\u81EA\u52D5\u97F3\u8ECC\uFF09\u2014 \u4F60\u6703\u807D\u5230\u5169\u500B\u8072\u97F3\u3002\u8ACB\u5728\u64AD\u653E\u5668\u4E2D\uFF1A\u2699\uFE0F \u2192 \u97F3\u8ECC \u2192 \u9078\u64C7\u539F\u59CB\u7248\u672C\uFF0C\u7136\u5F8C\u91CD\u65B0\u6574\u7406\u9801\u9762\u3002",
-    toggleDub: "\u555F\u7528\u914D\u97F3"
+    toggleDub: "\u555F\u7528\u914D\u97F3",
+    btnDeleteAccount: "\u522A\u9664\u6211\u7684\u5E33\u865F"
   };
 
   // src/messages/pt-BR.json
@@ -2118,7 +2127,8 @@
     updNone: "Atualizado \u2713",
     updThrottled: "Tente de novo em alguns minutos",
     statusYtDubbed: "O YouTube j\xE1 dubla este v\xEDdeo no seu idioma (faixa de \xE1udio autom\xE1tica) \u2014 voc\xEA ouve duas vozes. No player: \u2699\uFE0F \u2192 Faixa de \xE1udio \u2192 escolha a vers\xE3o original e recarregue a p\xE1gina.",
-    toggleDub: "Ativar a dublagem"
+    toggleDub: "Ativar a dublagem",
+    btnDeleteAccount: "Excluir minha conta"
   };
 
   // src/i18n.js
@@ -2519,6 +2529,7 @@
         plan.classList.add("pro");
         btn.textContent = t("manage") || "G\xE9rer";
         btn.classList.add("ghost");
+        if (IS_SAFARI) btn.hidden = true;
         note.textContent = ent.status === "canceled" ? t("accountNoteProCanceled") || "Abonnement actif jusqu'\xE0 la fin de la p\xE9riode." : t("accountNotePro") || "Merci de soutenir Voxylio.";
       } else if (IS_SAFARI) {
         plan.textContent = t("accountFree") || "Gratuit";
@@ -2653,7 +2664,9 @@
     const openAccount = () => {
       const lang = resolveUiLang(settings.uiLang, navigator.language);
       chrome.tabs.create({
-        url: `https://voxylio.lndev.me/${lang}/account?from=extension`
+        // Safari build: the account page hides every buy button (App
+        // Store external-purchase rule).
+        url: `https://voxylio.lndev.me/${lang}/account?from=extension` + (IS_SAFARI ? "&ctx=safari" : "")
       });
     };
     $("accountBtn").addEventListener("click", openAccount);
