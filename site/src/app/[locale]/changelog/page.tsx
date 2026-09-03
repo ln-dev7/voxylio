@@ -33,7 +33,7 @@ const RELEASES: Array<{
   {
     version: "1.8.2",
     id: "v182",
-    badges: ["latest", "review"],
+    badges: ["latest", "store"],
     items: [
       { key: "stitch", tag: "improved" },
       { key: "detect", tag: "improved" },
@@ -46,7 +46,6 @@ const RELEASES: Array<{
   {
     version: "1.8.1",
     id: "v181",
-    badges: ["store"],
     items: [
       { key: "sites", tag: "new" },
       { key: "lookahead", tag: "new" },

@@ -89,7 +89,7 @@ export async function StructuredData({
         url: `${SITE_URL}/${locale}`,
         image: `${SITE_URL}/og.png`,
         applicationCategory: "BrowserApplication",
-        operatingSystem: "Chrome, Edge, Firefox, Safari (macOS)",
+        operatingSystem: "Chrome, Edge, Firefox",
         installUrl: CHROME_STORE_URL,
         offers: [
           {

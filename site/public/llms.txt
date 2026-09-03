@@ -2,7 +2,7 @@
 
 > Voxylio is a browser extension that dubs subtitled videos in real time: it reads the video's captions and speaks them aloud in the viewer's language (65+ languages), with the original audio automatically lowered. Free on YouTube, Netflix, Prime Video, Disney+ and Twitch after a trial that unlocks every website; the Pro plan works on every site and adds contextual AI translation (beta), natural cloud voices, and live audio transcription for videos without subtitles.
 
-Voxylio runs on Chrome, Edge, Firefox and Safari (macOS). Free features run locally in the browser (local translation, system voices); Pro features call the Voxylio backend with monthly quotas that reset on the subscription's renewal day. A Google sign-in links the extension to an account. Source-available under the FSL-1.1-MIT license (each release becomes MIT after two years).
+Voxylio runs on Chrome, Edge and Firefox (and installs from the Chrome Web Store on any Chromium browser such as Brave, Opera or Arc). Free features run locally in the browser (local translation, system voices); Pro features call the Voxylio backend with monthly quotas that reset on the subscription's renewal day. A Google sign-in links the extension to an account. Source-available under the FSL-1.1-MIT license (each release becomes MIT after two years).
 
 ## Pages
 
