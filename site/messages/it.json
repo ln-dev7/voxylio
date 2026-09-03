@@ -381,7 +381,14 @@
     "usageFallback": "Quando una quota si esaurisce, il motore locale subentra automaticamente — il doppiaggio non si ferma mai.",
     "usageAudio": "Audio Premium (beta, min)",
     "trialActive": "Prova gratuita — tutti i siti sbloccati fino al {date} ({days} giorni rimasti).",
-    "trialOver": "Prova terminata il {date} — il piano gratuito copre YouTube, Netflix, Prime Video, Disney+ e Twitch."
+    "trialOver": "Prova terminata il {date} — il piano gratuito copre YouTube, Netflix, Prime Video, Disney+ e Twitch.",
+    "deleteTitle": "Elimina account",
+    "deleteText": "Elimina definitivamente il tuo account: ogni abbonamento viene annullato subito e i tuoi diritti, contatori di utilizzo ed estensioni collegate vengono cancellati. L’operazione è irreversibile.",
+    "deleteBtn": "Elimina il mio account",
+    "deleteConfirmText": "Sicuro? Questa azione elimina il tuo account e annulla ogni abbonamento attivo — definitivamente.",
+    "deleteConfirmBtn": "Elimina definitivamente",
+    "deleteCancel": "Annulla",
+    "deleting": "Eliminazione…"
   },
   "Pricing": {
     "title": "Un prezzo semplice e onesto",

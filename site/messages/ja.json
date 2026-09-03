@@ -381,7 +381,14 @@
     "usageFallback": "クォータを使い切っても、ローカルエンジンが自動的に引き継ぐため、吹き替えが止まることはありません。",
     "usageAudio": "プレミアム音声（ベータ版・分）",
     "trialActive": "無料トライアル中 — {date} まですべてのサイトが利用できます（残り {days} 日）。",
-    "trialOver": "トライアルは {date} に終了しました — 無料プランは YouTube、Netflix、Prime Video、Disney+、Twitch に対応します。"
+    "trialOver": "トライアルは {date} に終了しました — 無料プランは YouTube、Netflix、Prime Video、Disney+、Twitch に対応します。",
+    "deleteTitle": "アカウントを削除",
+    "deleteText": "アカウントを完全に削除します。サブスクリプションは即時解約され、利用権、使用量カウンター、連携済みの拡張機能が消去されます。この操作は取り消せません。",
+    "deleteBtn": "アカウントを削除する",
+    "deleteConfirmText": "本当によろしいですか？アカウントが削除され、有効なサブスクリプションも解約されます — 元に戻せません。",
+    "deleteConfirmBtn": "完全に削除",
+    "deleteCancel": "キャンセル",
+    "deleting": "削除中…"
   },
   "Pricing": {
     "title": "シンプルで正直な料金",

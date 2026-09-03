@@ -164,6 +164,15 @@ export function AccountView() {
     "idle" | "linking" | "linked" | "missing" | "error"
   >("idle");
   const [justPaid, setJustPaid] = useState(false);
+  // Opened from the Safari build (?ctx=safari): App Store rules — the
+  // page must show NO purchase call-to-action and no billing portal.
+  const [safariCtx, setSafariCtx] = useState(false);
+  // Account deletion (App Store 5.1.1(v) + GDPR): idle → confirm → busy.
+  const [delStep, setDelStep] = useState<"idle" | "confirm" | "busy">("idle");
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("ctx") === "safari")
+      setSafariCtx(true);
+  }, []);
 
   const loadEntitlements = useCallback(async () => {
     try {
@@ -339,7 +348,7 @@ export function AccountView() {
                     </p>
                   ))}
               </div>
-              {pro && (
+              {pro && !safariCtx && (
                 <Button
                   variant="outline"
                   className="rounded-full bg-card"
@@ -353,7 +362,7 @@ export function AccountView() {
             </div>
             {/* Free plan: both billing options side by side, right under
                 the trial line — the yearly one carries the −42% badge. */}
-            {!pro && (
+            {!pro && !safariCtx && (
               <div className="mt-4 flex flex-wrap items-center gap-2.5">
                 <Button
                   variant="outline"
@@ -493,6 +502,74 @@ export function AccountView() {
               <LogOut className="size-3.5" />
               {t("signOut")}
             </button>
+          </div>
+
+          {/* Permanent account deletion — App Store 5.1.1(v) + GDPR.
+              The extension links straight to /account#delete. */}
+          <div
+            id="delete"
+            className="mt-6 rounded-2xl border border-red-500/25 bg-card p-6"
+          >
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-red-400">
+              {t("deleteTitle")}
+            </p>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
+              {t("deleteText")}
+            </p>
+            {delStep === "idle" ? (
+              <Button
+                variant="outline"
+                className="mt-4 rounded-full border-red-500/40 bg-card text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                onClick={() => setDelStep("confirm")}
+              >
+                {t("deleteBtn")}
+              </Button>
+            ) : (
+              <div className="mt-4 space-y-3">
+                <p className="text-sm font-medium text-red-400">
+                  {t("deleteConfirmText")}
+                </p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button
+                    disabled={delStep === "busy"}
+                    className="rounded-full bg-red-500 text-white hover:bg-red-600"
+                    onClick={async () => {
+                      setDelStep("busy");
+                      try {
+                        const res = await fetch("/api/account/delete", {
+                          method: "POST",
+                        });
+                        if (!res.ok) throw new Error(String(res.status));
+                        // Unlink the extension in this browser, then out.
+                        try {
+                          window.postMessage(
+                            { type: "voxylio:unlink" },
+                            window.location.origin,
+                          );
+                        } catch {}
+                        try {
+                          await authClient.signOut();
+                        } catch {}
+                        window.location.assign(`/${locale}`);
+                      } catch {
+                        setDelStep("idle");
+                      }
+                    }}
+                  >
+                    {delStep === "busy" ? t("deleting") : t("deleteConfirmBtn")}
+                  </Button>
+                  {delStep === "confirm" && (
+                    <button
+                      type="button"
+                      onClick={() => setDelStep("idle")}
+                      className="cursor-pointer text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      {t("deleteCancel")}
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

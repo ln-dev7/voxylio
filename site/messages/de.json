@@ -381,7 +381,14 @@
     "usageFallback": "Ist ein Kontingent aufgebraucht, übernimmt automatisch die lokale Engine — das Dubbing stoppt nie.",
     "usageAudio": "Premium Audio (Beta, Min.)",
     "trialActive": "Kostenlose Testphase — alle Websites freigeschaltet bis {date} (noch {days} Tage).",
-    "trialOver": "Testphase am {date} beendet — der Gratis-Plan deckt YouTube, Netflix, Prime Video, Disney+ und Twitch ab."
+    "trialOver": "Testphase am {date} beendet — der Gratis-Plan deckt YouTube, Netflix, Prime Video, Disney+ und Twitch ab.",
+    "deleteTitle": "Konto löschen",
+    "deleteText": "Löscht dein Konto endgültig: Jedes Abonnement wird sofort beendet, deine Berechtigungen, Nutzungszähler und verknüpften Erweiterungen werden gelöscht. Das lässt sich nicht rückgängig machen.",
+    "deleteBtn": "Mein Konto löschen",
+    "deleteConfirmText": "Wirklich? Dadurch wird dein Konto gelöscht und jedes aktive Abonnement beendet — endgültig.",
+    "deleteConfirmBtn": "Endgültig löschen",
+    "deleteCancel": "Abbrechen",
+    "deleting": "Wird gelöscht…"
   },
   "Pricing": {
     "title": "Ein einfacher, ehrlicher Preis",

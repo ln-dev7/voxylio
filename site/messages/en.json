@@ -381,7 +381,14 @@
     "usageFallback": "When a quota runs out, the local engine takes over automatically — dubbing never stops.",
     "usageAudio": "Premium Audio (beta, min)",
     "trialActive": "Free trial — every site unlocked until {date} ({days} days left).",
-    "trialOver": "Trial ended on {date} — the free plan covers YouTube, Netflix, Prime Video, Disney+ and Twitch."
+    "trialOver": "Trial ended on {date} — the free plan covers YouTube, Netflix, Prime Video, Disney+ and Twitch.",
+    "deleteTitle": "Delete account",
+    "deleteText": "Permanently deletes your account: any subscription is cancelled immediately, and your entitlements, usage meters and linked extensions are erased. This cannot be undone.",
+    "deleteBtn": "Delete my account",
+    "deleteConfirmText": "Are you sure? This deletes your account and cancels any active subscription — permanently.",
+    "deleteConfirmBtn": "Delete permanently",
+    "deleteCancel": "Cancel",
+    "deleting": "Deleting…"
   },
   "Pricing": {
     "title": "Simple, honest pricing",

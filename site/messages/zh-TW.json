@@ -381,7 +381,14 @@
     "usageFallback": "額度用完後，本地引擎會自動接手——配音永不中斷。",
     "usageAudio": "進階音訊（測試版·分鐘）",
     "trialActive": "免費試用中 — 所有網站解鎖至 {date}（剩餘 {days} 天）。",
-    "trialOver": "試用已於 {date} 結束 — 免費方案支援 YouTube、Netflix、Prime Video、Disney+ 和 Twitch。"
+    "trialOver": "試用已於 {date} 結束 — 免費方案支援 YouTube、Netflix、Prime Video、Disney+ 和 Twitch。",
+    "deleteTitle": "刪除帳號",
+    "deleteText": "永久刪除你的帳號：所有訂閱將立即取消，你的權益、用量計數與已連結的擴充功能都會被清除。此操作無法復原。",
+    "deleteBtn": "刪除我的帳號",
+    "deleteConfirmText": "確定嗎？這將刪除你的帳號並取消所有有效訂閱 — 且無法復原。",
+    "deleteConfirmBtn": "永久刪除",
+    "deleteCancel": "取消",
+    "deleting": "刪除中…"
   },
   "Pricing": {
     "title": "簡單而誠實的價格",
