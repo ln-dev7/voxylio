@@ -95,7 +95,9 @@ async function resolveUser(t) {
     );
     process.exit(1);
   }
+  const SAFE_TABLE = /^"[a-zA-Z_][a-zA-Z0-9_]*"\."[a-zA-Z_][a-zA-Z0-9_]*"$/;
   for (const table of tables) {
+    if (!SAFE_TABLE.test(table)) continue; // guard against unexpected identifiers
     try {
       const r = await client.query(
         `select id, email from ${table} where email = $1 limit 1`,
