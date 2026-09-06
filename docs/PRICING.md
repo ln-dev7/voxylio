@@ -53,6 +53,12 @@ the public FSL source remains the personal-use escape hatch (every release conve
 | Priority support | No | Yes |
 
 Prices: **$9.99/mo, $69.99/yr (−42%)** — both configured in Polar.
+Planned raise (owner decision, 2026-09-06): **$11.99/mo, $79.99/yr**
+when Premium Audio ships — not before. Existing subscribers are
+grandfathered at their current price for life; the raise may be
+announced ahead of time as an upgrade-now incentive. When executed,
+sweep: Polar products, pricing cards + modal + FAQ ×10, JSON-LD
+offers (structured-data.tsx), and the math in this file.
 Add-on packs come later and their prices are NOT published until the
 real cost per cloud hour is measured (see "Two meters" below); the cloud
 budget per subscriber should average ≈ $2/mo to protect margin.
