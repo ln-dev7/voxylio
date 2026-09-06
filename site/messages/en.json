@@ -390,7 +390,9 @@
     "deleteCancel": "Cancel",
     "deleting": "Deleting…",
     "deleteConfirmType": "To confirm, type “{phrase}” below.",
-    "deleteConfirmPhrase": "delete my account"
+    "deleteConfirmPhrase": "delete my account",
+    "deleteProNote": "Your active Pro subscription will be cancelled immediately (no refund for the current period).",
+    "deleteFailed": "Something went wrong — your account was NOT deleted. If you have an active subscription, cancel it first via “Manage subscription”, then try again."
   },
   "Pricing": {
     "title": "Simple, honest pricing",

@@ -390,7 +390,9 @@
     "deleteCancel": "Cancelar",
     "deleting": "Eliminando…",
     "deleteConfirmType": "Para confirmar, escribe “{phrase}” abajo.",
-    "deleteConfirmPhrase": "eliminar mi cuenta"
+    "deleteConfirmPhrase": "eliminar mi cuenta",
+    "deleteProNote": "Tu suscripción Pro activa se cancelará de inmediato (sin reembolso del periodo en curso).",
+    "deleteFailed": "Algo salió mal — tu cuenta NO se ha eliminado. Si tienes una suscripción activa, cancélala primero desde «Gestionar suscripción» y vuelve a intentarlo."
   },
   "Pricing": {
     "title": "Un precio simple y honesto",

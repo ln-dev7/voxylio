@@ -172,6 +172,7 @@ export function AccountView() {
   const [delOpen, setDelOpen] = useState(false);
   const [delInput, setDelInput] = useState("");
   const [delBusy, setDelBusy] = useState(false);
+  const [delError, setDelError] = useState(false);
   const normPhrase = (s: string) => s.trim().toLowerCase();
   useEffect(() => {
     if (!delOpen) return;
@@ -563,6 +564,11 @@ export function AccountView() {
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {t("deleteConfirmText")}
                 </p>
+                {pro && (
+                  <p className="mt-2 text-sm font-medium leading-relaxed text-red-400">
+                    {t("deleteProNote")}
+                  </p>
+                )}
                 <p className="mt-4 text-sm text-foreground">
                   {t("deleteConfirmType", {
                     phrase: t("deleteConfirmPhrase"),
@@ -575,6 +581,11 @@ export function AccountView() {
                   disabled={delBusy}
                   className="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-red-500/60"
                 />
+                {delError && (
+                  <p className="mt-3 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm leading-relaxed text-red-400">
+                    {t("deleteFailed")}
+                  </p>
+                )}
                 <div className="mt-5 flex items-center justify-end gap-4">
                   <button
                     type="button"
@@ -593,6 +604,7 @@ export function AccountView() {
                     className="rounded-full bg-red-500 text-white hover:bg-red-600"
                     onClick={async () => {
                       setDelBusy(true);
+                      setDelError(false);
                       try {
                         const res = await fetch("/api/account/delete", {
                           method: "POST",
@@ -610,8 +622,11 @@ export function AccountView() {
                         } catch {}
                         window.location.assign(`/${locale}`);
                       } catch {
+                        // Keep the modal open and SAY it failed — the
+                        // account was not deleted (e.g. the subscription
+                        // could not be cancelled).
                         setDelBusy(false);
-                        setDelOpen(false);
+                        setDelError(true);
                       }
                     }}
                   >

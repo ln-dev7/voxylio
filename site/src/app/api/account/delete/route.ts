@@ -36,18 +36,36 @@ export async function POST() {
   }
   const userId = session.user.id;
 
-  // 1. Stop billing.
+  // 1. Stop billing FIRST — and REFUSE to delete a paying account whose
+  // subscription cannot be revoked: an orphaned subscription would keep
+  // charging someone who no longer has an account.
   try {
     const [ent] = await db
       .select()
       .from(schema.entitlement)
       .where(eq(schema.entitlement.userId, userId))
       .limit(1);
-    if (ent?.polarSubscriptionId && ent.plan === "pro") {
-      await polar.subscriptions.revoke({ id: ent.polarSubscriptionId });
+    if (
+      ent?.polarSubscriptionId &&
+      ent.plan === "pro" &&
+      ent.status !== "revoked"
+    ) {
+      try {
+        await polar.subscriptions.revoke({ id: ent.polarSubscriptionId });
+      } catch (e) {
+        // "Already canceled/revoked"-shaped answers are fine (nothing
+        // left to bill); any other failure aborts the deletion.
+        const msg = String((e as Error)?.message || "");
+        if (!/already|not[ _-]?active|cancell?ed|revoked/i.test(msg)) {
+          return Response.json(
+            { error: "subscription_cancel_failed" },
+            { status: 502 },
+          );
+        }
+      }
     }
   } catch {
-    /* no subscription, or Polar unreachable: deletion proceeds */
+    /* entitlement unreadable: nothing provably billing — proceed */
   }
 
   // 2. Purge business data.

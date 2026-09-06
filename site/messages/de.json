@@ -390,7 +390,9 @@
     "deleteCancel": "Abbrechen",
     "deleting": "Wird gelöscht…",
     "deleteConfirmType": "Zum Bestätigen tippe unten “{phrase}”.",
-    "deleteConfirmPhrase": "mein konto löschen"
+    "deleteConfirmPhrase": "mein konto löschen",
+    "deleteProNote": "Dein aktives Pro-Abo wird sofort beendet (keine Erstattung für den laufenden Zeitraum).",
+    "deleteFailed": "Etwas ist schiefgelaufen — dein Konto wurde NICHT gelöscht. Falls du ein aktives Abo hast, beende es zuerst über „Abo verwalten“ und versuche es erneut."
   },
   "Pricing": {
     "title": "Ein einfacher, ehrlicher Preis",

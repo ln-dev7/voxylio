@@ -390,7 +390,9 @@
     "deleteCancel": "Cancelar",
     "deleting": "Excluindo…",
     "deleteConfirmType": "Para confirmar, digite “{phrase}” abaixo.",
-    "deleteConfirmPhrase": "excluir minha conta"
+    "deleteConfirmPhrase": "excluir minha conta",
+    "deleteProNote": "Sua assinatura Pro ativa será cancelada imediatamente (sem reembolso do período atual).",
+    "deleteFailed": "Algo deu errado — sua conta NÃO foi excluída. Se você tem uma assinatura ativa, cancele-a primeiro em “Gerenciar assinatura” e tente novamente."
   },
   "Pricing": {
     "title": "Um preço simples e honesto",

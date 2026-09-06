@@ -390,7 +390,9 @@
     "deleteCancel": "キャンセル",
     "deleting": "削除中…",
     "deleteConfirmType": "確認のため、下に「{phrase}」と入力してください。",
-    "deleteConfirmPhrase": "アカウントを削除"
+    "deleteConfirmPhrase": "アカウントを削除",
+    "deleteProNote": "有効なProサブスクリプションは即時解約されます（当期分の返金はありません）。",
+    "deleteFailed": "エラーが発生しました — アカウントは削除されていません。有効なサブスクリプションがある場合は、先に「サブスクリプションを管理」から解約してから、もう一度お試しください。"
   },
   "Pricing": {
     "title": "シンプルで正直な料金",

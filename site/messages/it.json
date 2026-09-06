@@ -390,7 +390,9 @@
     "deleteCancel": "Annulla",
     "deleting": "Eliminazione…",
     "deleteConfirmType": "Per confermare, digita “{phrase}” qui sotto.",
-    "deleteConfirmPhrase": "elimina il mio account"
+    "deleteConfirmPhrase": "elimina il mio account",
+    "deleteProNote": "Il tuo abbonamento Pro attivo verrà annullato subito (nessun rimborso per il periodo in corso).",
+    "deleteFailed": "Qualcosa è andato storto — il tuo account NON è stato eliminato. Se hai un abbonamento attivo, annullalo prima da «Gestisci abbonamento» e riprova."
   },
   "Pricing": {
     "title": "Un prezzo semplice e onesto",

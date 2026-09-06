@@ -390,7 +390,9 @@
     "deleteCancel": "취소",
     "deleting": "삭제 중…",
     "deleteConfirmType": "확인을 위해 아래에 “{phrase}”를 입력하세요.",
-    "deleteConfirmPhrase": "내 계정 삭제"
+    "deleteConfirmPhrase": "내 계정 삭제",
+    "deleteProNote": "활성 Pro 구독은 즉시 해지됩니다(현재 기간에 대한 환불은 없습니다).",
+    "deleteFailed": "문제가 발생했습니다 — 계정이 삭제되지 않았습니다. 활성 구독이 있다면 먼저 ‘구독 관리’에서 해지한 후 다시 시도하세요."
   },
   "Pricing": {
     "title": "단순하고 정직한 가격",

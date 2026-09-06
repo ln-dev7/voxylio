@@ -390,7 +390,9 @@
     "deleteCancel": "取消",
     "deleting": "刪除中…",
     "deleteConfirmType": "要確認，請在下方輸入「{phrase}」。",
-    "deleteConfirmPhrase": "刪除我的帳號"
+    "deleteConfirmPhrase": "刪除我的帳號",
+    "deleteProNote": "你的有效 Pro 訂閱將立即取消（目前週期不予退款）。",
+    "deleteFailed": "發生錯誤 — 你的帳號未被刪除。如果你有有效訂閱，請先透過「管理訂閱」取消，然後再試一次。"
   },
   "Pricing": {
     "title": "簡單而誠實的價格",
