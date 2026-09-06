@@ -392,7 +392,10 @@
     "deleteConfirmType": "Zum Bestätigen tippe unten “{phrase}”.",
     "deleteConfirmPhrase": "mein konto löschen",
     "deleteProNote": "Dein aktives Pro-Abo wird sofort beendet (keine Erstattung für den laufenden Zeitraum).",
-    "deleteFailed": "Etwas ist schiefgelaufen — dein Konto wurde NICHT gelöscht. Falls du ein aktives Abo hast, beende es zuerst über „Abo verwalten“ und versuche es erneut."
+    "deleteFailed": "Etwas ist schiefgelaufen — dein Konto wurde NICHT gelöscht. Falls du ein aktives Abo hast, beende es zuerst über „Abo verwalten“ und versuche es erneut.",
+    "contactTitle": "Support",
+    "contactText": "Eine Frage, ein Fehler oder eine Website, die unterstützt werden soll? Wir antworten schnell.",
+    "contactBtn": "Kontakt aufnehmen"
   },
   "Pricing": {
     "title": "Ein einfacher, ehrlicher Preis",

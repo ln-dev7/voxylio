@@ -517,6 +517,20 @@ export function AccountView() {
             </button>
           </div>
 
+          {/* Support — signed-in users get a one-click path to the
+              contact page (also the extension's "Contact" target). */}
+          <div className="mt-6 rounded-2xl border border-border bg-card p-6">
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              {t("contactTitle")}
+            </p>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
+              {t("contactText")}
+            </p>
+            <Button asChild variant="outline" className="mt-4 rounded-full">
+              <a href={`/${locale}/contact`}>{t("contactBtn")}</a>
+            </Button>
+          </div>
+
           {/* Permanent account deletion — App Store 5.1.1(v) + GDPR.
               The extension links straight to /account#delete. */}
           <div

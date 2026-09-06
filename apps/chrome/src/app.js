@@ -716,6 +716,14 @@ function initAccount() {
   $("acctDelete").addEventListener("click", () => {
     chrome.tabs.create({ url: accountUrl("#delete") });
   });
+  // Support: the site's contact page, in the UI language. Plain page
+  // with no purchase surface, so no Safari special-casing needed.
+  $("acctContact").addEventListener("click", () => {
+    const lang = resolveUiLang(settings.uiLang, navigator.language);
+    chrome.tabs.create({
+      url: `https://voxylio.lndev.me/${lang}/contact?from=extension`,
+    });
+  });
   $("acctSignout").addEventListener("click", async () => {
     await chrome.storage.local.remove(["accountToken", "entitlements"]);
     renderAccount();

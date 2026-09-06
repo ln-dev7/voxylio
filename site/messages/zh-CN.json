@@ -392,7 +392,10 @@
     "deleteConfirmType": "要确认，请在下方输入“{phrase}”。",
     "deleteConfirmPhrase": "删除我的账号",
     "deleteProNote": "你的有效 Pro 订阅将立即取消（当前周期不予退款）。",
-    "deleteFailed": "出了点问题 — 你的账号未被删除。如果你有有效订阅，请先通过“管理订阅”取消，然后重试。"
+    "deleteFailed": "出了点问题 — 你的账号未被删除。如果你有有效订阅，请先通过“管理订阅”取消，然后重试。",
+    "contactTitle": "支持",
+    "contactText": "有疑问、发现了 bug，或希望我们支持某个网站？我们会尽快回复。",
+    "contactBtn": "联系我们"
   },
   "Pricing": {
     "title": "简单而诚实的价格",

@@ -181,5 +181,6 @@
   "updThrottled": "Riprova tra qualche minuto",
   "statusYtDubbed": "YouTube sta già doppiando questo video nella tua lingua (traccia audio automatica): senti due voci. Nel player: ⚙️ → Traccia audio → scegli la versione originale, poi ricarica la pagina.",
   "toggleDub": "Attiva il doppiaggio",
-  "btnDeleteAccount": "Elimina il mio account"
+  "btnDeleteAccount": "Elimina il mio account",
+  "btnContact": "Contattaci"
 }

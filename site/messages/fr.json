@@ -392,7 +392,10 @@
     "deleteConfirmType": "Pour confirmer, tape “{phrase}” ci-dessous.",
     "deleteConfirmPhrase": "supprimer mon compte",
     "deleteProNote": "Ton abonnement Pro actif sera annulé immédiatement (sans remboursement de la période en cours).",
-    "deleteFailed": "Une erreur est survenue — ton compte n’a PAS été supprimé. Si tu as un abonnement actif, annule-le d’abord via « Gérer l’abonnement », puis réessaie."
+    "deleteFailed": "Une erreur est survenue — ton compte n’a PAS été supprimé. Si tu as un abonnement actif, annule-le d’abord via « Gérer l’abonnement », puis réessaie.",
+    "contactTitle": "Support",
+    "contactText": "Une question, un bug ou un site à ajouter ? On répond rapidement.",
+    "contactBtn": "Nous contacter"
   },
   "Pricing": {
     "title": "Un prix simple et honnête",
