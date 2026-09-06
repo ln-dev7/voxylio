@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 
 /**
  * Vercel Web Analytics + first-touch acquisition capture.
