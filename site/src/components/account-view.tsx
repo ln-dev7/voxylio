@@ -167,8 +167,20 @@ export function AccountView() {
   // Opened from the Safari build (?ctx=safari): App Store rules — the
   // page must show NO purchase call-to-action and no billing portal.
   const [safariCtx, setSafariCtx] = useState(false);
-  // Account deletion (App Store 5.1.1(v) + GDPR): idle → confirm → busy.
-  const [delStep, setDelStep] = useState<"idle" | "confirm" | "busy">("idle");
+  // Account deletion (App Store 5.1.1(v) + GDPR): a modal with a typed
+  // confirmation phrase (localized), GitHub-style.
+  const [delOpen, setDelOpen] = useState(false);
+  const [delInput, setDelInput] = useState("");
+  const [delBusy, setDelBusy] = useState(false);
+  const normPhrase = (s: string) => s.trim().toLowerCase();
+  useEffect(() => {
+    if (!delOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !delBusy) setDelOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [delOpen, delBusy]);
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("ctx") === "safari")
       setSafariCtx(true);
@@ -516,25 +528,71 @@ export function AccountView() {
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
               {t("deleteText")}
             </p>
-            {delStep === "idle" ? (
-              <Button
-                variant="outline"
-                className="mt-4 rounded-full border-red-500/40 bg-card text-red-400 hover:bg-red-500/10 hover:text-red-300"
-                onClick={() => setDelStep("confirm")}
-              >
-                {t("deleteBtn")}
-              </Button>
-            ) : (
-              <div className="mt-4 space-y-3">
-                <p className="text-sm font-medium text-red-400">
+            <Button
+              variant="outline"
+              className="mt-4 rounded-full border-red-500/40 bg-card text-red-400 hover:bg-red-500/10 hover:text-red-300"
+              onClick={() => {
+                setDelInput("");
+                setDelOpen(true);
+              }}
+            >
+              {t("deleteBtn")}
+            </Button>
+          </div>
+
+          {/* Typed-confirmation modal (GitHub-style): the localized
+              phrase must be typed before the destructive button arms. */}
+          {delOpen && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="del-title"
+            >
+              <div
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                onClick={() => !delBusy && setDelOpen(false)}
+              />
+              <div className="relative w-full max-w-md rounded-2xl border border-red-500/30 bg-card p-6 shadow-2xl">
+                <p
+                  id="del-title"
+                  className="font-display text-lg font-semibold text-red-400"
+                >
+                  {t("deleteTitle")}
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {t("deleteConfirmText")}
                 </p>
-                <div className="flex flex-wrap items-center gap-3">
+                <p className="mt-4 text-sm text-foreground">
+                  {t("deleteConfirmType", {
+                    phrase: t("deleteConfirmPhrase"),
+                  })}
+                </p>
+                <input
+                  autoFocus
+                  value={delInput}
+                  onChange={(e) => setDelInput(e.target.value)}
+                  disabled={delBusy}
+                  className="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none transition-colors focus:border-red-500/60"
+                />
+                <div className="mt-5 flex items-center justify-end gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setDelOpen(false)}
+                    disabled={delBusy}
+                    className="cursor-pointer text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {t("deleteCancel")}
+                  </button>
                   <Button
-                    disabled={delStep === "busy"}
+                    disabled={
+                      delBusy ||
+                      normPhrase(delInput) !==
+                        normPhrase(t("deleteConfirmPhrase"))
+                    }
                     className="rounded-full bg-red-500 text-white hover:bg-red-600"
                     onClick={async () => {
-                      setDelStep("busy");
+                      setDelBusy(true);
                       try {
                         const res = await fetch("/api/account/delete", {
                           method: "POST",
@@ -552,25 +610,17 @@ export function AccountView() {
                         } catch {}
                         window.location.assign(`/${locale}`);
                       } catch {
-                        setDelStep("idle");
+                        setDelBusy(false);
+                        setDelOpen(false);
                       }
                     }}
                   >
-                    {delStep === "busy" ? t("deleting") : t("deleteConfirmBtn")}
+                    {delBusy ? t("deleting") : t("deleteConfirmBtn")}
                   </Button>
-                  {delStep === "confirm" && (
-                    <button
-                      type="button"
-                      onClick={() => setDelStep("idle")}
-                      className="cursor-pointer text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {t("deleteCancel")}
-                    </button>
-                  )}
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
     </section>

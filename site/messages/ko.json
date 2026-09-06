@@ -388,7 +388,9 @@
     "deleteConfirmText": "정말 삭제할까요? 계정이 삭제되고 활성 구독이 해지됩니다 — 영구적으로.",
     "deleteConfirmBtn": "영구 삭제",
     "deleteCancel": "취소",
-    "deleting": "삭제 중…"
+    "deleting": "삭제 중…",
+    "deleteConfirmType": "확인을 위해 아래에 “{phrase}”를 입력하세요.",
+    "deleteConfirmPhrase": "내 계정 삭제"
   },
   "Pricing": {
     "title": "단순하고 정직한 가격",

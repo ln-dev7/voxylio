@@ -388,7 +388,9 @@
     "deleteConfirmText": "Wirklich? Dadurch wird dein Konto gelöscht und jedes aktive Abonnement beendet — endgültig.",
     "deleteConfirmBtn": "Endgültig löschen",
     "deleteCancel": "Abbrechen",
-    "deleting": "Wird gelöscht…"
+    "deleting": "Wird gelöscht…",
+    "deleteConfirmType": "Zum Bestätigen tippe unten “{phrase}”.",
+    "deleteConfirmPhrase": "mein konto löschen"
   },
   "Pricing": {
     "title": "Ein einfacher, ehrlicher Preis",

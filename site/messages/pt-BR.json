@@ -388,7 +388,9 @@
     "deleteConfirmText": "Tem certeza? Isso exclui sua conta e cancela qualquer assinatura ativa — permanentemente.",
     "deleteConfirmBtn": "Excluir permanentemente",
     "deleteCancel": "Cancelar",
-    "deleting": "Excluindo…"
+    "deleting": "Excluindo…",
+    "deleteConfirmType": "Para confirmar, digite “{phrase}” abaixo.",
+    "deleteConfirmPhrase": "excluir minha conta"
   },
   "Pricing": {
     "title": "Um preço simples e honesto",

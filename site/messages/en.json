@@ -388,7 +388,9 @@
     "deleteConfirmText": "Are you sure? This deletes your account and cancels any active subscription — permanently.",
     "deleteConfirmBtn": "Delete permanently",
     "deleteCancel": "Cancel",
-    "deleting": "Deleting…"
+    "deleting": "Deleting…",
+    "deleteConfirmType": "To confirm, type “{phrase}” below.",
+    "deleteConfirmPhrase": "delete my account"
   },
   "Pricing": {
     "title": "Simple, honest pricing",

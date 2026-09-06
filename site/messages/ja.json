@@ -388,7 +388,9 @@
     "deleteConfirmText": "本当によろしいですか？アカウントが削除され、有効なサブスクリプションも解約されます — 元に戻せません。",
     "deleteConfirmBtn": "完全に削除",
     "deleteCancel": "キャンセル",
-    "deleting": "削除中…"
+    "deleting": "削除中…",
+    "deleteConfirmType": "確認のため、下に「{phrase}」と入力してください。",
+    "deleteConfirmPhrase": "アカウントを削除"
   },
   "Pricing": {
     "title": "シンプルで正直な料金",

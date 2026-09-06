@@ -388,7 +388,9 @@
     "deleteConfirmText": "Sicuro? Questa azione elimina il tuo account e annulla ogni abbonamento attivo — definitivamente.",
     "deleteConfirmBtn": "Elimina definitivamente",
     "deleteCancel": "Annulla",
-    "deleting": "Eliminazione…"
+    "deleting": "Eliminazione…",
+    "deleteConfirmType": "Per confermare, digita “{phrase}” qui sotto.",
+    "deleteConfirmPhrase": "elimina il mio account"
   },
   "Pricing": {
     "title": "Un prezzo semplice e onesto",

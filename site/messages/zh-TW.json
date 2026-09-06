@@ -388,7 +388,9 @@
     "deleteConfirmText": "確定嗎？這將刪除你的帳號並取消所有有效訂閱 — 且無法復原。",
     "deleteConfirmBtn": "永久刪除",
     "deleteCancel": "取消",
-    "deleting": "刪除中…"
+    "deleting": "刪除中…",
+    "deleteConfirmType": "要確認，請在下方輸入「{phrase}」。",
+    "deleteConfirmPhrase": "刪除我的帳號"
   },
   "Pricing": {
     "title": "簡單而誠實的價格",

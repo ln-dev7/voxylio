@@ -388,7 +388,9 @@
     "deleteConfirmText": "Vraiment ? Cette action supprime votre compte et annule tout abonnement actif — définitivement.",
     "deleteConfirmBtn": "Supprimer définitivement",
     "deleteCancel": "Annuler",
-    "deleting": "Suppression…"
+    "deleting": "Suppression…",
+    "deleteConfirmType": "Pour confirmer, tape “{phrase}” ci-dessous.",
+    "deleteConfirmPhrase": "supprimer mon compte"
   },
   "Pricing": {
     "title": "Un prix simple et honnête",
