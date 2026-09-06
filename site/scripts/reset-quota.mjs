@@ -81,7 +81,12 @@ async function findUserTables() {
     having count(distinct column_name) = 2
     order by (table_schema = 'neon_auth') desc, table_name
   `);
-  return q.rows.map((r) => `"${r.table_schema}"."${r.table_name}"`);
+  const safeIdent = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
+  return q.rows
+    .filter(
+      (r) => safeIdent.test(r.table_schema) && safeIdent.test(r.table_name),
+    )
+    .map((r) => `"${r.table_schema}"."${r.table_name}"`);
 }
 
 async function resolveUser(t) {
@@ -97,10 +102,11 @@ async function resolveUser(t) {
   }
   for (const table of tables) {
     try {
-      const r = await client.query(
-        `select id, email from ${table} where email = $1 limit 1`,
-        [t],
-      );
+      // `table` is not a bind parameter (identifiers can't be $-bound in
+      // SQL); it is safe here because findUserTables() already restricted
+      // table_schema/table_name to a strict [a-zA-Z_][a-zA-Z0-9_]* pattern.
+      const sql = "select id, email from " + table + " where email = $1 limit 1";
+      const r = await client.query(sql, [t]);
       if (r.rows.length) {
         console.log(`(resolved via ${table})`);
         return { id: r.rows[0].id, email: r.rows[0].email };
