@@ -1,7 +1,7 @@
 {
   "Meta": {
-    "title": "Voxylio — Real-time video dubbing in your browser",
-    "description": "A Chrome extension that dubs any subtitled video in real time — into 65+ languages. Local translation, voice synced with playback."
+    "title": "Voxylio — Live AI video dubbing extension for your browser",
+    "description": "Auto-dub any subtitled video in real time. A Chrome, Edge & Firefox extension that translates and speaks over YouTube, Netflix, Udemy and more — 65+ languages."
   },
   "Header": {
     "features": "Features",
@@ -482,6 +482,7 @@
     "notBody": "Crunchyroll draws its subtitles inside the video image (canvas), so there is no text for Voxylio to read. DRM-protected players that expose no track at all are in the same situation.",
     "missing": "A site missing from this page? <contact>Tell me</contact> — verified sites are added in every release.",
     "cta": "Add to Chrome — free",
-    "ctaPricing": "See pricing"
+    "ctaPricing": "See pricing",
+    "metaTitle": "Dub YouTube, Netflix, Udemy & 17 more platforms — Voxylio"
   }
 }

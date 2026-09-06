@@ -1,7 +1,7 @@
 {
   "Meta": {
-    "title": "Voxylio — ブラウザでリアルタイム動画吹き替え",
-    "description": "字幕付き動画をリアルタイムで吹き替えるChrome拡張機能 — 65以上の言語に対応。ローカル翻訳、再生に同期した音声。"
+    "title": "Voxylio — ブラウザでライブAI動画吹き替え拡張機能",
+    "description": "字幕付き動画をリアルタイムで自動吹き替え。Chrome・Edge・Firefox向け拡張機能。YouTube、Netflix、Udemyなどで翻訳と音声を再生 — 65以上の言語に対応。"
   },
   "Header": {
     "features": "機能",
@@ -482,6 +482,7 @@
     "notBody": "Crunchyrollは字幕を映像内（canvas）に描画するため、Voxylioが読み取れるテキストがありません。トラックを一切公開しないDRM保護プレーヤーも同様です。",
     "missing": "このページにないサイトがありますか？<contact>教えてください</contact> — 検証済みサイトは毎回のリリースで追加されます。",
     "cta": "Chromeに追加 — 無料",
-    "ctaPricing": "料金を見る"
+    "ctaPricing": "料金を見る",
+    "metaTitle": "YouTube・Netflix・Udemyなど17プラットフォームを吹き替え — Voxylio"
   }
 }

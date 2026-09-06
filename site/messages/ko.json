@@ -1,7 +1,7 @@
 {
   "Meta": {
-    "title": "Voxylio — 브라우저에서 실시간 영상 더빙",
-    "description": "자막 있는 영상을 실시간으로 더빙하는 Chrome 확장 프로그램 — 65개 이상의 언어 지원. 로컬 번역, 재생과 동기화된 음성."
+    "title": "Voxylio — 실시간 AI 영상 더빙 브라우저 확장 프로그램",
+    "description": "자막 있는 영상을 실시간으로 자동 더빙합니다. Chrome·Edge·Firefox 확장 프로그램으로 YouTube, Netflix, Udemy에서 번역과 음성을 — 65개 이상 언어 지원."
   },
   "Header": {
     "features": "기능",
@@ -482,6 +482,7 @@
     "notBody": "Crunchyroll은 자막을 영상 이미지(canvas) 안에 그리기 때문에 Voxylio가 읽을 텍스트가 없습니다. 트랙을 전혀 제공하지 않는 DRM 보호 플레이어도 마찬가지입니다.",
     "missing": "이 페이지에 없는 사이트가 있나요? <contact>알려주세요</contact> — 검증된 사이트가 릴리스마다 추가됩니다.",
     "cta": "Chrome에 추가 — 무료",
-    "ctaPricing": "요금 보기"
+    "ctaPricing": "요금 보기",
+    "metaTitle": "YouTube·Netflix·Udemy 등 17개 플랫폼 더빙 — Voxylio"
   }
 }

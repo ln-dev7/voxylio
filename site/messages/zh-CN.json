@@ -1,7 +1,7 @@
 {
   "Meta": {
-    "title": "Voxylio — 在浏览器中实时视频配音",
-    "description": "一款实时为带字幕视频配音的 Chrome 扩展 — 支持 65 种以上语言。本地翻译，语音与播放同步。"
+    "title": "Voxylio — 浏览器实时 AI 视频配音扩展",
+    "description": "自动为带字幕的视频实时配音。适用于 Chrome、Edge 和 Firefox 的扩展：在 YouTube、Netflix、Udemy 上翻译并朗读 — 支持 65 种以上语言。"
   },
   "Header": {
     "features": "功能",
@@ -482,6 +482,7 @@
     "notBody": "Crunchyroll 将字幕绘制在视频画面内（canvas），Voxylio 没有可读取的文本。完全不提供轨道的 DRM 保护播放器也是同样情况。",
     "missing": "这个页面漏了某个网站？<contact>告诉我</contact> — 每个版本都会加入新的已验证网站。",
     "cta": "添加至 Chrome — 免费",
-    "ctaPricing": "查看价格"
+    "ctaPricing": "查看价格",
+    "metaTitle": "为 YouTube、Netflix、Udemy 等 17 个平台配音 — Voxylio"
   }
 }

@@ -45,7 +45,9 @@ export async function generateMetadata({
   return pageMeta({
     locale,
     path: "/sites",
-    title: `${t("title")} — Voxylio`,
+    // metaTitle carries the search phrasing ("Dub YouTube, Netflix,
+    // Udemy…") while the on-page H1 stays the short t("title").
+    title: t("metaTitle"),
     description: t("intro"),
   });
 }

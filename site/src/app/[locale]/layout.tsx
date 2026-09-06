@@ -6,6 +6,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { SITE_URL } from "@/lib/constants";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AcquisitionTracking } from "@/components/acquisition";
 import "../globals.css";
 
 // Self-hosted fonts: Inter for body, Space Grotesk for display type
@@ -61,6 +62,7 @@ export default async function LocaleLayout({
         <ThemeProvider>
           <NextIntlClientProvider>{children}</NextIntlClientProvider>
         </ThemeProvider>
+        <AcquisitionTracking />
       </body>
     </html>
   );

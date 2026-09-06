@@ -1,7 +1,7 @@
 {
   "Meta": {
-    "title": "Voxylio — Dublagem de vídeo em tempo real no seu navegador",
-    "description": "Uma extensão Chrome que dubla em tempo real qualquer vídeo legendado — em mais de 65 idiomas. Tradução local, voz sincronizada com a reprodução."
+    "title": "Voxylio — Extensão de dublagem de vídeo com IA em tempo real",
+    "description": "Duble automaticamente qualquer vídeo legendado em tempo real. Extensão para Chrome, Edge e Firefox: tradução e voz no YouTube, Netflix, Udemy — 65+ idiomas."
   },
   "Header": {
     "features": "Recursos",
@@ -482,6 +482,7 @@
     "notBody": "O Crunchyroll desenha as legendas dentro da imagem do vídeo (canvas), então não há texto para o Voxylio ler. Players protegidos por DRM que não expõem nenhuma faixa estão na mesma situação.",
     "missing": "Falta um site nesta página? <contact>Me conte</contact> — sites verificados são adicionados a cada versão.",
     "cta": "Adicionar ao Chrome — grátis",
-    "ctaPricing": "Ver preços"
+    "ctaPricing": "Ver preços",
+    "metaTitle": "Dublar YouTube, Netflix, Udemy e 17 plataformas — Voxylio"
   }
 }

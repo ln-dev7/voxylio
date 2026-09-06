@@ -26,10 +26,28 @@ export async function GET(req: Request) {
     );
   }
 
+  // First-touch acquisition (vx-utm cookie, set by AcquisitionTracking):
+  // stamped into the checkout metadata so Polar shows, for every paying
+  // customer, the channel that originally brought them.
+  const attribution: Record<string, string> = {};
+  try {
+    const m = /(?:^|;\s*)vx-utm=([^;]+)/.exec(req.headers.get("cookie") || "");
+    if (m) {
+      const d = JSON.parse(decodeURIComponent(m[1]));
+      for (const k of ["source", "medium", "campaign", "referrer", "landing"]) {
+        if (typeof d[k] === "string" && d[k])
+          attribution["attr_" + k] = String(d[k]).slice(0, 100);
+      }
+    }
+  } catch {
+    /* malformed cookie: checkout proceeds untagged */
+  }
+
   const checkout = await polar.checkouts.create({
     products: [productId],
     externalCustomerId: session.user.id,
     customerEmail: session.user.email ?? undefined,
+    metadata: attribution,
     successUrl: new URL("/account?checkout=success", url.origin).toString(),
   });
 

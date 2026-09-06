@@ -1,7 +1,7 @@
 {
   "Meta": {
-    "title": "Voxylio — Doublage vidéo en temps réel dans votre navigateur",
-    "description": "Une extension Chrome qui double en temps réel toute vidéo sous-titrée — dans plus de 65 langues. Traduction locale, voix synchronisée avec la lecture."
+    "title": "Voxylio — Doublage vidéo IA en direct, extension navigateur",
+    "description": "Doublage automatique de toute vidéo sous-titrée, en temps réel. Extension Chrome, Edge et Firefox : traduction et voix sur YouTube, Netflix, Udemy — 65+ langues."
   },
   "Header": {
     "features": "Fonctionnalités",
@@ -482,6 +482,7 @@
     "notBody": "Crunchyroll dessine ses sous-titres dans l'image de la vidéo (canvas) : il n'y a aucun texte à lire pour Voxylio. Les lecteurs protégés par DRM qui n'exposent aucune piste sont dans la même situation.",
     "missing": "Un site manque à cette page ? <contact>Dites-le-moi</contact> — des sites vérifiés sont ajoutés à chaque version.",
     "cta": "Ajouter à Chrome — gratuit",
-    "ctaPricing": "Voir les tarifs"
+    "ctaPricing": "Voir les tarifs",
+    "metaTitle": "Doubler YouTube, Netflix, Udemy et 17 plateformes — Voxylio"
   }
 }

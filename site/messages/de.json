@@ -1,7 +1,7 @@
 {
   "Meta": {
-    "title": "Voxylio — Video-Dubbing in Echtzeit, direkt im Browser",
-    "description": "Eine Chrome-Erweiterung, die jedes untertitelte Video in Echtzeit synchronisiert — in über 65 Sprachen. Lokale Übersetzung, Stimme synchron zur Wiedergabe."
+    "title": "Voxylio — Live-KI-Videodubbing als Browser-Erweiterung",
+    "description": "Untertitelte Videos automatisch in Echtzeit dubben. Erweiterung für Chrome, Edge und Firefox: Übersetzung und Stimme auf YouTube, Netflix, Udemy — 65+ Sprachen."
   },
   "Header": {
     "features": "Funktionen",
@@ -482,6 +482,7 @@
     "notBody": "Crunchyroll zeichnet seine Untertitel direkt ins Videobild (Canvas) — es gibt keinen Text, den Voxylio lesen könnte. DRM-geschützte Player ohne jede Spur sind im selben Fall.",
     "missing": "Fehlt eine Website auf dieser Seite? <contact>Sag mir Bescheid</contact> — verifizierte Websites kommen mit jedem Release dazu.",
     "cta": "Zu Chrome hinzufügen — kostenlos",
-    "ctaPricing": "Preise ansehen"
+    "ctaPricing": "Preise ansehen",
+    "metaTitle": "YouTube, Netflix, Udemy & 17 Plattformen dubben — Voxylio"
   }
 }
