@@ -70,7 +70,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ locale
       datePublished: article.publishedAt,
       dateModified: article.publishedAt,
       inLanguage: content.locale,
-      author: { "@type": "Person", name: "Leonel Ngoya", url: "https://lndev.me" },
+      author: {
+        "@type": "Person",
+        name: "Leonel Ngoya",
+        url: "https://lndev.me",
+        image: `${SITE_URL}/leonel-ngoya.jpg`,
+      },
       publisher: { "@type": "Organization", name: "Voxylio", url: SITE_URL, logo: { "@type": "ImageObject", url: `${SITE_URL}/logo.png` } },
     },
     {
@@ -108,7 +113,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ locale
             <h1 className="mt-5 text-balance font-display text-4xl font-semibold leading-tight tracking-tight sm:text-6xl">{content.articleTitle}</h1>
             <p className="mt-6 max-w-3xl text-pretty text-lg leading-relaxed text-muted-foreground sm:text-xl">{content.articleDescription}</p>
             <div className="mt-7 flex items-center gap-3 text-sm">
-              <Image src="/logo.png" alt="" width={36} height={36} className="rounded-lg" />
+              <Image
+                src="/leonel-ngoya.jpg"
+                alt="Leonel Ngoya"
+                width={48}
+                height={48}
+                sizes="48px"
+                className="size-12 rounded-full border border-border object-cover"
+              />
               <div><p className="font-semibold">Leonel Ngoya</p><p className="text-muted-foreground">{content.authorRole}</p></div>
             </div>
           </header>

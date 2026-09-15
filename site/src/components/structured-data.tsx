@@ -67,6 +67,7 @@ export async function StructuredData({
         "@id": `${SITE_URL}/#founder`,
         name: "Leonel Ngoya",
         url: "https://lndev.me",
+        image: `${SITE_URL}/leonel-ngoya.jpg`,
         sameAs: [
           "https://github.com/ln-dev7",
           "https://x.com/ln_dev7",
