@@ -12,7 +12,8 @@
     "openMenu": "메뉴 열기",
     "closeMenu": "메뉴 닫기",
     "account": "계정",
-    "pricing": "요금"
+    "pricing": "요금",
+    "blog": "블로그"
   },
   "Hero": {
     "title": "어떤 영상이든 <accent>내 언어로</accent>",
@@ -171,6 +172,7 @@
       "howItWorks": "작동 방식",
       "install": "설치",
       "faq": "FAQ",
+      "blog": "블로그",
       "license": "FSL 라이선스",
       "issues": "문제 신고",
       "privacy": "개인정보",

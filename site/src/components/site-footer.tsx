@@ -98,6 +98,14 @@ export function SiteFooter() {
               {t("resources")}
             </h3>
             <ul className="mt-4 space-y-2.5">
+              <li>
+                <Link
+                  href="/blog"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t("links.blog")}
+                </Link>
+              </li>
               {resources.map((l) => (
                 <li key={l.href}>
                   <a

@@ -12,7 +12,8 @@
     "openMenu": "Apri il menu",
     "closeMenu": "Chiudi il menu",
     "account": "Account",
-    "pricing": "Prezzi"
+    "pricing": "Prezzi",
+    "blog": "Blog"
   },
   "Hero": {
     "title": "Guarda qualsiasi video nella <accent>tua lingua</accent>",
@@ -171,6 +172,7 @@
       "howItWorks": "Come funziona",
       "install": "Installa",
       "faq": "FAQ",
+      "blog": "Blog",
       "license": "Licenza FSL",
       "issues": "Segnala un problema",
       "privacy": "Privacy",

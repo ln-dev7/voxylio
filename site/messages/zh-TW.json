@@ -12,7 +12,8 @@
     "openMenu": "開啟選單",
     "closeMenu": "關閉選單",
     "account": "帳戶",
-    "pricing": "價格"
+    "pricing": "價格",
+    "blog": "部落格"
   },
   "Hero": {
     "title": "用<accent>你的語言</accent>觀看任何影片",
@@ -171,6 +172,7 @@
       "howItWorks": "運作方式",
       "install": "安裝",
       "faq": "常見問題",
+      "blog": "部落格",
       "license": "FSL 授權",
       "issues": "回報問題",
       "privacy": "隱私權",

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/constants";
 import { routing } from "@/i18n/routing";
+import { FIRST_BLOG_ARTICLE_PATH } from "@/lib/blog";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const localized = (path: string): MetadataRoute.Sitemap =>
@@ -27,5 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...localized("/privacy"),
     ...localized("/terms"),
     ...localized("/contact"),
+    ...localized("/blog"),
+    ...localized(FIRST_BLOG_ARTICLE_PATH),
   ];
 }

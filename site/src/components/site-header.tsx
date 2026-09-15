@@ -58,6 +58,12 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          <Link
+            href="/blog"
+            className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            {t("blog")}
+          </Link>
         </nav>
 
         <div className="ml-auto flex items-center gap-2 sm:gap-2.5">
@@ -132,6 +138,13 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
+            <Link
+              href="/blog"
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-3 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            >
+              {t("blog")}
+            </Link>
             <Link
               href="/account"
               onClick={() => setOpen(false)}

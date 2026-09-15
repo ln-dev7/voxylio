@@ -12,7 +12,8 @@
     "openMenu": "メニューを開く",
     "closeMenu": "メニューを閉じる",
     "account": "アカウント",
-    "pricing": "料金"
+    "pricing": "料金",
+    "blog": "ブログ"
   },
   "Hero": {
     "title": "どんな動画も<accent>あなたの言語</accent>で",
@@ -171,6 +172,7 @@
       "howItWorks": "仕組み",
       "install": "インストール",
       "faq": "FAQ",
+      "blog": "ブログ",
       "license": "FSLライセンス",
       "issues": "問題を報告",
       "privacy": "プライバシー",
