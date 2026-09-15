@@ -19,7 +19,6 @@ export function SiteHeader() {
   const nav = [
     { key: "features", href: { pathname: "/", hash: "features" }, label: t("features") },
     { key: "pricing", href: { pathname: "/", hash: "pricing" }, label: t("pricing") },
-    { key: "how-it-works", href: { pathname: "/", hash: "how-it-works" }, label: t("howItWorks") },
   ] as const;
 
   // Clicking an anchor for the CURRENT page is a no-op for the router
