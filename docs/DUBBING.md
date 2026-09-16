@@ -19,7 +19,7 @@ groupe traduit (translation pipeline)
                        250 ms, rampe en dB), tenu 4,5 s entre les lignes
                        d'un même échange, relâché en 700 ms dans les
                        vraies pauses — plus jamais un duck permanent
-       Pro (Aura-2)    MP3 par phrase ; preservesPitch ; le débit est
+       Pro (Aura-2)    MP3 pré-décodé en lookahead ; preservesPitch ; le débit est
                        calé sur la durée RÉELLE du MP3 (metadata) pour
                        tenir la fenêtre — clampé ≤1,35
        Local           voix système ; débit auto-calibré (wps mesuré par
@@ -81,6 +81,11 @@ Invariants :
 - **Pro : ajustement exact** : le débit du MP3 Aura-2 se cale sur sa
   durée réelle (metadata) plutôt qu'une estimation en mots ; moitié de
   la préférence de vitesse seulement (la voix neurale a déjà sa cadence).
+- **Pro : pré-décodage audio** : les éléments audio et leurs métadonnées
+  sont préparés pendant le lookahead, pas au début de la réplique. Les
+  lignes suivantes démarrent sans payer un nouveau blanc de décodage ;
+  caption et journal suivent désormais le démarrage audio réel, et le
+  duck ne commence qu'une fois l'audio prêt à être lancé.
 
 ### Cohérence
 - **Une voix par passage** (latch 60 s après échec cloud), **bonne voix
@@ -118,18 +123,16 @@ est un trou dans le doublage.
 
 ## 3. Prochaines étapes (ordre recommandé)
 
-1. **Pré-décodage cloud** : créer l'élément Audio (preload) dès la
-   pré-génération pour gommer les ~50-150 ms de départ entre lignes.
-2. **Micro-fusion** : deux répliques très courtes séparées de <300 ms
+1. **Micro-fusion** : deux répliques très courtes séparées de <300 ms
    dites en une utterance (moins de latence de démarrage moteur).
-3. **Budget de retard type interprète** : au-delà de ~4 s de retard
+2. **Budget de retard type interprète** : au-delà de ~4 s de retard
    soutenu (EVS max des pros), compresser plus agressivement plutôt que
    de laisser la file jeter des lignes.
-4. **Débounce du changement de vidéo primaire** (sites à pubs) : éviter
+3. **Débounce du changement de vidéo primaire** (sites à pubs) : éviter
    le pompage duck + la ligne perdue à chaque transition.
-5. **Annulation des fetchs cloud abandonnés** (scrub) : AbortController
+4. **Annulation des fetchs cloud abandonnés** (scrub) : AbortController
    jusqu'au background pour ne plus payer les synthèses jetées.
-6. **Curseurs O(1)** dans tick/pretranslate (index par id, curseur de
+5. **Curseurs O(1)** dans tick/pretranslate (index par id, curseur de
    groupe) pour les très longues vidéos.
 
 Non retenu, assumé : anticiper l'original (les interprètes ne le font

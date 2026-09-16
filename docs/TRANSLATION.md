@@ -58,7 +58,9 @@ Invariants non négociables :
 - **Scripts non latins réparés** : les parenthèses japonaises/russes/
   arabes ne sont plus supprimées (l'heuristique « tout majuscules »
   ignore les écritures sans casse) ; fins de phrase CJK/arabe/devanagari
-  reconnues (。！？؟۔।) ; débit voix estimé au caractère pour CJK/thaï.
+  reconnues (。！？؟۔।) ; débit voix estimé au caractère pour CJK/thaï ;
+  les fenêtres glissantes japonaises, chinoises, coréennes et thaïes sont
+  recousues par chevauchement de caractères sans répéter leur fragment.
 - **Phrases mieux reconstruites** : abréviations de titres (Dr., M.) ne
   coupent plus une phrase ; `…` suivi d'une minuscule = continuation.
 - **Contexte pour tous** : le paramètre `context` de DeepL (gratuit, non

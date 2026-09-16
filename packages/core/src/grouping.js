@@ -35,6 +35,55 @@ function normalizeWords(s) {
     .filter(Boolean);
 }
 
+// Sliding captions in CJK/Thai commonly have no spaces, so a word-token
+// overlap sees each whole window as one unrelated "word" and repeats the
+// shared tail. Keep this fallback restricted to space-less scripts and a
+// conservative four-character minimum to avoid gluing short unrelated cues.
+const SPACELESS_SCRIPT_RE =
+  /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uac00-\ud7af\u0e00-\u0e7f]/u;
+const CHAR_JUNK_RE = /[\s\p{P}\p{S}]/u;
+
+function normalizeChars(s) {
+  return Array.from(String(s).normalize("NFKC").toLowerCase()).filter(
+    (char) => !CHAR_JUNK_RE.test(char),
+  );
+}
+
+function spacelessOverlap(a, b, minChars = 4) {
+  if (!SPACELESS_SCRIPT_RE.test(a) || !SPACELESS_SCRIPT_RE.test(b)) return 0;
+  const ac = normalizeChars(a);
+  const bc = normalizeChars(b);
+  const max = Math.min(ac.length, bc.length);
+  for (let n = max; n >= minChars; n--) {
+    let match = true;
+    for (let i = 0; i < n; i++) {
+      if (ac[ac.length - n + i] !== bc[i]) {
+        match = false;
+        break;
+      }
+    }
+    if (match) return n;
+  }
+  return 0;
+}
+
+// Original-string offset of the suffix that contains `count` normalized
+// characters. Equivalent to the token-aware cut below, but Unicode-safe.
+function spacelessSuffixOffset(s, count) {
+  const chars = [];
+  let offset = 0;
+  for (const char of String(s)) {
+    chars.push({ char, offset });
+    offset += char.length;
+  }
+  let consumed = 0;
+  for (let i = chars.length - 1; i >= 0; i--) {
+    if (!CHAR_JUNK_RE.test(chars[i].char.normalize("NFKC"))) consumed++;
+    if (consumed >= count) return chars[i].offset;
+  }
+  return 0;
+}
+
 // Longest overlap (in words) between the END of `a` and the START of `b`.
 // Returns the number of overlapping words of `b`, or 0.
 export function wordOverlap(a, b, minWords = 2) {
@@ -120,6 +169,21 @@ export function mergeRollup(last, start, end, text) {
     }
     const head = last.text.slice(0, cutIdx).trimEnd();
     const merged = head ? head + " " + text : text;
+    return {
+      text: merged,
+      end: Math.max(last.end, end),
+      grew: merged.length > last.text.length,
+    };
+  }
+  const charOverlap = spacelessOverlap(last.text, text);
+  if (charOverlap > 0) {
+    const incomingChars = normalizeChars(text);
+    if (charOverlap >= incomingChars.length) {
+      return { text: last.text, end: Math.max(last.end, end), grew: false };
+    }
+    const cutIdx = spacelessSuffixOffset(last.text, charOverlap);
+    const head = last.text.slice(0, cutIdx).trimEnd();
+    const merged = head + text;
     return {
       text: merged,
       end: Math.max(last.end, end),

@@ -109,6 +109,44 @@
   function normalizeWords(s) {
     return s.toLowerCase().replace(/[.,!?…;:'"«»()\[\]]/g, " ").split(/\s+/).filter(Boolean);
   }
+  var SPACELESS_SCRIPT_RE = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uac00-\ud7af\u0e00-\u0e7f]/u;
+  var CHAR_JUNK_RE = /[\s\p{P}\p{S}]/u;
+  function normalizeChars(s) {
+    return Array.from(String(s).normalize("NFKC").toLowerCase()).filter(
+      (char) => !CHAR_JUNK_RE.test(char)
+    );
+  }
+  function spacelessOverlap(a, b, minChars = 4) {
+    if (!SPACELESS_SCRIPT_RE.test(a) || !SPACELESS_SCRIPT_RE.test(b)) return 0;
+    const ac = normalizeChars(a);
+    const bc = normalizeChars(b);
+    const max = Math.min(ac.length, bc.length);
+    for (let n = max; n >= minChars; n--) {
+      let match = true;
+      for (let i = 0; i < n; i++) {
+        if (ac[ac.length - n + i] !== bc[i]) {
+          match = false;
+          break;
+        }
+      }
+      if (match) return n;
+    }
+    return 0;
+  }
+  function spacelessSuffixOffset(s, count) {
+    const chars = [];
+    let offset = 0;
+    for (const char of String(s)) {
+      chars.push({ char, offset });
+      offset += char.length;
+    }
+    let consumed = 0;
+    for (let i = chars.length - 1; i >= 0; i--) {
+      if (!CHAR_JUNK_RE.test(chars[i].char.normalize("NFKC"))) consumed++;
+      if (consumed >= count) return chars[i].offset;
+    }
+    return 0;
+  }
   function wordOverlap(a, b, minWords = 2) {
     const aw = normalizeWords(a);
     const bw = normalizeWords(b);
@@ -163,6 +201,21 @@
       }
       const head = last.text.slice(0, cutIdx).trimEnd();
       const merged = head ? head + " " + text : text;
+      return {
+        text: merged,
+        end: Math.max(last.end, end),
+        grew: merged.length > last.text.length
+      };
+    }
+    const charOverlap = spacelessOverlap(last.text, text);
+    if (charOverlap > 0) {
+      const incomingChars = normalizeChars(text);
+      if (charOverlap >= incomingChars.length) {
+        return { text: last.text, end: Math.max(last.end, end), grew: false };
+      }
+      const cutIdx = spacelessSuffixOffset(last.text, charOverlap);
+      const head = last.text.slice(0, cutIdx).trimEnd();
+      const merged = head + text;
       return {
         text: merged,
         end: Math.max(last.end, end),
@@ -3456,8 +3509,35 @@
             text,
             lang: voiceLang
           });
-          if (resp && resp.ok && resp.audio)
-            return "data:" + (resp.mime || "audio/mpeg") + ";base64," + resp.audio;
+          if (resp && resp.ok && resp.audio) {
+            const url = "data:" + (resp.mime || "audio/mpeg") + ";base64," + resp.audio;
+            const audio = new Audio(url);
+            try {
+              audio.preload = "auto";
+              audio.preservesPitch = true;
+            } catch (e) {
+            }
+            const ready = new Promise((resolve) => {
+              if (audio.readyState >= 1 && Number.isFinite(audio.duration) && audio.duration > 0) {
+                resolve(true);
+                return;
+              }
+              let done = false;
+              const finish = (ok) => {
+                if (done) return;
+                done = true;
+                audio.onloadedmetadata = null;
+                resolve(ok);
+              };
+              audio.onloadedmetadata = () => finish(true);
+              setTimeout(() => finish(false), 1500);
+            });
+            try {
+              audio.load();
+            } catch (e) {
+            }
+            return { audio, ready };
+          }
         } catch (e) {
         }
         return null;
@@ -4591,7 +4671,9 @@
         });
         return true;
       }
-      function speak(text, cueDur, id, extras) {
+      function beginVoicing(text, id, extras) {
+        if (extras && extras.started) return;
+        if (extras) extras.started = true;
         if (id) {
           ctl.spokenIds.add(id);
           ctl.scheduledIds.delete(id);
@@ -4607,7 +4689,8 @@
         }
         if (settings.subtitles && extras && extras.orig)
           showCaption(extras.orig, text);
-        duckNow();
+      }
+      function speak(text, cueDur, id, extras) {
         if (cloudVoiceActive()) {
           speakCloud(text, cueDur, id, extras);
           return;
@@ -4617,29 +4700,32 @@
       async function speakCloud(text, cueDur, id, extras) {
         const token = { cloud: true, at: performance.now(), _vxId: id };
         ctl.currentUtterance = token;
-        const url = await getCloudAudio(text, settings.targetLang);
+        const asset = await getCloudAudio(text, settings.targetLang);
         if (ctl.currentUtterance !== token) {
           if (id) ctl.spokenIds.delete(id);
           return;
         }
-        if (!url) {
+        if (!asset) {
           cloudVoiceDownUntil = Date.now() + 6e4;
           ctl.currentUtterance = null;
           speakLocal(text, cueDur, id, extras);
           return;
         }
-        const a = new Audio(url);
+        const a = asset.audio;
         try {
           a.preservesPitch = true;
         } catch (e) {
         }
+        try {
+          if (a.currentTime > 0 || a.ended) a.currentTime = 0;
+        } catch (e) {
+        }
         const vv = Number(settings.voiceVolume);
         a.volume = Math.max(0, Math.min(100, Number.isFinite(vv) ? vv : 100)) / 100;
-        await new Promise((res) => {
-          if (Number.isFinite(a.duration) && a.duration > 0) return res();
-          a.onloadedmetadata = () => res();
-          setTimeout(res, 250);
-        });
+        await Promise.race([
+          asset.ready,
+          new Promise((resolve) => setTimeout(resolve, 250))
+        ]);
         if (ctl.currentUtterance !== token) {
           if (id) ctl.spokenIds.delete(id);
           return;
@@ -4655,11 +4741,12 @@
         a.playbackRate = Math.min(natural * (video.playbackRate || 1), 3);
         ctl.lastRate = a.playbackRate;
         ctl.cloudAudio = a;
-        const spokeAt = performance.now();
+        let spokeAt = 0;
         const finish = () => {
           if (ctl.cloudAudio === a) ctl.cloudAudio = null;
           if (ctl.currentUtterance === token) ctl.currentUtterance = null;
-          recordSpokenSeconds((performance.now() - spokeAt) / 1e3);
+          if (spokeAt > 0)
+            recordSpokenSeconds((performance.now() - spokeAt) / 1e3);
           drainQueue();
         };
         a.onended = finish;
@@ -4674,7 +4761,17 @@
           drainQueue();
         };
         try {
+          duckNow();
           await a.play();
+          if (ctl.currentUtterance !== token) {
+            try {
+              a.pause();
+            } catch (e) {
+            }
+            return;
+          }
+          spokeAt = performance.now();
+          beginVoicing(text, id, extras);
         } catch (e) {
           if (!(e && e.name === "AbortError"))
             cloudVoiceDownUntil = Date.now() + 6e4;
@@ -4707,6 +4804,11 @@
             return;
           }
         }
+        if (id) {
+          ctl.spokenIds.add(id);
+          ctl.scheduledIds.delete(id);
+          ctl.inFlight.delete(id);
+        }
         const u = new SpeechSynthesisUtterance(text);
         if (v) u.voice = v;
         u.lang = v && v.lang || LOCALES[settings.targetLang] || settings.targetLang;
@@ -4724,9 +4826,12 @@
         u._vxAt = performance.now();
         u._vxId = id;
         u.onstart = () => {
+          clearTimeout(u._vxStartTimer);
           u._vxStarted = performance.now();
+          beginVoicing(text, id, extras);
         };
         u.onend = () => {
+          clearTimeout(u._vxStartTimer);
           if (u._vxStarted && !u._vxCancelled) {
             const secs = (performance.now() - u._vxStarted) / 1e3;
             recordSpokenSeconds(secs);
@@ -4742,15 +4847,25 @@
           drainQueue();
         };
         u.onerror = () => {
+          clearTimeout(u._vxStartTimer);
           if (ctl.currentUtterance === u) ctl.currentUtterance = null;
           drainQueue();
         };
         ctl.currentUtterance = u;
         try {
+          duckNow();
           speechSynthesis.speak(u);
+          u._vxStartTimer = setTimeout(() => {
+            if (ctl.currentUtterance === u && !u._vxCancelled)
+              beginVoicing(text, id, extras);
+          }, 350);
         } catch (e) {
+          clearTimeout(u._vxStartTimer);
           ctl.currentUtterance = null;
-          if (id) ctl.spokenIds.delete(id);
+          if (id) {
+            ctl.spokenIds.delete(id);
+            ctl.scheduledIds.delete(id);
+          }
         }
       }
       function drainQueue() {
@@ -5013,8 +5128,10 @@
         const hadSpeech = ctl.currentUtterance || ctl.queue.length > 0;
         const owedResume = ctl.autoPaused;
         ctl.queue.length = 0;
-        if (ctl.currentUtterance && !ctl.currentUtterance.cloud)
+        if (ctl.currentUtterance && !ctl.currentUtterance.cloud) {
           ctl.currentUtterance._vxCancelled = true;
+          clearTimeout(ctl.currentUtterance._vxStartTimer);
+        }
         ctl.currentUtterance = null;
         ctl.autoPaused = false;
         ctl.lastRate = 0;

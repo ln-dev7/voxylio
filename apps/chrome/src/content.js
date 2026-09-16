@@ -244,7 +244,11 @@ import { makeT, resolveUiLang } from "./i18n.js";
   // Aura-2 neural voices, generated per sentence by the backend (which
   // holds the key and meters usage). Bounded cache of ready audio; any
   // refusal falls back to the local engine in speak().
-  const cloudAudioCache = new BoundedMap(80); // "lang::text" -> Promise<dataUrl|null>
+  // Cache PREPARED audio elements, not just their data URLs. Creating the
+  // element here lets the browser parse/decode the MP3 during lookahead;
+  // doing it only in speakCloud() left a small but audible hole at every
+  // sentence boundary even when synthesis itself had finished early.
+  const cloudAudioCache = new BoundedMap(80); // "lang::text" -> Promise<{audio, ready}|null>
 
   // Voice-consistency latch: after a cloud refusal the WHOLE passage
   // stays on the local voice for a while — one sentence in a different
@@ -271,8 +275,43 @@ import { makeT, resolveUiLang } from "./i18n.js";
           text,
           lang: voiceLang,
         });
-        if (resp && resp.ok && resp.audio)
-          return "data:" + (resp.mime || "audio/mpeg") + ";base64," + resp.audio;
+        if (resp && resp.ok && resp.audio) {
+          const url =
+            "data:" + (resp.mime || "audio/mpeg") + ";base64," + resp.audio;
+          const audio = new Audio(url);
+          try {
+            audio.preload = "auto";
+            audio.preservesPitch = true;
+          } catch (e) {}
+          // Resolve when duration is known (needed for precise fitting).
+          // This promise starts during pretranslation, so it is normally
+          // already settled by the time the cue enters the playhead.
+          const ready = new Promise((resolve) => {
+            if (
+              audio.readyState >= 1 &&
+              Number.isFinite(audio.duration) &&
+              audio.duration > 0
+            ) {
+              resolve(true);
+              return;
+            }
+            let done = false;
+            const finish = (ok) => {
+              if (done) return;
+              done = true;
+              audio.onloadedmetadata = null;
+              resolve(ok);
+            };
+            audio.onloadedmetadata = () => finish(true);
+            // A decode failure is handled by play()/onerror in speakCloud;
+            // do not leave callers waiting indefinitely here.
+            setTimeout(() => finish(false), 1500);
+          });
+          try {
+            audio.load();
+          } catch (e) {}
+          return { audio, ready };
+        }
       } catch (e) {}
       return null;
     })();
@@ -1743,15 +1782,20 @@ import { makeT, resolveUiLang } from "./i18n.js";
     // the original text (caption + journal at the moment the line is
     // ACTUALLY voiced, never before), its cue window, and a
     // journaled-once flag that survives requeues.
-    function speak(text, cueDur, id, extras) {
+    function beginVoicing(text, id, extras) {
+      // This is deliberately tied to audio START, not translation finish.
+      // A cold neural fetch (or a slow system voice) must not show a caption,
+      // book usage, or duck the original while the user still hears silence.
+      if (extras && extras.started) return;
+      if (extras) extras.started = true;
       if (id) {
-        // The group is now truly being voiced: lock it forever.
+        // Lock the group only when audio really begins. Until this point it
+        // stays scheduled (so ticks cannot duplicate it) but remains
+        // recoverable after a pause/seek during a cold fetch or TTS startup.
         ctl.spokenIds.add(id);
         ctl.scheduledIds.delete(id);
         ctl.inFlight.delete(id);
       }
-      // The caption and the journal follow the VOICE, not the translator:
-      // a line that is dropped later must never have been shown or logged.
       if (extras && extras.orig && !extras.rec) {
         extras.rec = true;
         recordLine(
@@ -1762,8 +1806,9 @@ import { makeT, resolveUiLang } from "./i18n.js";
       }
       if (settings.subtitles && extras && extras.orig)
         showCaption(extras.orig, text);
-      // Speech is starting: duck the original bed under the voice.
-      duckNow();
+    }
+
+    function speak(text, cueDur, id, extras) {
       // Pro neural voice (Aura-2 languages only): cloud engine first,
       // automatic local fallback — dubbing never stops on a cloud hiccup.
       if (cloudVoiceActive()) {
@@ -1778,7 +1823,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       // treat currentUtterance as "voice busy" whatever the engine.
       const token = { cloud: true, at: performance.now(), _vxId: id };
       ctl.currentUtterance = token;
-      const url = await getCloudAudio(text, settings.targetLang);
+      const asset = await getCloudAudio(text, settings.targetLang);
       if (ctl.currentUtterance !== token) {
         // Cancelled during the fetch (pause, seek, language change): no
         // audio ever played — un-mark the group so a resume within its
@@ -1786,7 +1831,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
         if (id) ctl.spokenIds.delete(id);
         return;
       }
-      if (!url) {
+      if (!asset) {
         // Cloud refused (quota, offline, unsupported): local takes over —
         // and STAYS local for a while, one voice per passage.
         cloudVoiceDownUntil = Date.now() + 60_000;
@@ -1794,19 +1839,23 @@ import { makeT, resolveUiLang } from "./i18n.js";
         speakLocal(text, cueDur, id, extras);
         return;
       }
-      const a = new Audio(url);
+      const a = asset.audio;
       try {
         a.preservesPitch = true;
+      } catch (e) {}
+      // The cached element may have been partially played before a seek.
+      // Rewind it before reusing the prepared/decode-warm asset.
+      try {
+        if (a.currentTime > 0 || a.ended) a.currentTime = 0;
       } catch (e) {}
       const vv = Number(settings.voiceVolume);
       a.volume = Math.max(0, Math.min(100, Number.isFinite(vv) ? vv : 100)) / 100;
       // Wait briefly for metadata: knowing the MP3's REAL duration lets
       // the rate fit the slot exactly instead of guessing from words.
-      await new Promise((res) => {
-        if (Number.isFinite(a.duration) && a.duration > 0) return res();
-        a.onloadedmetadata = () => res();
-        setTimeout(res, 250);
-      });
+      await Promise.race([
+        asset.ready,
+        new Promise((resolve) => setTimeout(resolve, 250)),
+      ]);
       if (ctl.currentUtterance !== token) {
         if (id) ctl.spokenIds.delete(id);
         return;
@@ -1826,12 +1875,13 @@ import { makeT, resolveUiLang } from "./i18n.js";
       a.playbackRate = Math.min(natural * (video.playbackRate || 1), 3);
       ctl.lastRate = a.playbackRate;
       ctl.cloudAudio = a;
-      const spokeAt = performance.now();
+      let spokeAt = 0;
       const finish = () => {
         if (ctl.cloudAudio === a) ctl.cloudAudio = null;
         if (ctl.currentUtterance === token) ctl.currentUtterance = null;
         // Stats on clean playback only — an error must not count a line.
-        recordSpokenSeconds((performance.now() - spokeAt) / 1000);
+        if (spokeAt > 0)
+          recordSpokenSeconds((performance.now() - spokeAt) / 1000);
         drainQueue();
       };
       a.onended = finish;
@@ -1850,7 +1900,18 @@ import { makeT, resolveUiLang } from "./i18n.js";
         drainQueue();
       };
       try {
+        // Audio is decoded and ready: start the duck attack immediately
+        // before playback, never while a cold network request is pending.
+        duckNow();
         await a.play();
+        if (ctl.currentUtterance !== token) {
+          try {
+            a.pause();
+          } catch (e) {}
+          return;
+        }
+        spokeAt = performance.now();
+        beginVoicing(text, id, extras);
       } catch (e) {
         // Autoplay refusal or decode error: same sentence, local voice —
         // and hold local afterwards (voice consistency). EXCEPT
@@ -1899,6 +1960,14 @@ import { makeT, resolveUiLang } from "./i18n.js";
           return; // the next tick's drainQueue retries
         }
       }
+      // speechSynthesis offers no cancellable "starting" state. Preserve
+      // the established exactly-once lock once the utterance is handed to
+      // the platform; visual/duck timing still waits for onstart below.
+      if (id) {
+        ctl.spokenIds.add(id);
+        ctl.scheduledIds.delete(id);
+        ctl.inFlight.delete(id);
+      }
       const u = new SpeechSynthesisUtterance(text);
       if (v) u.voice = v;
       // The chosen voice's own locale wins: sending fr-FR with an fr-CA
@@ -1922,9 +1991,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
       u._vxAt = performance.now();
       u._vxId = id;
       u.onstart = () => {
+        clearTimeout(u._vxStartTimer);
         u._vxStarted = performance.now();
+        beginVoicing(text, id, extras);
       };
       u.onend = () => {
+        clearTimeout(u._vxStartTimer);
         if (u._vxStarted && !u._vxCancelled) {
           const secs = (performance.now() - u._vxStarted) / 1000;
           recordSpokenSeconds(secs);
@@ -1942,16 +2014,31 @@ import { makeT, resolveUiLang } from "./i18n.js";
         drainQueue();
       };
       u.onerror = () => {
+        clearTimeout(u._vxStartTimer);
         if (ctl.currentUtterance === u) ctl.currentUtterance = null;
         drainQueue();
       };
       ctl.currentUtterance = u;
       try {
+        // speechSynthesis has no "will start" callback. Duck immediately
+        // before handing it to the engine so the attack covers startup.
+        duckNow();
         speechSynthesis.speak(u);
+        // A few platform engines omit onstart. Keep a conservative safety
+        // net so their audible speech still gets captions and ducking,
+        // while normal engines remain synchronized to the real callback.
+        u._vxStartTimer = setTimeout(() => {
+          if (ctl.currentUtterance === u && !u._vxCancelled)
+            beginVoicing(text, id, extras);
+        }, 350);
       } catch (e) {
+        clearTimeout(u._vxStartTimer);
         ctl.currentUtterance = null;
         // Nothing was voiced: leave the group re-schedulable.
-        if (id) ctl.spokenIds.delete(id);
+        if (id) {
+          ctl.spokenIds.delete(id);
+          ctl.scheduledIds.delete(id);
+        }
       }
     }
 
@@ -2352,8 +2439,10 @@ import { makeT, resolveUiLang } from "./i18n.js";
       const owedResume = ctl.autoPaused;
       ctl.queue.length = 0;
       // A cancelled utterance must not be counted by its own onend.
-      if (ctl.currentUtterance && !ctl.currentUtterance.cloud)
+      if (ctl.currentUtterance && !ctl.currentUtterance.cloud) {
         ctl.currentUtterance._vxCancelled = true;
+        clearTimeout(ctl.currentUtterance._vxStartTimer);
+      }
       ctl.currentUtterance = null;
       ctl.autoPaused = false;
       ctl.lastRate = 0; // next passage starts at its own natural tempo

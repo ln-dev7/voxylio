@@ -48,6 +48,37 @@ test("wordOverlap requires a minimum overlap and ignores punctuation/case", () =
   assert.equal(wordOverlap("Hello world", "world again", 2), 0); // 1 word only
 });
 
+test("mergeRollup stitches Japanese sliding windows without spaces", () => {
+  const last = { start: 0, end: 2, text: "今日は良い天気です" };
+  const merged = mergeRollup(last, 2.1, 4, "良い天気です散歩しましょう。");
+  assert.ok(merged);
+  assert.equal(merged.text, "今日は良い天気です散歩しましょう。");
+});
+
+test("mergeRollup stitches Chinese windows but rejects tiny character matches", () => {
+  const last = { start: 0, end: 2, text: "今天我们学习人工智能" };
+  const merged = mergeRollup(last, 2.1, 4, "学习人工智能的基础知识。");
+  assert.ok(merged);
+  assert.equal(merged.text, "今天我们学习人工智能的基础知识。");
+  assert.equal(
+    mergeRollup(
+      { start: 0, end: 2, text: "这是天气" },
+      2.1,
+      4,
+      "天气很好。",
+    ),
+    null,
+  );
+});
+
+test("mergeRollup keeps the time-gap guard for space-less captions", () => {
+  const last = { start: 0, end: 2, text: "今日は良い天気です" };
+  assert.equal(
+    mergeRollup(last, 3, 5, "良い天気です散歩しましょう。"),
+    null,
+  );
+});
+
 // ----- stable identity through growth --------------------------------------
 
 test("a growing trailing group keeps its id; only its version changes", () => {

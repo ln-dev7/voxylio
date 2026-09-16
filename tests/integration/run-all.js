@@ -19,6 +19,7 @@ const suites = [
   ['run-dom.js', 'DOM captions (YouTube-style player, no textTracks)'],
   ['run-yt-static.js', 'YouTube static track: lines on cue, no stalls, no forced CC'],
   ['run-plan.js', 'plan gate: expired free silent on Pro-only sites, trial and Pro dub'],
+  ['run-cloud-voice.js', 'Pro voice: ahead-of-time MP3 decode and gap-free starts'],
 ];
 let failed = 0;
 for (const [file, label] of suites) {
