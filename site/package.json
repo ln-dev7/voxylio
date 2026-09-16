@@ -10,7 +10,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "i18n:check": "node scripts/check-messages.mjs"
+    "i18n:check": "node scripts/check-messages.mjs",
+    "test:sdk-license": "node --test test/sdk-license.test.mjs",
+    "sdk:license": "node --env-file=.env scripts/sdk-license.mjs"
   },
   "dependencies": {
     "@neondatabase/auth": "0.5.0-beta",

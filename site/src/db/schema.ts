@@ -1,4 +1,5 @@
 import {
+  index,
   integer,
   pgTable,
   text,
@@ -66,4 +67,63 @@ export const extensionToken = pgTable(
     revokedAt: timestamp("revoked_at"),
   },
   (t) => [uniqueIndex("extension_token_hash_idx").on(t.tokenHash)],
+);
+
+/**
+ * Browser-visible SDK licence keys. The key has two random parts:
+ * `vx_pk_<id>_<secret>`. `id` is the indexed lookup key; only an
+ * HMAC-SHA-256 digest of the secret is stored. A leaked database can
+ * therefore not recreate customer keys without the server-side pepper.
+ */
+export const sdkLicense = pgTable(
+  "sdk_license",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    secretHash: text("secret_hash").notNull(),
+    status: text("status").notNull().default("active"), // active | suspended | revoked
+    expiresAt: timestamp("expires_at"),
+    minSdkVersion: text("min_sdk_version").notNull().default("1.0.0"),
+    maxSdkVersion: text("max_sdk_version"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+    // Operational health signal only. We deliberately never retain the
+    // requesting origin, captions, media URLs, audio or learner identity.
+    lastVerifiedAt: timestamp("last_verified_at"),
+  },
+  (t) => [index("sdk_license_status_idx").on(t.status)],
+);
+
+/** Exact hostnames (`learn.example.com`) or one-label-or-deeper wildcard
+ * suffixes (`*.example.com`) accepted for an SDK licence. */
+export const sdkLicenseDomain = pgTable(
+  "sdk_license_domain",
+  {
+    licenseId: text("license_id")
+      .notNull()
+      .references(() => sdkLicense.id, { onDelete: "cascade" }),
+    domain: text("domain").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("sdk_license_domain_unique_idx").on(t.licenseId, t.domain),
+    index("sdk_license_domain_license_idx").on(t.licenseId),
+  ],
+);
+
+/**
+ * Fixed-window verification limiter. The subject is a daily-rotating HMAC of
+ * licence + client network address; raw addresses are never stored.
+ */
+export const sdkLicenseRateLimit = pgTable(
+  "sdk_license_rate_limit",
+  {
+    // Daily-rotating HMAC of (licence id, client network address). No raw
+    // address or reversible learner identifier is retained.
+    subjectHash: text("subject_hash").primaryKey(),
+    windowStartedAt: timestamp("window_started_at").notNull().defaultNow(),
+    requests: integer("requests").notNull().default(0),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [index("sdk_license_rate_limit_updated_idx").on(t.updatedAt)],
 );
