@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button";
 import { GitHubIcon } from "@/components/github-icon";
 import { Logo } from "@/components/logo";
 import { LocaleSwitcher } from "@/components/locale-switcher";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { GITHUB_URL } from "@/lib/constants";
 
 export function SiteHeader() {
   const t = useTranslations("Header");
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   // Absolute (locale-aware) hrefs so the anchors work from any page, not
@@ -21,12 +22,13 @@ export function SiteHeader() {
     { key: "pricing", href: { pathname: "/", hash: "pricing" }, label: t("pricing") },
   ] as const;
 
-  // Clicking an anchor for the CURRENT page is a no-op for the router
-  // (same URL): a second click on "Pricing" from /en#pricing scrolled
-  // nowhere. When the target section exists on this page, scroll to it
-  // ourselves; on other pages (/privacy…) the normal navigation runs.
+  // A second click on a homepage anchor can be a router no-op, so scroll
+  // locally only while already on `/`. Subpages can contain identically
+  // named sections (the SDK has its own pricing); their header links must
+  // still navigate back to the extension landing page.
   const goHash =
     (hash: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (pathname !== "/") return;
       const el = document.getElementById(hash);
       if (!el) return; // not on the home page: let the Link navigate
       e.preventDefault();
@@ -57,6 +59,12 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          <Link
+            href="/sdk"
+            className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            {t("sdk")}
+          </Link>
           <Link
             href="/blog"
             className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
@@ -137,6 +145,13 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
+            <Link
+              href="/sdk"
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-3 text-[15px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            >
+              {t("sdk")}
+            </Link>
             <Link
               href="/blog"
               onClick={() => setOpen(false)}

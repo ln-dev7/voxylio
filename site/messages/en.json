@@ -13,7 +13,8 @@
     "closeMenu": "Close menu",
     "account": "Account",
     "pricing": "Pricing",
-    "blog": "Blog"
+    "blog": "Blog",
+    "sdk": "SDK"
   },
   "Hero": {
     "title": "Watch any video in <accent>your language</accent>",
@@ -179,7 +180,8 @@
       "changelog": "Changelog",
       "terms": "Terms",
       "contact": "Contact",
-      "sites": "Supported sites"
+      "sites": "Supported sites",
+      "sdk": "SDK"
     },
     "theme": {
       "label": "Theme",
@@ -238,7 +240,7 @@
   },
   "Privacy": {
     "title": "Privacy Policy",
-    "updated": "Last updated: August 26, 2026",
+    "updated": "Last updated: September 16, 2026",
     "intro": "Voxylio is designed to work on your device. This page describes exactly what the extension does with data — and what it never does.",
     "p1Title": "What Voxylio processes",
     "p1": "Voxylio reads the subtitles of the video you are watching — the player's track or the captions shown on screen — to translate them and speak them aloud. Your settings (languages, voices, speed, volume, glossary) live in your browser's extension storage, synced by Chrome on your own profile; your dubbing history and statistics stay in that local storage too, and are never transmitted. If you create an account, Voxylio additionally stores your email address and your plan — nothing more.",
@@ -250,6 +252,8 @@
     "p4": "No analytics, no tracking, no ads, no fingerprinting. Your account holds only your email address and your plan — Voxylio sells or shares no personal data, and keeps no record of what you watch on its servers: the dubbing history in the hub lives on your device only. The broad site permission is used solely to find the video player and its subtitles on the page you visit; it is never used to read anything else.",
     "p5Title": "Your data, your control",
     "p5": "The \"Reset\" button in the popup restores default settings and deletes everything the extension has stored. Removing the extension removes all of its data.",
+    "p6Title": "SDK license verification",
+    "p6": "When a platform embeds the Voxylio SDK, the SDK sends only its public license key, the platform's Origin/domain and the SDK version to Voxylio to verify that the license is valid. It never sends captions, audio, video, lesson content, learner data or account data. To limit abuse, Voxylio derives a daily rotating HMAC bucket from the request's network address; the raw IP address is not stored, and those buckets are deleted within at most two days.",
     "contact": "Questions? Open an issue on GitHub or reach out to the author."
   },
   "Terms": {
@@ -482,6 +486,166 @@
     "x": {
       "title": "Quick question",
       "description": "Ping us on X for anything short."
+    }
+  },
+  "Sdk": {
+    "metaTitle": "Voxylio SDK — Local video dubbing for your platform",
+    "metaDescription": "Add synchronized, on-device video dubbing to your course platform or web app with the private Voxylio SDK. Fixed monthly or annual pricing, with no per-minute fees.",
+    "hero": {
+      "badge": "Private SDK · v{version}",
+      "title": "Give every video a <accent>local dubbing button</accent>",
+      "body": "Voxylio SDK adds synchronized dubbing to your own HTML5 video player. Captions, media and speech are processed in the learner’s browser and never sent to Voxylio, so your bill never grows with viewing time.",
+      "ctaPricing": "See SDK pricing",
+      "ctaGuide": "Copy the AI guide",
+      "ticks": {
+        "local": "On-device speech",
+        "unmetered": "No per-minute billing",
+        "private": "No media upload"
+      },
+      "localLabels": {
+        "media": "Media not sent to Voxylio",
+        "captions": "Captions not sent to Voxylio",
+        "speech": "Speech not sent to Voxylio"
+      }
+    },
+    "benefits": {
+      "title": "A dubbing layer built for platforms",
+      "subtitle": "Give learners another language without building a playback engine or paying an AI provider each time a lesson is watched.",
+      "items": {
+        "private": {
+          "title": "Private by architecture",
+          "body": "The video, captions and generated speech are processed in the browser. Voxylio never receives your course media or learner content."
+        },
+        "predictable": {
+          "title": "Predictable costs",
+          "body": "One fixed subscription covers the licensed site. There are no minutes, credits or surprise usage charges."
+        },
+        "native": {
+          "title": "Native local voices",
+          "body": "The SDK uses voices installed on the learner’s device, including higher-quality system voices when available."
+        },
+        "control": {
+          "title": "Your player, your interface",
+          "body": "Use the ready-made widget or mount nothing and connect Voxylio to your own controls, design system and analytics."
+        }
+      }
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "From caption tracks to synchronized speech",
+      "subtitle": "The SDK sits beside your existing player. You keep control of the video, captions and product experience.",
+      "steps": {
+        "captions": {
+          "title": "Provide the tracks",
+          "body": "Pass the source captions and your translated WebVTT or SRT tracks. Optional on-device translation can fill supported pairs."
+        },
+        "connect": {
+          "title": "Connect the player",
+          "body": "Initialize Voxylio with the page’s HTMLVideoElement, your public site key and the languages you support."
+        },
+        "listen": {
+          "title": "Let learners listen",
+          "body": "A learner chooses a language and starts dubbing. The local voice follows pause, play, seek and playback speed."
+        }
+      }
+    },
+    "support": {
+      "title": "Designed for a controlled integration",
+      "subtitle": "Voxylio SDK focuses on the reliable local path: known caption tracks, a player you control and speech produced by the browser.",
+      "items": {
+        "tracks": {
+          "title": "WebVTT, SRT and cue data",
+          "body": "Load caption files or provide cues directly. You decide where translations come from and which languages appear."
+        },
+        "translation": {
+          "title": "Provided or on-device translation",
+          "body": "For consistent coverage, ship translated tracks. Where supported, you can also enable the browser’s local translation engine."
+        },
+        "player": {
+          "title": "Headless or ready-made UI",
+          "body": "Use the compact built-in widget for a quick launch, or the API and events for a fully custom player experience."
+        }
+      }
+    },
+    "limits": {
+      "title": "What v1 needs",
+      "intro": "The first version is intentionally focused. Check these requirements before integrating it.",
+      "items": {
+        "captions": "A timed caption track is required; v1 does not transcribe raw audio.",
+        "iframe": "Your app must be able to access the HTMLVideoElement. A locked third-party iframe cannot be controlled.",
+        "voices": "Voice availability and quality depend on the learner’s browser, operating system and installed voices.",
+        "mobile": "Mobile browsers impose stricter speech and background-playback rules; desktop web is the primary v1 target."
+      }
+    },
+    "pricing": {
+      "eyebrow": "Simple licensing",
+      "title": "One fixed price. Zero minute counters.",
+      "subtitle": "Pay for the right to use the SDK on your platform, not for every lesson your customers watch.",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "twoMonths": "2 months free",
+      "badge": "Commercial license",
+      "planName": "Voxylio SDK",
+      "planBody": "For course platforms, academies and web apps that control their video player.",
+      "perYear": "/ year",
+      "perMonth": "/ month",
+      "yearlyDetail": "Equivalent to {equivalent}/month · save {savings} per year",
+      "monthlyDetail": "Billed monthly. Cancel before the next renewal.",
+      "cta": "Request SDK access",
+      "commercialNote": "During the private SDK’s early release, access is approved manually and subject to a commercial license agreement.",
+      "included": "Your license includes",
+      "features": {
+        "domain": "1 production domain, plus staging and localhost",
+        "unlimited": "Unlimited local dubbing — no minutes or credits",
+        "local": "Local system voices and synchronized playback",
+        "api": "Headless API, optional widget and TypeScript types",
+        "updates": "All v1 updates and integration documentation",
+        "support": "Email integration support"
+      },
+      "moreDomainsTitle": "Need several production domains?",
+      "moreDomainsBody": "Contact us for a multi-domain or enterprise license with pricing matched to your deployment.",
+      "noFree": "There is no free SDK plan. The browser extension remains a separate consumer product; this license is for embedding Voxylio in your own platform."
+    },
+    "aiGuide": {
+      "eyebrow": "AI-ready integration",
+      "title": "Give your coding AI the complete brief",
+      "body": "Copy this prompt into Codex, Claude or another coding agent. It tells the agent to understand your project first, then install and integrate the SDK safely.",
+      "workflow": "The prompt covers project discovery, private-package installation, player and caption checks, lifecycle handling, privacy, testing and handoff.",
+      "copy": "Copy the prompt",
+      "copied": "Prompt copied",
+      "download": "Download .md",
+      "copyError": "Copying failed. Select the prompt on the right and copy it manually.",
+      "note": "The prompt is in English so coding agents can follow it consistently."
+    },
+    "faq": {
+      "title": "SDK questions",
+      "items": {
+        "minutes": {
+          "question": "Are there dubbing limits or per-minute charges?",
+          "answer": "No. Dubbing uses local browser capabilities, so the commercial license has no minute quota, credits or usage overage."
+        },
+        "privacy": {
+          "question": "What data does Voxylio receive?",
+          "answer": "License verification sends the public license key, site origin and SDK version. As with any web request, the infrastructure sees the IP address; Voxylio derives a daily rotating HMAC bucket from it for abuse prevention, never stores the raw IP, and deletes those buckets within two days. Your videos, captions, generated speech and learner identities are not sent to Voxylio."
+        },
+        "languages": {
+          "question": "Which languages are supported?",
+          "answer": "You can expose any language for which you provide a timed caption track and the learner has a compatible local voice. Optional on-device translation depends on browser support."
+        },
+        "player": {
+          "question": "Will it work with my video player?",
+          "answer": "Yes when your application can provide the underlying HTMLVideoElement. Players inside inaccessible third-party iframes are not supported in v1."
+        },
+        "billing": {
+          "question": "How do monthly and annual billing work?",
+          "answer": "Monthly access is $99 and renews each month. Annual access is $990, billed once for twelve months. Both include the same SDK capabilities."
+        }
+      }
+    },
+    "final": {
+      "title": "Put local dubbing inside your platform",
+      "body": "Tell us about your player, caption workflow and production domains. We will confirm compatibility and issue your private package access and site key.",
+      "cta": "Request access"
     }
   },
   "Sites": {

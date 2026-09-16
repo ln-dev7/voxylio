@@ -13,7 +13,8 @@
     "closeMenu": "Fechar o menu",
     "account": "Conta",
     "pricing": "Preços",
-    "blog": "Blog"
+    "blog": "Blog",
+    "sdk": "SDK"
   },
   "Hero": {
     "title": "Assista a qualquer vídeo no <accent>seu idioma</accent>",
@@ -179,7 +180,8 @@
       "changelog": "Novidades",
       "terms": "Termos",
       "contact": "Contato",
-      "sites": "Sites compatíveis"
+      "sites": "Sites compatíveis",
+      "sdk": "SDK"
     },
     "theme": {
       "label": "Tema",
@@ -238,7 +240,7 @@
   },
   "Privacy": {
     "title": "Política de privacidade",
-    "updated": "Última atualização: 26 de agosto de 2026",
+    "updated": "Última atualização: 16 de setembro de 2026",
     "intro": "O Voxylio foi projetado para trabalhar no seu dispositivo. Esta página descreve exatamente o que a extensão faz com os dados — e o que nunca faz.",
     "p1Title": "O que o Voxylio processa",
     "p1": "O Voxylio lê as legendas do vídeo que você está assistindo — a trilha do player ou as legendas exibidas na tela — para traduzi-las e lê-las em voz alta. Suas configurações (idiomas, vozes, velocidade, volume, glossário) ficam no armazenamento de extensão do navegador, sincronizado pelo Chrome no seu próprio perfil; o histórico de dublagem e suas estatísticas também ficam nesse armazenamento local e nunca são transmitidos. Se você criar uma conta, o Voxylio guarda além disso seu e-mail e seu plano — nada mais.",
@@ -250,6 +252,8 @@
     "p4": "Sem analytics, sem rastreamento, sem publicidade, sem fingerprinting. Sua conta contém apenas seu e-mail e seu plano — o Voxylio não vende nem compartilha dados pessoais e não guarda em seus servidores registro do que você assiste: o histórico de dublagem do hub vive só no seu dispositivo. A permissão ampla de acesso a sites serve unicamente para encontrar o player de vídeo e suas legendas na página visitada; nunca para ler qualquer outra coisa.",
     "p5Title": "Seus dados, seu controle",
     "p5": "O botão «Redefinir» no popup restaura as configurações padrão e apaga tudo o que a extensão guardou. Remover a extensão remove todos os seus dados.",
+    "p6Title": "Verificação de licenças do SDK",
+    "p6": "Quando uma plataforma incorpora o SDK do Voxylio, o SDK envia ao Voxylio somente a chave pública da licença, a origem ou o domínio da plataforma e a versão do SDK para verificar se a licença é válida. Ele nunca envia legendas, áudio, vídeo, conteúdo das aulas, dados dos alunos ou dados de contas. Para limitar abusos, o Voxylio deriva do endereço de rede da solicitação um identificador HMAC que muda diariamente; o endereço IP bruto não é armazenado e esses identificadores são excluídos em no máximo dois dias.",
     "contact": "Dúvidas? Abra uma issue no GitHub ou fale com o autor."
   },
   "Terms": {
@@ -482,6 +486,166 @@
     "x": {
       "title": "Pergunta rápida",
       "description": "Fale conosco no X para qualquer coisa curta."
+    }
+  },
+  "Sdk": {
+    "metaTitle": "Voxylio SDK — Dublagem de vídeo local para sua plataforma",
+    "metaDescription": "Adicione dublagem de vídeo sincronizada e no dispositivo à sua plataforma de cursos ou app web com o SDK privado da Voxylio. Preço mensal ou anual fixo, sem cobrança por minuto.",
+    "hero": {
+      "badge": "SDK privado · v{version}",
+      "title": "Dê a cada vídeo um <accent>botão de dublagem local</accent>",
+      "body": "O Voxylio SDK adiciona dublagem sincronizada ao seu próprio player HTML5. Legendas, mídia e voz são processadas no navegador e nunca enviadas à Voxylio, então sua fatura não aumenta com o tempo assistido.",
+      "ctaPricing": "Ver preço do SDK",
+      "ctaGuide": "Copiar o guia para IA",
+      "ticks": {
+        "local": "Voz no dispositivo",
+        "unmetered": "Sem cobrança por minuto",
+        "private": "Sem upload da mídia"
+      },
+      "localLabels": {
+        "media": "Mídia não enviada à Voxylio",
+        "captions": "Legendas não enviadas à Voxylio",
+        "speech": "Voz não enviada à Voxylio"
+      }
+    },
+    "benefits": {
+      "title": "Uma camada de dublagem feita para plataformas",
+      "subtitle": "Ofereça outro idioma aos alunos sem criar um mecanismo de reprodução nem pagar um provedor de IA toda vez que uma aula for assistida.",
+      "items": {
+        "private": {
+          "title": "Privado por arquitetura",
+          "body": "Vídeo, legendas e voz gerada são processados no navegador. A Voxylio nunca recebe a mídia do seu curso nem o conteúdo dos alunos."
+        },
+        "predictable": {
+          "title": "Custos previsíveis",
+          "body": "Uma assinatura fixa cobre o site licenciado. Sem minutos, créditos ou cobranças inesperadas de uso."
+        },
+        "native": {
+          "title": "Vozes locais nativas",
+          "body": "O SDK usa as vozes instaladas no dispositivo do aluno, incluindo vozes de sistema de maior qualidade quando disponíveis."
+        },
+        "control": {
+          "title": "Seu player, sua interface",
+          "body": "Use o widget pronto ou conecte a Voxylio, sem interface própria, aos seus controles, design system e analytics."
+        }
+      }
+    },
+    "how": {
+      "eyebrow": "Como funciona",
+      "title": "Das faixas de legenda à voz sincronizada",
+      "subtitle": "O SDK funciona ao lado do seu player atual. Você mantém o controle do vídeo, das legendas e da experiência do produto.",
+      "steps": {
+        "captions": {
+          "title": "Forneça as faixas",
+          "body": "Passe as legendas originais e suas faixas WebVTT ou SRT traduzidas. A tradução local opcional pode completar os pares compatíveis."
+        },
+        "connect": {
+          "title": "Conecte o player",
+          "body": "Inicialize a Voxylio com o HTMLVideoElement da página, sua chave pública do site e os idiomas compatíveis."
+        },
+        "listen": {
+          "title": "Deixe os alunos ouvirem",
+          "body": "O aluno escolhe um idioma e inicia a dublagem. A voz local acompanha pausa, reprodução, busca e velocidade."
+        }
+      }
+    },
+    "support": {
+      "title": "Projetado para uma integração controlada",
+      "subtitle": "O Voxylio SDK foca no caminho local confiável: faixas de legenda conhecidas, um player sob seu controle e voz produzida pelo navegador.",
+      "items": {
+        "tracks": {
+          "title": "WebVTT, SRT e dados de cues",
+          "body": "Carregue arquivos de legenda ou forneça os cues diretamente. Você decide de onde vêm as traduções e quais idiomas mostrar."
+        },
+        "translation": {
+          "title": "Tradução fornecida ou local",
+          "body": "Para uma cobertura consistente, forneça faixas traduzidas. Quando compatível, você também pode ativar o mecanismo local do navegador."
+        },
+        "player": {
+          "title": "Headless ou com interface pronta",
+          "body": "Lance rapidamente com o widget compacto ou use a API e os eventos para criar uma experiência totalmente personalizada."
+        }
+      }
+    },
+    "limits": {
+      "title": "O que a v1 exige",
+      "intro": "A primeira versão é intencionalmente focada. Confira estes requisitos antes da integração.",
+      "items": {
+        "captions": "É necessária uma faixa de legenda sincronizada; a v1 não transcreve áudio bruto.",
+        "iframe": "Seu app precisa acessar o HTMLVideoElement. Um iframe bloqueado de terceiros não pode ser controlado.",
+        "voices": "A disponibilidade e a qualidade das vozes dependem do navegador, sistema operacional e vozes instaladas pelo aluno.",
+        "mobile": "Navegadores móveis têm regras mais rígidas para voz e reprodução em segundo plano; a web desktop é o alvo principal da v1."
+      }
+    },
+    "pricing": {
+      "eyebrow": "Licença simples",
+      "title": "Um preço fixo. Nenhum contador de minutos.",
+      "subtitle": "Pague pelo direito de usar o SDK na sua plataforma, não por cada aula que seus clientes assistem.",
+      "monthly": "Mensal",
+      "yearly": "Anual",
+      "twoMonths": "2 meses grátis",
+      "badge": "Licença comercial",
+      "planName": "Voxylio SDK",
+      "planBody": "Para plataformas de cursos, academias e apps web que controlam seu player de vídeo.",
+      "perYear": "/ ano",
+      "perMonth": "/ mês",
+      "yearlyDetail": "Equivale a {equivalent}/mês · economize {savings} por ano",
+      "monthlyDetail": "Cobrado mensalmente. Cancele antes da próxima renovação.",
+      "cta": "Solicitar acesso ao SDK",
+      "commercialNote": "Durante o lançamento inicial do SDK privado, o acesso é aprovado manualmente e sujeito a um contrato de licença comercial.",
+      "included": "Sua licença inclui",
+      "features": {
+        "domain": "1 domínio de produção, além de staging e localhost",
+        "unlimited": "Dublagem local ilimitada, sem minutos ou créditos",
+        "local": "Vozes locais do sistema e reprodução sincronizada",
+        "api": "API headless, widget opcional e tipos TypeScript",
+        "updates": "Todas as atualizações da v1 e documentação de integração",
+        "support": "Suporte de integração por e-mail"
+      },
+      "moreDomainsTitle": "Precisa de vários domínios de produção?",
+      "moreDomainsBody": "Fale conosco sobre uma licença multidomínio ou empresarial com preço adequado à sua implantação.",
+      "noFree": "Não há plano gratuito do SDK. A extensão do navegador continua sendo um produto separado para consumidores; esta licença serve para incorporar a Voxylio à sua plataforma."
+    },
+    "aiGuide": {
+      "eyebrow": "Integração pronta para IA",
+      "title": "Dê o briefing completo à sua IA de programação",
+      "body": "Copie este prompt no Codex, Claude ou outro agente de código. Ele orienta o agente a primeiro entender seu projeto e depois instalar e integrar o SDK com segurança.",
+      "workflow": "O prompt cobre análise do projeto, instalação do pacote privado, verificações de player e legendas, ciclo de vida, privacidade, testes e entrega.",
+      "copy": "Copiar o prompt",
+      "copied": "Prompt copiado",
+      "download": "Baixar .md",
+      "copyError": "A cópia falhou. Selecione o prompt à direita e copie manualmente.",
+      "note": "O prompt está em inglês para que os agentes de código o sigam de forma consistente."
+    },
+    "faq": {
+      "title": "Perguntas sobre o SDK",
+      "items": {
+        "minutes": {
+          "question": "Há limites de dublagem ou cobrança por minuto?",
+          "answer": "Não. A dublagem usa recursos locais do navegador, então a licença comercial não tem cota de minutos, créditos nem cobrança excedente."
+        },
+        "privacy": {
+          "question": "Quais dados a Voxylio recebe?",
+          "answer": "A verificação da licença envia a chave pública, a origem do site e a versão do SDK. Como em qualquer solicitação web, a infraestrutura vê o endereço IP; a Voxylio deriva dele um bucket HMAC com rotação diária para prevenir abusos, nunca armazena o IP bruto e exclui esses buckets em até dois dias. Seus vídeos, legendas, voz gerada e identidades dos alunos não são enviados à Voxylio."
+        },
+        "languages": {
+          "question": "Quais idiomas são compatíveis?",
+          "answer": "Você pode oferecer qualquer idioma para o qual forneça uma faixa de legenda sincronizada e o aluno tenha uma voz local compatível. A tradução local opcional depende do navegador."
+        },
+        "player": {
+          "question": "Funcionará com meu player de vídeo?",
+          "answer": "Sim, quando seu aplicativo puder fornecer o HTMLVideoElement subjacente. Players dentro de iframes de terceiros inacessíveis não são compatíveis na v1."
+        },
+        "billing": {
+          "question": "Como funcionam as cobranças mensal e anual?",
+          "answer": "O acesso mensal custa US$ 99 e renova todo mês. O anual custa US$ 990, cobrados uma vez por doze meses. Ambos incluem os mesmos recursos do SDK."
+        }
+      }
+    },
+    "final": {
+      "title": "Coloque dublagem local dentro da sua plataforma",
+      "body": "Conte sobre seu player, fluxo de legendas e domínios de produção. Confirmaremos a compatibilidade e forneceremos o acesso ao pacote privado e sua chave do site.",
+      "cta": "Solicitar acesso"
     }
   },
   "Sites": {

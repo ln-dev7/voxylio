@@ -7,6 +7,7 @@ Voxylio runs on Chrome, Edge and Firefox (and installs from the Chrome Web Store
 ## Pages
 
 - [Home](https://voxylio.lndev.me/en): what Voxylio does, how it works, pricing, install steps, FAQ
+- [Voxylio SDK](https://voxylio.lndev.me/en/sdk): private SDK for adding local, real-time dubbing to an HTML5 video platform; includes capabilities, limits, fixed subscription pricing and a copy-ready AI integration guide
 - [Supported sites](https://voxylio.lndev.me/en/sites): the verified platform list — 5 free (YouTube, Netflix, Prime Video, Disney+, Twitch), 12 more with trial/Pro (Udemy, Coursera, Vimeo, Hulu, HBO Max, Peacock, Dailymotion, Viki, LinkedIn Learning, Skillshare, edX, Khan Academy), plus any player exposing a subtitle track; Crunchyroll is not supported (canvas captions)
 - [Changelog](https://voxylio.lndev.me/en/changelog): release history
 - [Blog](https://voxylio.lndev.me/en/blog): practical guides about video translation and real-time dubbing
@@ -20,6 +21,7 @@ Voxylio runs on Chrome, Edge and Firefox (and installs from the Chrome Web Store
 ## Facts
 
 - Pricing: Free plan (major platforms) and Pro at $9.99/month or $69.99/year
+- SDK pricing: no free plan and no per-minute billing; one licensed production domain is $99/month or $990/year, with staging and localhost development included
 - Languages: dubs into 65+ languages; site and extension are localized in 10
 - The extension sells nothing in-app; Pro is purchased on voxylio.lndev.me
 - Developer: Leonel Ngoya (lndev) — https://lndev.me

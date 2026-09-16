@@ -11,10 +11,10 @@ export function SiteFooter() {
   const t = useTranslations("Footer");
 
   const product = [
-    { href: "#features", label: t("links.features") },
-    { href: "#how-it-works", label: t("links.howItWorks") },
-    { href: "#install", label: t("links.install") },
-    { href: "#faq", label: t("links.faq") },
+    { hash: "features", label: t("links.features") },
+    { hash: "how-it-works", label: t("links.howItWorks") },
+    { hash: "install", label: t("links.install") },
+    { hash: "faq", label: t("links.faq") },
   ];
   const resources = [
     { href: GITHUB_URL, label: "GitHub", external: true },
@@ -66,15 +66,23 @@ export function SiteFooter() {
             </h3>
             <ul className="mt-4 space-y-2.5">
               {product.map((l) => (
-                <li key={l.href}>
-                  <a
-                    href={l.href}
+                <li key={l.hash}>
+                  <Link
+                    href={{ pathname: "/", hash: l.hash }}
                     className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                   >
                     {l.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/sdk"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t("links.sdk")}
+                </Link>
+              </li>
               <li>
                 <Link
                   href="/sites"

@@ -20,7 +20,7 @@ export async function generateMetadata({
   });
 }
 
-const SECTIONS = ["p1", "p2", "p3", "p4", "p5"] as const;
+const SECTIONS = ["p1", "p2", "p3", "p4", "p5", "p6"] as const;
 
 export default async function PrivacyPage({
   params,

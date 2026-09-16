@@ -13,7 +13,8 @@
     "closeMenu": "Menü schließen",
     "account": "Konto",
     "pricing": "Preise",
-    "blog": "Blog"
+    "blog": "Blog",
+    "sdk": "SDK"
   },
   "Hero": {
     "title": "Schau jedes Video in <accent>deiner Sprache</accent>",
@@ -179,7 +180,8 @@
       "changelog": "Neuheiten",
       "terms": "Nutzungsbedingungen",
       "contact": "Kontakt",
-      "sites": "Unterstützte Websites"
+      "sites": "Unterstützte Websites",
+      "sdk": "SDK"
     },
     "theme": {
       "label": "Design",
@@ -238,7 +240,7 @@
   },
   "Privacy": {
     "title": "Datenschutzerklärung",
-    "updated": "Zuletzt aktualisiert: 26. August 2026",
+    "updated": "Zuletzt aktualisiert: 16. September 2026",
     "intro": "Voxylio ist dafür gebaut, auf deinem Gerät zu arbeiten. Diese Seite beschreibt genau, was die Erweiterung mit Daten tut — und was sie niemals tut.",
     "p1Title": "Was Voxylio verarbeitet",
     "p1": "Voxylio liest die Untertitel des Videos, das du gerade ansiehst — die Spur des Players oder die eingeblendeten Untertitel — um sie zu übersetzen und laut vorzulesen. Deine Einstellungen (Sprachen, Stimmen, Tempo, Lautstärke, Glossar) liegen im Erweiterungsspeicher deines Browsers, von Chrome in deinem eigenen Profil synchronisiert; auch dein Synchronisations-Verlauf und seine Statistiken bleiben in diesem lokalen Speicher und werden nie übertragen. Wenn du ein Konto erstellst, speichert Voxylio zusätzlich deine E-Mail-Adresse und deinen Plan — mehr nicht.",
@@ -250,6 +252,8 @@
     "p4": "Keine Analytics, kein Tracking, keine Werbung, kein Fingerprinting. Dein Konto enthält nur deine E-Mail-Adresse und deinen Plan — Voxylio verkauft und teilt keine persönlichen Daten und führt auf seinen Servern kein Verzeichnis dessen, was du ansiehst: der Verlauf im Hub lebt nur auf deinem Gerät. Die weitreichende Seitenberechtigung dient ausschließlich dazu, den Videoplayer und seine Untertitel auf der besuchten Seite zu finden; sie wird nie genutzt, um irgendetwas anderes zu lesen.",
     "p5Title": "Deine Daten, deine Kontrolle",
     "p5": "Der Knopf „Zurücksetzen“ im Popup stellt die Standardeinstellungen wieder her und löscht alles, was die Erweiterung gespeichert hat. Das Entfernen der Erweiterung entfernt alle ihre Daten.",
+    "p6Title": "Lizenzprüfung des SDK",
+    "p6": "Wenn eine Plattform das Voxylio SDK einbindet, sendet das SDK ausschließlich den öffentlichen Lizenzschlüssel, den Origin beziehungsweise die Domain der Plattform und die SDK-Version an Voxylio, um die Gültigkeit der Lizenz zu prüfen. Untertitel, Audio, Video, Lerninhalte sowie Daten von Lernenden oder Kontodaten werden niemals übertragen. Zur Missbrauchsbegrenzung leitet Voxylio aus der Netzwerkadresse der Anfrage einen täglich wechselnden HMAC-Bezeichner ab; die unverarbeitete IP-Adresse wird nicht gespeichert und diese Bezeichner werden spätestens nach zwei Tagen gelöscht.",
     "contact": "Fragen? Eröffne ein Issue auf GitHub oder schreib dem Autor."
   },
   "Terms": {
@@ -482,6 +486,166 @@
     "x": {
       "title": "Kurze Frage",
       "description": "Schreib uns auf X für alles Kurze."
+    }
+  },
+  "Sdk": {
+    "metaTitle": "Voxylio SDK — Lokales Video-Dubbing für Ihre Plattform",
+    "metaDescription": "Integrieren Sie mit dem privaten Voxylio SDK synchrones, lokales Video-Dubbing in Ihre Kursplattform oder Web-App. Fester Monats- oder Jahrespreis ohne Minutenabrechnung.",
+    "hero": {
+      "badge": "Privates SDK · v{version}",
+      "title": "Geben Sie jedem Video einen <accent>lokalen Dubbing-Button</accent>",
+      "body": "Voxylio SDK ergänzt Ihren eigenen HTML5-Videoplayer um synchrones Dubbing. Untertitel, Medien und Sprache werden im Browser verarbeitet und nicht an Voxylio gesendet – Ihre Rechnung wächst nicht mit der Wiedergabezeit.",
+      "ctaPricing": "SDK-Preise ansehen",
+      "ctaGuide": "KI-Leitfaden kopieren",
+      "ticks": {
+        "local": "Sprachausgabe auf dem Gerät",
+        "unmetered": "Keine Minutenabrechnung",
+        "private": "Kein Medien-Upload"
+      },
+      "localLabels": {
+        "media": "Medien gehen nicht an Voxylio",
+        "captions": "Untertitel gehen nicht an Voxylio",
+        "speech": "Sprache geht nicht an Voxylio"
+      }
+    },
+    "benefits": {
+      "title": "Eine Dubbing-Schicht für Plattformen",
+      "subtitle": "Bieten Sie Lernenden eine weitere Sprache, ohne eine Wiedergabe-Engine zu entwickeln oder bei jedem Aufruf einen KI-Anbieter zu bezahlen.",
+      "items": {
+        "private": {
+          "title": "Privat durch die Architektur",
+          "body": "Video, Untertitel und erzeugte Sprache werden im Browser verarbeitet. Voxylio erhält weder Ihre Kursmedien noch Inhalte der Lernenden."
+        },
+        "predictable": {
+          "title": "Planbare Kosten",
+          "body": "Ein fester Tarif deckt die lizenzierte Website ab. Keine Minuten, Credits oder überraschenden Nutzungsgebühren."
+        },
+        "native": {
+          "title": "Native lokale Stimmen",
+          "body": "Das SDK nutzt die auf dem Gerät installierten Stimmen – einschließlich hochwertiger Systemstimmen, sofern verfügbar."
+        },
+        "control": {
+          "title": "Ihr Player, Ihre Oberfläche",
+          "body": "Nutzen Sie das fertige Widget oder verbinden Sie Voxylio ohne eigene UI mit Ihren Steuerelementen, Ihrem Designsystem und Ihrer Analyse."
+        }
+      }
+    },
+    "how": {
+      "eyebrow": "So funktioniert es",
+      "title": "Von Untertitelspuren zu synchroner Sprache",
+      "subtitle": "Das SDK läuft neben Ihrem bestehenden Player. Sie behalten die Kontrolle über Video, Untertitel und Produkterlebnis.",
+      "steps": {
+        "captions": {
+          "title": "Spuren bereitstellen",
+          "body": "Übergeben Sie die Quelluntertitel und Ihre übersetzten WebVTT- oder SRT-Spuren. Optionale lokale Übersetzung kann unterstützte Sprachpaare ergänzen."
+        },
+        "connect": {
+          "title": "Player verbinden",
+          "body": "Initialisieren Sie Voxylio mit dem HTMLVideoElement der Seite, Ihrem öffentlichen Website-Schlüssel und den unterstützten Sprachen."
+        },
+        "listen": {
+          "title": "Lernende hören lassen",
+          "body": "Der Lernende wählt eine Sprache und startet das Dubbing. Die lokale Stimme folgt Pause, Wiedergabe, Sprüngen und Tempo."
+        }
+      }
+    },
+    "support": {
+      "title": "Für eine kontrollierte Integration entwickelt",
+      "subtitle": "Voxylio SDK konzentriert sich auf den zuverlässigen lokalen Weg: bekannte Untertitelspuren, ein von Ihnen kontrollierter Player und Sprachausgabe aus dem Browser.",
+      "items": {
+        "tracks": {
+          "title": "WebVTT, SRT und Cue-Daten",
+          "body": "Laden Sie Untertiteldateien oder übergeben Sie Cues direkt. Sie bestimmen, woher Übersetzungen kommen und welche Sprachen erscheinen."
+        },
+        "translation": {
+          "title": "Bereitgestellte oder lokale Übersetzung",
+          "body": "Für verlässliche Abdeckung liefern Sie übersetzte Spuren. Wo unterstützt, können Sie zusätzlich die lokale Übersetzung des Browsers aktivieren."
+        },
+        "player": {
+          "title": "Headless oder mit fertiger UI",
+          "body": "Starten Sie schnell mit dem kompakten Widget oder erstellen Sie über API und Events ein vollständig individuelles Player-Erlebnis."
+        }
+      }
+    },
+    "limits": {
+      "title": "Was v1 benötigt",
+      "intro": "Die erste Version ist bewusst fokussiert. Prüfen Sie vor der Integration diese Voraussetzungen.",
+      "items": {
+        "captions": "Eine zeitcodierte Untertitelspur ist erforderlich; v1 transkribiert kein Roh-Audio.",
+        "iframe": "Ihre App muss auf das HTMLVideoElement zugreifen können. Ein gesperrtes Drittanbieter-iFrame lässt sich nicht steuern.",
+        "voices": "Verfügbarkeit und Qualität der Stimmen hängen von Browser, Betriebssystem und installierten Stimmen des Lernenden ab.",
+        "mobile": "Mobile Browser beschränken Sprachausgabe und Hintergrundwiedergabe stärker; Desktop-Web ist das primäre Ziel von v1."
+      }
+    },
+    "pricing": {
+      "eyebrow": "Einfache Lizenzierung",
+      "title": "Ein Festpreis. Keine Minutenzähler.",
+      "subtitle": "Sie zahlen für die Nutzung des SDK auf Ihrer Plattform, nicht für jede Lektion, die Ihre Kunden ansehen.",
+      "monthly": "Monatlich",
+      "yearly": "Jährlich",
+      "twoMonths": "2 Monate gratis",
+      "badge": "Kommerzielle Lizenz",
+      "planName": "Voxylio SDK",
+      "planBody": "Für Kursplattformen, Akademien und Web-Apps, die ihren Videoplayer kontrollieren.",
+      "perYear": "/ Jahr",
+      "perMonth": "/ Monat",
+      "yearlyDetail": "Entspricht {equivalent}/Monat · Sie sparen {savings} pro Jahr",
+      "monthlyDetail": "Monatliche Abrechnung. Kündigung vor der nächsten Verlängerung.",
+      "cta": "SDK-Zugang anfragen",
+      "commercialNote": "Während der frühen Veröffentlichung des privaten SDK wird der Zugang manuell und auf Grundlage eines kommerziellen Lizenzvertrags freigeschaltet.",
+      "included": "Ihre Lizenz umfasst",
+      "features": {
+        "domain": "1 Produktionsdomain plus Staging und localhost",
+        "unlimited": "Unbegrenztes lokales Dubbing – ohne Minuten oder Credits",
+        "local": "Lokale Systemstimmen und synchrone Wiedergabe",
+        "api": "Headless API, optionales Widget und TypeScript-Typen",
+        "updates": "Alle v1-Updates und Integrationsdokumentation",
+        "support": "Integrationssupport per E-Mail"
+      },
+      "moreDomainsTitle": "Mehrere Produktionsdomains nötig?",
+      "moreDomainsBody": "Kontaktieren Sie uns für eine Multi-Domain- oder Enterprise-Lizenz mit einem zu Ihrer Bereitstellung passenden Preis.",
+      "noFree": "Es gibt keinen kostenlosen SDK-Tarif. Die Browser-Erweiterung bleibt ein separates Verbraucherprodukt; diese Lizenz dient zur Einbettung von Voxylio in Ihre Plattform."
+    },
+    "aiGuide": {
+      "eyebrow": "KI-fertige Integration",
+      "title": "Geben Sie Ihrer Coding-KI das vollständige Briefing",
+      "body": "Kopieren Sie diesen Prompt in Codex, Claude oder einen anderen Coding-Agenten. Er weist den Agenten an, zuerst Ihr Projekt zu verstehen und dann das SDK sicher zu installieren und zu integrieren.",
+      "workflow": "Der Prompt deckt Projektanalyse, Installation des privaten Pakets, Player- und Untertitelprüfung, Lebenszyklus, Datenschutz, Tests und Übergabe ab.",
+      "copy": "Prompt kopieren",
+      "copied": "Prompt kopiert",
+      "download": ".md herunterladen",
+      "copyError": "Kopieren fehlgeschlagen. Markieren Sie den Prompt rechts und kopieren Sie ihn manuell.",
+      "note": "Der Prompt ist auf Englisch, damit Coding-Agenten ihn konsistent befolgen."
+    },
+    "faq": {
+      "title": "Fragen zum SDK",
+      "items": {
+        "minutes": {
+          "question": "Gibt es Dubbing-Limits oder eine Minutenabrechnung?",
+          "answer": "Nein. Das Dubbing nutzt lokale Browser-Funktionen; die kommerzielle Lizenz hat weder Minutenkontingente noch Credits oder Mehrverbrauchskosten."
+        },
+        "privacy": {
+          "question": "Welche Daten erhält Voxylio?",
+          "answer": "Die Lizenzprüfung übermittelt den öffentlichen Lizenzschlüssel, den Ursprung der Website und die SDK-Version. Wie bei jeder Webanfrage sieht die Infrastruktur die IP-Adresse; Voxylio leitet daraus zur Missbrauchsprävention einen täglich wechselnden HMAC-Bucket ab, speichert die rohe IP nie und löscht diese Buckets innerhalb von zwei Tagen. Videos, Untertitel, erzeugte Sprache und Identitäten der Lernenden werden nicht an Voxylio gesendet."
+        },
+        "languages": {
+          "question": "Welche Sprachen werden unterstützt?",
+          "answer": "Sie können jede Sprache anbieten, für die Sie eine zeitcodierte Untertitelspur bereitstellen und der Lernende eine kompatible lokale Stimme besitzt. Die optionale lokale Übersetzung hängt vom Browser ab."
+        },
+        "player": {
+          "question": "Funktioniert es mit meinem Videoplayer?",
+          "answer": "Ja, wenn Ihre Anwendung das zugrunde liegende HTMLVideoElement bereitstellen kann. Player in unzugänglichen Drittanbieter-iFrames werden in v1 nicht unterstützt."
+        },
+        "billing": {
+          "question": "Wie funktionieren Monats- und Jahresabrechnung?",
+          "answer": "Der monatliche Zugang kostet 99 $ und verlängert sich jeden Monat. Der Jahreszugang kostet 990 $ und wird einmal für zwölf Monate berechnet. Beide enthalten dieselben SDK-Funktionen."
+        }
+      }
+    },
+    "final": {
+      "title": "Lokales Dubbing direkt in Ihrer Plattform",
+      "body": "Erzählen Sie uns von Ihrem Player, Ihrem Untertitel-Workflow und Ihren Produktionsdomains. Wir prüfen die Kompatibilität und stellen Paket-Zugang sowie Website-Schlüssel bereit.",
+      "cta": "Zugang anfragen"
     }
   },
   "Sites": {
