@@ -106,6 +106,18 @@ const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromi
   if (!result.ack || result.ack.ok !== true) fails.push('bridge sent no voxylio:linked ack');
   if (result.spoken.length < 1) fails.push('no speech after linking the account');
   if (!result.spoken.every((s) => s.startsWith('[fr]'))) fails.push('untranslated speech after link');
+  const sentenceOrder = new Map([
+    ['one', 1], ['two', 2], ['three', 3], ['four', 4], ['five', 5],
+    ['six', 6], ['seven', 7], ['eight', 8], ['nine', 9], ['ten', 10],
+  ]);
+  const spokenOrder = result.spoken
+    .map((s) => (s.match(/Sentence (\w+)/i) || [])[1])
+    .map((word) => sentenceOrder.get(String(word).toLowerCase()))
+    .filter(Number.isFinite);
+  if (spokenOrder.some((rank) => rank < 3))
+    fails.push(`already-ended sentence was backfilled after unlock (${spokenOrder.join(' -> ')})`);
+  if (!spokenOrder.every((rank, i) => i === 0 || rank > spokenOrder[i - 1]))
+    fails.push(`speech went backwards or repeated after unlock (${spokenOrder.join(' -> ')})`);
 
   if (fails.length) {
     console.error('\nFAIL:\n - ' + fails.join('\n - '));

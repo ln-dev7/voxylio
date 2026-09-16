@@ -57,6 +57,8 @@ const targets = {
     zipDir(ROOT, join(OUT, `voxylio-source-${VERSION}.zip`), [
       "node_modules/*",
       "*/node_modules/*",
+      ".pnpm-store/*",
+      "*/.pnpm-store/*",
       ".git/*",
       "dist-store/*",
       "site/.next/*",

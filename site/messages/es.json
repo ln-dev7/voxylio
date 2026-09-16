@@ -277,6 +277,17 @@
   "Changelog": {
     "title": "Novedades",
     "subtitle": "Cada versión de Voxylio y lo que cambia para ti.",
+    "v183": {
+      "date": "Septiembre de 2026",
+      "summary": "La actualización de fiabilidad: subtítulos, traducción y voz permanecen sincronizados tras cambios de idioma, saltos y fallos del proveedor.",
+      "items": {
+        "order": "Las frases siempre se reproducen en orden cronológico, aunque las traducciones terminen desordenadas o la cuenta se desbloquee a mitad del vídeo.",
+        "tracks": "Solo una fuente y un idioma de subtítulos alimentan cada vídeo; las respuestas tardías de una selección anterior se ignoran.",
+        "seek": "Al saltar en el vídeo se reconstruyen correctamente los subtítulos en directo, sin perder ni duplicar textos repetidos.",
+        "cloud": "La voz Pro limita las solicitudes bloqueadas, limpia su caché y repite de inmediato la frase afectada con una voz local.",
+        "audio": "El audio Pro invalida permisos tardíos y sesiones de captura antiguas para evitar flujos y consumo de cuota duplicados."
+      }
+    },
     "v182": {
       "date": "Agosto de 2026",
       "summary": "La versión de inspección: auditoría completa del motor, el popup y el empaquetado — cada hallazgo corregido.",

@@ -277,6 +277,17 @@
   "Changelog": {
     "title": "Nouveautés",
     "subtitle": "Chaque version de Voxylio, et ce qu'elle change pour vous.",
+    "v183": {
+      "date": "Septembre 2026",
+      "summary": "La mise à jour fiabilité : sous-titres, traduction et voix restent synchronisés après un changement de langue, un déplacement ou une panne de fournisseur.",
+      "items": {
+        "order": "Les répliques sont toujours prononcées dans l’ordre, même si les traductions terminent dans le désordre ou si le compte est débloqué en cours de vidéo.",
+        "tracks": "Une seule source et une seule langue de sous-titres alimentent la vidéo ; les anciennes réponses arrivées en retard sont ignorées.",
+        "seek": "Un déplacement reconstruit proprement les sous-titres en direct : un texte répété est prononcé à sa nouvelle position, sans doublon.",
+        "cloud": "La voix Pro interrompt désormais une requête bloquée, vide son cache et reprend immédiatement la réplique avec une voix locale.",
+        "audio": "L’audio Pro invalide les autorisations tardives et les anciennes captures afin d’éviter les doubles flux et la double consommation du quota."
+      }
+    },
     "v182": {
       "date": "Août 2026",
       "summary": "La version inspection : audit complet du moteur, du popup et du packaging — chaque anomalie corrigée.",

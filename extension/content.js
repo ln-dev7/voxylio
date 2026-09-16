@@ -1651,7 +1651,9 @@
     updNone: "Up to date \u2713",
     updThrottled: "Try again in a few minutes",
     statusYtDubbed: "YouTube is already dubbing this video into your language (automatic audio track) \u2014 you are hearing two voices. In the player: \u2699\uFE0F \u2192 Audio track \u2192 pick the original version, then reload the page.",
-    toggleDub: "Enable dubbing"
+    toggleDub: "Enable dubbing",
+    btnDeleteAccount: "Delete my account",
+    btnContact: "Contact us"
   };
 
   // src/messages/fr.json
@@ -1837,7 +1839,9 @@
     updNone: "\xC0 jour \u2713",
     updThrottled: "R\xE9essaie dans quelques minutes",
     statusYtDubbed: "YouTube double d\xE9j\xE0 cette vid\xE9o dans ta langue (piste audio automatique) \u2014 tu entends deux voix. Dans le lecteur : \u2699\uFE0F \u2192 Piste audio \u2192 choisis la version originale, puis recharge la page.",
-    toggleDub: "Activer le doublage"
+    toggleDub: "Activer le doublage",
+    btnDeleteAccount: "Supprimer mon compte",
+    btnContact: "Nous contacter"
   };
 
   // src/messages/es.json
@@ -2023,7 +2027,9 @@
     updNone: "Actualizado \u2713",
     updThrottled: "Int\xE9ntalo de nuevo en unos minutos",
     statusYtDubbed: "YouTube ya dobla este v\xEDdeo a tu idioma (pista de audio autom\xE1tica): oyes dos voces. En el reproductor: \u2699\uFE0F \u2192 Pista de audio \u2192 elige la versi\xF3n original y recarga la p\xE1gina.",
-    toggleDub: "Activar el doblaje"
+    toggleDub: "Activar el doblaje",
+    btnDeleteAccount: "Eliminar mi cuenta",
+    btnContact: "Cont\xE1ctanos"
   };
 
   // src/messages/de.json
@@ -2209,7 +2215,9 @@
     updNone: "Aktuell \u2713",
     updThrottled: "Versuch es in ein paar Minuten erneut",
     statusYtDubbed: "YouTube vertont dieses Video bereits in deiner Sprache (automatische Tonspur) \u2014 du h\xF6rst zwei Stimmen. Im Player: \u2699\uFE0F \u2192 Audiotrack \u2192 Originalversion w\xE4hlen, dann Seite neu laden.",
-    toggleDub: "Dubbing aktivieren"
+    toggleDub: "Dubbing aktivieren",
+    btnDeleteAccount: "Mein Konto l\xF6schen",
+    btnContact: "Kontakt"
   };
 
   // src/messages/it.json
@@ -2395,7 +2403,9 @@
     updNone: "Aggiornato \u2713",
     updThrottled: "Riprova tra qualche minuto",
     statusYtDubbed: "YouTube sta gi\xE0 doppiando questo video nella tua lingua (traccia audio automatica): senti due voci. Nel player: \u2699\uFE0F \u2192 Traccia audio \u2192 scegli la versione originale, poi ricarica la pagina.",
-    toggleDub: "Attiva il doppiaggio"
+    toggleDub: "Attiva il doppiaggio",
+    btnDeleteAccount: "Elimina il mio account",
+    btnContact: "Contattaci"
   };
 
   // src/messages/ja.json
@@ -2581,7 +2591,9 @@
     updNone: "\u6700\u65B0\u3067\u3059 \u2713",
     updThrottled: "\u6570\u5206\u5F8C\u306B\u3082\u3046\u4E00\u5EA6\u304A\u8A66\u3057\u304F\u3060\u3055\u3044",
     statusYtDubbed: "YouTube \u304C\u3053\u306E\u52D5\u753B\u3092\u3059\u3067\u306B\u3042\u306A\u305F\u306E\u8A00\u8A9E\u306B\u5439\u304D\u66FF\u3048\u3066\u3044\u307E\u3059\uFF08\u81EA\u52D5\u97F3\u58F0\u30C8\u30E9\u30C3\u30AF\uFF09\u2014 2 \u3064\u306E\u58F0\u304C\u91CD\u306A\u3063\u3066\u3044\u307E\u3059\u3002\u30D7\u30EC\u30FC\u30E4\u30FC\u306E \u2699\uFE0F \u2192 \u97F3\u58F0\u30C8\u30E9\u30C3\u30AF \u2192 \u30AA\u30EA\u30B8\u30CA\u30EB\u3092\u9078\u3073\u3001\u30DA\u30FC\u30B8\u3092\u518D\u8AAD\u307F\u8FBC\u307F\u3057\u3066\u304F\u3060\u3055\u3044\u3002",
-    toggleDub: "\u5439\u304D\u66FF\u3048\u3092\u6709\u52B9\u306B\u3059\u308B"
+    toggleDub: "\u5439\u304D\u66FF\u3048\u3092\u6709\u52B9\u306B\u3059\u308B",
+    btnDeleteAccount: "\u30A2\u30AB\u30A6\u30F3\u30C8\u3092\u524A\u9664",
+    btnContact: "\u304A\u554F\u3044\u5408\u308F\u305B"
   };
 
   // src/messages/ko.json
@@ -2767,7 +2779,9 @@
     updNone: "\uCD5C\uC2E0 \uC0C1\uD0DC \u2713",
     updThrottled: "\uBA87 \uBD84 \uD6C4 \uB2E4\uC2DC \uC2DC\uB3C4\uD558\uC138\uC694",
     statusYtDubbed: "YouTube\uAC00 \uC774\uBBF8 \uC774 \uB3D9\uC601\uC0C1\uC744 \uB0B4 \uC5B8\uC5B4\uB85C \uB354\uBE59\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4(\uC790\uB3D9 \uC624\uB514\uC624 \uD2B8\uB799) \u2014 \uB450 \uBAA9\uC18C\uB9AC\uAC00 \uACB9\uCCD0 \uB4E4\uB9BD\uB2C8\uB2E4. \uD50C\uB808\uC774\uC5B4\uC5D0\uC11C \u2699\uFE0F \u2192 \uC624\uB514\uC624 \uD2B8\uB799 \u2192 \uC6D0\uBCF8\uC744 \uC120\uD0DD\uD55C \uB4A4 \uD398\uC774\uC9C0\uB97C \uC0C8\uB85C\uACE0\uCE68\uD558\uC138\uC694.",
-    toggleDub: "\uB354\uBE59 \uCF1C\uAE30"
+    toggleDub: "\uB354\uBE59 \uCF1C\uAE30",
+    btnDeleteAccount: "\uACC4\uC815 \uC0AD\uC81C",
+    btnContact: "\uBB38\uC758\uD558\uAE30"
   };
 
   // src/messages/zh-CN.json
@@ -2953,7 +2967,9 @@
     updNone: "\u5DF2\u662F\u6700\u65B0 \u2713",
     updThrottled: "\u8BF7\u51E0\u5206\u949F\u540E\u518D\u8BD5",
     statusYtDubbed: "YouTube \u5DF2\u5C06\u6B64\u89C6\u9891\u81EA\u52A8\u914D\u97F3\u4E3A\u4F60\u7684\u8BED\u8A00\uFF08\u81EA\u52A8\u97F3\u8F68\uFF09\u2014 \u4F60\u4F1A\u542C\u5230\u4E24\u4E2A\u58F0\u97F3\u3002\u8BF7\u5728\u64AD\u653E\u5668\u4E2D\uFF1A\u2699\uFE0F \u2192 \u97F3\u8F68 \u2192 \u9009\u62E9\u539F\u59CB\u7248\u672C\uFF0C\u7136\u540E\u5237\u65B0\u9875\u9762\u3002",
-    toggleDub: "\u542F\u7528\u914D\u97F3"
+    toggleDub: "\u542F\u7528\u914D\u97F3",
+    btnDeleteAccount: "\u5220\u9664\u6211\u7684\u8D26\u53F7",
+    btnContact: "\u8054\u7CFB\u6211\u4EEC"
   };
 
   // src/messages/zh-TW.json
@@ -3139,7 +3155,9 @@
     updNone: "\u5DF2\u662F\u6700\u65B0 \u2713",
     updThrottled: "\u8ACB\u5E7E\u5206\u9418\u5F8C\u518D\u8A66",
     statusYtDubbed: "YouTube \u5DF2\u5C07\u6B64\u5F71\u7247\u81EA\u52D5\u914D\u97F3\u70BA\u4F60\u7684\u8A9E\u8A00\uFF08\u81EA\u52D5\u97F3\u8ECC\uFF09\u2014 \u4F60\u6703\u807D\u5230\u5169\u500B\u8072\u97F3\u3002\u8ACB\u5728\u64AD\u653E\u5668\u4E2D\uFF1A\u2699\uFE0F \u2192 \u97F3\u8ECC \u2192 \u9078\u64C7\u539F\u59CB\u7248\u672C\uFF0C\u7136\u5F8C\u91CD\u65B0\u6574\u7406\u9801\u9762\u3002",
-    toggleDub: "\u555F\u7528\u914D\u97F3"
+    toggleDub: "\u555F\u7528\u914D\u97F3",
+    btnDeleteAccount: "\u522A\u9664\u6211\u7684\u5E33\u865F",
+    btnContact: "\u806F\u7D61\u6211\u5011"
   };
 
   // src/messages/pt-BR.json
@@ -3325,7 +3343,9 @@
     updNone: "Atualizado \u2713",
     updThrottled: "Tente de novo em alguns minutos",
     statusYtDubbed: "O YouTube j\xE1 dubla este v\xEDdeo no seu idioma (faixa de \xE1udio autom\xE1tica) \u2014 voc\xEA ouve duas vozes. No player: \u2699\uFE0F \u2192 Faixa de \xE1udio \u2192 escolha a vers\xE3o original e recarregue a p\xE1gina.",
-    toggleDub: "Ativar a dublagem"
+    toggleDub: "Ativar a dublagem",
+    btnDeleteAccount: "Excluir minha conta",
+    btnContact: "Fale conosco"
   };
 
   // src/i18n.js
@@ -3494,6 +3514,7 @@
       });
     }
     const cloudAudioCache = new BoundedMap(80);
+    const CLOUD_AUDIO_REQUEST_TIMEOUT_MS = 1e4;
     let cloudVoiceDownUntil = 0;
     function cloudVoiceActive() {
       return !!settings.proVoice && accountLinked && AURA2_LANGS.has(settings.targetLang) && Date.now() >= cloudVoiceDownUntil;
@@ -3504,11 +3525,16 @@
       if (cloudAudioCache.has(key)) return cloudAudioCache.get(key);
       const p = (async () => {
         try {
-          const resp = await runtime.sendMessage({
-            type: "speak-pro",
-            text,
-            lang: voiceLang
-          });
+          const resp = await Promise.race([
+            runtime.sendMessage({
+              type: "speak-pro",
+              text,
+              lang: voiceLang
+            }),
+            new Promise(
+              (resolve) => setTimeout(() => resolve(null), CLOUD_AUDIO_REQUEST_TIMEOUT_MS)
+            )
+          ]);
           if (resp && resp.ok && resp.audio) {
             const url = "data:" + (resp.mime || "audio/mpeg") + ";base64," + resp.audio;
             const audio = new Audio(url);
@@ -3551,7 +3577,6 @@
     const domSite = domCaptionSiteFor(location.hostname);
     let domCapContainer = null;
     let domCapObserver = null;
-    let domLastText = "";
     function domCaptionText() {
       if (!domCapContainer) return "";
       const parts = [];
@@ -3565,20 +3590,23 @@
       }
       return parts.join(" ").trim();
     }
-    function onDomCaptionMutation() {
+    function onDomCaptionMutation(force = false) {
       const video = primaryVideo;
       const ctl = video && controllers.get(video);
       if (!ctl) return;
-      if (ctl.ytStatic === "loaded") return;
       const text = domCaptionText();
       if (!text) {
-        if (domLastText) ctl.closeDomCue(video.currentTime);
-        domLastText = "";
+        if (ctl.domLastText) ctl.closeDomCue(video.currentTime);
+        ctl.domLastText = "";
+        ctl.domLastAcceptedAt = -Infinity;
         return;
       }
-      if (text === domLastText) return;
-      domLastText = text;
-      ctl.addDomCue(video.currentTime, text);
+      const at = video.currentTime;
+      if (!force && text === ctl.domLastText) return;
+      if (ctl.addDomCue(at, text)) {
+        ctl.domLastText = text;
+        ctl.domLastAcceptedAt = at;
+      }
     }
     const CC_LABEL = /\b(cc|sous-?titres?|subtitles?|captions?|untertitel|sottotitoli|leyendas?|legendas?|subt[ií]tulos?)\b|字幕|자막/i;
     let ccClickedFor = "";
@@ -3601,19 +3629,13 @@
     function maybeEnableSiteCaptions() {
       if (!settings.enabled || !accountLinked || siteDisabled()) return;
       if (!sitePlanAllowed()) return;
-      if (domLastText) return;
       const video = primaryVideo;
       const ctl = video && controllers.get(video);
+      if (ctl && ctl.domLastText) return;
       if (!ctl || ctl.cues.length > 0) return;
       if (domSite && domSite.id === "youtube" && ctl.active && !ctl.staticLoaded)
         return;
-      try {
-        if (Array.from(video.textTracks || []).some(
-          (t) => t.kind === "subtitles" || t.kind === "captions"
-        ))
-          return;
-      } catch (e) {
-      }
+      if (ctl.captionFeedKind === "texttrack") return;
       if (ccClickedFor === location.href) return;
       const btn = ccToggleCandidate();
       if (!btn) return;
@@ -3629,13 +3651,16 @@
         if (domCapObserver) domCapObserver.disconnect();
         domCapObserver = null;
         domCapContainer = null;
-        domLastText = "";
+        for (const ctl of controllers.values()) {
+          ctl.domLastText = "";
+          ctl.domLastAcceptedAt = -Infinity;
+        }
       }
       if (domCapContainer) return;
       const el = document.querySelector(domSite.container);
       if (!el) return;
       domCapContainer = el;
-      domCapObserver = new MutationObserver(onDomCaptionMutation);
+      domCapObserver = new MutationObserver(() => onDomCaptionMutation(false));
       domCapObserver.observe(el, {
         childList: true,
         subtree: true,
@@ -3699,7 +3724,10 @@
       }
       Object.assign(settings, validateSettings(patch));
       if (changes.targetLang || changes.sourceLang) {
-        for (const c of controllers.values()) c.flushSpeech();
+        providerDetectedSource = "";
+        providerDetectCandidate = "";
+        providerDetectVotes = 0;
+        for (const c of controllers.values()) c.onLanguagePairChanged();
       }
       if (changes.glossary) rebuildGlossary();
       if (changes.provider || changes.cloudFallback || changes.proTranslation || changes.keepTerms || changes.glossary)
@@ -3943,8 +3971,11 @@
       journalDirty = true;
       journalFlushSoon();
     }
-    function resetPageFeed() {
-      domLastText = "";
+    function resetPageFeed(ctl) {
+      if (ctl) {
+        ctl.domLastText = "";
+        ctl.domLastAcceptedAt = -Infinity;
+      }
       journalSession = null;
       providerDetectedSource = "";
       providerDetectCandidate = "";
@@ -3985,7 +4016,19 @@
         captionEl: null,
         // on-screen translated captions container
         trackListened: null,
+        trackSelectionSignature: "",
         staticLoaded: false,
+        captionEpoch: 0,
+        // invalidates stale track/fetch callbacks
+        captionFeedKind: "none",
+        // exactly one cue producer owns the timeline
+        captionFeedKey: "",
+        domLastText: "",
+        domLastAcceptedAt: -Infinity,
+        trackElementFetchingEpoch: -1,
+        siteFetchingEpoch: -1,
+        audioEpoch: 0,
+        pastCutoff: null,
         // Anti-repetition registries (progressive captions can regrow a
         // group; identity is the stable group id, never the mutable text):
         scheduledIds: /* @__PURE__ */ new Set(),
@@ -4026,22 +4069,114 @@
         mediaKey: ""
         // URL+src identity of the media being dubbed
       };
+      const FEED_PRIORITY = Object.freeze({
+        none: 0,
+        audio: 10,
+        dom: 20,
+        "track-element": 30,
+        texttrack: 40,
+        youtube: 50,
+        udemy: 50
+      });
+      function selectionSignature() {
+        return [ctl.mediaKey, settings.sourceLang, settings.targetLang].join("|");
+      }
+      function detachTrackListener() {
+        if (ctl.trackListened && ctl.trackHarvestHandler) {
+          try {
+            ctl.trackListened.removeEventListener(
+              "cuechange",
+              ctl.trackHarvestHandler
+            );
+          } catch (e) {
+          }
+        }
+        ctl.trackListened = null;
+        ctl.trackHarvestHandler = null;
+        ctl.trackSelectionSignature = "";
+      }
+      function clearCueTimeline() {
+        ctl.cues = [];
+        ctl.cueKeys.clear();
+        ctl.groups = [];
+        ctl.lastCueCount = -1;
+        ctl.groupMeta.clear();
+        ctl.spokenIds.clear();
+        ctl.scheduledIds.clear();
+        ctl.inFlight.clear();
+        ctl.lastDomCue = null;
+        ctl.domCues = 0;
+        ctl.domLastText = "";
+        ctl.domLastAcceptedAt = -Infinity;
+      }
+      function feedToken(kind, key, lang = "") {
+        return { kind, key, lang, epoch: ctl.captionEpoch };
+      }
+      function feedTokenIsCurrent(token) {
+        return !!token && token.epoch === ctl.captionEpoch;
+      }
+      function claimCaptionFeed(token, force = false) {
+        if (!feedTokenIsCurrent(token)) return false;
+        if (ctl.captionFeedKind === token.kind && ctl.captionFeedKey === token.key) {
+          if (token.lang) ctl.trackLang = token.lang;
+          return true;
+        }
+        const currentPriority = FEED_PRIORITY[ctl.captionFeedKind] || 0;
+        const nextPriority = FEED_PRIORITY[token.kind] || 0;
+        if (ctl.captionFeedKind !== "none" && !force && nextPriority <= currentPriority)
+          return false;
+        const hadFeed = ctl.captionFeedKind !== "none";
+        if (hadFeed) {
+          hardStopSpeech();
+          clearCueTimeline();
+          if (ctl.captionFeedKind === "audio" && token.kind !== "audio")
+            stopAudioFeed("idle");
+        }
+        ctl.captionFeedKind = token.kind;
+        ctl.captionFeedKey = token.key;
+        if (token.lang) ctl.trackLang = token.lang;
+        return true;
+      }
+      function resetCaptionSelection(markPast = true) {
+        hardStopSpeech();
+        stopAudioFeed("idle");
+        ctl.captionEpoch += 1;
+        detachTrackListener();
+        clearCueTimeline();
+        ctl.captionFeedKind = "none";
+        ctl.captionFeedKey = "";
+        ctl.trackLang = "";
+        ctl.detectedSource = null;
+        ctl.detecting = false;
+        ctl.detectTargetVotes = 0;
+        ctl.staticLoaded = false;
+        ctl.ytStatic = null;
+        ctl.ytDubbedDefault = false;
+        ctl.trackRetryAt = 0;
+        ctl.trackRetries = 0;
+        ctl.trackElementFetchingEpoch = -1;
+        ctl.siteFetchingEpoch = -1;
+        ctl.audioProbeAt = 0;
+        ctl.lastTime = video.currentTime;
+        ctl.pastCutoff = markPast ? video.currentTime + 0.2 : null;
+      }
       function cueKey(start2, text) {
         return Math.round(start2 * 100) + "|" + text;
       }
-      function addCue(start2, end, text) {
+      function addCue(start2, end, text, token) {
+        if (token && !claimCaptionFeed(token)) return false;
         text = stripTags(text);
-        if (!text) return;
+        if (!text) return false;
         const key = cueKey(start2, text);
-        if (ctl.cueKeys.has(key)) return;
+        if (ctl.cueKeys.has(key)) return true;
         const last = ctl.cues[ctl.cues.length - 1];
-        const merged = mergeRollup(last, start2, end, text);
+        const merged = !last || start2 + 0.05 >= last.start ? mergeRollup(last, start2, end, text) : null;
         if (merged) {
           if (merged.grew || merged.end !== last.end) ctl.lastCueCount = -1;
           if (merged.grew) last.text = merged.text;
           last.end = merged.end;
           ctl.cueKeys.add(key);
-          return;
+          return true;
         }
         ctl.cueKeys.add(key);
         const cue = { start: start2, end, text, key };
@@ -4054,16 +4189,20 @@
         }
         if (lo === ctl.cues.length) ctl.cues.push(cue);
         else ctl.cues.splice(lo, 0, cue);
+        return true;
       }
       ctl.addDomCue = (start2, text) => {
         const clean = stripTags(text);
-        if (!clean) return;
+        if (!clean) return false;
+        const token = feedToken("dom", "dom:" + ctl.mediaKey);
+        if (!claimCaptionFeed(token)) return false;
         if (ctl.lastDomCue && ctl.lastDomCue.end > start2) {
           ctl.lastDomCue.end = Math.max(ctl.lastDomCue.start + 0.8, start2);
         }
-        addCue(start2, domCueEnd(start2, clean), clean);
+        addCue(start2, domCueEnd(start2, clean), clean, token);
         ctl.lastDomCue = ctl.cues[ctl.cues.length - 1] || null;
         ctl.domCues = (ctl.domCues || 0) + 1;
+        return true;
       };
       ctl.closeDomCue = (at) => {
         if (ctl.lastDomCue && ctl.lastDomCue.end > at) {
@@ -4082,15 +4221,22 @@
         };
       }
       function rebuildGroups() {
-        if (ctl.cues.length === ctl.lastCueCount) return;
-        ctl.lastCueCount = ctl.cues.length;
-        ctl.groups = buildGroups(ctl.cues);
-        const now = Date.now();
-        for (const g of ctl.groups) {
-          const meta = ctl.groupMeta.get(g.id);
-          if (!meta || meta.version !== g.version) {
-            ctl.groupMeta.set(g.id, { version: g.version, changedAt: now });
+        if (ctl.cues.length !== ctl.lastCueCount) {
+          ctl.lastCueCount = ctl.cues.length;
+          ctl.groups = buildGroups(ctl.cues);
+          const now = Date.now();
+          for (const g of ctl.groups) {
+            const meta = ctl.groupMeta.get(g.id);
+            if (!meta || meta.version !== g.version) {
+              ctl.groupMeta.set(g.id, { version: g.version, changedAt: now });
+            }
           }
+        }
+        if (ctl.pastCutoff != null && ctl.groups.length) {
+          for (const group of ctl.groups) {
+            if (group.end <= ctl.pastCutoff) ctl.spokenIds.add(group.id);
+          }
+          ctl.pastCutoff = null;
         }
       }
       function isFinalGroup(g) {
@@ -4104,42 +4250,46 @@
         const tracks = Array.from(video.textTracks || []).filter(
           (t) => t.kind === "subtitles" || t.kind === "captions"
         );
-        const wanted = settings.sourceLang;
+        const signature = selectionSignature();
         let track = null;
-        if (ctl.trackListened && tracks.includes(ctl.trackListened)) {
+        if (ctl.trackListened && ctl.trackSelectionSignature === signature && tracks.includes(ctl.trackListened)) {
           track = ctl.trackListened;
         } else {
-          const score = (t) => {
-            let s = 0;
-            const lang = (t.language || "").toLowerCase();
-            const label = (t.label || "").toLowerCase();
-            if (wanted !== "auto" && lang.startsWith(wanted)) s += 4;
-            if (wanted === "auto" && lang.startsWith("en")) s += 2;
-            if (label.includes("english") || label.includes("anglais")) s += 1;
-            return s;
-          };
-          tracks.sort((a, b) => score(b) - score(a));
-          track = tracks[0];
-          if (track && ctl.trackListened && ctl.trackListened !== track) {
-            ctl.cues = [];
-            ctl.cueKeys.clear();
-            ctl.groups = [];
-            ctl.lastCueCount = -1;
-            ctl.groupMeta.clear();
-            ctl.spokenIds.clear();
-            ctl.scheduledIds.clear();
-            ctl.inFlight.clear();
-            ctl.generation += 1;
-          }
+          if (ctl.trackListened) resetCaptionSelection();
+          const candidates = tracks.map((ref, index2) => ({
+            ref,
+            index: index2,
+            languageCode: ref.language || "",
+            // Browser TextTrack does not expose ASR metadata; labels are the
+            // only portable hint. Unknown stays manual, the safer default.
+            kind: /auto(?:matic|[- ]generated)?/i.test(ref.label || "") ? "asr" : "manual"
+          }));
+          const chosen = pickCaptionTrack(
+            candidates,
+            settings.sourceLang !== "auto" ? settings.sourceLang : null,
+            settings.targetLang
+          );
+          track = chosen && chosen.ref;
         }
         if (!track) return;
-        ctl.trackLang = (track.language || "").toLowerCase().split("-")[0];
+        const lang = (track.language || "").toLowerCase().split("-")[0];
+        const index = tracks.indexOf(track);
+        const token = feedToken(
+          "texttrack",
+          ["texttrack", index, lang, track.label || ""].join(":"),
+          lang
+        );
         if (track.mode === "disabled") track.mode = "hidden";
         const harvest = () => {
+          if (!feedTokenIsCurrent(token)) return;
           if (!track.cues) return;
-          for (const c of Array.from(track.cues)) {
+          const cues = Array.from(track.cues);
+          if (!cues.length || !claimCaptionFeed(token)) return;
+          if (ctl.captionFeedKind !== token.kind || ctl.captionFeedKey !== token.key)
+            return;
+          for (const c of cues) {
             const raw = typeof c.text === "string" ? c.text : "";
-            addCue(c.startTime, c.endTime, raw);
+            addCue(c.startTime, c.endTime, raw, token);
           }
         };
         harvest();
@@ -4152,50 +4302,73 @@
           }
           ctl.trackListened = track;
           ctl.trackHarvestHandler = harvest;
+          ctl.trackSelectionSignature = signature;
           track.addEventListener("cuechange", harvest);
         }
       }
       async function harvestTrackElements() {
+        if (domSite && (domSite.id === "youtube" || domSite.id === "udemy"))
+          return;
         if (ctl.staticLoaded) return;
+        if (ctl.captionFeedKind === "texttrack") return;
         if (ctl.trackRetryAt && Date.now() < ctl.trackRetryAt) return;
         const els = Array.from(video.querySelectorAll("track")).filter(
           (t) => !t.kind || t.kind === "subtitles" || t.kind === "captions"
         );
-        els.sort((a, b) => {
-          const s = (t) => ((t.srclang || "").toLowerCase().startsWith("en") ? 2 : 0) + (/english/i.test(t.label || "") ? 1 : 0);
-          return s(b) - s(a);
-        });
-        const el = els[0];
+        const candidates = els.map((el2, index) => ({
+          el: el2,
+          index,
+          languageCode: el2.srclang || el2.track && el2.track.language || "",
+          kind: /auto(?:matic|[- ]generated)?/i.test(el2.label || "") ? "asr" : "manual"
+        }));
+        const chosen = pickCaptionTrack(
+          candidates,
+          settings.sourceLang !== "auto" ? settings.sourceLang : null,
+          settings.targetLang
+        );
+        const el = chosen && chosen.el;
         if (!el || !el.src) return;
-        ctl.staticLoaded = true;
+        const epoch = ctl.captionEpoch;
+        const signature = selectionSignature();
+        if (ctl.trackElementFetchingEpoch === epoch) return;
+        ctl.trackElementFetchingEpoch = epoch;
+        const lang = String(chosen.languageCode || "").toLowerCase().split("-")[0];
+        const token = {
+          kind: "track-element",
+          key: "track-element:" + new URL(el.src, location.href).href,
+          lang,
+          epoch
+        };
         try {
           const res = await fetch(el.src, { credentials: "same-origin" });
           if (!res.ok) throw new Error("HTTP " + res.status);
           const cues = parseVTT(await res.text());
-          for (const c of cues) addCue(c.start, c.end, c.text);
+          if (!feedTokenIsCurrent(token) || selectionSignature() !== signature || !cues.length || !claimCaptionFeed(token))
+            return;
+          for (const c of cues) addCue(c.start, c.end, c.text, token);
+          ctl.staticLoaded = true;
           ctl.trackRetryAt = 0;
           ctl.trackRetries = 0;
         } catch (e) {
+          if (!feedTokenIsCurrent(token) || selectionSignature() !== signature)
+            return;
           ctl.trackRetries = (ctl.trackRetries || 0) + 1;
           ctl.staticLoaded = ctl.trackRetries >= 4;
           ctl.trackRetryAt = Date.now() + 6e3;
+        } finally {
+          if (ctl.trackElementFetchingEpoch === epoch)
+            ctl.trackElementFetchingEpoch = -1;
         }
       }
-      function adoptStaticCues(cues, langBase) {
+      function adoptStaticCues(cues, langBase, token) {
+        if (!feedTokenIsCurrent(token)) return false;
         const t = video.currentTime;
         const hadActivity = ctl.spokenIds.size > 0 || !!ctl.currentUtterance || ctl.queue.length > 0;
+        if (!claimCaptionFeed(token, true)) return false;
         ctl.generation += 1;
         ctl.queue.length = 0;
-        ctl.cues = [];
-        ctl.cueKeys.clear();
-        ctl.groups = [];
-        ctl.lastCueCount = -1;
-        ctl.groupMeta.clear();
-        ctl.spokenIds.clear();
-        ctl.scheduledIds.clear();
-        ctl.inFlight.clear();
-        ctl.lastDomCue = null;
-        for (const c of cues) addCue(c.start, c.end, c.text);
+        clearCueTimeline();
+        for (const c of cues) addCue(c.start, c.end, c.text, token);
         rebuildGroups();
         for (const g of ctl.groups) {
           if (g.end <= t + 0.2 || hadActivity && g.start <= t && t < g.end) {
@@ -4205,17 +4378,23 @@
         ctl.staticLoaded = true;
         ctl.ytStatic = "loaded";
         if (langBase) ctl.trackLang = langBase;
+        return true;
       }
       async function harvestYouTubeStatic() {
         if (!domSite || domSite.id !== "youtube") return;
-        if (ctl.staticLoaded || ctl.ytFetching) return;
+        if (ctl.staticLoaded) return;
         if (ctl.trackRetryAt && Date.now() < ctl.trackRetryAt) return;
         const mk = ctl.mediaKey;
-        ctl.ytFetching = true;
+        const epoch = ctl.captionEpoch;
+        const signature = selectionSignature();
+        if (ctl.siteFetchingEpoch === epoch) return;
+        ctl.siteFetchingEpoch = epoch;
         try {
           const pageRes = await fetch(location.href, { credentials: "same-origin" });
           if (!pageRes.ok) throw new Error("page HTTP " + pageRes.status);
           const pageHtml = await pageRes.text();
+          if (ctl.mediaKey !== mk || ctl.captionEpoch !== epoch || selectionSignature() !== signature)
+            return;
           try {
             ctl.ytDubbedDefault = isDefaultDubbed(
               extractAudioTracks(pageHtml),
@@ -4224,7 +4403,6 @@
           } catch (e) {
           }
           const tracks = extractCaptionTracks(pageHtml);
-          if (ctl.mediaKey !== mk) return;
           if (!tracks.length) {
             ctl.staticLoaded = true;
             ctl.ytStatic = "none";
@@ -4232,6 +4410,13 @@
           }
           const wanted = settings.sourceLang !== "auto" ? settings.sourceLang : null;
           const track = pickCaptionTrack(tracks, wanted, settings.targetLang);
+          const lang = String(track.languageCode || "").toLowerCase().split("-")[0];
+          const token = {
+            kind: "youtube",
+            key: "youtube:" + String(track.baseUrl || ""),
+            lang,
+            epoch
+          };
           const res = await fetch(timedtextUrl(track.baseUrl), {
             credentials: "same-origin"
           });
@@ -4239,13 +4424,12 @@
           const body = await res.text();
           const cues = body ? parseJson3(JSON.parse(body)) : [];
           if (!cues.length) throw new Error("empty timedtext");
-          if (ctl.mediaKey !== mk || !isAlive()) return;
-          adoptStaticCues(
-            cues,
-            String(track.languageCode || "").toLowerCase().split("-")[0]
-          );
+          if (ctl.mediaKey !== mk || ctl.captionEpoch !== epoch || selectionSignature() !== signature || !isAlive())
+            return;
+          adoptStaticCues(cues, lang, token);
         } catch (e) {
-          if (ctl.mediaKey !== mk) return;
+          if (ctl.mediaKey !== mk || ctl.captionEpoch !== epoch || selectionSignature() !== signature)
+            return;
           ctl.trackRetries = (ctl.trackRetries || 0) + 1;
           if (ctl.trackRetries >= 2) {
             ctl.staticLoaded = true;
@@ -4254,16 +4438,19 @@
             ctl.trackRetryAt = Date.now() + 4e3;
           }
         } finally {
-          ctl.ytFetching = false;
+          if (ctl.siteFetchingEpoch === epoch) ctl.siteFetchingEpoch = -1;
         }
       }
       ctl.ytHarvest = harvestYouTubeStatic;
       async function harvestUdemyStatic() {
         if (!domSite || domSite.id !== "udemy") return;
-        if (ctl.staticLoaded || ctl.ytFetching) return;
+        if (ctl.staticLoaded) return;
         if (ctl.trackRetryAt && Date.now() < ctl.trackRetryAt) return;
         const mk = ctl.mediaKey;
-        ctl.ytFetching = true;
+        const epoch = ctl.captionEpoch;
+        const signature = selectionSignature();
+        if (ctl.siteFetchingEpoch === epoch) return;
+        ctl.siteFetchingEpoch = epoch;
         try {
           const lectureId = udemyLectureId(location.href);
           const loader = document.querySelector(".ud-app-loader");
@@ -4277,7 +4464,8 @@
           });
           if (!res.ok) throw new Error("captions HTTP " + res.status);
           const tracks = udemyCaptionTracks(await res.json());
-          if (ctl.mediaKey !== mk) return;
+          if (ctl.mediaKey !== mk || ctl.captionEpoch !== epoch || selectionSignature() !== signature)
+            return;
           if (!tracks.length) {
             ctl.staticLoaded = true;
             ctl.ytStatic = "none";
@@ -4285,17 +4473,23 @@
           }
           const wanted = settings.sourceLang !== "auto" ? settings.sourceLang : null;
           const track = pickCaptionTrack(tracks, wanted, settings.targetLang);
+          const lang = String(track.languageCode || "").toLowerCase().split("-")[0];
+          const token = {
+            kind: "udemy",
+            key: "udemy:" + String(track.url || ""),
+            lang,
+            epoch
+          };
           const vres = await fetch(track.url);
           if (!vres.ok) throw new Error("vtt HTTP " + vres.status);
           const cues = parseVTT(await vres.text());
           if (!cues.length) throw new Error("empty vtt");
-          if (ctl.mediaKey !== mk || !isAlive()) return;
-          adoptStaticCues(
-            cues,
-            String(track.languageCode || "").toLowerCase().split("-")[0]
-          );
+          if (ctl.mediaKey !== mk || ctl.captionEpoch !== epoch || selectionSignature() !== signature || !isAlive())
+            return;
+          adoptStaticCues(cues, lang, token);
         } catch (e) {
-          if (ctl.mediaKey !== mk) return;
+          if (ctl.mediaKey !== mk || ctl.captionEpoch !== epoch || selectionSignature() !== signature)
+            return;
           ctl.trackRetries = (ctl.trackRetries || 0) + 1;
           if (ctl.trackRetries >= 2) {
             ctl.staticLoaded = true;
@@ -4304,7 +4498,7 @@
             ctl.trackRetryAt = Date.now() + 4e3;
           }
         } finally {
-          ctl.ytFetching = false;
+          if (ctl.siteFetchingEpoch === epoch) ctl.siteFetchingEpoch = -1;
         }
       }
       ctl.udemyHarvest = harvestUdemyStatic;
@@ -4316,7 +4510,7 @@
           return false;
         if (ctl.audioRetryAt && Date.now() < ctl.audioRetryAt) return false;
         if (ctl.audioFeed) return true;
-        if (ctl.cues.length > 0 || domLastText) return false;
+        if (ctl.cues.length > 0 || ctl.domLastText) return false;
         if (domSite && (domSite.id === "youtube" || domSite.id === "udemy") && !ctl.staticLoaded)
           return false;
         if (ctl.ytStatic === "loaded") return false;
@@ -4376,6 +4570,7 @@
         }
       }
       function stopAudioFeed(state) {
+        ctl.audioEpoch += 1;
         reportAudioUsage(true);
         if (ctl.audioWs) {
           try {
@@ -4392,7 +4587,15 @@
         }
       }
       ctl.stopAudioFeed = stopAudioFeed;
-      function openAudioSocket(token, protocols, isRetry) {
+      function audioStartIsCurrent(epoch) {
+        return ctl.audioEpoch === epoch && ctl.active && settings.proAudio && accountPlan === "pro";
+      }
+      function openAudioSocket(token, protocols, isRetry, startEpoch) {
+        if (!audioStartIsCurrent(startEpoch)) return;
+        const captionToken = feedToken(
+          "audio",
+          "audio:" + ctl.mediaKey + ":" + settings.sourceLang
+        );
         let ws;
         try {
           ws = new WebSocket(deepgramLiveUrl(effectiveSource()), protocols);
@@ -4404,14 +4607,14 @@
         let opened = false;
         ctl.audioWs = ws;
         ws.onopen = () => {
-          if (ctl.audioWs !== ws) return;
+          if (ctl.audioWs !== ws || !audioStartIsCurrent(startEpoch)) return;
           opened = true;
           ctl.audioState = "live";
           ctl.audioT0 = video.currentTime;
           ctl.audioRate = video.playbackRate || 1;
         };
         ws.onmessage = (ev) => {
-          if (ctl.audioWs !== ws) return;
+          if (ctl.audioWs !== ws || !audioStartIsCurrent(startEpoch)) return;
           let msg;
           try {
             msg = JSON.parse(ev.data);
@@ -4421,16 +4624,16 @@
           const cue = transcriptToCue(msg, ctl.audioT0 || 0, ctl.audioRate || 1);
           if (cue) {
             ctl.audioFeed = true;
-            addCue(cue.start, cue.end, cue.text);
+            addCue(cue.start, cue.end, cue.text, captionToken);
           }
         };
         ws.onerror = () => {
         };
         ws.onclose = () => {
-          if (ctl.audioWs !== ws) return;
+          if (ctl.audioWs !== ws || ctl.audioEpoch !== startEpoch) return;
           ctl.audioWs = null;
           if (!opened && !isRetry) {
-            openAudioSocket(token, ["token", token], true);
+            openAudioSocket(token, ["token", token], true, startEpoch);
             return;
           }
           stopAudioGraph();
@@ -4441,6 +4644,8 @@
         };
       }
       async function startAudioFeed() {
+        const startEpoch = ctl.audioEpoch + 1;
+        ctl.audioEpoch = startEpoch;
         ctl.audioState = "starting";
         ctl.audioStarts = (ctl.audioStarts || 0) + 1;
         if (ctl.audioStarts > 6) {
@@ -4463,10 +4668,7 @@
           grant = await runtime.sendMessage({ type: "audio-grant" });
         } catch (e) {
         }
-        if (!ctl.active || !settings.proAudio) {
-          ctl.audioState = "idle";
-          return;
-        }
+        if (!audioStartIsCurrent(startEpoch)) return;
         if (!grant || !grant.ok || !grant.token) {
           if (grant && grant.quota) {
             ctl.audioState = "quota";
@@ -4496,7 +4698,9 @@
             } catch (e) {
             }
           }
+          if (!audioStartIsCurrent(startEpoch)) return;
           proc.onaudioprocess = (ev) => {
+            if (!audioStartIsCurrent(startEpoch)) return;
             const ws = ctl.audioWs;
             if (!ws || ws.readyState !== 1) return;
             const data = ev.inputBuffer.getChannelData(0);
@@ -4516,7 +4720,7 @@
           stopAudioFeed("failed");
           return;
         }
-        openAudioSocket(grant.token, ["bearer", grant.token]);
+        openAudioSocket(grant.token, ["bearer", grant.token], false, startEpoch);
       }
       function effectiveSource() {
         if (settings.sourceLang !== "auto") return settings.sourceLang;
@@ -4529,6 +4733,7 @@
       async function maybeDetectSource() {
         if (ctl.detecting || ctl.detectedSource || ctl.cues.length < 2) return;
         ctl.detecting = true;
+        const epoch = ctl.captionEpoch;
         try {
           if (typeof LanguageDetector === "undefined") return;
           const parts = [];
@@ -4543,6 +4748,7 @@
           if (total < 40) return;
           const detector = await LanguageDetector.create();
           const results = await detector.detect(parts.join(" "));
+          if (ctl.captionEpoch !== epoch) return;
           const best = results && results[0];
           if (best && best.confidence > 0.5) {
             const d = (best.detectedLanguage || "").split("-")[0];
@@ -4555,7 +4761,7 @@
           }
         } catch (e) {
         } finally {
-          ctl.detecting = false;
+          if (ctl.captionEpoch === epoch) ctl.detecting = false;
         }
       }
       function pretranslate() {
@@ -4698,11 +4904,20 @@
         speakLocal(text, cueDur, id, extras);
       }
       async function speakCloud(text, cueDur, id, extras) {
-        const token = { cloud: true, at: performance.now(), _vxId: id };
+        const token = {
+          cloud: true,
+          at: performance.now(),
+          _vxId: id,
+          _vxText: text,
+          _vxDur: cueDur,
+          _vxExtras: extras,
+          _vxLang: settings.targetLang,
+          _vxSuperseded: false
+        };
         ctl.currentUtterance = token;
         const asset = await getCloudAudio(text, settings.targetLang);
         if (ctl.currentUtterance !== token) {
-          if (id) ctl.spokenIds.delete(id);
+          if (id && !token._vxSuperseded) ctl.spokenIds.delete(id);
           return;
         }
         if (!asset) {
@@ -4727,7 +4942,7 @@
           new Promise((resolve) => setTimeout(resolve, 250))
         ]);
         if (ctl.currentUtterance !== token) {
-          if (id) ctl.spokenIds.delete(id);
+          if (id && !token._vxSuperseded) ctl.spokenIds.delete(id);
           return;
         }
         const base = Number.isFinite(settings.rate) ? settings.rate : 1.1;
@@ -4892,6 +5107,7 @@
         }
         const q = ctl.queue[0];
         if (!q) return;
+        if (hasEarlierPendingGroup(q)) return;
         if (!ctl.autoPaused && q.start > t + 0.25) return;
         ctl.queue.shift();
         if (q.id && ctl.spokenIds.has(q.id)) {
@@ -4902,8 +5118,32 @@
         const dur = late ? Math.max(1.2, Math.min(q.dur || 1.2, q.end - t)) : q.dur || Math.max(0.6, q.end - t);
         speak(q.text, dur, q.id, q);
       }
+      function groupOrder(id) {
+        if (!id) return Number.MAX_SAFE_INTEGER;
+        const index = ctl.groups.findIndex((group) => group.id === id);
+        return index < 0 ? Number.MAX_SAFE_INTEGER : index;
+      }
+      function compareQueueItems(a, b) {
+        const byGroup = groupOrder(a.id) - groupOrder(b.id);
+        if (byGroup) return byGroup;
+        return (a.start || 0) - (b.start || 0);
+      }
+      function hasEarlierPendingGroup(item) {
+        const order = groupOrder(item && item.id);
+        if (!Number.isFinite(order) || order <= 0 || order === Number.MAX_SAFE_INTEGER)
+          return false;
+        for (let i = 0; i < order; i++) {
+          const id = ctl.groups[i].id;
+          if (ctl.scheduledIds.has(id) && !ctl.spokenIds.has(id)) return true;
+        }
+        return false;
+      }
       function enqueue(item) {
-        ctl.queue.push(item);
+        const insertAt = ctl.queue.findIndex(
+          (queued) => compareQueueItems(item, queued) < 0
+        );
+        if (insertAt < 0) ctl.queue.push(item);
+        else ctl.queue.splice(insertAt, 0, item);
         if (ctl.queue.length > 3) {
           if (settings.autoPause && !video.paused && !ctl.autoPaused) {
             ctl.autoPaused = true;
@@ -4928,6 +5168,7 @@
         const source = effectiveSource();
         if (source !== "auto" && source === target) {
           ctl.scheduledIds.delete(group.id);
+          drainQueue();
           return;
         }
         let entry = ctl.inFlight.get(group.id);
@@ -4946,6 +5187,7 @@
         } catch (e) {
           ctl.scheduledIds.delete(group.id);
           ctl.inFlight.delete(group.id);
+          drainQueue();
           return;
         }
         if (gen !== ctl.generation) return;
@@ -4954,16 +5196,20 @@
         if (!live || live.version !== group.version) {
           ctl.scheduledIds.delete(group.id);
           ctl.inFlight.delete(group.id);
+          drainQueue();
           return;
         }
         if (!ctl.active || video.paused && !ctl.autoPaused || video.seeking) {
           ctl.scheduledIds.delete(group.id);
+          ctl.inFlight.delete(group.id);
+          drainQueue();
           return;
         }
         if (video.currentTime > group.end + 4) {
           ctl.spokenIds.add(group.id);
           ctl.scheduledIds.delete(group.id);
           ctl.inFlight.delete(group.id);
+          drainQueue();
           return;
         }
         const item = {
@@ -4975,7 +5221,7 @@
           orig: group.text,
           rec: false
         };
-        if (ctl.currentUtterance) {
+        if (ctl.currentUtterance || hasEarlierPendingGroup(item)) {
           enqueue(item);
         } else {
           speak(item.text, item.dur, item.id, item);
@@ -5027,7 +5273,8 @@
         ctl.mediaKey = mediaKey;
         const t = video.currentTime;
         if (t < ctl.lastTime - 0.75) {
-          fullFlush();
+          onSeeking();
+          onSeeked();
         }
         ctl.lastTime = t;
         harvestTextTracks();
@@ -5047,8 +5294,26 @@
           const a = ctl.cloudAudio;
           const stalledFetch = !a && now - (ctl.currentUtterance.at || 0) > 12e3;
           if (a && a.ended || stalledFetch) {
+            const stalled = stalledFetch ? ctl.currentUtterance : null;
+            const stalledId = stalled && stalled._vxId;
+            if (stalled) {
+              stalled._vxSuperseded = true;
+              cloudVoiceDownUntil = Date.now() + 6e4;
+              cloudAudioCache.delete(stalled._vxLang + "::" + stalled._vxText);
+            }
             ctl.currentUtterance = null;
             ctl.cloudAudio = null;
+            if (stalledId) {
+              ctl.inFlight.delete(stalledId);
+              const ex = stalled._vxExtras;
+              const stillPlayable = ctl.active && !video.paused && !video.seeking && ex && video.currentTime <= ex.end + 4;
+              if (stillPlayable) {
+                speakLocal(stalled._vxText, stalled._vxDur, stalledId, ex);
+              } else {
+                ctl.spokenIds.add(stalledId);
+                ctl.scheduledIds.delete(stalledId);
+              }
+            }
             drainQueue();
           }
         } else if (ctl.currentUtterance) {
@@ -5311,11 +5576,14 @@
       function start() {
         if (ctl.active) return;
         ctl.active = true;
+        ctl.pastCutoff = video.currentTime + 0.2;
         harvestTextTracks();
         harvestTrackElements();
+        rebuildGroups();
         ctl.pollTimer = setInterval(tick, 150);
         video.addEventListener("pause", onPauseEvent);
-        video.addEventListener("seeking", fullFlush);
+        video.addEventListener("seeking", onSeeking);
+        video.addEventListener("seeked", onSeeked);
         video.addEventListener("ended", hardStopSpeech);
         video.addEventListener("ratechange", onRateChange);
         video.addEventListener("volumechange", onVolumeChange);
@@ -5345,7 +5613,8 @@
         clearInterval(ctl.pollTimer);
         ctl.pollTimer = null;
         video.removeEventListener("pause", onPauseEvent);
-        video.removeEventListener("seeking", fullFlush);
+        video.removeEventListener("seeking", onSeeking);
+        video.removeEventListener("seeked", onSeeked);
         video.removeEventListener("ended", hardStopSpeech);
         video.removeEventListener("ratechange", onRateChange);
         video.removeEventListener("volumechange", onVolumeChange);
@@ -5363,37 +5632,38 @@
         ctl.spokenIds.clear();
         stopAudioFeed();
       }
-      function resetForNewMedia() {
-        hardStopSpeech();
-        ctl.cues = [];
-        ctl.cueKeys.clear();
-        ctl.groups = [];
-        ctl.lastCueCount = -1;
-        ctl.groupMeta.clear();
-        ctl.spokenIds.clear();
-        ctl.scheduledIds.clear();
-        ctl.inFlight.clear();
-        ctl.lastDomCue = null;
-        ctl.detectedSource = null;
-        ctl.detectTargetVotes = 0;
-        ctl.trackLang = "";
-        ctl.staticLoaded = false;
-        ctl.ytStatic = null;
-        ctl.ytDubbedDefault = false;
-        ctl.trackRetryAt = 0;
-        ctl.trackRetries = 0;
-        ctl.lastTime = -1;
-        if (ctl.trackListened && ctl.trackHarvestHandler) {
-          try {
-            ctl.trackListened.removeEventListener(
-              "cuechange",
-              ctl.trackHarvestHandler
-            );
-          } catch (e) {
-          }
+      function onSeeking() {
+        const liveFeed = ctl.captionFeedKind === "dom" || ctl.captionFeedKind === "audio";
+        const feed = {
+          kind: ctl.captionFeedKind,
+          key: ctl.captionFeedKey,
+          lang: ctl.trackLang
+        };
+        fullFlush();
+        if (liveFeed) {
+          ctl.captionEpoch += 1;
+          clearCueTimeline();
+          ctl.captionFeedKind = feed.kind;
+          ctl.captionFeedKey = feed.key;
+          ctl.trackLang = feed.lang;
+          ctl.audioProbeAt = 0;
         }
-        ctl.trackListened = null;
-        ctl.trackHarvestHandler = null;
+        ctl.pastCutoff = video.currentTime + 0.2;
+        rebuildGroups();
+        ctl.lastTime = video.currentTime;
+      }
+      function onSeeked() {
+        ctl.lastTime = video.currentTime;
+        if (ctl.captionFeedKind !== "dom") return;
+        const epoch = ctl.captionEpoch;
+        setTimeout(() => {
+          if (ctl.active && !video.seeking && ctl.captionEpoch === epoch && ctl.captionFeedKind === "dom" && !Number.isFinite(ctl.domLastAcceptedAt))
+            onDomCaptionMutation(true);
+        }, 120);
+      }
+      function resetForNewMedia() {
+        resetCaptionSelection(false);
+        ctl.lastTime = -1;
         stopAudioFeed();
         ctl.audioFeed = false;
         ctl.audioState = ctl.audioState === "quota" ? "quota" : "idle";
@@ -5403,7 +5673,7 @@
         ctl.audioProbeAt = 0;
         ctl.audioRetryAt = 0;
         ctl.audioT0 = 0;
-        resetPageFeed();
+        resetPageFeed(ctl);
         hideCaption();
       }
       function onMediaEmptied() {
@@ -5442,6 +5712,12 @@
       };
       ctl.flushSpeech = hardStopSpeech;
       ctl.fullFlush = fullFlush;
+      ctl.onLanguagePairChanged = () => {
+        resetCaptionSelection();
+        harvestTextTracks();
+        harvestTrackElements();
+        rebuildGroups();
+      };
       ctl.harvest();
       ctl.onSettingsChanged();
       return ctl;

@@ -4,9 +4,10 @@ const { chromium } = require('playwright');
 const CONTENT = path.join(__dirname, '..', '..', 'extension', 'content.js');
 const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : undefined);
 // Integration: DOM-caption harvesting (YouTube-style player). The page is
-// served under www.youtube.com via request interception, exposes NO
-// textTracks, and renders captions in .ytp-caption-segment nodes — the
-// engine must dub from those, with roll-up growth handled once.
+// served under www.youtube.com via request interception, exposes an EMPTY
+// native textTrack, and renders captions in .ytp-caption-segment nodes — the
+// empty high-priority feed must not starve the DOM fallback, and roll-up
+// growth must still be handled once.
 
 (async () => {
   const browser = await chromium.launch({
@@ -31,6 +32,9 @@ const EXE = process.env.CHROMIUM_PATH || (fs.existsSync('/opt/pw-browsers/chromi
   await page.goto('https://www.youtube.com/voxtest');
 
   await page.evaluate(() => {
+    // Some players expose a native track object before (or even though)
+    // usable cues ever arrive. Its mere presence must not claim the feed.
+    document.getElementById('v').addTextTrack('subtitles', 'Empty English', 'en');
     const listeners = [];
     const store = { enabled: true, rate: 1.0, duck: 12, voiceName: '', sourceLang: 'en', targetLang: 'fr', subtitles: false, overlay: false };
     window.chrome = {

@@ -249,6 +249,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
   // doing it only in speakCloud() left a small but audible hole at every
   // sentence boundary even when synthesis itself had finished early.
   const cloudAudioCache = new BoundedMap(80); // "lang::text" -> Promise<{audio, ready}|null>
+  const CLOUD_AUDIO_REQUEST_TIMEOUT_MS = 10_000;
 
   // Voice-consistency latch: after a cloud refusal the WHOLE passage
   // stays on the local voice for a while — one sentence in a different
@@ -270,11 +271,19 @@ import { makeT, resolveUiLang } from "./i18n.js";
     if (cloudAudioCache.has(key)) return cloudAudioCache.get(key);
     const p = (async () => {
       try {
-        const resp = await runtime.sendMessage({
-          type: "speak-pro",
-          text,
-          lang: voiceLang,
-        });
+        // A background/provider request can remain pending forever after a
+        // service-worker or network edge case. Resolve to the established
+        // local fallback before the speech-slot watchdog has to intervene.
+        const resp = await Promise.race([
+          runtime.sendMessage({
+            type: "speak-pro",
+            text,
+            lang: voiceLang,
+          }),
+          new Promise((resolve) =>
+            setTimeout(() => resolve(null), CLOUD_AUDIO_REQUEST_TIMEOUT_MS),
+          ),
+        ]);
         if (resp && resp.ok && resp.audio) {
           const url =
             "data:" + (resp.mime || "audio/mpeg") + ";base64," + resp.audio;
@@ -329,7 +338,6 @@ import { makeT, resolveUiLang } from "./i18n.js";
   const domSite = domCaptionSiteFor(location.hostname);
   let domCapContainer = null;
   let domCapObserver = null;
-  let domLastText = "";
 
   function domCaptionText() {
     if (!domCapContainer) return "";
@@ -349,23 +357,28 @@ import { makeT, resolveUiLang } from "./i18n.js";
     return parts.join(" ").trim();
   }
 
-  function onDomCaptionMutation() {
+  function onDomCaptionMutation(force = false) {
     const video = primaryVideo;
     const ctl = video && controllers.get(video);
     if (!ctl) return;
-    // The static track feeds this video: DOM captions would duplicate
-    // every sentence at slightly different times (double speech).
-    if (ctl.ytStatic === "loaded") return;
     const text = domCaptionText();
     if (!text) {
       // Caption cleared: close the running cue at the playhead.
-      if (domLastText) ctl.closeDomCue(video.currentTime);
-      domLastText = "";
+      if (ctl.domLastText) ctl.closeDomCue(video.currentTime);
+      ctl.domLastText = "";
+      ctl.domLastAcceptedAt = -Infinity;
       return;
     }
-    if (text === domLastText) return;
-    domLastText = text;
-    ctl.addDomCue(video.currentTime, text);
+    const at = video.currentTime;
+    // MutationObserver may report several node operations for one visual
+    // update. Keep strict de-duplication inside the current playhead epoch;
+    // onSeeking() clears this latch so the SAME sentence can be accepted
+    // exactly once at the seek destination.
+    if (!force && text === ctl.domLastText) return;
+    if (ctl.addDomCue(at, text)) {
+      ctl.domLastText = text;
+      ctl.domLastAcceptedAt = at;
+    }
   }
 
   // If dubbing is wanted but the player's captions are OFF, switch them
@@ -413,9 +426,9 @@ import { makeT, resolveUiLang } from "./i18n.js";
   function maybeEnableSiteCaptions() {
     if (!settings.enabled || !accountLinked || siteDisabled()) return;
     if (!sitePlanAllowed()) return; // Pro-only site for this account
-    if (domLastText) return; // captions already flowing
     const video = primaryVideo;
     const ctl = video && controllers.get(video);
+    if (ctl && ctl.domLastText) return; // captions already flowing
     if (!ctl || ctl.cues.length > 0) return;
     // YouTube: while the static-track verdict is pending, hold the CC
     // click — when the track loads, captions never need to flash on
@@ -423,16 +436,10 @@ import { makeT, resolveUiLang } from "./i18n.js";
     // fallback (with this click) proceeds.
     if (domSite && domSite.id === "youtube" && ctl.active && !ctl.staticLoaded)
       return;
-    // Standard subtitle tracks exist: harvesting handles them silently —
-    // never flash the site's own captions on screen for nothing.
-    try {
-      if (
-        Array.from(video.textTracks || []).some(
-          (t) => t.kind === "subtitles" || t.kind === "captions",
-        )
-      )
-        return;
-    } catch (e) {}
+    // A native track only suppresses the site's caption fallback once it
+    // has produced usable cues and actually owns the timeline. Merely
+    // exposing an empty/broken TextTrack used to block both paths forever.
+    if (ctl.captionFeedKind === "texttrack") return;
     if (ccClickedFor === location.href) return;
     const btn = ccToggleCandidate();
     if (!btn) return;
@@ -448,13 +455,16 @@ import { makeT, resolveUiLang } from "./i18n.js";
       if (domCapObserver) domCapObserver.disconnect();
       domCapObserver = null;
       domCapContainer = null;
-      domLastText = "";
+      for (const ctl of controllers.values()) {
+        ctl.domLastText = "";
+        ctl.domLastAcceptedAt = -Infinity;
+      }
     }
     if (domCapContainer) return;
     const el = document.querySelector(domSite.container);
     if (!el) return;
     domCapContainer = el;
-    domCapObserver = new MutationObserver(onDomCaptionMutation);
+    domCapObserver = new MutationObserver(() => onDomCaptionMutation(false));
     domCapObserver.observe(el, {
       childList: true,
       subtree: true,
@@ -535,10 +545,15 @@ import { makeT, resolveUiLang } from "./i18n.js";
       patch[k] = v.newValue === undefined ? DEFAULTS[k] : v.newValue;
     }
     Object.assign(settings, validateSettings(patch));
-    // Language change (source or target): cut the current voice and queue
-    // immediately — no line from the previous pair may ever be heard.
+    // Language change (source OR target): the source-track arbitration also
+    // depends on the target (auto mode avoids a target-language track).
+    // Re-select the feed completely; cutting speech alone left the sticky
+    // TextTrack and already-loaded static file on the previous language.
     if (changes.targetLang || changes.sourceLang) {
-      for (const c of controllers.values()) c.flushSpeech();
+      providerDetectedSource = "";
+      providerDetectCandidate = "";
+      providerDetectVotes = 0;
+      for (const c of controllers.values()) c.onLanguagePairChanged();
     }
     if (changes.glossary) rebuildGlossary();
     if (
@@ -881,8 +896,11 @@ import { makeT, resolveUiLang } from "./i18n.js";
   // watch pages): the page-level feed state must restart with the new
   // media, or the journal keeps writing into the previous video's
   // session and the DOM-caption dedup swallows the first line.
-  function resetPageFeed() {
-    domLastText = "";
+  function resetPageFeed(ctl) {
+    if (ctl) {
+      ctl.domLastText = "";
+      ctl.domLastAcceptedAt = -Infinity;
+    }
     journalSession = null;
     // The provider-detection latch is per-MEDIA knowledge, not per-page:
     // left standing across an SPA navigation it kept effectiveSource()
@@ -934,7 +952,17 @@ import { makeT, resolveUiLang } from "./i18n.js";
       detecting: false,
       captionEl: null, // on-screen translated captions container
       trackListened: null,
+      trackSelectionSignature: "",
       staticLoaded: false,
+      captionEpoch: 0, // invalidates stale track/fetch callbacks
+      captionFeedKind: "none", // exactly one cue producer owns the timeline
+      captionFeedKey: "",
+      domLastText: "",
+      domLastAcceptedAt: -Infinity,
+      trackElementFetchingEpoch: -1,
+      siteFetchingEpoch: -1,
+      audioEpoch: 0,
+      pastCutoff: null,
       // Anti-repetition registries (progressive captions can regrow a
       // group; identity is the stable group id, never the mutable text):
       scheduledIds: new Set(), // groups queued for translation/speech
@@ -964,19 +992,137 @@ import { makeT, resolveUiLang } from "./i18n.js";
 
     // --- subtitle harvesting ----------------------------------------------
 
+    const FEED_PRIORITY = Object.freeze({
+      none: 0,
+      audio: 10,
+      dom: 20,
+      "track-element": 30,
+      texttrack: 40,
+      youtube: 50,
+      udemy: 50,
+    });
+
+    function selectionSignature() {
+      return [ctl.mediaKey, settings.sourceLang, settings.targetLang].join("|");
+    }
+
+    function detachTrackListener() {
+      if (ctl.trackListened && ctl.trackHarvestHandler) {
+        try {
+          ctl.trackListened.removeEventListener(
+            "cuechange",
+            ctl.trackHarvestHandler,
+          );
+        } catch (e) {}
+      }
+      ctl.trackListened = null;
+      ctl.trackHarvestHandler = null;
+      ctl.trackSelectionSignature = "";
+    }
+
+    function clearCueTimeline() {
+      ctl.cues = [];
+      ctl.cueKeys.clear();
+      ctl.groups = [];
+      ctl.lastCueCount = -1;
+      ctl.groupMeta.clear();
+      ctl.spokenIds.clear();
+      ctl.scheduledIds.clear();
+      ctl.inFlight.clear();
+      ctl.lastDomCue = null;
+      ctl.domCues = 0;
+      ctl.domLastText = "";
+      ctl.domLastAcceptedAt = -Infinity;
+    }
+
+    function feedToken(kind, key, lang = "") {
+      return { kind, key, lang, epoch: ctl.captionEpoch };
+    }
+
+    function feedTokenIsCurrent(token) {
+      return !!token && token.epoch === ctl.captionEpoch;
+    }
+
+    // One timeline, one producer. A more authoritative feed may replace a
+    // fallback (static > native > fetched <track> > DOM > audio), but a
+    // late callback from the fallback can never write back into it.
+    function claimCaptionFeed(token, force = false) {
+      if (!feedTokenIsCurrent(token)) return false;
+      if (
+        ctl.captionFeedKind === token.kind &&
+        ctl.captionFeedKey === token.key
+      ) {
+        if (token.lang) ctl.trackLang = token.lang;
+        return true;
+      }
+      const currentPriority = FEED_PRIORITY[ctl.captionFeedKind] || 0;
+      const nextPriority = FEED_PRIORITY[token.kind] || 0;
+      if (
+        ctl.captionFeedKind !== "none" &&
+        !force &&
+        nextPriority <= currentPriority
+      )
+        return false;
+
+      const hadFeed = ctl.captionFeedKind !== "none";
+      if (hadFeed) {
+        // Never let a sentence from the old language finish over the newly
+        // selected feed. This also bumps the speech generation so an old
+        // translation promise cannot enter the queue later.
+        hardStopSpeech();
+        clearCueTimeline();
+        if (ctl.captionFeedKind === "audio" && token.kind !== "audio")
+          stopAudioFeed("idle");
+      }
+      ctl.captionFeedKind = token.kind;
+      ctl.captionFeedKey = token.key;
+      if (token.lang) ctl.trackLang = token.lang;
+      return true;
+    }
+
+    function resetCaptionSelection(markPast = true) {
+      hardStopSpeech();
+      stopAudioFeed("idle");
+      ctl.captionEpoch += 1;
+      detachTrackListener();
+      clearCueTimeline();
+      ctl.captionFeedKind = "none";
+      ctl.captionFeedKey = "";
+      ctl.trackLang = "";
+      ctl.detectedSource = null;
+      ctl.detecting = false;
+      ctl.detectTargetVotes = 0;
+      ctl.staticLoaded = false;
+      ctl.ytStatic = null;
+      ctl.ytDubbedDefault = false;
+      ctl.trackRetryAt = 0;
+      ctl.trackRetries = 0;
+      ctl.trackElementFetchingEpoch = -1;
+      ctl.siteFetchingEpoch = -1;
+      ctl.audioProbeAt = 0;
+      ctl.lastTime = video.currentTime;
+      ctl.pastCutoff = markPast ? video.currentTime + 0.2 : null;
+    }
+
     function cueKey(start, text) {
       return Math.round(start * 100) + "|" + text;
     }
 
-    function addCue(start, end, text) {
+    function addCue(start, end, text, token) {
+      if (token && !claimCaptionFeed(token)) return false;
       text = stripTags(text);
-      if (!text) return;
+      if (!text) return false;
       const key = cueKey(start, text);
-      if (ctl.cueKeys.has(key)) return;
+      if (ctl.cueKeys.has(key)) return true;
       // Roll-up captions (YouTube-style): merge into one growing cue
       // instead of stacking duplicates (@voxylio/core mergeRollup).
       const last = ctl.cues[ctl.cues.length - 1];
-      const merged = mergeRollup(last, start, end, text);
+      // After a backward seek, a live feed can report a cue older than the
+      // last retained cue. Never merge against a cue in the future.
+      const merged =
+        !last || start + 0.05 >= last.start
+          ? mergeRollup(last, start, end, text)
+          : null;
       if (merged) {
         // Text growth AND end-time movement both invalidate the groups:
         // stale ends feed the "line too late" checks downstream.
@@ -984,7 +1130,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
         if (merged.grew) last.text = merged.text;
         last.end = merged.end;
         ctl.cueKeys.add(key);
-        return;
+        return true;
       }
       ctl.cueKeys.add(key);
       // Ordered insert (binary): a full sort per cue was O(n² log n) over
@@ -999,6 +1145,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       }
       if (lo === ctl.cues.length) ctl.cues.push(cue);
       else ctl.cues.splice(lo, 0, cue);
+      return true;
     }
 
     // DOM-harvested captions (YouTube, Netflix…): synthetic cues stamped
@@ -1006,13 +1153,16 @@ import { makeT, resolveUiLang } from "./i18n.js";
     // grouping sees realistic durations.
     ctl.addDomCue = (start, text) => {
       const clean = stripTags(text);
-      if (!clean) return;
+      if (!clean) return false;
+      const token = feedToken("dom", "dom:" + ctl.mediaKey);
+      if (!claimCaptionFeed(token)) return false;
       if (ctl.lastDomCue && ctl.lastDomCue.end > start) {
         ctl.lastDomCue.end = Math.max(ctl.lastDomCue.start + 0.8, start);
       }
-      addCue(start, domCueEnd(start, clean), clean);
+      addCue(start, domCueEnd(start, clean), clean, token);
       ctl.lastDomCue = ctl.cues[ctl.cues.length - 1] || null;
       ctl.domCues = (ctl.domCues || 0) + 1;
+      return true;
     };
     ctl.closeDomCue = (at) => {
       if (ctl.lastDomCue && ctl.lastDomCue.end > at) {
@@ -1039,15 +1189,26 @@ import { makeT, resolveUiLang } from "./i18n.js";
 
     // Sentence reconstruction lives in @voxylio/core (buildGroups).
     function rebuildGroups() {
-      if (ctl.cues.length === ctl.lastCueCount) return;
-      ctl.lastCueCount = ctl.cues.length;
-      ctl.groups = buildGroups(ctl.cues);
-      const now = Date.now();
-      for (const g of ctl.groups) {
-        const meta = ctl.groupMeta.get(g.id);
-        if (!meta || meta.version !== g.version) {
-          ctl.groupMeta.set(g.id, { version: g.version, changedAt: now });
+      if (ctl.cues.length !== ctl.lastCueCount) {
+        ctl.lastCueCount = ctl.cues.length;
+        ctl.groups = buildGroups(ctl.cues);
+        const now = Date.now();
+        for (const g of ctl.groups) {
+          const meta = ctl.groupMeta.get(g.id);
+          if (!meta || meta.version !== g.version) {
+            ctl.groupMeta.set(g.id, { version: g.version, changedAt: now });
+          }
         }
+      }
+      // This cutoff can be armed even when a passive harvester already
+      // built the exact same cue list. Apply it outside the rebuild branch:
+      // activating midway through a video must not dub an already-ended
+      // sentence *after* the current one (the account-unlock 3 -> 2 bug).
+      if (ctl.pastCutoff != null && ctl.groups.length) {
+        for (const group of ctl.groups) {
+          if (group.end <= ctl.pastCutoff) ctl.spokenIds.add(group.id);
+        }
+        ctl.pastCutoff = null;
       }
     }
 
@@ -1068,54 +1229,65 @@ import { makeT, resolveUiLang } from "./i18n.js";
       const tracks = Array.from(video.textTracks || []).filter(
         (t) => t.kind === "subtitles" || t.kind === "captions"
       );
-      const wanted = settings.sourceLang; // "auto" or an explicit source
+      const signature = selectionSignature();
       // STICKY choice: once a track is being harvested, keep it as long as
-      // it exists. Re-arbitrating every tick used to switch tracks when a
-      // higher-scoring one appeared later (HLS), silently mixing two
-      // languages into one cue list.
+      // it exists AND the language pair is unchanged. A source/target
+      // change intentionally invalidates this stickiness.
       let track = null;
-      if (ctl.trackListened && tracks.includes(ctl.trackListened)) {
+      if (
+        ctl.trackListened &&
+        ctl.trackSelectionSignature === signature &&
+        tracks.includes(ctl.trackListened)
+      ) {
         track = ctl.trackListened;
       } else {
-        const score = (t) => {
-          let s = 0;
-          const lang = (t.language || "").toLowerCase();
-          const label = (t.label || "").toLowerCase();
-          // Explicit source choice wins; otherwise slight bias toward
-          // English, the most common source for course content.
-          if (wanted !== "auto" && lang.startsWith(wanted)) s += 4;
-          if (wanted === "auto" && lang.startsWith("en")) s += 2;
-          if (label.includes("english") || label.includes("anglais")) s += 1;
-          return s;
-        };
-        tracks.sort((a, b) => score(b) - score(a));
-        track = tracks[0];
-        // The harvested track changed (previous one was removed): the old
-        // cue list is another language's — restart clean.
-        if (track && ctl.trackListened && ctl.trackListened !== track) {
-          ctl.cues = [];
-          ctl.cueKeys.clear();
-          ctl.groups = [];
-          ctl.lastCueCount = -1;
-          ctl.groupMeta.clear();
-          ctl.spokenIds.clear();
-          ctl.scheduledIds.clear();
-          ctl.inFlight.clear();
-          ctl.generation += 1;
-        }
+        if (ctl.trackListened) resetCaptionSelection();
+        const candidates = tracks.map((ref, index) => ({
+          ref,
+          index,
+          languageCode: ref.language || "",
+          // Browser TextTrack does not expose ASR metadata; labels are the
+          // only portable hint. Unknown stays manual, the safer default.
+          kind: /auto(?:matic|[- ]generated)?/i.test(ref.label || "")
+            ? "asr"
+            : "manual",
+        }));
+        const chosen = pickCaptionTrack(
+          candidates,
+          settings.sourceLang !== "auto" ? settings.sourceLang : null,
+          settings.targetLang,
+        );
+        track = chosen && chosen.ref;
       }
       if (!track) return;
-      ctl.trackLang = (track.language || "").toLowerCase().split("-")[0];
+      const lang = (track.language || "").toLowerCase().split("-")[0];
+      const index = tracks.indexOf(track);
+      const token = feedToken(
+        "texttrack",
+        ["texttrack", index, lang, track.label || ""].join(":"),
+        lang,
+      );
 
       // 'hidden' forces cue loading without rendering them.
       // A track the user is already showing is left untouched.
       if (track.mode === "disabled") track.mode = "hidden";
 
       const harvest = () => {
+        if (!feedTokenIsCurrent(token)) return;
         if (!track.cues) return;
-        for (const c of Array.from(track.cues)) {
+        const cues = Array.from(track.cues);
+        // Do not reserve the high-priority native feed until it can really
+        // say something. DOM or a fetched <track> remains a valid fallback
+        // while a browser TextTrack is empty, broken or still loading.
+        if (!cues.length || !claimCaptionFeed(token)) return;
+        if (
+          ctl.captionFeedKind !== token.kind ||
+          ctl.captionFeedKey !== token.key
+        )
+          return;
+        for (const c of cues) {
           const raw = typeof c.text === "string" ? c.text : "";
-          addCue(c.startTime, c.endTime, raw);
+          addCue(c.startTime, c.endTime, raw, token);
         }
       };
       harvest();
@@ -1129,13 +1301,19 @@ import { makeT, resolveUiLang } from "./i18n.js";
         }
         ctl.trackListened = track;
         ctl.trackHarvestHandler = harvest;
+        ctl.trackSelectionSignature = signature;
         // HLS streams append cues as playback progresses.
         track.addEventListener("cuechange", harvest);
       }
     }
 
     async function harvestTrackElements() {
+      // YouTube/Udemy have authoritative site loaders with exact complete
+      // tracks. A page <track> must not block those loaders via staticLoaded.
+      if (domSite && (domSite.id === "youtube" || domSite.id === "udemy"))
+        return;
       if (ctl.staticLoaded) return;
+      if (ctl.captionFeedKind === "texttrack") return;
       // A failed fetch (network hiccup, cross-origin refusal) is retried
       // after a short delay instead of giving up for good.
       if (ctl.trackRetryAt && Date.now() < ctl.trackRetryAt) return;
@@ -1143,15 +1321,32 @@ import { makeT, resolveUiLang } from "./i18n.js";
         (t) =>
           !t.kind || t.kind === "subtitles" || t.kind === "captions"
       );
-      els.sort((a, b) => {
-        const s = (t) =>
-          ((t.srclang || "").toLowerCase().startsWith("en") ? 2 : 0) +
-          (/english/i.test(t.label || "") ? 1 : 0);
-        return s(b) - s(a);
-      });
-      const el = els[0];
+      const candidates = els.map((el, index) => ({
+        el,
+        index,
+        languageCode: el.srclang || (el.track && el.track.language) || "",
+        kind: /auto(?:matic|[- ]generated)?/i.test(el.label || "")
+          ? "asr"
+          : "manual",
+      }));
+      const chosen = pickCaptionTrack(
+        candidates,
+        settings.sourceLang !== "auto" ? settings.sourceLang : null,
+        settings.targetLang,
+      );
+      const el = chosen && chosen.el;
       if (!el || !el.src) return;
-      ctl.staticLoaded = true;
+      const epoch = ctl.captionEpoch;
+      const signature = selectionSignature();
+      if (ctl.trackElementFetchingEpoch === epoch) return;
+      ctl.trackElementFetchingEpoch = epoch;
+      const lang = String(chosen.languageCode || "").toLowerCase().split("-")[0];
+      const token = {
+        kind: "track-element",
+        key: "track-element:" + new URL(el.src, location.href).href,
+        lang,
+        epoch,
+      };
       try {
         // same-origin, not include: a page-controlled <track src> must
         // not make the extension fire credentialed requests at arbitrary
@@ -1162,15 +1357,28 @@ import { makeT, resolveUiLang } from "./i18n.js";
         // The parser accepts both WebVTT and SRT (comma decimals,
         // numeric counters) — whatever the file actually contains.
         const cues = parseVTT(await res.text());
-        for (const c of cues) addCue(c.start, c.end, c.text);
+        if (
+          !feedTokenIsCurrent(token) ||
+          selectionSignature() !== signature ||
+          !cues.length ||
+          !claimCaptionFeed(token)
+        )
+          return;
+        for (const c of cues) addCue(c.start, c.end, c.text, token);
+        ctl.staticLoaded = true;
         ctl.trackRetryAt = 0;
         ctl.trackRetries = 0;
       } catch (e) {
+        if (!feedTokenIsCurrent(token) || selectionSignature() !== signature)
+          return;
         // Retry in 6 s — but a cross-origin refusal never heals on its
         // own: give up after a few attempts (the popup Retry resets it).
         ctl.trackRetries = (ctl.trackRetries || 0) + 1;
         ctl.staticLoaded = ctl.trackRetries >= 4;
         ctl.trackRetryAt = Date.now() + 6000;
+      } finally {
+        if (ctl.trackElementFetchingEpoch === epoch)
+          ctl.trackElementFetchingEpoch = -1;
       }
     }
 
@@ -1182,24 +1390,20 @@ import { makeT, resolveUiLang } from "./i18n.js";
     // latency as pure silence between phrases. Same-origin fetches, no
     // extra permission; any failure falls back to the DOM feed.
 
-    function adoptStaticCues(cues, langBase) {
+    function adoptStaticCues(cues, langBase, token) {
+      if (!feedTokenIsCurrent(token)) return false;
       const t = video.currentTime;
       // Did the DOM feed already voice something? Then the sentence at
       // the playhead was (or is being) spoken: never re-air it.
       const hadActivity =
         ctl.spokenIds.size > 0 || !!ctl.currentUtterance || ctl.queue.length > 0;
-      ctl.generation += 1; // in-flight DOM translations die at the gate
+      if (!claimCaptionFeed(token, true)) return false;
+      // `claimCaptionFeed` clears a replaced fallback. Clear explicitly too
+      // for the initial static adoption, then seed one coherent timeline.
+      ctl.generation += 1; // in-flight fallback translations die at the gate
       ctl.queue.length = 0;
-      ctl.cues = [];
-      ctl.cueKeys.clear();
-      ctl.groups = [];
-      ctl.lastCueCount = -1;
-      ctl.groupMeta.clear();
-      ctl.spokenIds.clear();
-      ctl.scheduledIds.clear();
-      ctl.inFlight.clear();
-      ctl.lastDomCue = null;
-      for (const c of cues) addCue(c.start, c.end, c.text);
+      clearCueTimeline();
+      for (const c of cues) addCue(c.start, c.end, c.text, token);
       rebuildGroups();
       for (const g of ctl.groups) {
         if (g.end <= t + 0.2 || (hadActivity && g.start <= t && t < g.end)) {
@@ -1209,18 +1413,28 @@ import { makeT, resolveUiLang } from "./i18n.js";
       ctl.staticLoaded = true;
       ctl.ytStatic = "loaded";
       if (langBase) ctl.trackLang = langBase;
+      return true;
     }
 
     async function harvestYouTubeStatic() {
       if (!domSite || domSite.id !== "youtube") return;
-      if (ctl.staticLoaded || ctl.ytFetching) return;
+      if (ctl.staticLoaded) return;
       if (ctl.trackRetryAt && Date.now() < ctl.trackRetryAt) return;
       const mk = ctl.mediaKey; // abort if the video changes mid-fetch
-      ctl.ytFetching = true;
+      const epoch = ctl.captionEpoch;
+      const signature = selectionSignature();
+      if (ctl.siteFetchingEpoch === epoch) return;
+      ctl.siteFetchingEpoch = epoch;
       try {
         const pageRes = await fetch(location.href, { credentials: "same-origin" });
         if (!pageRes.ok) throw new Error("page HTTP " + pageRes.status);
         const pageHtml = await pageRes.text();
+        if (
+          ctl.mediaKey !== mk ||
+          ctl.captionEpoch !== epoch ||
+          selectionSignature() !== signature
+        )
+          return;
         // YouTube auto-dubbing: when the DEFAULT audio track already is
         // the user's target language, Voxylio would speak on top of
         // YouTube's own dub — every sentence heard twice (owner-heard,
@@ -1232,7 +1446,6 @@ import { makeT, resolveUiLang } from "./i18n.js";
           );
         } catch (e) {}
         const tracks = extractCaptionTracks(pageHtml);
-        if (ctl.mediaKey !== mk) return;
         if (!tracks.length) {
           // No caption tracks on this video: permanent for this media —
           // the DOM feed (auto-CC click included) is the only hope left.
@@ -1243,6 +1456,13 @@ import { makeT, resolveUiLang } from "./i18n.js";
         const wanted =
           settings.sourceLang !== "auto" ? settings.sourceLang : null;
         const track = pickCaptionTrack(tracks, wanted, settings.targetLang);
+        const lang = String(track.languageCode || "").toLowerCase().split("-")[0];
+        const token = {
+          kind: "youtube",
+          key: "youtube:" + String(track.baseUrl || ""),
+          lang,
+          epoch,
+        };
         const res = await fetch(timedtextUrl(track.baseUrl), {
           credentials: "same-origin",
         });
@@ -1251,13 +1471,21 @@ import { makeT, resolveUiLang } from "./i18n.js";
         // An empty body with status 200 is YouTube refusing politely.
         const cues = body ? parseJson3(JSON.parse(body)) : [];
         if (!cues.length) throw new Error("empty timedtext");
-        if (ctl.mediaKey !== mk || !isAlive()) return;
-        adoptStaticCues(
-          cues,
-          String(track.languageCode || "").toLowerCase().split("-")[0],
-        );
+        if (
+          ctl.mediaKey !== mk ||
+          ctl.captionEpoch !== epoch ||
+          selectionSignature() !== signature ||
+          !isAlive()
+        )
+          return;
+        adoptStaticCues(cues, lang, token);
       } catch (e) {
-        if (ctl.mediaKey !== mk) return;
+        if (
+          ctl.mediaKey !== mk ||
+          ctl.captionEpoch !== epoch ||
+          selectionSignature() !== signature
+        )
+          return;
         ctl.trackRetries = (ctl.trackRetries || 0) + 1;
         if (ctl.trackRetries >= 2) {
           ctl.staticLoaded = true; // give up: DOM feed takes over
@@ -1266,7 +1494,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
           ctl.trackRetryAt = Date.now() + 4000;
         }
       } finally {
-        ctl.ytFetching = false;
+        if (ctl.siteFetchingEpoch === epoch) ctl.siteFetchingEpoch = -1;
       }
     }
     ctl.ytHarvest = harvestYouTubeStatic;
@@ -1277,10 +1505,13 @@ import { makeT, resolveUiLang } from "./i18n.js";
     // caption feed, which stays the safety net.
     async function harvestUdemyStatic() {
       if (!domSite || domSite.id !== "udemy") return;
-      if (ctl.staticLoaded || ctl.ytFetching) return;
+      if (ctl.staticLoaded) return;
       if (ctl.trackRetryAt && Date.now() < ctl.trackRetryAt) return;
       const mk = ctl.mediaKey; // abort if the video changes mid-fetch
-      ctl.ytFetching = true;
+      const epoch = ctl.captionEpoch;
+      const signature = selectionSignature();
+      if (ctl.siteFetchingEpoch === epoch) return;
+      ctl.siteFetchingEpoch = epoch;
       try {
         const lectureId = udemyLectureId(location.href);
         const loader = document.querySelector(".ud-app-loader");
@@ -1294,7 +1525,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
         });
         if (!res.ok) throw new Error("captions HTTP " + res.status);
         const tracks = udemyCaptionTracks(await res.json());
-        if (ctl.mediaKey !== mk) return;
+        if (
+          ctl.mediaKey !== mk ||
+          ctl.captionEpoch !== epoch ||
+          selectionSignature() !== signature
+        )
+          return;
         if (!tracks.length) {
           // Lecture without caption files: permanent for this media —
           // only the on-screen captions can feed us.
@@ -1305,19 +1541,34 @@ import { makeT, resolveUiLang } from "./i18n.js";
         const wanted =
           settings.sourceLang !== "auto" ? settings.sourceLang : null;
         const track = pickCaptionTrack(tracks, wanted, settings.targetLang);
+        const lang = String(track.languageCode || "").toLowerCase().split("-")[0];
+        const token = {
+          kind: "udemy",
+          key: "udemy:" + String(track.url || ""),
+          lang,
+          epoch,
+        };
         // The VTT lives on Udemy's CDN (their player XHRs it from the
         // page, so CORS allows the page origin — and us with it).
         const vres = await fetch(track.url);
         if (!vres.ok) throw new Error("vtt HTTP " + vres.status);
         const cues = parseVTT(await vres.text());
         if (!cues.length) throw new Error("empty vtt");
-        if (ctl.mediaKey !== mk || !isAlive()) return;
-        adoptStaticCues(
-          cues,
-          String(track.languageCode || "").toLowerCase().split("-")[0],
-        );
+        if (
+          ctl.mediaKey !== mk ||
+          ctl.captionEpoch !== epoch ||
+          selectionSignature() !== signature ||
+          !isAlive()
+        )
+          return;
+        adoptStaticCues(cues, lang, token);
       } catch (e) {
-        if (ctl.mediaKey !== mk) return;
+        if (
+          ctl.mediaKey !== mk ||
+          ctl.captionEpoch !== epoch ||
+          selectionSignature() !== signature
+        )
+          return;
         ctl.trackRetries = (ctl.trackRetries || 0) + 1;
         if (ctl.trackRetries >= 2) {
           ctl.staticLoaded = true; // give up: DOM feed takes over
@@ -1326,7 +1577,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
           ctl.trackRetryAt = Date.now() + 4000;
         }
       } finally {
-        ctl.ytFetching = false;
+        if (ctl.siteFetchingEpoch === epoch) ctl.siteFetchingEpoch = -1;
       }
     }
     ctl.udemyHarvest = harvestUdemyStatic;
@@ -1353,7 +1604,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       // We already own this video's feed: always resume after a
       // pause/seek/rate restart — our own cues must not disqualify us.
       if (ctl.audioFeed) return true;
-      if (ctl.cues.length > 0 || domLastText) return false;
+      if (ctl.cues.length > 0 || ctl.domLastText) return false;
       if (
         domSite &&
         (domSite.id === "youtube" || domSite.id === "udemy") &&
@@ -1416,6 +1667,10 @@ import { makeT, resolveUiLang } from "./i18n.js";
     }
 
     function stopAudioFeed(state) {
+      // Invalidate a start that may still be awaiting its audio-grant or
+      // AudioContext resume. Without this token, a paused/seeked session
+      // could continue later and create a second graph/socket.
+      ctl.audioEpoch += 1;
       reportAudioUsage(true);
       if (ctl.audioWs) {
         try {
@@ -1432,7 +1687,21 @@ import { makeT, resolveUiLang } from "./i18n.js";
     }
     ctl.stopAudioFeed = stopAudioFeed;
 
-    function openAudioSocket(token, protocols, isRetry) {
+    function audioStartIsCurrent(epoch) {
+      return (
+        ctl.audioEpoch === epoch &&
+        ctl.active &&
+        settings.proAudio &&
+        accountPlan === "pro"
+      );
+    }
+
+    function openAudioSocket(token, protocols, isRetry, startEpoch) {
+      if (!audioStartIsCurrent(startEpoch)) return;
+      const captionToken = feedToken(
+        "audio",
+        "audio:" + ctl.mediaKey + ":" + settings.sourceLang,
+      );
       let ws;
       try {
         ws = new WebSocket(deepgramLiveUrl(effectiveSource()), protocols);
@@ -1444,14 +1713,14 @@ import { makeT, resolveUiLang } from "./i18n.js";
       let opened = false;
       ctl.audioWs = ws;
       ws.onopen = () => {
-        if (ctl.audioWs !== ws) return;
+        if (ctl.audioWs !== ws || !audioStartIsCurrent(startEpoch)) return;
         opened = true;
         ctl.audioState = "live";
         ctl.audioT0 = video.currentTime;
         ctl.audioRate = video.playbackRate || 1;
       };
       ws.onmessage = (ev) => {
-        if (ctl.audioWs !== ws) return;
+        if (ctl.audioWs !== ws || !audioStartIsCurrent(startEpoch)) return;
         let msg;
         try {
           msg = JSON.parse(ev.data);
@@ -1461,16 +1730,16 @@ import { makeT, resolveUiLang } from "./i18n.js";
         const cue = transcriptToCue(msg, ctl.audioT0 || 0, ctl.audioRate || 1);
         if (cue) {
           ctl.audioFeed = true;
-          addCue(cue.start, cue.end, cue.text);
+          addCue(cue.start, cue.end, cue.text, captionToken);
         }
       };
       ws.onerror = () => {};
       ws.onclose = () => {
-        if (ctl.audioWs !== ws) return;
+        if (ctl.audioWs !== ws || ctl.audioEpoch !== startEpoch) return;
         ctl.audioWs = null;
         if (!opened && !isRetry) {
           // Some proxies reject the "bearer" subprotocol: legacy form.
-          openAudioSocket(token, ["token", token], true);
+          openAudioSocket(token, ["token", token], true, startEpoch);
           return;
         }
         stopAudioGraph();
@@ -1483,6 +1752,8 @@ import { makeT, resolveUiLang } from "./i18n.js";
     }
 
     async function startAudioFeed() {
+      const startEpoch = ctl.audioEpoch + 1;
+      ctl.audioEpoch = startEpoch;
       ctl.audioState = "starting";
       ctl.audioStarts = (ctl.audioStarts || 0) + 1;
       if (ctl.audioStarts > 6) {
@@ -1508,10 +1779,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       try {
         grant = await runtime.sendMessage({ type: "audio-grant" });
       } catch (e) {}
-      if (!ctl.active || !settings.proAudio) {
-        ctl.audioState = "idle";
-        return;
-      }
+      if (!audioStartIsCurrent(startEpoch)) return;
       if (!grant || !grant.ok || !grant.token) {
         if (grant && grant.quota) {
           ctl.audioState = "quota";
@@ -1544,7 +1812,9 @@ import { makeT, resolveUiLang } from "./i18n.js";
             await ctx.resume();
           } catch (e) {}
         }
+        if (!audioStartIsCurrent(startEpoch)) return;
         proc.onaudioprocess = (ev) => {
+          if (!audioStartIsCurrent(startEpoch)) return;
           const ws = ctl.audioWs;
           if (!ws || ws.readyState !== 1) return;
           const data = ev.inputBuffer.getChannelData(0);
@@ -1570,7 +1840,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
         return;
       }
       // 4. Stream to Deepgram (bearer subprotocol; token fallback).
-      openAudioSocket(grant.token, ["bearer", grant.token]);
+      openAudioSocket(grant.token, ["bearer", grant.token], false, startEpoch);
     }
 
     // --- source language --------------------------------------------------
@@ -1592,6 +1862,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
     async function maybeDetectSource() {
       if (ctl.detecting || ctl.detectedSource || ctl.cues.length < 2) return;
       ctl.detecting = true;
+      const epoch = ctl.captionEpoch;
       try {
         if (typeof LanguageDetector === "undefined") return;
         // Sample CLEANED speech, skipping the first cues — typically
@@ -1609,6 +1880,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
         if (total < 40) return; // retried once more cues arrive
         const detector = await LanguageDetector.create();
         const results = await detector.detect(parts.join(" "));
+        if (ctl.captionEpoch !== epoch) return;
         const best = results && results[0];
         if (best && best.confidence > 0.5) {
           const d = (best.detectedLanguage || "").split("-")[0];
@@ -1626,7 +1898,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       } catch (e) {
         /* detection is best-effort */
       } finally {
-        ctl.detecting = false;
+        if (ctl.captionEpoch === epoch) ctl.detecting = false;
       }
     }
 
@@ -1821,14 +2093,23 @@ import { makeT, resolveUiLang } from "./i18n.js";
     async function speakCloud(text, cueDur, id, extras) {
       // Occupy the speech slot immediately: drainQueue and anySpeaking
       // treat currentUtterance as "voice busy" whatever the engine.
-      const token = { cloud: true, at: performance.now(), _vxId: id };
+      const token = {
+        cloud: true,
+        at: performance.now(),
+        _vxId: id,
+        _vxText: text,
+        _vxDur: cueDur,
+        _vxExtras: extras,
+        _vxLang: settings.targetLang,
+        _vxSuperseded: false,
+      };
       ctl.currentUtterance = token;
       const asset = await getCloudAudio(text, settings.targetLang);
       if (ctl.currentUtterance !== token) {
         // Cancelled during the fetch (pause, seek, language change): no
         // audio ever played — un-mark the group so a resume within its
         // moment can still voice it.
-        if (id) ctl.spokenIds.delete(id);
+        if (id && !token._vxSuperseded) ctl.spokenIds.delete(id);
         return;
       }
       if (!asset) {
@@ -1857,7 +2138,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
         new Promise((resolve) => setTimeout(resolve, 250)),
       ]);
       if (ctl.currentUtterance !== token) {
-        if (id) ctl.spokenIds.delete(id);
+        if (id && !token._vxSuperseded) ctl.spokenIds.delete(id);
         return;
       }
       // Aura-2 already speaks at a natural cadence: apply only HALF of
@@ -2075,6 +2356,12 @@ import { makeT, resolveUiLang } from "./i18n.js";
       }
       const q = ctl.queue[0];
       if (!q) return;
+      // Translation promises resolve independently. A later cue may be
+      // ready while an earlier one is still in flight; letting it through
+      // here would voice G2 before G1. `scheduledIds` is the reservation
+      // ledger, so an earlier reserved (and not yet voiced/skipped) group
+      // is a real chronological barrier even when it has no queue item yet.
+      if (hasEarlierPendingGroup(q)) return;
       // Its moment has not come yet: wait for it. Speaking queued lines
       // the instant the voice frees up made the dub run AHEAD of the
       // picture — drift was never repaid, only compounded. (The tick
@@ -2100,8 +2387,41 @@ import { makeT, resolveUiLang } from "./i18n.js";
     // Bounded enqueue: never lose a line silently. When the voice falls
     // behind, either auto-pause the video (opt-in) or drop the STALEST
     // waiting line — the one whose moment is most past.
+    function groupOrder(id) {
+      if (!id) return Number.MAX_SAFE_INTEGER;
+      const index = ctl.groups.findIndex((group) => group.id === id);
+      return index < 0 ? Number.MAX_SAFE_INTEGER : index;
+    }
+
+    function compareQueueItems(a, b) {
+      const byGroup = groupOrder(a.id) - groupOrder(b.id);
+      if (byGroup) return byGroup;
+      return (a.start || 0) - (b.start || 0);
+    }
+
+    function hasEarlierPendingGroup(item) {
+      const order = groupOrder(item && item.id);
+      if (
+        !Number.isFinite(order) ||
+        order <= 0 ||
+        order === Number.MAX_SAFE_INTEGER
+      )
+        return false;
+      for (let i = 0; i < order; i++) {
+        const id = ctl.groups[i].id;
+        if (ctl.scheduledIds.has(id) && !ctl.spokenIds.has(id)) return true;
+      }
+      return false;
+    }
+
     function enqueue(item) {
-      ctl.queue.push(item);
+      // Completion order is not cue order: keep the ready side sorted so
+      // G3 resolving before G2 cannot invert them behind the G1 barrier.
+      const insertAt = ctl.queue.findIndex(
+        (queued) => compareQueueItems(item, queued) < 0,
+      );
+      if (insertAt < 0) ctl.queue.push(item);
+      else ctl.queue.splice(insertAt, 0, item);
       if (ctl.queue.length > 3) {
         if (settings.autoPause && !video.paused && !ctl.autoPaused) {
           ctl.autoPaused = true;
@@ -2132,6 +2452,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       // popup Retry) must be able to schedule this group again.
       if (source !== "auto" && source === target) {
         ctl.scheduledIds.delete(group.id);
+        drainQueue();
         return;
       }
 
@@ -2154,6 +2475,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
         // Translation failed: release so a later tick can retry.
         ctl.scheduledIds.delete(group.id);
         ctl.inFlight.delete(group.id);
+        drainQueue();
         return;
       }
       // Anything relevant changed while we were translating? Then this
@@ -2166,12 +2488,15 @@ import { makeT, resolveUiLang } from "./i18n.js";
         // stale text and let the next tick reschedule the new version.
         ctl.scheduledIds.delete(group.id);
         ctl.inFlight.delete(group.id);
+        drainQueue();
         return;
       }
       // A translation may arrive after the video was paused: never speak
       // while the video is stopped (except our own catch-up pause).
       if (!ctl.active || (video.paused && !ctl.autoPaused) || video.seeking) {
         ctl.scheduledIds.delete(group.id);
+        ctl.inFlight.delete(group.id);
+        drainQueue();
         return;
       }
       // A line translated too late must not play once its moment is gone
@@ -2179,6 +2504,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
         ctl.spokenIds.add(group.id); // deliberately skipped, never revisited
         ctl.scheduledIds.delete(group.id);
         ctl.inFlight.delete(group.id);
+        drainQueue();
         return;
       }
       // Caption + journal happen in speak(), the moment the line is
@@ -2197,7 +2523,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
         orig: group.text,
         rec: false,
       };
-      if (ctl.currentUtterance) {
+      if (ctl.currentUtterance || hasEarlierPendingGroup(item)) {
         enqueue(item);
       } else {
         speak(item.text, item.dur, item.id, item);
@@ -2275,9 +2601,11 @@ import { makeT, resolveUiLang } from "./i18n.js";
       ctl.mediaKey = mediaKey;
       const t = video.currentTime;
 
-      // Seek/backward jump: restart cleanly
+      // A script can jump currentTime without the native seeking event.
+      // Apply the same source-aware reset as the event handler.
       if (t < ctl.lastTime - 0.75) {
-        fullFlush();
+        onSeeking();
+        onSeeked();
       }
       ctl.lastTime = t;
 
@@ -2312,8 +2640,34 @@ import { makeT, resolveUiLang } from "./i18n.js";
         const stalledFetch =
           !a && now - (ctl.currentUtterance.at || 0) > 12000;
         if ((a && a.ended) || stalledFetch) {
+          const stalled = stalledFetch ? ctl.currentUtterance : null;
+          const stalledId = stalled && stalled._vxId;
+          if (stalled) {
+            stalled._vxSuperseded = true;
+            cloudVoiceDownUntil = Date.now() + 60_000;
+            cloudAudioCache.delete(stalled._vxLang + "::" + stalled._vxText);
+          }
           ctl.currentUtterance = null;
           ctl.cloudAudio = null;
+          if (stalledId) {
+            ctl.inFlight.delete(stalledId);
+            const ex = stalled._vxExtras;
+            const stillPlayable =
+              ctl.active &&
+              !video.paused &&
+              !video.seeking &&
+              ex &&
+              video.currentTime <= ex.end + 4;
+            if (stillPlayable) {
+              // The cloud request never produced audio: keep the same slot
+              // and sentence, but start it locally now. The down-latch keeps
+              // the rest of this passage on one consistent voice.
+              speakLocal(stalled._vxText, stalled._vxDur, stalledId, ex);
+            } else {
+              ctl.spokenIds.add(stalledId); // deliberately skipped as stale
+              ctl.scheduledIds.delete(stalledId);
+            }
+          }
           drainQueue();
         }
       } else if (ctl.currentUtterance) {
@@ -2670,11 +3024,18 @@ import { makeT, resolveUiLang } from "./i18n.js";
       if (ctl.active) return;
       ctl.active = true;
       // No blanket duck here: the bed only ducks when a voice speaks.
+      // Harvesting also runs passively while signed out/disabled. On a late
+      // activation, explicitly retire groups whose windows already ended;
+      // otherwise the live group speaks first and the late-cue safety net
+      // can backfill an older sentence afterwards (non-monotonic audio).
+      ctl.pastCutoff = video.currentTime + 0.2;
       harvestTextTracks();
       harvestTrackElements();
+      rebuildGroups();
       ctl.pollTimer = setInterval(tick, 150);
       video.addEventListener("pause", onPauseEvent);
-      video.addEventListener("seeking", fullFlush);
+      video.addEventListener("seeking", onSeeking);
+      video.addEventListener("seeked", onSeeked);
       video.addEventListener("ended", hardStopSpeech);
       video.addEventListener("ratechange", onRateChange);
       video.addEventListener("volumechange", onVolumeChange);
@@ -2713,7 +3074,8 @@ import { makeT, resolveUiLang } from "./i18n.js";
       clearInterval(ctl.pollTimer);
       ctl.pollTimer = null;
       video.removeEventListener("pause", onPauseEvent);
-      video.removeEventListener("seeking", fullFlush);
+      video.removeEventListener("seeking", onSeeking);
+      video.removeEventListener("seeked", onSeeked);
       video.removeEventListener("ended", hardStopSpeech);
       video.removeEventListener("ratechange", onRateChange);
       video.removeEventListener("volumechange", onVolumeChange);
@@ -2727,8 +3089,8 @@ import { makeT, resolveUiLang } from "./i18n.js";
       hideCaption();
     }
 
-    // Full flush: also forgets what was spoken — after a seek or a
-    // language change the user expects the current passage to be re-dubbed.
+    // Full flush: also forgets what was spoken. Source-aware seek handling
+    // below decides whether the cue timeline itself is reusable.
     function fullFlush() {
       hardStopSpeech();
       ctl.spokenIds.clear();
@@ -2737,45 +3099,60 @@ import { makeT, resolveUiLang } from "./i18n.js";
       stopAudioFeed();
     }
 
+    function onSeeking() {
+      const liveFeed =
+        ctl.captionFeedKind === "dom" || ctl.captionFeedKind === "audio";
+      const feed = {
+        kind: ctl.captionFeedKind,
+        key: ctl.captionFeedKey,
+        lang: ctl.trackLang,
+      };
+      fullFlush();
+      if (liveFeed) {
+        // DOM/audio timestamps are observations tied to the old playhead.
+        // Static/native tracks describe the whole media and are deliberately
+        // retained, but live timelines must be rebuilt at the destination.
+        ctl.captionEpoch += 1;
+        clearCueTimeline();
+        ctl.captionFeedKind = feed.kind;
+        ctl.captionFeedKey = feed.key;
+        ctl.trackLang = feed.lang;
+        ctl.audioProbeAt = 0;
+      }
+      // Re-anchor any pending language/static re-selection to the NEW
+      // playhead. Keeping the old cutoff made a late response mark every
+      // cue up to the pre-seek position as already spoken.
+      ctl.pastCutoff = video.currentTime + 0.2;
+      rebuildGroups();
+      ctl.lastTime = video.currentTime;
+    }
+
+    function onSeeked() {
+      ctl.lastTime = video.currentTime;
+      if (ctl.captionFeedKind !== "dom") return;
+      const epoch = ctl.captionEpoch;
+      // Some players leave the same text node mounted across a seek and no
+      // MutationObserver callback fires. Re-sample once after the player has
+      // had a moment to update; skip when a real mutation already arrived.
+      setTimeout(() => {
+        if (
+          ctl.active &&
+          !video.seeking &&
+          ctl.captionEpoch === epoch &&
+          ctl.captionFeedKind === "dom" &&
+          !Number.isFinite(ctl.domLastAcceptedAt)
+        )
+          onDomCaptionMutation(true);
+      }, 120);
+    }
+
     // New media in the same element (SPA navigation, src swap): drop
     // every cue-derived structure and let the new video be harvested
     // from scratch. The translation cache is language-pair keyed and
     // survives — only identity state resets.
     function resetForNewMedia() {
-      hardStopSpeech();
-      ctl.cues = [];
-      ctl.cueKeys.clear();
-      ctl.groups = [];
-      ctl.lastCueCount = -1;
-      ctl.groupMeta.clear();
-      ctl.spokenIds.clear();
-      ctl.scheduledIds.clear();
-      ctl.inFlight.clear();
-      ctl.lastDomCue = null;
-      ctl.detectedSource = null;
-      // Without this, two votes earned on the PREVIOUS video let a single
-      // stray target-language reading mute the new one instantly —
-      // defeating the very protection the counter implements.
-      ctl.detectTargetVotes = 0;
-      ctl.trackLang = "";
-      ctl.staticLoaded = false;
-      ctl.ytStatic = null;
-      // The "YouTube already dubs this video" warning belongs to the old
-      // video; cleared here, re-learned when the new page HTML is read.
-      ctl.ytDubbedDefault = false;
-      ctl.trackRetryAt = 0;
-      ctl.trackRetries = 0;
+      resetCaptionSelection(false);
       ctl.lastTime = -1;
-      if (ctl.trackListened && ctl.trackHarvestHandler) {
-        try {
-          ctl.trackListened.removeEventListener(
-            "cuechange",
-            ctl.trackHarvestHandler
-          );
-        } catch (e) {}
-      }
-      ctl.trackListened = null;
-      ctl.trackHarvestHandler = null;
       // Premium Audio: a new medium starts from a clean slate — the
       // quota state is the only thing that survives (it is monthly).
       stopAudioFeed();
@@ -2787,7 +3164,7 @@ import { makeT, resolveUiLang } from "./i18n.js";
       ctl.audioProbeAt = 0;
       ctl.audioRetryAt = 0;
       ctl.audioT0 = 0;
-      resetPageFeed(); // journal session + DOM caption dedup (module level)
+      resetPageFeed(ctl); // journal session + DOM caption dedup
       hideCaption();
     }
 
@@ -2848,6 +3225,14 @@ import { makeT, resolveUiLang } from "./i18n.js";
     };
     ctl.flushSpeech = hardStopSpeech; // immediate cut (language change)
     ctl.fullFlush = fullFlush; // seek-grade reset (also forgets spoken groups)
+    ctl.onLanguagePairChanged = () => {
+      resetCaptionSelection();
+      // Native/file tracks can be reselected immediately, including while
+      // dubbing is disabled; site-static loaders restart on the next tick.
+      harvestTextTracks();
+      harvestTrackElements();
+      rebuildGroups();
+    };
     ctl.harvest();
     ctl.onSettingsChanged();
     return ctl;

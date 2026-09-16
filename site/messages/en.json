@@ -277,6 +277,17 @@
   "Changelog": {
     "title": "Changelog",
     "subtitle": "Every Voxylio release, and what it changes for you.",
+    "v183": {
+      "date": "September 2026",
+      "summary": "The reliability update: captions, translation and speech now stay synchronized through language changes, seeks and provider failures.",
+      "items": {
+        "order": "Lines are always spoken in chronological order, even when translations finish out of order or an account unlocks mid-video.",
+        "tracks": "Only one subtitle source and language can feed a video at a time; late responses from a previous selection are ignored.",
+        "seek": "Seeking rebuilds live captions cleanly, so repeated text is spoken at its new position without duplicates.",
+        "cloud": "Pro voice now times out safely, clears stalled requests and immediately replays the affected line with a local voice.",
+        "audio": "Pro audio invalidates delayed permissions and old capture sessions, preventing duplicate streams and quota usage."
+      }
+    },
     "v182": {
       "date": "August 2026",
       "summary": "The inspection release: a full audit of the engine, popup and packaging — every finding fixed.",

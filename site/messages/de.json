@@ -277,6 +277,17 @@
   "Changelog": {
     "title": "Neuheiten",
     "subtitle": "Jede Voxylio-Version — und was sie für dich ändert.",
+    "v183": {
+      "date": "September 2026",
+      "summary": "Das Zuverlässigkeits-Update: Untertitel, Übersetzung und Sprache bleiben bei Sprachwechseln, Sprüngen und Anbieterausfällen synchron.",
+      "items": {
+        "order": "Sätze werden immer chronologisch gesprochen, auch wenn Übersetzungen in anderer Reihenfolge fertig werden oder ein Konto mitten im Video freigeschaltet wird.",
+        "tracks": "Pro Video speisen nur eine Untertitelquelle und eine Sprache den Dub; verspätete Antworten einer früheren Auswahl werden ignoriert.",
+        "seek": "Beim Springen werden Live-Untertitel sauber neu aufgebaut, sodass wiederholter Text an der neuen Position ohne Duplikate gesprochen wird.",
+        "cloud": "Die Pro-Stimme beendet festgefahrene Anfragen sicher, leert deren Cache und wiederholt die betroffene Zeile sofort mit einer lokalen Stimme.",
+        "audio": "Pro Audio verwirft verspätete Berechtigungen und alte Aufnahmesitzungen und verhindert so doppelte Streams und Quotanutzung."
+      }
+    },
     "v182": {
       "date": "August 2026",
       "summary": "Das Inspektions-Release: vollständige Prüfung von Engine, Popup und Paketierung — jeder Befund behoben.",

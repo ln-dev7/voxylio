@@ -26,14 +26,26 @@ type Tag = "new" | "improved" | "pro";
 // Text lives in messages (Changelog.*); this is only the shape.
 const RELEASES: Array<{
   version: string;
-  id: "v182" | "v181" | "v180" | "v171" | "v170" | "v151";
+  id: "v183" | "v182" | "v181" | "v180" | "v171" | "v170" | "v151";
   badges?: Array<"latest" | "store" | "review">;
   items: Array<{ key: string; tag: Tag }>;
 }> = [
   {
+    version: "1.8.3",
+    id: "v183",
+    badges: ["latest", "review"],
+    items: [
+      { key: "order", tag: "improved" },
+      { key: "tracks", tag: "improved" },
+      { key: "seek", tag: "improved" },
+      { key: "cloud", tag: "pro" },
+      { key: "audio", tag: "pro" },
+    ],
+  },
+  {
     version: "1.8.2",
     id: "v182",
-    badges: ["latest", "store"],
+    badges: ["store"],
     items: [
       { key: "stitch", tag: "improved" },
       { key: "detect", tag: "improved" },
